@@ -150,7 +150,7 @@ class Background {
         let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
         browser.cookies.remove({
             name: cookie.name,
-            url: (cookie.secure ? 'https://' : 'http://') + rawDomain,
+            url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
             storeId: cookie.storeId
         });
     }

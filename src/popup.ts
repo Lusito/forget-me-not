@@ -78,28 +78,35 @@ class Popup {
         });
     }
 
+    private setInvalidTab(selectFallbackTab?: boolean) {
+        let label = byId('current_tab');
+        if (label)
+            label.textContent = browser.i18n.getMessage('invalid_tab');
+        let cleanCurrentTab = byId('clean_current_tab');
+        if (cleanCurrentTab)
+            cleanCurrentTab.style.display = 'none';
+        if (selectFallbackTab)
+            this.selectTab(1);
+    }
+
     private updateCurrentTab(selectFallbackTab?: boolean) {
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+            let cleanAllNow = byId('clean_all_now');
+            if (cleanAllNow)
+                on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
+
             let tab = tabs.length && tabs[0];
             if (tab && tab.url) {
                 let url = new URL(tab.url);
                 let label = byId('current_tab');
                 let cleanCurrentTab = byId('clean_current_tab');
                 if (!allowedProtocols.test(url.protocol)) {
-                    if (label)
-                        label.textContent = browser.i18n.getMessage('invalid_tab');
-                    if (cleanCurrentTab)
-                        cleanCurrentTab.style.display = 'none';
-                    if (selectFallbackTab)
-                        this.selectTab(1);
+                    this.setInvalidTab(selectFallbackTab);
                     return;
                 }
                 let hostname = url.hostname;
                 if (label)
                     label.textContent = hostname;
-                let cleanAllNow = byId('clean_all_now');
-                if (cleanAllNow)
-                    on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
                 if (cleanCurrentTab) {
                     on(cleanCurrentTab, 'click', () => {
                         browser.tabs.query({ active: true }).then((tabs) => {
@@ -114,6 +121,8 @@ class Popup {
                 removeAllChildren(list);
                 for (const rule of matchingRules)
                     this.createRuleListItem(rule, list);
+            } else {
+                this.setInvalidTab(selectFallbackTab);
             }
         });
     }

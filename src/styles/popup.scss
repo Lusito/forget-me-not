@@ -408,8 +408,13 @@ input[type=checkbox]:checked+span:before {
     list-style: none;
     padding: 0 2px 0 0;
     margin: 0;
-    li {
+    > li {
         margin: 0 0 2px 0;
+        > div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 }
 .rules_head,

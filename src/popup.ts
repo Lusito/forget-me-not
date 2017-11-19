@@ -77,6 +77,13 @@ class Popup {
                 this.rebuildMatchingRules();
             }
         });
+
+        let recentCookieDomainsList = byId('most_recent_cookie_domains') as HTMLElement;
+        messageUtil.send('getMostRecentCookieDomains', null, (domains: string[]) => {
+            removeAllChildren(recentCookieDomainsList);
+            for (const domain of domains)
+                createElement(document, recentCookieDomainsList, 'li', {textContent: domain});
+        });
     }
 
     private setInvalidTab() {
@@ -223,7 +230,7 @@ class Popup {
 
     private createRuleListItem(rule: RuleDefinition, parent: HTMLElement) {
         let li = createElement(document, parent, 'li');
-        createElement(document, li, 'div', { textContent: rule.rule });
+        createElement(document, li, 'div', { textContent: rule.rule, title: rule.rule });
         let label = createElement(document, li, 'label', { className: 'ruleSwitch type_column' });
         let input = createElement(document, label, 'input', { type: 'checkbox', checked: rule.type === RuleType.WHITE }) as HTMLInputElement;
         let div = createElement(document, label, 'div', { className: 'ruleSlider' });

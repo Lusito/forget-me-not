@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
- import { MouseEventCallback, createButton, translateChildren, on } from "../lib/htmlUtils";
+import { MouseEventCallback, createButton, translateChildren, on } from "../lib/htmlUtils";
 
 export function createDialog(className: string, titleL10nKey: string, buttons: { [s: string]: MouseEventCallback }) {
     let overlay = document.createElement('div');

@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
 import { createElement } from "./htmlUtils";
 
 export function loadJSONFile(callback: (json: any) => void) {

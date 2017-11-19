@@ -18,15 +18,18 @@
 
 	"logo__title": { "message": "Forget Me Not", "description": "" },
 
+	"most_recent_cookie_domains": { "message": "Most recently accessed cookie domains:", "description": "" },
+
 	"badge_white": { "message": "W", "description": "" },
 	"badge_gray": { "message": "G", "description": "" },
 	"badge_forget": { "message": "F", "description": "" },
 
 	"tabs_this_tab": { "message": "This Tab", "description": "" },
-	"tabs_clean_all": { "message": "Clean All", "description": "" },
+	"tabs_clean_all": { "message": "Cleanup", "description": "" },
 	"tabs_rules": { "message": "Rules", "description": "" },
 	"tabs_settings": { "message": "Settings", "description": "" },
-	"tabs_help": { "message": "Help & about", "description": "" },
+	"tabs_log": { "message": "Log", "description": "" },
+	"tabs_about": { "message": "About", "description": "" },
 
 	"button_clean_now": { "message": "Clean Now!", "description": "" },
 	"button_import": { "message": "Import..", "description": "" },
@@ -61,7 +64,8 @@
 	"setting_server_bound_certificates": { "message": "Server Bound Certificates", "description": "" },
 	"setting_local_storage_ff58": { "message": "Local Storage (Firefox 58+)", "description": "" },
 	"setting_delay_in_minutes": { "message": "Delay in minutes:", "description": "" },
-	"setting_domain_leave_enabled": { "message": "Clean when leaving all instances of a website (rules apply):", "description": "" },
+	"setting_domain_leave_enabled": { "message": "Clean when leaving all instances of a domain:", "description": "" },
+	"setting_domain_leave_enabled__title": { "message": "Rules will be applied", "description": "" },
 	"setting_remove_thirdparty": { "message": "Remove Thirdparty Cookies on creation:", "description": "" },
 	"setting_startup_enabled": { "message": "Clean on browser start:", "description": "" },
 

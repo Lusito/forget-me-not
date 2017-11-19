@@ -1,14 +1,20 @@
-export default class DelayedExecution {
-    callback:() => void;
-    private _execute:() => void;
-    private instance:number|null;
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
 
-    constructor(callback:() => void) {
+export default class DelayedExecution {
+    callback: () => void;
+    private _execute: () => void;
+    private instance: number | null;
+
+    constructor(callback: () => void) {
         this.callback = callback;
         this._execute = this.execute.bind(this);
     }
 
-    restart(ms:number) {
+    restart(ms: number) {
         this.cancel();
         this.instance = setTimeout(this._execute, ms);
     }

@@ -18,15 +18,18 @@
 
 	"logo__title": { "message": "Vergiss Mein Nicht", "description": "" },
 
+	"most_recent_cookie_domains": { "message": "Zuletzt genutzte Cookiedomänen:", "description": "" },
+
 	"badge_white": { "message": "W", "description": "" },
 	"badge_gray": { "message": "G", "description": "" },
 	"badge_forget": { "message": "V", "description": "" },
 
 	"tabs_this_tab": { "message": "Dieser Tab", "description": "" },
-	"tabs_clean_all": { "message": "Alles Löschen", "description": "" },
+	"tabs_clean_all": { "message": "Löschen", "description": "" },
 	"tabs_rules": { "message": "Regeln", "description": "" },
-	"tabs_settings": { "message": "Einstellungen", "description": "" },
-	"tabs_help": { "message": "Hilfe & über", "description": "" },
+	"tabs_settings": { "message": "Optionen", "description": "" },
+	"tabs_log": { "message": "Log", "description": "" },
+	"tabs_about": { "message": "Über", "description": "" },
 
 	"button_clean_now": { "message": "Jetzt Löschen!", "description": "" },
 	"button_import": { "message": "Importieren..", "description": "" },
@@ -61,7 +64,8 @@
 	"setting_server_bound_certificates": { "message": "Servergebundene Zertifikate", "description": "" },
 	"setting_local_storage_ff58": { "message": "Lokaler Speicher (Firefox 58+)", "description": "" },
 	"setting_delay_in_minutes": { "message": "Verzögerung in Minuten:", "description": "" },
-	"setting_domain_leave_enabled": { "message": "Löschen, wenn alle Instanzen einer Webseite verlassen wurden (Regeln beachtend):", "description": "" },
+	"setting_domain_leave_enabled": { "message": "Löschen, wenn alle Instanzen einer Domäne verlassen wurden:", "description": "" },
+	"setting_domain_leave_enabled__title": { "message": "Regeln werden angewandt", "description": "" },
 	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellund löschen:", "description": "" },
 	"setting_startup_enabled": { "message": "Beim Browserstart löschen:", "description": "" },
 

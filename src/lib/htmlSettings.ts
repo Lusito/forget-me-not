@@ -1,11 +1,12 @@
-import { settings } from "./settings";
-import { on } from "./htmlUtils";
-
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
+
+import { settings } from "./settings";
+import { on } from "./htmlUtils";
+
 interface SettingsInfo {
     element: HTMLInputElement;
     permanentlyDisabled?: boolean;

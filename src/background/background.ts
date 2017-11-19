@@ -12,6 +12,8 @@ import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
 
 const allowedProtocols = /https?:/;
+const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
+const MAX_COOKIE_DOMAIN_HISTORY = 20;
 
 interface BadgeInfo {
     i18nKey?: string;
@@ -36,12 +38,11 @@ const badges = {
     } as BadgeInfo
 }
 
-const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
-
 class Background {
-    lastDomainChangeRequest = Date.now();
-    delayedDomainUpdate = new DelayedExecution(this.updateDomainList.bind(this));
-    currentDomains: string[] = [];
+    private lastDomainChangeRequest = Date.now();
+    private delayedDomainUpdate = new DelayedExecution(this.updateDomainList.bind(this));
+    private currentDomains: string[] = [];
+    private mostRecentCookieDomains: string[] = [];
 
     public constructor() {
         this.updateBadge();
@@ -179,16 +180,36 @@ class Background {
         return false;
     }
 
+    public getMostRecentCookieDomains() {
+        return this.mostRecentCookieDomains;
+    }
+
+    private addToMostRecentCookieDomains(domain: string) {
+        if(domain.startsWith('.'))
+            domain = domain.substr(1);
+        let index = this.mostRecentCookieDomains.indexOf(domain);
+        if (index !== 0) {
+            if (index !== -1)
+                this.mostRecentCookieDomains.splice(index, 1);
+            this.mostRecentCookieDomains.unshift(domain);
+            if (this.mostRecentCookieDomains.length > MAX_COOKIE_DOMAIN_HISTORY)
+                this.mostRecentCookieDomains.length = MAX_COOKIE_DOMAIN_HISTORY;
+        }
+    }
+
     public onCookieChanged(changeInfo: browser.cookies.CookieChangeInfo) {
-        if (!changeInfo.removed && settings.get('cleanThirdPartyCookies.enabled')) {
-            let exec = new DelayedExecution(() => {
-                let delta = Date.now() - this.lastDomainChangeRequest;
-                if (delta < 1000)
-                    exec.restart(500);
-                else if (!this.isCookieAllowed(changeInfo.cookie))
-                    this.removeCookie(changeInfo.cookie);
-            });
-            exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+        if (!changeInfo.removed) {
+            this.addToMostRecentCookieDomains(changeInfo.cookie.domain);
+            if (settings.get('cleanThirdPartyCookies.enabled')) {
+                let exec = new DelayedExecution(() => {
+                    let delta = Date.now() - this.lastDomainChangeRequest;
+                    if (delta < 1000)
+                        exec.restart(500);
+                    else if (!this.isCookieAllowed(changeInfo.cookie))
+                        this.removeCookie(changeInfo.cookie);
+                });
+                exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+            }
         }
     }
 
@@ -332,6 +353,10 @@ settings.onReady(() => {
                 console.log('success');
             }
         });
+    });
+
+    messageUtil.receive('getMostRecentCookieDomains', (params: any, sender: any) => {
+        return background.getMostRecentCookieDomains();
     });
 
     if (doStartup) {

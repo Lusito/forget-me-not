@@ -9,7 +9,7 @@
 import * as browser from 'webextension-polyfill';
 
 //fixme: types
-export type Callback = (params: any, sender?: any, sendResponse?: any) => any;
+export type Callback = (params: any, sender: browser.runtime.MessageSender) => any;
 // export type Callback = (params: any, sender?: browser.runtime.MessageSender, sendResponse?: (response:any)=>void) => any;
 
 type CallbacksMap = { [s: string]: Callback };
@@ -22,7 +22,7 @@ function init() {
         if (callbacks) {
             let callback = callbacks[request.action];
             if (callback) {
-                return callback(request.params, sender, sendResponse);
+                return callback(request.params, sender);
             }
         }
     });
@@ -43,7 +43,7 @@ export function sendSelf(name: string, params: any) {
     if (callbacks) {
         let callback = callbacks[name];
         if (callback) {
-            return callback(params);
+            return callback(params, {});
         }
     }
 }

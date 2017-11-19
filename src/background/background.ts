@@ -1,0 +1,344 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
+import * as browser from 'webextension-polyfill';
+import * as messageUtil from "../lib/messageUtil";
+import { settings, RuleType } from "../lib/settings";
+import { browserInfo, isFirefox } from '../lib/browserInfo';
+import DelayedExecution from '../lib/delayedExecution';
+import { loadJSONFile } from '../lib/fileHelper';
+
+const allowedProtocols = /https?:/;
+
+interface BadgeInfo {
+    i18nKey?: string;
+    color: string | [number, number, number, number];
+}
+
+const badges = {
+    white: {
+        i18nKey: "badge_white",
+        color: [38, 69, 151, 255]
+    } as BadgeInfo,
+    gray: {
+        i18nKey: "badge_gray",
+        color: [116, 116, 116, 255]
+    } as BadgeInfo,
+    forget: {
+        i18nKey: "badge_forget",
+        color: [190, 23, 38, 255]
+    } as BadgeInfo,
+    none: {
+        color: [0, 0, 0, 255]
+    } as BadgeInfo
+}
+
+const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
+
+class Background {
+    lastDomainChangeRequest = Date.now();
+    delayedDomainUpdate = new DelayedExecution(this.updateDomainList.bind(this));
+    currentDomains: string[] = [];
+
+    public constructor() {
+        this.updateBadge();
+        this.updateDomainList();
+    }
+
+    private getLocalStorageDomains(ignoreGrayList: boolean): string[] {
+        let domainsToClean = settings.get('domainsToClean');
+        let result = [];
+        for (const domain in domainsToClean) {
+            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainAllowed(domain, ignoreGrayList))
+                result.push(domain);
+        }
+        return result;
+    }
+
+    public onStartup() {
+        if (!settings.get('startup.enabled'))
+            return;
+        let typeSet: browser.browsingData.DataTypeSet = {
+            history: settings.get('startup.history'),
+            downloads: settings.get('startup.downloads'),
+            formData: settings.get('startup.formData'),
+            passwords: settings.get('startup.passwords'),
+            indexedDB: settings.get('startup.indexedDB'),
+            pluginData: settings.get('startup.pluginData'),
+            serverBoundCertificates: settings.get('startup.serverBoundCertificates'),
+            serviceWorkers: settings.get('startup.serviceWorkers')
+        };
+        let options: browser.browsingData.RemovalOptions = {
+            originTypes: { unprotectedWeb: true }
+        };
+        if (settings.get('startup.cookies')) {
+            if (settings.get('startup.cookies.applyRules'))
+                this.cleanCookiesWithRulesNow();
+            else
+                typeSet.cookies = true;
+        }
+        if (settings.get('startup.localStorage')) {
+            if (settings.get('startup.localStorage.applyRules'))
+                this.cleanLocalStorage(this.getLocalStorageDomains(true));
+            else {
+                typeSet.localStorage = true;
+                settings.set('domainsToClean', {});
+                settings.save();
+            }
+        }
+        browser.browsingData.remove(options, typeSet);
+    }
+
+    public cleanAllNow() {
+        let typeSet: browser.browsingData.DataTypeSet = {
+            history: settings.get('cleanAll.history'),
+            downloads: settings.get('cleanAll.downloads'),
+            formData: settings.get('cleanAll.formData'),
+            passwords: settings.get('cleanAll.passwords'),
+            indexedDB: settings.get('cleanAll.indexedDB'),
+            pluginData: settings.get('cleanAll.pluginData'),
+            serverBoundCertificates: settings.get('cleanAll.serverBoundCertificates'),
+            serviceWorkers: settings.get('cleanAll.serviceWorkers')
+        };
+        let options: browser.browsingData.RemovalOptions = {
+            originTypes: { unprotectedWeb: true }
+        };
+        if (settings.get('cleanAll.cookies')) {
+            if (settings.get('cleanAll.cookies.applyRules'))
+                this.cleanCookiesWithRulesNow();
+            else
+                typeSet.cookies = true;
+        }
+        if (settings.get('cleanAll.localStorage')) {
+            if (settings.get('cleanAll.localStorage.applyRules'))
+                this.cleanLocalStorage(this.getLocalStorageDomains(false));
+            else {
+                typeSet.localStorage = true;
+                settings.set('domainsToClean', {});
+                settings.save();
+            }
+        }
+        browser.browsingData.remove(options, typeSet);
+    }
+
+    private cleanLocalStorage(hostnames: string[]) {
+        if (removeLocalStorageByHostname) {
+            let domainsToClean = { ...settings.get('domainsToClean') };
+            for (const hostname of hostnames)
+                delete domainsToClean[hostname];
+            settings.set('domainsToClean', domainsToClean);
+            settings.save();
+            browser.browsingData.remove({
+                originTypes: { unprotectedWeb: true },
+                hostnames: hostnames
+            }, { localStorage: true });
+            return true;
+        }
+        return false;
+    }
+
+    public cleanUrlNow(hostname: string) {
+        this.cleanLocalStorage([hostname]);
+        this.cleanCookiesByDomain(hostname, true);
+    }
+
+    private removeCookie(cookie: browser.cookies.Cookie) {
+        let allowSubDomains = cookie.domain.startsWith('.');
+        let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+        browser.cookies.remove({
+            name: cookie.name,
+            url: (cookie.secure ? 'https://' : 'http://') + rawDomain,
+            storeId: cookie.storeId
+        });
+    }
+
+    private isDomainAllowed(domain: string, ignoreGrayList?: boolean): boolean {
+        if (this.currentDomains.indexOf(domain) !== -1)
+            return true;
+        let badge = this.getBadgeForDomain(domain);
+        if (ignoreGrayList)
+            return badge === badges.white;
+        return badge !== badges.none && badge !== badges.forget;
+    }
+
+    private isCookieAllowed(cookie: browser.cookies.Cookie) {
+        let domain = cookie.domain;
+        let allowSubDomains = domain.startsWith('.');
+        let rawDomain = allowSubDomains ? domain.substr(1) : domain;
+        if (this.isDomainAllowed(rawDomain))
+            return true;
+        if (allowSubDomains) {
+            for (const otherDomain of this.currentDomains) {
+                if (otherDomain.endsWith(domain))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public onCookieChanged(changeInfo: browser.cookies.CookieChangeInfo) {
+        if (!changeInfo.removed && settings.get('cleanThirdPartyCookies.enabled')) {
+            let exec = new DelayedExecution(() => {
+                let delta = Date.now() - this.lastDomainChangeRequest;
+                if (delta < 1000)
+                    exec.restart(500);
+                else if (!this.isCookieAllowed(changeInfo.cookie))
+                    this.removeCookie(changeInfo.cookie);
+            });
+            exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+        }
+    }
+
+    private cleanCookiesWithRulesNow() {
+        browser.cookies.getAll({}).then((cookies) => {
+            for (const cookie of cookies) {
+                if (!this.isCookieAllowed(cookie))
+                    this.removeCookie(cookie);
+            }
+        });
+    }
+
+    private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
+        browser.cookies.getAll({}).then((cookies) => {
+            for (const cookie of cookies) {
+                let allowSubDomains = cookie.domain.startsWith('.');
+                let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
+                if (match && (ignoreRules || !this.isCookieAllowed(cookie)))
+                    this.removeCookie(cookie);
+            }
+        });
+    }
+
+    private cleanByDomainWithRulesNow(domain: string) {
+        if (!settings.get('domainLeave.enabled') || this.isDomainAllowed(domain))
+            return;
+
+        if (settings.get('domainLeave.cookies')) {
+            this.cleanCookiesByDomain(domain);
+        }
+        if (settings.get('domainLeave.localStorage'))
+            this.cleanLocalStorage([domain]);
+    }
+
+    private updateDomainList() {
+        browser.tabs.query({}).then((tabs) => {
+            let oldDomains = this.currentDomains;
+            this.currentDomains = [];
+            for (let tab of tabs) {
+                if (tab.url) {
+                    let url = new URL(tab.url);
+                    if (allowedProtocols.test(url.protocol) && this.currentDomains.indexOf(url.hostname) === -1)
+                        this.currentDomains.push(url.hostname);
+                }
+            }
+
+            let removedDomains = oldDomains.filter((domain) => this.currentDomains.indexOf(domain) === -1);
+            if (removedDomains.length)
+                this.onDomainsRemoved(removedDomains);
+            let addedDomains = this.currentDomains.filter((domain) => oldDomains.indexOf(domain) === -1);
+            if (addedDomains.length)
+                this.onDomainsAdded(addedDomains);
+        });
+    }
+
+    private onDomainsRemoved(removedDomains: string[]) {
+        let timeout = settings.get('domainLeave.delay') * 60 * 1000;
+        if (timeout <= 0) {
+            for (let domain of removedDomains)
+                this.cleanByDomainWithRulesNow(domain);
+        } else {
+            setTimeout(() => {
+                for (let domain of removedDomains)
+                    this.cleanByDomainWithRulesNow(domain);
+            }, timeout);
+        }
+    }
+
+    private onDomainsAdded(addedDomains: string[]) {
+        if(removeLocalStorageByHostname) {
+            let domainsToClean = { ...settings.get('domainsToClean') };
+            for (const domain of addedDomains)
+                domainsToClean[domain] = true;
+            settings.set('domainsToClean', domainsToClean);
+            settings.save();
+        }
+    }
+
+    public checkDomainChanges() {
+        if (settings.get('domainLeave.enabled') && (settings.get('domainLeave.cookies')
+            || removeLocalStorageByHostname && settings.get('domainLeave.localStorage'))) {
+            this.lastDomainChangeRequest = Date.now();
+            this.delayedDomainUpdate.restart(200);
+        }
+    }
+
+    private getBadgeForDomain(domain: string) {
+        let matchingRules = settings.getMatchingRules(domain);
+        if (matchingRules.length === 0)
+            return badges.forget;
+        for (const rule of matchingRules) {
+            if (rule.type === RuleType.WHITE)
+                return badges.white;
+        }
+        return badges.gray;
+    }
+
+    public updateBadge() {
+        browser.tabs.query({ active: true }).then((tabs) => {
+            for (let tab of tabs) {
+                if (tab && tab.url) {
+                    let badge = badges.none;
+                    let url = new URL(tab.url);
+                    if (allowedProtocols.test(url.protocol))
+                        badge = this.getBadgeForDomain(url.hostname);
+                    let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
+                    browser.browserAction.setBadgeText({ text: text, tabId: tab.id });
+                    browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
+                }
+            }
+        });
+    }
+}
+
+let background: Background;
+let doStartup = false;
+settings.onReady(() => {
+    background = new Background();
+    messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
+    messageUtil.receive('cleanUrlNow', (url) => background.cleanUrlNow(url));
+    browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
+    browser.webNavigation.onCommitted.addListener(() => background.checkDomainChanges());
+    browser.tabs.onRemoved.addListener(() => background.checkDomainChanges());
+
+    // listen for tab changes to update badge
+    let badgeUpdater = () => background.updateBadge();
+    browser.tabs.onActivated.addListener(badgeUpdater);
+    browser.tabs.onUpdated.addListener(badgeUpdater);
+    messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
+        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('rules') !== -1)
+            background.updateBadge();
+    });
+
+    // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.
+    messageUtil.receive('import', () => {
+        loadJSONFile((json) => {
+            if (json && settings.setAll(json)) {
+                console.log('success');
+            }
+        });
+    });
+
+    if (doStartup) {
+        background.onStartup();
+        doStartup = false;
+    }
+});
+browser.runtime.onStartup.addListener(() => {
+    if (background)
+        background.onStartup();
+    else
+        doStartup = true;
+})

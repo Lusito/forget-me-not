@@ -1,0 +1,30 @@
+{
+  "name": "forget-me-not-web-extension-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "release": "run-s build-release scss-release pack",
+    "all": "run-s build scss",
+    "build": "webpack",
+    "build-release": "run-s build uglify",
+    "scss-release": "node-sass --source-map true --output-style compressed src/styles/ -o dist",
+    "scss": "node-sass --source-map true src/styles/ -o dist",
+    "pack": "web-ext build -i src definitions \"!(manifest).json\" \"*.js\" \"dist/*.map\"",
+    "uglify": "run-s uglify-1 uglify-2",
+    "uglify-1": "uglifyjs --compress --mangle -o dist/background.js dist/background.js",
+    "uglify-2": "uglifyjs --compress --mangle -o dist/popup.js dist/popup.js"
+  },
+  "author": "Santo Pfingsten",
+  "license": "Zlib",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.2.3",
+    "node-sass": "^4.6.0",
+    "npm-run-all": "^4.1.2",
+    "source-map-loader": "^0.2.2",
+    "source-map-support": "^0.5.0",
+    "typescript": "^2.5.3",
+    "uglify-es": "^3.1.9",
+    "webextension-polyfill": "^0.2.1"
+  }
+}

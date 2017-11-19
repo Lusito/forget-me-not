@@ -1,0 +1,75 @@
+{
+    "extensionName": { "message": "Forget Me Not", "description": "Name of the extension." },
+    "extensionDescription": { "message": "Make the browser forget website data, except for the data you want to keep.", "description": "Description of the extension." },
+    "actionTitle" : { "message": "Forget Me Not", "description": "Action button title" },
+
+	"alert_ok": { "message": "OK", "description": "" },
+	"alert_title_error": { "message": "Error", "description": "" },
+
+	"prompt_ok": { "message": "OK", "description": "" },
+	"prompt_cancel": { "message": "Cancel", "description": "" },
+
+	"reset_dialog_title": { "message": "Reset Settings", "description": "" },
+	"reset_dialog_content": { "message": "This can not be undone.", "description": "" },
+
+	"confirm_settings_and_rules": { "message": "Settings & Rules", "description": "" },
+	"confirm_settings_only": { "message": "Settings Only", "description": "" },
+	"confirm_cancel": { "message": "Cancel", "description": "" },
+
+	"logo__title": { "message": "Forget Me Not", "description": "" },
+
+	"badge_white": { "message": "W", "description": "" },
+	"badge_gray": { "message": "G", "description": "" },
+	"badge_forget": { "message": "F", "description": "" },
+
+	"tabs_this_tab": { "message": "This Tab", "description": "" },
+	"tabs_clean_all": { "message": "Clean All", "description": "" },
+	"tabs_rules": { "message": "Rules", "description": "" },
+	"tabs_settings": { "message": "Settings", "description": "" },
+	"tabs_help": { "message": "Help & about", "description": "" },
+
+	"button_clean_now": { "message": "Clean Now!", "description": "" },
+	"button_import": { "message": "Import..", "description": "" },
+	"button_export": { "message": "Export..", "description": "" },
+	"button_reset": { "message": "Reset to defaults", "description": "" },
+
+	"invalid_tab": { "message": "Invalid Tab", "description": "" },
+
+	"rules_column_rule": { "message": "Rule", "description": "" },
+	"rules_column_matching_rule": { "message": "Matching Rule", "description": "" },
+	"rules_column_type": { "message": "Type", "description": "" },
+	"rules_column_remove": { "message": "Remove", "description": "" },
+	
+	"rules_input__placeholder": { "message": "Search or add..", "description": "" },
+	"rules_hint_add": { "message": "Press enter to add as white rule, shift+enter to add as gray rule", "description": "" },
+	"rules_hint_invalid": { "message": "Invalid expression", "description": "" },
+
+	"setting_type_white": { "message": "White", "description": "" },
+	"setting_type_gray": { "message": "Gray", "description": "" },
+
+	"setting_cookies": { "message": "Cookies", "description": "" },
+	"setting_apply_rules": { "message": "Apply Rules", "description": "" },
+	"setting_local_storage": { "message": "Local Storage", "description": "" },
+	"setting_apply_rules_ff58": { "message": "Apply Rules (Firefox 58+)", "description": "" },
+	"setting_history": { "message": "History", "description": "" },
+	"setting_downloads": { "message": "Downloads", "description": "" },
+	"setting_form_data": { "message": "Form Data", "description": "" },
+	"setting_passwords": { "message": "Passwords", "description": "" },
+	"setting_indexed_db": { "message": "Indexed DB", "description": "" },
+	"setting_plugin_data": { "message": "Plugin Data", "description": "" },
+	"setting_service_workers": { "message": "Service Workers", "description": "" },
+	"setting_server_bound_certificates": { "message": "Server Bound Certificates", "description": "" },
+	"setting_local_storage_ff58": { "message": "Local Storage (Firefox 58+)", "description": "" },
+	"setting_delay_in_minutes": { "message": "Delay in minutes:", "description": "" },
+	"setting_domain_leave_enabled": { "message": "Clean when leaving all instances of a website (rules apply):", "description": "" },
+	"setting_remove_thirdparty": { "message": "Remove Thirdparty Cookies on creation:", "description": "" },
+	"setting_startup_enabled": { "message": "Clean on browser start:", "description": "" },
+
+	"title_author": { "message": "Author", "description": "" },
+	"made_by_notice": { "message": "Made by Santo Pfingsten, © 2017", "description": "" },
+	"title_issues": { "message": "Problems, questions and other feedback", "description": "" },
+	"issues_text": { "message": "Please report issues and feature requests on GitHub:", "description": "" },
+	"title_icon_credits": { "message": "Icon credits", "description": "" },
+
+	"empty_dummy": { "message": "", "description": "ignore this one" }
+}

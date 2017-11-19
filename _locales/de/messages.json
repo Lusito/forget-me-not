@@ -1,0 +1,75 @@
+{
+    "extensionName": { "message": "Vergiss Mein Nicht", "description": "Name of the extension." },
+    "extensionDescription": { "message": "Lass den Browser Website-Daten vergessen, abseits von denen die du behalten möchtest.", "description": "Description of the extension." },
+    "actionTitle" : { "message": "Vergiss Mein Nicht", "description": "Action button title" },
+
+	"alert_ok": { "message": "OK", "description": "" },
+	"alert_title_error": { "message": "Fehler", "description": "" },
+
+	"prompt_ok": { "message": "OK", "description": "" },
+	"prompt_cancel": { "message": "Abbrechen", "description": "" },
+
+	"reset_dialog_title": { "message": "Einstellungen zurücksetzen", "description": "" },
+	"reset_dialog_content": { "message": "Dies kann nicht rückgängig gemacht werden.", "description": "" },
+
+	"confirm_settings_and_rules": { "message": "Einstellungen & Regeln", "description": "" },
+	"confirm_settings_only": { "message": "Nur Einstellungen", "description": "" },
+	"confirm_cancel": { "message": "Abbrechen", "description": "" },
+
+	"logo__title": { "message": "Vergiss Mein Nicht", "description": "" },
+
+	"badge_white": { "message": "W", "description": "" },
+	"badge_gray": { "message": "G", "description": "" },
+	"badge_forget": { "message": "V", "description": "" },
+
+	"tabs_this_tab": { "message": "Dieser Tab", "description": "" },
+	"tabs_clean_all": { "message": "Alles Löschen", "description": "" },
+	"tabs_rules": { "message": "Regeln", "description": "" },
+	"tabs_settings": { "message": "Einstellungen", "description": "" },
+	"tabs_help": { "message": "Hilfe & über", "description": "" },
+
+	"button_clean_now": { "message": "Jetzt Löschen!", "description": "" },
+	"button_import": { "message": "Importieren..", "description": "" },
+	"button_export": { "message": "Exportieren..", "description": "" },
+	"button_reset": { "message": "Zurücksetzen", "description": "" },
+
+	"invalid_tab": { "message": "Invalid Tab", "description": "" },
+
+	"rules_column_rule": { "message": "Regel", "description": "" },
+	"rules_column_matching_rule": { "message": "Greifende Regel", "description": "" },
+	"rules_column_type": { "message": "Typ", "description": "" },
+	"rules_column_remove": { "message": "Löschen", "description": "" },
+	
+	"rules_input__placeholder": { "message": "Suchen oder hinzufügen..", "description": "" },
+	"rules_hint_add": { "message": "Eingabe = Weiße Regel hinzuzufügen, Shift+Eingabe = Graue Regel hinzufügen", "description": "" },
+	"rules_hint_invalid": { "message": "Ungültiger Ausdruck", "description": "" },
+
+	"setting_type_white": { "message": "Weiß", "description": "" },
+	"setting_type_gray": { "message": "Grau", "description": "" },
+
+	"setting_cookies": { "message": "Cookies", "description": "" },
+	"setting_apply_rules": { "message": "Regeln anwenden", "description": "" },
+	"setting_local_storage": { "message": "Lokaler Speicher", "description": "" },
+	"setting_apply_rules_ff58": { "message": "Regeln anwenden (Firefox 58+)", "description": "" },
+	"setting_history": { "message": "History", "description": "" },
+	"setting_downloads": { "message": "Downloads", "description": "" },
+	"setting_form_data": { "message": "Form Daten", "description": "" },
+	"setting_passwords": { "message": "Passwörter", "description": "" },
+	"setting_indexed_db": { "message": "Indexed DB", "description": "" },
+	"setting_plugin_data": { "message": "Plugin Daten", "description": "" },
+	"setting_service_workers": { "message": "Service Workers", "description": "" },
+	"setting_server_bound_certificates": { "message": "Servergebundene Zertifikate", "description": "" },
+	"setting_local_storage_ff58": { "message": "Lokaler Speicher (Firefox 58+)", "description": "" },
+	"setting_delay_in_minutes": { "message": "Verzögerung in Minuten:", "description": "" },
+	"setting_domain_leave_enabled": { "message": "Löschen, wenn alle Instanzen einer Webseite verlassen wurden (Regeln beachtend):", "description": "" },
+	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellund löschen:", "description": "" },
+	"setting_startup_enabled": { "message": "Beim Browserstart löschen:", "description": "" },
+
+	"title_author": { "message": "Autor", "description": "" },
+	"made_by_notice": { "message": "Erstellt von Santo Pfingsten, © 2017", "description": "" },
+	"title_issues": { "message": "Probleme, Fragen und andere Anregungen", "description": "" },
+	"issues_text": { "message": "Bitte Probleme und Featurewünsche auf GitHub posten:", "description": "" },
+	"title_icon_credits": { "message": "Symbolbild Credits", "description": "" },
+
+	"empty_dummy": { "message": "", "description": "ignore this one" }
+}

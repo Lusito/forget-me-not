@@ -1,0 +1,146 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
+button,
+input[type='button'],
+input[type='submit'],
+select {
+    background-color: #EDEDED;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    color: #444;
+    font: inherit;
+    margin: 0 3px 0 0px;
+    outline: none;
+    text-shadow: 0 1px 0 rgb(240, 240, 240);
+}
+
+button:hover,
+input[type='button']:hover,
+input[type='submit']:hover,
+select:hover {
+    background-color: #F4F4F4;
+    color: black;
+    border-color: rgba(0, 0, 0, 0.298039);
+}
+
+button,
+input[type='button'],
+input[type='submit'],
+select {
+    padding: 2px 8px;
+    height: 26px;
+}
+
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="text"],
+input[type="url"],
+input:not([type]),
+textarea {
+    box-sizing: border-box;
+    color: rgb(68, 68, 68);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(191, 191, 191);
+    border-image: initial;
+    font: inherit;
+    margin: 0px;
+    padding: 3px 3px 4px;
+    outline: none;
+}
+
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="text"],
+input[type="url"],
+input:not([type]) {
+    height: 26px;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+    position: relative;
+    vertical-align: middle;
+    height: 15px;
+    width: 15px;
+    margin-top: 2px;
+}
+
+input[type='radio'] {
+    border-radius: 100%;
+}
+
+input[type='radio']:checked::before {
+    background-color: #666;
+    border-radius: 100%;
+    content: '';
+    display: block;
+    position: absolute;
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    transition: border-color 200ms;
+    border-color: rgb(77, 144, 254);
+    outline: none;
+}
+
+button,
+input[type='button'],
+input[type='submit'] {
+    position: relative;
+}
+
+button:after,
+input[type='button']:after,
+input[type='submit']:after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(45deg, #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(1, 1);
+    opacity: 0;
+    transition: transform .25s, opacity 1s;
+    pointer-events: none;
+}
+
+button:active:after,
+input[type='button']:active:after,
+input[type='submit']:active:after {
+    transition: 0s;
+    transform: scale(0, 0);
+    opacity: .3;
+}
+
+button {
+    cursor: pointer;
+}
+
+select {
+    padding: 2px 24px 2px 8px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #EDEDED;
+    background-image: url(../icons/downarrow.svg);
+    background-position: calc(100% - -1px) -1px, left top;
+    background-size: 27px 27px, 100% 100%;
+    background-repeat: no-repeat;
+}
+
+select:hover {
+    background-color: #F4F4F4;
+    background-image: url(../icons/downarrow.svg);
+}

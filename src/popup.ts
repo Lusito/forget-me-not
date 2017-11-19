@@ -31,6 +31,7 @@ function sortByRule(a: RuleDefinition, b: RuleDefinition) {
 }
 
 class Popup {
+    private hostname?: string;
     private rulesHint: HTMLElement;
     private rulesInput: HTMLInputElement;
     private rulesListDetails: RulesListDetail[];
@@ -56,7 +57,7 @@ class Popup {
             ], true);
         }
 
-        this.updateCurrentTab(true);
+        this.initCurrentTab();
 
         this.rulesInput = byId('rules_input') as HTMLInputElement;
         on(this.rulesInput, 'keyup', this.onRulesInputKeyUp.bind(this));
@@ -73,23 +74,22 @@ class Popup {
                 updateFromSettings();
             if (changedKeys.indexOf('rules') !== -1) {
                 this.rebuildRulesList();
-                this.updateCurrentTab();
+                this.rebuildMatchingRules();
             }
         });
     }
 
-    private setInvalidTab(selectFallbackTab?: boolean) {
+    private setInvalidTab() {
         let label = byId('current_tab');
         if (label)
             label.textContent = browser.i18n.getMessage('invalid_tab');
         let cleanCurrentTab = byId('clean_current_tab');
         if (cleanCurrentTab)
             cleanCurrentTab.style.display = 'none';
-        if (selectFallbackTab)
-            this.selectTab(1);
+        this.selectTab(1);
     }
 
-    private updateCurrentTab(selectFallbackTab?: boolean) {
+    private initCurrentTab() {
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
             let cleanAllNow = byId('clean_all_now');
             if (cleanAllNow)
@@ -101,30 +101,36 @@ class Popup {
                 let label = byId('current_tab');
                 let cleanCurrentTab = byId('clean_current_tab');
                 if (!allowedProtocols.test(url.protocol)) {
-                    this.setInvalidTab(selectFallbackTab);
-                    return;
-                }
-                let hostname = url.hostname;
-                if (label)
-                    label.textContent = hostname;
-                if (cleanCurrentTab) {
-                    on(cleanCurrentTab, 'click', () => {
-                        browser.tabs.query({ active: true }).then((tabs) => {
-                            let tab = tabs.length && tabs[0];
-                            if (tab && tab.url)
-                                messageUtil.send('cleanUrlNow', hostname);
+                    this.setInvalidTab();
+                } else {
+                    this.hostname = url.hostname;
+                    if (label)
+                        label.textContent = this.hostname;
+                    if (cleanCurrentTab) {
+                        on(cleanCurrentTab, 'click', () => {
+                            browser.tabs.query({ active: true }).then((tabs) => {
+                                let tab = tabs.length && tabs[0];
+                                if (tab && tab.url)
+                                    messageUtil.send('cleanUrlNow', this.hostname);
+                            });
                         });
-                    });
+                    }
+                    this.rebuildMatchingRules();
                 }
-                let matchingRules = settings.getMatchingRules(hostname);
-                let list = byId('rules_list_current_tab') as HTMLElement;
-                removeAllChildren(list);
-                for (const rule of matchingRules)
-                    this.createRuleListItem(rule, list);
             } else {
-                this.setInvalidTab(selectFallbackTab);
+                this.setInvalidTab();
             }
         });
+    }
+
+    private rebuildMatchingRules() {
+        if (this.hostname) {
+            let matchingRules = settings.getMatchingRules(this.hostname);
+            let list = byId('rules_list_current_tab') as HTMLElement;
+            removeAllChildren(list);
+            for (const rule of matchingRules)
+                this.createRuleListItem(rule, list);
+        }
     }
 
     private onImport() {

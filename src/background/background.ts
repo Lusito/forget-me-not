@@ -258,7 +258,7 @@ class Background {
     }
 
     private onDomainsAdded(addedDomains: string[]) {
-        if(removeLocalStorageByHostname) {
+        if (removeLocalStorageByHostname) {
             let domainsToClean = { ...settings.get('domainsToClean') };
             for (const domain of addedDomains)
                 domainsToClean[domain] = true;

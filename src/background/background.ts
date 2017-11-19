@@ -228,7 +228,7 @@ class Background {
             let oldDomains = this.currentDomains;
             this.currentDomains = [];
             for (let tab of tabs) {
-                if (tab.url) {
+                if (tab.url && !tab.incognito) {
                     let url = new URL(tab.url);
                     if (allowedProtocols.test(url.protocol) && this.currentDomains.indexOf(url.hostname) === -1)
                         this.currentDomains.push(url.hostname);
@@ -289,7 +289,7 @@ class Background {
     public updateBadge() {
         browser.tabs.query({ active: true }).then((tabs) => {
             for (let tab of tabs) {
-                if (tab && tab.url) {
+                if (tab && tab.url && !tab.incognito) {
                     let badge = badges.none;
                     let url = new URL(tab.url);
                     if (allowedProtocols.test(url.protocol))
@@ -297,6 +297,9 @@ class Background {
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
                     browser.browserAction.setBadgeText({ text: text, tabId: tab.id });
                     browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
+                    browser.browserAction.enable(tab.id);
+                } else {
+                    browser.browserAction.disable(tab.id);
                 }
             }
         });

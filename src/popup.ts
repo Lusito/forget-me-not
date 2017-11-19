@@ -96,7 +96,7 @@ class Popup {
                 on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
 
             let tab = tabs.length && tabs[0];
-            if (tab && tab.url) {
+            if (tab && tab.url && !tab.incognito) {
                 let url = new URL(tab.url);
                 let label = byId('current_tab');
                 let cleanCurrentTab = byId('clean_current_tab');
@@ -108,11 +108,7 @@ class Popup {
                         label.textContent = this.hostname;
                     if (cleanCurrentTab) {
                         on(cleanCurrentTab, 'click', () => {
-                            browser.tabs.query({ active: true }).then((tabs) => {
-                                let tab = tabs.length && tabs[0];
-                                if (tab && tab.url)
-                                    messageUtil.send('cleanUrlNow', this.hostname);
-                            });
+                            messageUtil.send('cleanUrlNow', this.hostname);
                         });
                     }
                     this.rebuildMatchingRules();

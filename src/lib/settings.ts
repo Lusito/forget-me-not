@@ -43,15 +43,15 @@ const defaultSettings: SettingsMap = {
     "cleanAll.serviceWorkers": true,
     "cleanAll.serverBoundCertificates": false,
 
-    "cleanThirdPartyCookies.enabled": true,
-    "cleanThirdPartyCookies.delay": 0,
+    "cleanThirdPartyCookies.enabled": false,
+    "cleanThirdPartyCookies.delay": 1,
 
-    "domainLeave.enabled": true,
+    "domainLeave.enabled": false,
     "domainLeave.delay": 2,
     "domainLeave.cookies": true,
     "domainLeave.localStorage": localStorageDefault,
 
-    "startup.enabled": true,
+    "startup.enabled": false,
     "startup.cookies": true,
     "startup.cookies.applyRules": true,
     "startup.localStorage": localStorageDefault,

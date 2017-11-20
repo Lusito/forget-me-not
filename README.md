@@ -1,6 +1,6 @@
 # Forget Me Not Web-Extension
 
-[Install on Firefox](https://addons.mozilla.org/de/firefox/addon/forget-me-not/)
+[Install on Firefox](https://addons.mozilla.org/de/firefox/addon/forget_me_not/)
 
 ## About the add-on
 
@@ -33,7 +33,7 @@ This web-extension deletes data websites store in the browser in the following s
 ## Help
 If you have problems, questions or other feedback, please [create an issue](https://github.com/Lusito/forget-me-not/issues) here on Github.
 
-If you like it, please [write a review](https://addons.mozilla.org/de/firefox/addon/forget-me-not/).
+If you like it, please [write a review](https://addons.mozilla.org/de/firefox/addon/forget_me_not/).
 
 ## License
 The code of this add-on has been released under the [zlib/libpng License](https://github.com/Lusito/forget-me-not/blob/master/LICENSE)

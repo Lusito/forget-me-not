@@ -18,7 +18,7 @@ const settingsInfoMap: { [s: string]: SettingsInfo } = {};
 function setSettingDisabled(key: string, disabled: boolean) {
     let el = settingsInfoMap[key];
     if (el) {
-        if(!el.permanentlyDisabled)
+        if (!el.permanentlyDisabled)
             el.element.disabled = disabled;
     } else {
         console.error('Element not found: ', key);
@@ -38,7 +38,7 @@ function connectInputSetting(element: HTMLInputElement) {
         };
         if (element.type === "checkbox") {
             on(element, 'click', () => {
-                if(info.enablesSetting)
+                if (info.enablesSetting)
                     setSettingDisabled(info.enablesSetting, !element.checked);
                 settings.set(key as any, element.checked);
                 settings.save();
@@ -58,13 +58,13 @@ export function updateFromSettings() {
     for (let key in settingsInfoMap) {
         let info = settingsInfoMap[key];
         if (info) {
-            if(!info.permanentlyUnchecked) {
+            if (!info.permanentlyUnchecked) {
                 if (info.element.type === 'checkbox')
                     info.element.checked = settings.get(key as any);
                 else
                     info.element.value = settings.get(key as any);
             }
-            if(info.enablesSetting)
+            if (info.enablesSetting)
                 setSettingDisabled(info.enablesSetting, !info.element.checked);
         }
     }

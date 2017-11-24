@@ -7,7 +7,7 @@ import { RuleDefinition } from "./settings";
 
 export interface SettingsTypeMap {
     "rules": RuleDefinition[],
-    "domainsToClean": {[s:string]:boolean},
+    "domainsToClean": { [s: string]: boolean },
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;
     "cleanAll.localStorage": boolean;
@@ -20,7 +20,7 @@ export interface SettingsTypeMap {
     "cleanAll.pluginData": boolean;
     "cleanAll.serviceWorkers": boolean;
     "cleanAll.serverBoundCertificates": boolean;
-    
+
     "cleanThirdPartyCookies.enabled": boolean,
     "cleanThirdPartyCookies.delay": number,
 

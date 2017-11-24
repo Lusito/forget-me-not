@@ -30,4 +30,4 @@ export default class DelayedExecution {
             this.instance = null;
         }
     }
-} 
+}

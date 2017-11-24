@@ -87,14 +87,14 @@ class Popup {
                 createElement(document, li, 'span', { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
                 createElement(document, li, 'span', { textContent: info.domain, title: info.domain });
                 let addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
-                on(addRule, 'click', ()=> this.prepareAddRule(info.domain));
+                on(addRule, 'click', () => this.prepareAddRule(info.domain));
             }
         });
 
         messageUtil.send('getMostRecentCookieDomains');
     }
 
-    private prepareAddRule(domain:string) {
+    private prepareAddRule(domain: string) {
         this.rulesInput.value = "*." + domain;
         this.selectTab(2);
         let value = this.rulesInput.value.trim().toLowerCase();
@@ -138,8 +138,8 @@ class Popup {
                         });
                     }
                     let addRule = byId('current_tab_add_rule');
-                    if(addRule)
-                        on(addRule, 'click', ()=> this.prepareAddRule(url.hostname));
+                    if (addRule)
+                        on(addRule, 'click', () => this.prepareAddRule(url.hostname));
                     this.rebuildMatchingRules();
                 }
             } else {

@@ -182,10 +182,10 @@ class Background {
     }
 
     public getMostRecentCookieDomains(): CookieDomainInfo[] {
-        let result:CookieDomainInfo[] = [];
+        let result: CookieDomainInfo[] = [];
         for (const domain of this.mostRecentCookieDomains) {
             let badgeKey = this.getBadgeForDomain(domain).i18nKey;
-            if(badgeKey) {
+            if (badgeKey) {
                 result.push({
                     domain: domain,
                     badge: badgeKey
@@ -196,7 +196,7 @@ class Background {
     }
 
     private addToMostRecentCookieDomains(domain: string) {
-        if(domain.startsWith('.'))
+        if (domain.startsWith('.'))
             domain = domain.substr(1);
         let index = this.mostRecentCookieDomains.indexOf(domain);
         if (index !== 0) {
@@ -380,4 +380,4 @@ browser.runtime.onStartup.addListener(() => {
         background.onStartup();
     else
         doStartup = true;
-})
+});

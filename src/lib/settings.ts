@@ -181,7 +181,7 @@ class Settings {
             }
         }
 
-        let keysToRemove = Object.getOwnPropertyNames(settings.getAll()).filter((key)=> !json.hasOwnProperty(key));
+        let keysToRemove = Object.getOwnPropertyNames(settings.getAll()).filter((key) => !json.hasOwnProperty(key));
         this.storage.remove(keysToRemove);
 
         this.map = json;

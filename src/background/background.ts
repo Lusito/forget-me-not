@@ -10,6 +10,7 @@ import { settings, RuleType } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
+import { CookieDomainInfo } from './backgroundShared';
 
 const allowedProtocols = /https?:/;
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
@@ -180,8 +181,18 @@ class Background {
         return false;
     }
 
-    public getMostRecentCookieDomains() {
-        return this.mostRecentCookieDomains;
+    public getMostRecentCookieDomains(): CookieDomainInfo[] {
+        let result:CookieDomainInfo[] = [];
+        for (const domain of this.mostRecentCookieDomains) {
+            let badgeKey = this.getBadgeForDomain(domain).i18nKey;
+            if(badgeKey) {
+                result.push({
+                    domain: domain,
+                    badge: badgeKey
+                });
+            }
+        }
+        return result;
     }
 
     private addToMostRecentCookieDomains(domain: string) {
@@ -356,7 +367,7 @@ settings.onReady(() => {
     });
 
     messageUtil.receive('getMostRecentCookieDomains', (params: any, sender: any) => {
-        return background.getMostRecentCookieDomains();
+        messageUtil.send('onMostRecentCookieDomains', background.getMostRecentCookieDomains());
     });
 
     if (doStartup) {

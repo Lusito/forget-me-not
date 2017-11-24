@@ -35,6 +35,7 @@
 	"button_import": { "message": "Importieren..", "description": "" },
 	"button_export": { "message": "Exportieren..", "description": "" },
 	"button_reset": { "message": "Zurücksetzen", "description": "" },
+	"button_log_add_rule": { "message": "+ Neue Regel", "description": "" },
 
 	"invalid_tab": { "message": "Invalid Tab", "description": "" },
 

@@ -12,6 +12,7 @@ import { connectSettings, permanentDisableSettings, updateFromSettings } from '.
 import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
+import { CookieDomainInfo } from './background/backgroundShared';
 
 const allowedProtocols = /https?:/;
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
@@ -79,11 +80,29 @@ class Popup {
         });
 
         let recentCookieDomainsList = byId('most_recent_cookie_domains') as HTMLElement;
-        messageUtil.send('getMostRecentCookieDomains', null, (domains: string[]) => {
+        messageUtil.receive('onMostRecentCookieDomains', (domains: CookieDomainInfo[]) => {
             removeAllChildren(recentCookieDomainsList);
-            for (const domain of domains)
-                createElement(document, recentCookieDomainsList, 'li', {textContent: domain});
+            for (const info of domains) {
+                let li = createElement(document, recentCookieDomainsList, 'li');
+                createElement(document, li, 'span', { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
+                createElement(document, li, 'span', { textContent: info.domain, title: info.domain });
+                let addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
+                on(addRule, 'click', ()=> this.prepareAddRule(info.domain));
+            }
         });
+
+        messageUtil.send('getMostRecentCookieDomains');
+    }
+
+    private prepareAddRule(domain:string) {
+        this.rulesInput.value = "*." + domain;
+        this.selectTab(2);
+        let value = this.rulesInput.value.trim().toLowerCase();
+        let validExpression = isValidExpression(value);
+        this.rulesHint.textContent = value.length === 0 ? ''
+            : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
+        this.updateFilter();
+        this.rulesInput.focus();
     }
 
     private setInvalidTab() {
@@ -118,6 +137,9 @@ class Popup {
                             messageUtil.send('cleanUrlNow', this.hostname);
                         });
                     }
+                    let addRule = byId('current_tab_add_rule');
+                    if(addRule)
+                        on(addRule, 'click', ()=> this.prepareAddRule(url.hostname));
                     this.rebuildMatchingRules();
                 }
             } else {

@@ -5,6 +5,11 @@
  */
 
 @import "shared";
+
+$badgeColorWhite: rgb(38, 69, 151);
+$badgeColorGray: rgb(116, 116, 116);
+$badgeColorForget: rgb(190, 23, 38);
+
 html,
 body {
     margin: 0;
@@ -496,7 +501,7 @@ input[type=checkbox]:checked+span:before {
 }
 
 input:checked+.ruleSlider {
-    background-color: #264597;
+    background-color: $badgeColorWhite;
 }
 
 input:focus+.ruleSlider {
@@ -528,4 +533,57 @@ input:checked+.ruleSlider .whitelist {
 
 input:checked+.ruleSlider .graylist {
     display: none;
+}
+
+.log_add_rule {
+    padding: 1px 7px;
+    display: inline-block;
+    color: white;
+    margin: 0 0 0 5px;
+    font-size: 10px;
+    text-align: center;
+    background: #264597;
+    cursor: pointer;
+}
+
+#most_recent_cookie_domains {
+    padding-left: 10px;
+    list-style-type: none;
+    > li {
+        display: flex;
+        flex-direction: row;
+        margin: 5px 0px;
+        max-width: 100%;
+        line-height: 14px;
+        >:nth-child(2) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        >:first-child,
+        >:last-child {
+            flex-shrink: 0;
+        }
+    }
+}
+
+.badge_white {
+    background-color: $badgeColorWhite;
+}
+.badge_gray {
+    background-color: $badgeColorGray;
+}
+.badge_forget{
+    background-color: $badgeColorForget;
+}
+.badge_white,
+.badge_gray,
+.badge_forget {
+    display: inline-block;
+    color: white;
+    margin: 0 5px 0 0;
+    font-size: 10px;
+    text-align: center;
+    width: 16px;
+    line-height: 16px;
 }

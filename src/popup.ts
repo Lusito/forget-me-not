@@ -13,15 +13,10 @@ import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
 import { CookieDomainInfo } from './background/backgroundShared';
+import { RuleListItem } from './ruleListItem';
 
 const allowedProtocols = /https?:/;
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
-// hello.com
-interface RulesListDetail {
-    itemNode: HTMLElement;
-    inputNode: HTMLInputElement;
-    ruleDef: RuleDefinition;
-}
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     if (a.rule < b.rule)
@@ -35,7 +30,8 @@ class Popup {
     private hostname?: string;
     private rulesHint: HTMLElement;
     private rulesInput: HTMLInputElement;
-    private rulesListDetails: RulesListDetail[];
+    private rulesListItems: RuleListItem[] = [];
+    private matchingRulesListItems: RuleListItem[] = [];
     private rulesList: HTMLElement;
     private pages: NodeListOf<Element>;
     private tabs: NodeListOf<Element>;
@@ -68,6 +64,8 @@ class Popup {
         on(byId('settings_import') as HTMLElement, 'click', this.onImport.bind(this));
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
+        on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
+        on(byId('rules_help') as HTMLElement, 'click', this.showRulesHelp.bind(this));
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -75,7 +73,7 @@ class Popup {
                 updateFromSettings();
             if (changedKeys.indexOf('rules') !== -1) {
                 this.rebuildRulesList();
-                this.rebuildMatchingRules();
+                this.rebuildMatchingRulesList();
             }
         });
 
@@ -99,8 +97,7 @@ class Popup {
         this.selectTab(2);
         let value = this.rulesInput.value.trim().toLowerCase();
         let validExpression = isValidExpression(value);
-        this.rulesHint.textContent = value.length === 0 ? ''
-            : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
+        this.updateRulesHint(validExpression, value.length === 0);
         this.updateFilter();
         this.rulesInput.focus();
     }
@@ -140,22 +137,12 @@ class Popup {
                     let addRule = byId('current_tab_add_rule');
                     if (addRule)
                         on(addRule, 'click', () => this.prepareAddRule(url.hostname));
-                    this.rebuildMatchingRules();
+                    this.rebuildMatchingRulesList();
                 }
             } else {
                 this.setInvalidTab();
             }
         });
-    }
-
-    private rebuildMatchingRules() {
-        if (this.hostname) {
-            let matchingRules = settings.getMatchingRules(this.hostname);
-            let list = byId('rules_list_current_tab') as HTMLElement;
-            removeAllChildren(list);
-            for (const rule of matchingRules)
-                this.createRuleListItem(rule, list);
-        }
     }
 
     private onImport() {
@@ -199,42 +186,61 @@ class Popup {
         translateChildren(dialog.domNode);
     }
 
+    private showRulesHelp() {
+        dialogs.alert('', 'rules_help_dialog_content');
+    }
+
+    private updateRulesHint(validExpression: boolean, empty: boolean) {
+        this.rulesHint.textContent = empty ? '' : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
+        this.rulesHint.className = validExpression ? '' : 'error';
+    }
+
+    private addRule(type: RuleType) {
+        let value = this.rulesInput.value.trim().toLowerCase();
+        if (isValidExpression(value)) {
+            let rules = settings.get('rules').slice();
+            let entry = rules.find((r) => r.rule === value);
+            if (entry)
+                entry.type = type;
+            else {
+                rules.push({
+                    type: type,
+                    rule: value
+                });
+            }
+            settings.set('rules', rules);
+            settings.save();
+        }
+    }
+
     private onRulesInputKeyUp(e: KeyboardEvent) {
         let value = this.rulesInput.value.trim().toLowerCase();
         let validExpression = isValidExpression(value);
-        this.rulesHint.textContent = value.length === 0 ? ''
-            : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
-        if (e.keyCode === 13) {
-            if (validExpression) {
-                let rules = settings.get('rules').slice();
-                let entry = rules.find((r) => r.rule === value);
-                const type: RuleType = e.shiftKey ? RuleType.GRAY : RuleType.WHITE;
-                if (entry)
-                    entry.type = type;
-                else {
-                    rules.push({
-                        type: type,
-                        rule: value
-                    });
-                }
-                settings.set('rules', rules);
-                settings.save();
-            }
-        }
+        this.updateRulesHint(validExpression, value.length === 0);
+        if (e.keyCode === 13)
+            this.addRule(e.shiftKey ? RuleType.GRAY : RuleType.WHITE);
         this.updateFilter();
     }
 
     private updateFilter() {
         let value = this.rulesInput.value.trim().toLowerCase();
         if (value.length === 0) {
-            for (const detail of this.rulesListDetails)
+            for (const detail of this.rulesListItems)
                 detail.itemNode.style.display = '';
         }
         else {
-            for (const detail of this.rulesListDetails) {
+            for (const detail of this.rulesListItems) {
                 let visible = detail.ruleDef.rule.indexOf(value) !== -1;
                 detail.itemNode.style.display = visible ? '' : 'none';
             }
+        }
+    }
+
+    private rebuildMatchingRulesList() {
+        if (this.hostname) {
+            let matchingRules = settings.getMatchingRules(this.hostname);
+            let list = byId('rules_list_current_tab') as HTMLElement;
+            this.matchingRulesListItems = this.rebuildRulesListEx(this.matchingRulesListItems, matchingRules, list);
         }
     }
 
@@ -243,47 +249,35 @@ class Popup {
         for (const rule of rules)
             rule.rule = rule.rule.toLowerCase();
         rules.sort(sortByRule);
-        removeAllChildren(this.rulesList);
-        this.rulesListDetails = [];
-
-        for (const rule of rules)
-            this.rulesListDetails.push(this.createRuleListItem(rule, this.rulesList));
-        this.updateFilter();
+        let newItems = this.rebuildRulesListEx(this.rulesListItems, rules, this.rulesList);
+        if (newItems !== this.rulesListItems) {
+            this.rulesListItems = newItems;
+            this.updateFilter();
+        }
     }
 
-    private createRuleListItem(rule: RuleDefinition, parent: HTMLElement) {
-        let li = createElement(document, parent, 'li');
-        createElement(document, li, 'div', { textContent: rule.rule, title: rule.rule });
-        let label = createElement(document, li, 'label', { className: 'ruleSwitch type_column' });
-        let input = createElement(document, label, 'input', { type: 'checkbox', checked: rule.type === RuleType.WHITE }) as HTMLInputElement;
-        let div = createElement(document, label, 'div', { className: 'ruleSlider' });
-        createElement(document, div, 'span', { className: 'whitelist', textContent: browser.i18n.getMessage('setting_type_white') });
-        createElement(document, div, 'span', { className: 'graylist', textContent: browser.i18n.getMessage('setting_type_gray') });
-        let button = createElement(document, li, 'button', { textContent: 'X', className: 'delete_column' });
-        const entry = {
-            itemNode: li,
-            inputNode: input as HTMLInputElement,
-            ruleDef: rule
-        };
-        on(input, 'click', () => {
-            let rules = settings.get('rules').slice();
-            let rule = rules.find((r) => r.rule === entry.ruleDef.rule);
-            if (rule) {
-                rule.type = input.checked ? RuleType.WHITE : RuleType.GRAY;
-                settings.set('rules', rules);
-                settings.save();
+    private rebuildRulesListEx(previousItems: RuleListItem[], rules: RuleDefinition[], parent: HTMLElement) {
+        if (rules.length === previousItems.length) {
+            let changed = false;
+            for (let i = 0; i < rules.length; i++) {
+                let item = previousItems[i];
+                let rule = rules[i];
+                if (item.isRule(rule))
+                    item.updateRule(rule);
+                else {
+                    changed = true;
+                    break;
+                }
             }
-        });
-        on(button, 'click', () => {
-            let rules = settings.get('rules').slice();
-            let index = rules.findIndex((r) => r.rule === entry.ruleDef.rule);
-            if (index !== -1) {
-                rules.splice(index, 1);
-                settings.set('rules', rules);
-                settings.save();
-            }
-        });
-        return entry;
+            if (!changed)
+                return previousItems;
+        }
+
+        let newItems: RuleListItem[] = [];
+        removeAllChildren(parent);
+        for (let rule of rules)
+            newItems.push(new RuleListItem(rule, parent));
+        return newItems;
     }
 
     private selectTab(index: number) {

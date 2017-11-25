@@ -47,6 +47,8 @@
 	"rules_input__placeholder": { "message": "Suchen oder hinzufügen..", "description": "" },
 	"rules_hint_add": { "message": "Eingabe = Weiße Regel hinzuzufügen, Shift+Eingabe = Graue Regel hinzufügen", "description": "" },
 	"rules_hint_invalid": { "message": "Ungültiger Ausdruck", "description": "" },
+	"rules_add": { "message": "Hinzufügen", "description": "" },
+	"rules_help_dialog_content": { "message": "Jeder hostname (z.B. www.google.de) ist eine gültige Regel. Ein Stern (*) kann als Platzhalter für ein Segment eingesetzt werden (z.B. *.google.de oder www.*.de).", "description": "" },
 
 	"setting_type_white": { "message": "Weiß", "description": "" },
 	"setting_type_gray": { "message": "Grau", "description": "" },
@@ -67,7 +69,7 @@
 	"setting_delay_in_minutes": { "message": "Verzögerung in Minuten:", "description": "" },
 	"setting_domain_leave_enabled": { "message": "Löschen, wenn alle Instanzen einer Domäne verlassen wurden:", "description": "" },
 	"setting_domain_leave_enabled__title": { "message": "Regeln werden angewandt", "description": "" },
-	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellund löschen:", "description": "" },
+	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellung löschen:", "description": "" },
 	"setting_startup_enabled": { "message": "Beim Browserstart löschen:", "description": "" },
 
 	"title_author": { "message": "Autor", "description": "" },

@@ -403,6 +403,21 @@ input[type=checkbox]:checked+span:before {
 }
 #rules_hint {
     color: #0d8000;
+    height: 18px;
+}
+#rules_hint.error {
+    color: #800000;
+}
+#rules_input_wrapper {
+    display: flex;
+    flex-direction: row;
+    > input {
+        flex-grow: 1;
+    }
+    > button {
+        flex-shrink: 0;
+        margin: 0 0 0 4px;
+    }
 }
 .rules_head {
     margin-top: 5px;

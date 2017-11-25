@@ -67,7 +67,7 @@
 	"setting_delay_in_minutes": { "message": "Verzögerung in Minuten:", "description": "" },
 	"setting_domain_leave_enabled": { "message": "Löschen, wenn alle Instanzen einer Domäne verlassen wurden:", "description": "" },
 	"setting_domain_leave_enabled__title": { "message": "Regeln werden angewandt", "description": "" },
-	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellund löschen:", "description": "" },
+	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellung löschen:", "description": "" },
 	"setting_startup_enabled": { "message": "Beim Browserstart löschen:", "description": "" },
 
 	"title_author": { "message": "Autor", "description": "" },

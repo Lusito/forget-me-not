@@ -67,7 +67,6 @@ declare module 'webextension-polyfill' {
             previous?: boolean;
         }
 
-        /** Since Chrome 34. */
         export interface DoubleDelta {
             current?: number;
             previous?: number;

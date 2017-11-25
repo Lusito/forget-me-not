@@ -1,7 +1,6 @@
 /// <reference path="events.d.ts"/>
 /// <reference path="tabs.d.ts"/>
 
-// todo: check mdn compatibility
 declare module 'webextension-polyfill' {
     ////////////////////
     // Browser Action
@@ -39,12 +38,12 @@ declare module 'webextension-polyfill' {
         }
 
         export interface TabIconDetails {
+            /** Optional. Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals scale, then image with size scale * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'  */
+            imageData?: ImageData | {[s:string]:ImageData};
             /** Optional. Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals scale, then image with size scale * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'  */
-            path?: any;
+            path?: string | {[s:string]:string};
             /** Optional. Limits the change to when a particular tab is selected. Automatically resets when the tab is closed.  */
             tabId?: number;
-            /** Optional. Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals scale, then image with size scale * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'  */
-            imageData?: ImageData;
         }
 
         export interface PopupDetails {
@@ -57,45 +56,39 @@ declare module 'webextension-polyfill' {
         export interface BrowserClickedEvent extends events.Event<(tab: tabs.Tab) => void> { }
 
         /**
-         * Since Chrome 22.
-         * Enables the browser action for a tab. By default, browser actions are enabled.
-         * @param tabId The id of the tab for which you want to modify the browser action.
-         */
-        export function enable(tabId?: number): void;
-        /** Sets the background color for the badge. */
-        export function setBadgeBackgroundColor(details: BadgeBackgroundColorDetails): void;
-        /** Sets the badge text for the browser action. The badge is displayed on top of the icon. */
-        export function setBadgeText(details: BadgeTextDetails): void;
-        /** Sets the title of the browser action. This shows up in the tooltip. */
-        export function setTitle(details: TitleDetails): void;
-        /**
-         * Since Chrome 19.
-         * Gets the badge text of the browser action. If no tab is specified, the non-tab-specific badge text is returned.
-         */
-        export function getBadgeText(details: TabDetails): Promise<string>;
-        /** Sets the html document to be opened as a popup when the user clicks on the browser action's icon. */
-        export function setPopup(details: PopupDetails): void;
-        /**
-         * Since Chrome 22.
          * Disables the browser action for a tab.
          * @param tabId The id of the tab for which you want to modify the browser action.
          */
         export function disable(tabId?: number): void;
         /**
-         * Since Chrome 19.
-         * Gets the title of the browser action.
+         * Enables the browser action for a tab. By default, browser actions are enabled.
+         * @param tabId The id of the tab for which you want to modify the browser action.
          */
-        export function getTitle(details: TabDetails): Promise<string>;
+        export function enable(tabId?: number): void;
         /**
-         * Since Chrome 19.
          * Gets the background color of the browser action.
          */
         export function getBadgeBackgroundColor(details: TabDetails): Promise<ColorArray>;
+        /** Sets the background color for the badge. */
+        export function setBadgeBackgroundColor(details: BadgeBackgroundColorDetails): void;
         /**
-         * Since Chrome 19.
+         * Gets the badge text of the browser action. If no tab is specified, the non-tab-specific badge text is returned.
+         */
+        export function getBadgeText(details: TabDetails): Promise<string>;
+        /** Sets the badge text for the browser action. The badge is displayed on top of the icon. */
+        export function setBadgeText(details: BadgeTextDetails): void;
+        /**
          * Gets the html document set as the popup for this browser action.
          */
         export function getPopup(details: TabDetails): Promise<string>;
+        /**
+         * Gets the title of the browser action.
+         */
+        export function getTitle(details: TabDetails): Promise<string>;
+        /** Sets the title of the browser action. This shows up in the tooltip. */
+        export function setTitle(details: TitleDetails): void;
+        /** Sets the html document to be opened as a popup when the user clicks on the browser action's icon. */
+        export function setPopup(details: PopupDetails): void;
         /**
          * Sets the icon for the browser action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the path or the imageData property must be specified.
          */

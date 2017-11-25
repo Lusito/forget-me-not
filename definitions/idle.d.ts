@@ -13,7 +13,6 @@ declare module 'webextension-polyfill' {
         /**
          * Returns "locked" if the system is locked, "idle" if the user has not generated any input for a specified number of seconds, or "active" otherwise.
          * @param detectionIntervalInSeconds The system is considered idle if detectionIntervalInSeconds seconds have elapsed since the last user input detected.
-         * Since Chrome 25.
          */
         export function queryState(detectionIntervalInSeconds: number): Promise<IdleState>;
         /**

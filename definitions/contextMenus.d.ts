@@ -12,64 +12,53 @@ declare module 'webextension-polyfill' {
         export interface OnClickData {
             /**
              * Optional.
-             * Since Chrome 35.
             * The text for the context selection, if any.
             */
             selectionText?: string;
             /**
              * Optional.
-             * Since Chrome 35.
             * A flag indicating the state of a checkbox or radio item after it is clicked.
             */
             checked?: boolean;
             /**
-             * Since Chrome 35.
              * The ID of the menu item that was clicked.
              */
             menuItemId: any;
             /**
              * Optional.
-             * Since Chrome 35.
             * The URL of the frame of the element where the context menu was clicked, if it was in a frame.
             */
             frameUrl?: string;
             /**
-             * Since Chrome 35.
              * A flag indicating whether the element is editable (text input, textarea, etc.).
              */
             editable: boolean;
             /**
              * Optional.
-             * Since Chrome 35.
             * One of 'image', 'video', or 'audio' if the context menu was activated on one of these types of elements.
             */
             mediaType?: string;
             /**
              * Optional.
-             * Since Chrome 35.
             * A flag indicating the state of a checkbox or radio item before it was clicked.
             */
             wasChecked?: boolean;
             /**
-             * Since Chrome 35.
              * The URL of the page where the menu item was clicked. This property is not set if the click occured in a context where there is no current page, such as in a launcher context menu.
              */
             pageUrl: string;
             /**
              * Optional.
-             * Since Chrome 35.
             * If the element is a link, the URL it points to.
             */
             linkUrl?: string;
             /**
              * Optional.
-             * Since Chrome 35.
             * The parent ID, if any, for the item clicked.
             */
             parentMenuItemId?: any;
             /**
              * Optional.
-             * Since Chrome 35.
             * Will be present for elements with a 'src' URL.
             */
             srcUrl?: string;
@@ -86,7 +75,6 @@ declare module 'webextension-polyfill' {
             contexts?: string[];
             /**
              * Optional.
-             * Since Chrome 20.
             * Whether this context menu item is enabled or disabled. Defaults to true.
             */
             enabled?: boolean;
@@ -105,7 +93,6 @@ declare module 'webextension-polyfill' {
             type?: string;
             /**
              * Optional.
-             * Since Chrome 21.
             * The unique ID to assign to this item. Mandatory for event pages. Cannot be the same as another ID for this extension.
             */
             id?: string;
@@ -116,7 +103,7 @@ declare module 'webextension-polyfill' {
             checked?: boolean;
             title?: string;
             contexts?: string[];
-            /** Optional. Since Chrome 20.  */
+            /** Optional. */
             enabled?: boolean;
             targetUrlPatterns?: string[];
             onclick?: Function;
@@ -128,7 +115,6 @@ declare module 'webextension-polyfill' {
         export interface MenuClickedEvent extends events.Event<(info: OnClickData, tab?: tabs.Tab) => void> { }
 
         /**
-         * Since Chrome 38.
          * The maximum number of top level extension items that can be added to an extension action context menu. Any items beyond this limit will be ignored.
          */
         export var ACTION_MENU_TOP_LEVEL_LIMIT: number;
@@ -165,7 +151,6 @@ declare module 'webextension-polyfill' {
         export function remove(menuItemId: number): Promise<void>;
 
         /**
-         * Since Chrome 21.
          * Fired when a context menu item is clicked.
          */
         export var onClicked: MenuClickedEvent;

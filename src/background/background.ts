@@ -195,6 +195,28 @@ class Background {
         return result;
     }
 
+    private runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
+        if (storeId.indexOf('private') >= 0)
+            return;
+        if (storeId.indexOf('firefox') >= 0)
+            callback();
+        else {
+            browser.cookies.getAllCookieStores().then((cookieStores) => {
+                for (let store of cookieStores) {
+                    if (store.id === storeId) {
+                        if (store.tabIds.length) {
+                            browser.tabs.get(store.tabIds[0]).then((tab) => {
+                                if (!tab.incognito)
+                                    callback();
+                            });
+                        }
+                        return;
+                    }
+                }
+            });
+        }
+    }
+
     private addToMostRecentCookieDomains(domain: string) {
         if (domain.startsWith('.'))
             domain = domain.substr(1);
@@ -210,17 +232,19 @@ class Background {
 
     public onCookieChanged(changeInfo: browser.cookies.CookieChangeInfo) {
         if (!changeInfo.removed) {
-            this.addToMostRecentCookieDomains(changeInfo.cookie.domain);
-            if (settings.get('cleanThirdPartyCookies.enabled')) {
-                let exec = new DelayedExecution(() => {
-                    let delta = Date.now() - this.lastDomainChangeRequest;
-                    if (delta < 1000)
-                        exec.restart(500);
-                    else if (!this.isCookieAllowed(changeInfo.cookie))
-                        this.removeCookie(changeInfo.cookie);
-                });
-                exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
-            }
+            this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
+                this.addToMostRecentCookieDomains(changeInfo.cookie.domain);
+                if (settings.get('cleanThirdPartyCookies.enabled')) {
+                    let exec = new DelayedExecution(() => {
+                        let delta = Date.now() - this.lastDomainChangeRequest;
+                        if (delta < 1000)
+                            exec.restart(500);
+                        else if (!this.isCookieAllowed(changeInfo.cookie))
+                            this.removeCookie(changeInfo.cookie);
+                    });
+                    exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+                }
+            });
         }
     }
 

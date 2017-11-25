@@ -64,6 +64,8 @@ class Popup {
         on(byId('settings_import') as HTMLElement, 'click', this.onImport.bind(this));
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
+        on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
+        on(byId('rules_help') as HTMLElement, 'click', this.showRulesHelp.bind(this));
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -184,19 +186,20 @@ class Popup {
         translateChildren(dialog.domNode);
     }
 
+    private showRulesHelp() {
+        dialogs.alert('', 'rules_help_dialog_content');
+    }
+
     private updateRulesHint(validExpression: boolean, empty: boolean) {
         this.rulesHint.textContent = empty ? '' : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
         this.rulesHint.className = validExpression ? '' : 'error';
     }
 
-    private onRulesInputKeyUp(e: KeyboardEvent) {
+    private addRule(type: RuleType) {
         let value = this.rulesInput.value.trim().toLowerCase();
-        let validExpression = isValidExpression(value);
-        this.updateRulesHint(validExpression, value.length === 0);
-        if (e.keyCode === 13 && validExpression) {
+        if (isValidExpression(value)) {
             let rules = settings.get('rules').slice();
             let entry = rules.find((r) => r.rule === value);
-            const type: RuleType = e.shiftKey ? RuleType.GRAY : RuleType.WHITE;
             if (entry)
                 entry.type = type;
             else {
@@ -208,6 +211,14 @@ class Popup {
             settings.set('rules', rules);
             settings.save();
         }
+    }
+
+    private onRulesInputKeyUp(e: KeyboardEvent) {
+        let value = this.rulesInput.value.trim().toLowerCase();
+        let validExpression = isValidExpression(value);
+        this.updateRulesHint(validExpression, value.length === 0);
+        if (e.keyCode === 13)
+            this.addRule(e.shiftKey ? RuleType.GRAY : RuleType.WHITE);
         this.updateFilter();
     }
 

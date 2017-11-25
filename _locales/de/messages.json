@@ -47,6 +47,8 @@
 	"rules_input__placeholder": { "message": "Suchen oder hinzufügen..", "description": "" },
 	"rules_hint_add": { "message": "Eingabe = Weiße Regel hinzuzufügen, Shift+Eingabe = Graue Regel hinzufügen", "description": "" },
 	"rules_hint_invalid": { "message": "Ungültiger Ausdruck", "description": "" },
+	"rules_add": { "message": "Hinzufügen", "description": "" },
+	"rules_help_dialog_content": { "message": "Jeder hostname (z.B. www.google.de) ist eine gültige Regel. Ein Stern (*) kann als Platzhalter für ein Segment eingesetzt werden (z.B. *.google.de oder www.*.de).", "description": "" },
 
 	"setting_type_white": { "message": "Weiß", "description": "" },
 	"setting_type_gray": { "message": "Grau", "description": "" },

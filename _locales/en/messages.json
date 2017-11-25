@@ -47,6 +47,8 @@
 	"rules_input__placeholder": { "message": "Search or add..", "description": "" },
 	"rules_hint_add": { "message": "Press enter to add as white rule, shift+enter to add as gray rule", "description": "" },
 	"rules_hint_invalid": { "message": "Invalid expression", "description": "" },
+	"rules_add": { "message": "Add", "description": "" },
+	"rules_help_dialog_content": { "message": "Every hostname (e.g. www.google.com) is a valid expression. An asterisk (*) can be used as placeholder for a segment (e.g. *.google.com or www.*.com).", "description": "" },
 
 	"setting_type_white": { "message": "White", "description": "" },
 	"setting_type_gray": { "message": "Gray", "description": "" },

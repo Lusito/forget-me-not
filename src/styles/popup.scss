@@ -405,6 +405,9 @@ input[type=checkbox]:checked+span:before {
     color: #0d8000;
     height: 18px;
 }
+#rules_hint.error {
+    color: #800000;
+}
 .rules_head {
     margin-top: 5px;
     margin-right: 19px;

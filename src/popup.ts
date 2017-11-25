@@ -95,8 +95,7 @@ class Popup {
         this.selectTab(2);
         let value = this.rulesInput.value.trim().toLowerCase();
         let validExpression = isValidExpression(value);
-        this.rulesHint.textContent = value.length === 0 ? ''
-            : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
+        this.updateRulesHint(validExpression, value.length === 0);
         this.updateFilter();
         this.rulesInput.focus();
     }
@@ -185,27 +184,29 @@ class Popup {
         translateChildren(dialog.domNode);
     }
 
+    private updateRulesHint(validExpression: boolean, empty: boolean) {
+        this.rulesHint.textContent = empty ? '' : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
+        this.rulesHint.className = validExpression ? '' : 'error';
+    }
+
     private onRulesInputKeyUp(e: KeyboardEvent) {
         let value = this.rulesInput.value.trim().toLowerCase();
         let validExpression = isValidExpression(value);
-        this.rulesHint.textContent = value.length === 0 ? ''
-            : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
-        if (e.keyCode === 13) {
-            if (validExpression) {
-                let rules = settings.get('rules').slice();
-                let entry = rules.find((r) => r.rule === value);
-                const type: RuleType = e.shiftKey ? RuleType.GRAY : RuleType.WHITE;
-                if (entry)
-                    entry.type = type;
-                else {
-                    rules.push({
-                        type: type,
-                        rule: value
-                    });
-                }
-                settings.set('rules', rules);
-                settings.save();
+        this.updateRulesHint(validExpression, value.length === 0);
+        if (e.keyCode === 13 && validExpression) {
+            let rules = settings.get('rules').slice();
+            let entry = rules.find((r) => r.rule === value);
+            const type: RuleType = e.shiftKey ? RuleType.GRAY : RuleType.WHITE;
+            if (entry)
+                entry.type = type;
+            else {
+                rules.push({
+                    type: type,
+                    rule: value
+                });
             }
+            settings.set('rules', rules);
+            settings.save();
         }
         this.updateFilter();
     }

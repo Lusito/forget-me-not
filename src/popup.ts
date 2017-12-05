@@ -181,7 +181,7 @@ class Popup {
                 dialog.close();
             }
         });
-        dialog.contentNode.setAttribute('data-l10n-id', 'reset_dialog_content');
+        dialog.contentNode.setAttribute('data-i18n', 'reset_dialog_content');
         dialog.buttonNodes.confirm_settings_only.focus();
         translateChildren(dialog.domNode);
     }

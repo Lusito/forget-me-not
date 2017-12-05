@@ -8,128 +8,114 @@
     </head>
     <body>
         <div id="wrapper">
-            <div id="logo_area" data-l10n-id="logo"></div>
+            <div id="logo_area" data-i18n="logo?title"></div>
             <div id="tabs">
-                <div class="active" data-l10n-id="tabs_this_tab"></div>
-                <div data-l10n-id="tabs_clean_all"></div>
-                <div data-l10n-id="tabs_rules"></div>
-                <div data-l10n-id="tabs_settings"></div>
-                <div data-l10n-id="tabs_log"></div>
-                <div data-l10n-id="tabs_about"></div>
+                <div class="active" data-i18n="tabs_this_tab"></div>
+                <div data-i18n="tabs_clean_all"></div>
+                <div data-i18n="tabs_rules"></div>
+                <div data-i18n="tabs_settings"></div>
+                <div data-i18n="tabs_log"></div>
+                <div data-i18n="tabs_about"></div>
             </div>
             <div id="pages">
                 <div class="active">
-                    <div><span id="current_tab">?</span><span data-l10n-id="button_log_add_rule" class="log_add_rule" id="current_tab_add_rule"></span><button id="clean_current_tab" data-l10n-id="button_clean_now"></button></div>
+                    <div><span id="current_tab">?</span><span data-i18n="button_log_add_rule" class="log_add_rule" id="current_tab_add_rule"></span><button id="clean_current_tab" data-i18n="button_clean_now"></button></div>
                     <div class="rules_head">
-                        <div data-l10n-id="rules_column_matching_rule"></div>
-                        <div class="type_column" data-l10n-id="rules_column_type"></div>
-                        <div class="delete_column" data-l10n-id="rules_column_remove"></div>
+                        <div data-i18n="rules_column_matching_rule"></div>
+                        <div class="type_column" data-i18n="rules_column_type"></div>
+                        <div class="delete_column" data-i18n="rules_column_remove"></div>
                     </div>
                     <ul id="rules_list_current_tab" class="rules_list"></ul>
                 </div>
                 <div>
                     <div class="split_30_70">
-                        <label><input type="checkbox" data-settings-key="cleanAll.cookies" data-enables-setting="cleanAll.cookies.applyRules"><span data-l10n-id="setting_cookies"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.cookies.applyRules"><span data-l10n-id="setting_apply_rules"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.cookies" data-enables-setting="cleanAll.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
                     </div>
                     <div class="split_30_70">
-                        <label><input type="checkbox" data-settings-key="cleanAll.localStorage" data-enables-setting="cleanAll.localStorage.applyRules"><span data-l10n-id="setting_local_storage"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.localStorage.applyRules"><span data-l10n-id="setting_apply_rules_ff58"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.localStorage" data-enables-setting="cleanAll.localStorage.applyRules"><span data-i18n="setting_local_storage"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.localStorage.applyRules"><span data-i18n="setting_apply_rules_ff58"></span></label>
                     </div>
                     <div class="split_equal top_border">
-                        <label><input type="checkbox" data-settings-key="cleanAll.history"><span data-l10n-id="setting_history"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.downloads"><span data-l10n-id="setting_downloads"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.history"><span data-i18n="setting_history"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.downloads"><span data-i18n="setting_downloads"></span></label>
                     </div>
                     <div class="split_equal">
-                        <label><input type="checkbox" data-settings-key="cleanAll.formData"><span data-l10n-id="setting_form_data"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.passwords"><span data-l10n-id="setting_passwords"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.formData"><span data-i18n="setting_form_data"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.passwords"><span data-i18n="setting_passwords"></span></label>
                     </div>
                     <div class="split_equal">
-                        <label><input type="checkbox" data-settings-key="cleanAll.indexedDB"><span data-l10n-id="setting_indexed_db"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.pluginData"><span data-l10n-id="setting_plugin_data"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.indexedDB"><span data-i18n="setting_indexed_db"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.pluginData"><span data-i18n="setting_plugin_data"></span></label>
                     </div>
                     <div class="split_equal">
-                        <label><input type="checkbox" data-settings-key="cleanAll.serviceWorkers"><span data-l10n-id="setting_service_workers"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.serverBoundCertificates"><span data-l10n-id="setting_server_bound_certificates"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.serviceWorkers"><span data-i18n="setting_service_workers"></span></label>
+                        <label><input type="checkbox" data-settings-key="cleanAll.serverBoundCertificates"><span data-i18n="setting_server_bound_certificates"></span></label>
                     </div>
-                    <div class="top_margin"><button data-l10n-id="button_clean_now" id="clean_all_now"></button></div>
+                    <div class="top_margin"><button data-i18n="button_clean_now" id="clean_all_now"></button></div>
                 </div>
                 <div style="min-height: 110px;">
                     <div id="rules_input_wrapper">
-                        <input id="rules_input" data-l10n-id="rules_input">
-                        <button id="rules_add" data-l10n-id="rules_add"></button>
+                        <input id="rules_input" data-i18n="rules_input?placeholder">
+                        <button id="rules_add" data-i18n="rules_add"></button>
                         <button id="rules_help">?</button>
                     </div>
                     <div id="rules_hint"></div>
                     <div class="rules_head">
-                        <div data-l10n-id="rules_column_rule"></div>
-                        <div class="type_column" data-l10n-id="rules_column_type"></div>
-                        <div class="delete_column" data-l10n-id="rules_column_remove"></div>
+                        <div data-i18n="rules_column_rule"></div>
+                        <div class="type_column" data-i18n="rules_column_type"></div>
+                        <div class="delete_column" data-i18n="rules_column_remove"></div>
                     </div>
                     <ul id="rules_list" class="rules_list"></ul>
                 </div>
                 <div>
-                    <div><label><input type="checkbox" data-settings-key="domainLeave.enabled"><span data-l10n-id="setting_domain_leave_enabled"></span></label></div>
+                    <div><label><input type="checkbox" data-settings-key="domainLeave.enabled"><span data-i18n="setting_domain_leave_enabled?text?title"></span></label></div>
                     <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="domainLeave.cookies"><span data-l10n-id="setting_cookies"></span></label>
-                        <label><input type="checkbox" data-settings-key="domainLeave.localStorage"><span data-l10n-id="setting_local_storage_ff58"></span></label>
+                        <label><input type="checkbox" data-settings-key="domainLeave.cookies"><span data-i18n="setting_cookies"></span></label>
+                        <label><input type="checkbox" data-settings-key="domainLeave.localStorage"><span data-i18n="setting_local_storage_ff58"></span></label>
                     </div>
-                    <div class="indented"><label><span data-l10n-id="setting_delay_in_minutes"></span><input type="number" data-settings-key="domainLeave.delay"></div>
-                    <div><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.enabled"><span data-l10n-id="setting_remove_thirdparty"></span></label></div>
+                    <div class="indented"><label><span data-i18n="setting_delay_in_minutes"></span><input type="number" data-settings-key="domainLeave.delay"></div>
+                    <div><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.enabled"><span data-i18n="setting_remove_thirdparty"></span></label></div>
                     <div class="indented">
-                        <label><span data-l10n-id="setting_delay_in_minutes"></span><input type="number" data-settings-key="cleanThirdPartyCookies.delay"></label>
+                        <label><span data-i18n="setting_delay_in_minutes"></span><input type="number" data-settings-key="cleanThirdPartyCookies.delay"></label>
                     </div>
-                    <div><label><input type="checkbox" data-settings-key="startup.enabled"><span data-l10n-id="setting_startup_enabled"></span></label></div>
+                    <div><label><input type="checkbox" data-settings-key="startup.enabled"><span data-i18n="setting_startup_enabled"></span></label></div>
                     
                     <div class="indented split_30_70">
-                        <label><input type="checkbox" data-settings-key="startup.cookies" data-enables-setting="startup.cookies.applyRules"><span data-l10n-id="setting_cookies"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.cookies.applyRules"><span data-l10n-id="setting_apply_rules"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.cookies" data-enables-setting="startup.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
                     </div>
                     <div class="indented split_30_70">
-                        <label><input type="checkbox" data-settings-key="startup.localStorage" data-enables-setting="startup.localStorage.applyRules"><span data-l10n-id="setting_local_storage"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.localStorage.applyRules"><span data-l10n-id="setting_apply_rules"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.localStorage" data-enables-setting="startup.localStorage.applyRules"><span data-i18n="setting_local_storage"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.localStorage.applyRules"><span data-i18n="setting_apply_rules"></span></label>
                     </div>
                     <div class="indented split_equal top_border">
-                        <label><input type="checkbox" data-settings-key="startup.history"><span data-l10n-id="setting_history"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.downloads"><span data-l10n-id="setting_downloads"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.history"><span data-i18n="setting_history"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.downloads"><span data-i18n="setting_downloads"></span></label>
                     </div>
                     <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="startup.formData"><span data-l10n-id="setting_form_data"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.passwords"><span data-l10n-id="setting_passwords"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.formData"><span data-i18n="setting_form_data"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.passwords"><span data-i18n="setting_passwords"></span></label>
                     </div>
                     <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="startup.indexedDB"><span data-l10n-id="setting_indexed_db"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.pluginData"><span data-l10n-id="setting_plugin_data"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.indexedDB"><span data-i18n="setting_indexed_db"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.pluginData"><span data-i18n="setting_plugin_data"></span></label>
                     </div>
                     <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="startup.serviceWorkers"><span data-l10n-id="setting_service_workers"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.serverBoundCertificates"><span data-l10n-id="setting_server_bound_certificates"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.serviceWorkers"><span data-i18n="setting_service_workers"></span></label>
+                        <label><input type="checkbox" data-settings-key="startup.serverBoundCertificates"><span data-i18n="setting_server_bound_certificates"></span></label>
                     </div>
                     <div class="split_equal top_margin">
-                        <button id="settings_import" data-l10n-id="button_import"></button>
-                        <button id="settings_export" data-l10n-id="button_export"></button>
-                        <button id="settings_reset" data-l10n-id="button_reset"></button>
+                        <button id="settings_import" data-i18n="button_import"></button>
+                        <button id="settings_export" data-i18n="button_export"></button>
+                        <button id="settings_reset" data-i18n="button_reset"></button>
                     </div>
                 </div>
                 <div>
-                    <b data-l10n-id="most_recent_cookie_domains"></b>
+                    <b data-i18n="most_recent_cookie_domains"></b>
                     <ul id="most_recent_cookie_domains"></ul>
                 </div>
-                <div>
-                    <p>
-                        <b data-l10n-id="title_author"></b><br>
-                        <span data-l10n-id="made_by_notice"></span>
-                    </p>
-                    <p>
-                        <b data-l10n-id="title_issues"></b><br>
-                        <span data-l10n-id="issues_text"></span><br>
-                        <a href="https://github.com/Lusito/forget-me-not/issues" target="_blank">https://github.com/Lusito/forget-me-not/issues</a>
-                    </p>
-                    <p>
-                        <b data-l10n-id="title_icon_credits"></b><br>
-                        <a target="_blank" href="https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1"> Myosotis flower cartoon 1</a> |   Designed by Vexels.com
-                    </p>
-                </div>
+                <div data-i18n="about_page?markdown"></div>
             </div>
         </div>
         <script src="../dist/popup.js"></script>

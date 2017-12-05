@@ -6,13 +6,13 @@
 
 import { MouseEventCallback, createButton, translateChildren, on } from "../lib/htmlUtils";
 
-export function createDialog(className: string, titleL10nKey: string, buttons: { [s: string]: MouseEventCallback }) {
+export function createDialog(className: string, titleI18nKey: string, buttons: { [s: string]: MouseEventCallback }) {
     let overlay = document.createElement('div');
     overlay.className = 'dialogOverlay';
     let dialog = document.createElement('div');
     dialog.className = 'dialog ' + className;
     let titleNode = document.createElement('h2');
-    titleNode.setAttribute('data-l10n-id', titleL10nKey);
+    titleNode.setAttribute('data-i18n', titleI18nKey);
     let contentNode = document.createElement('div');
     let buttonsNode = document.createElement('div');
     buttonsNode.className = 'dialogButtons';
@@ -35,24 +35,24 @@ export function createDialog(className: string, titleL10nKey: string, buttons: {
     };
 }
 
-export function alert(titleL10nKey: string, contentL10nKey: string, content?: string, callback?: () => void) {
-    let dialog = createDialog('alert', titleL10nKey, {
+export function alert(titleI18nKey: string, contentI18nKey: string, content?: string, callback?: () => void) {
+    let dialog = createDialog('alert', titleI18nKey, {
         'alert_ok': () => {
             dialog.close();
             if (callback)
                 callback();
         }
     });
-    if (contentL10nKey)
-        dialog.contentNode.setAttribute('data-l10n-id', contentL10nKey);
+    if (contentI18nKey)
+        dialog.contentNode.setAttribute('data-i18n', contentI18nKey);
     if (content)
         dialog.contentNode.textContent = content;
     dialog.buttonNodes.alert_ok.focus();
     translateChildren(dialog.domNode);
 }
 
-export function confirm(titleL10nKey: string, contentL10nKey: string | null, content: string | null, callback: (value: boolean) => void) {
-    let dialog = createDialog('confirm', titleL10nKey, {
+export function confirm(titleI18nKey: string, contentI18nKey: string | null, content: string | null, callback: (value: boolean) => void) {
+    let dialog = createDialog('confirm', titleI18nKey, {
         'confirm_ok': () => {
             dialog.close();
             callback(true);
@@ -62,18 +62,18 @@ export function confirm(titleL10nKey: string, contentL10nKey: string | null, con
             callback(false);
         }
     });
-    if (contentL10nKey)
-        dialog.contentNode.setAttribute('data-l10n-id', contentL10nKey);
+    if (contentI18nKey)
+        dialog.contentNode.setAttribute('data-i18n', contentI18nKey);
     if (content)
         dialog.contentNode.textContent = content;
     dialog.buttonNodes.confirm_ok.focus();
     translateChildren(dialog.domNode);
 }
 
-export function prompt(titleL10nKey: string, value: string, callback: (value: string | null) => void) {
+export function prompt(titleI18nKey: string, value: string, callback: (value: string | null) => void) {
     let input = document.createElement('input');
     input.value = value;
-    let dialog = createDialog('prompt', titleL10nKey, {
+    let dialog = createDialog('prompt', titleI18nKey, {
         'prompt_ok': () => {
             dialog.close();
             callback(input.value);

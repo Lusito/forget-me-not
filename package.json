@@ -18,6 +18,7 @@
   "author": "Santo Pfingsten",
   "license": "Zlib",
   "devDependencies": {
+    "@types/markdown-it": "0.0.4",
     "awesome-typescript-loader": "^3.2.3",
     "node-sass": "^4.6.0",
     "npm-run-all": "^4.1.2",
@@ -26,5 +27,8 @@
     "typescript": "^2.5.3",
     "uglify-es": "^3.1.9",
     "webextension-polyfill": "^0.2.1"
+  },
+  "dependencies": {
+    "markdown-it": "^8.4.0"
   }
 }

@@ -5,6 +5,16 @@
  */
 
 import * as browser from 'webextension-polyfill';
+import * as MarkdownIt from 'markdown-it';
+
+const md = new MarkdownIt();
+
+function setMarkdown(element:HTMLElement, value:string) {
+    element.innerHTML = md.render(value);
+    const links = element.querySelectorAll('a');
+    for(let i=0; i<links.length; i++)
+        links[i].target = '_blank';
+}
 
 export function byId(id: string) {
     return document.getElementById(id);
@@ -15,22 +25,27 @@ export function on<K extends keyof HTMLElementEventMap>(node: Node, event: K, ca
 }
 
 export function translateElement(element: HTMLElement) {
-    let id = element.dataset.l10nId;
-    if (id) {
-        let content = browser.i18n.getMessage(id);
-        if (content)
-            element.textContent = content;
-        let title = browser.i18n.getMessage(id + "__title");
-        if (title)
-            element.title = title;
-        let placeholder = browser.i18n.getMessage(id + "__placeholder");
-        if (placeholder)
-            (element as HTMLInputElement).placeholder = placeholder;
+    const i18n = element.dataset.i18n;
+    if(i18n) {
+        let parts = i18n.split('?');
+        let id = parts[0];
+        parts.splice(0, 1);
+        // default to text
+        if(parts.length === 0)
+            parts = ['text'];
+        for (const attribute of parts) {
+            if(attribute === 'text')
+                element.textContent = browser.i18n.getMessage(id);
+            else if(attribute === 'markdown')
+                setMarkdown(element, browser.i18n.getMessage(id));
+            else
+                (element as any)[attribute] = browser.i18n.getMessage(id + '@' + attribute);
+        }
     }
 }
 
 export function translateChildren(parent: NodeSelector) {
-    let elements = parent.querySelectorAll('[data-l10n-id]');
+    let elements = parent.querySelectorAll('[data-i18n]');
     for (let i = 0; i < elements.length; i++)
         translateElement(elements[i] as HTMLElement);
 }
@@ -69,9 +84,9 @@ export function addLink(doc: Document, path: string) {
 
 export type MouseEventCallback = (this: HTMLInputElement, ev: MouseEvent) => any;
 
-export function createButton(labelL10nKey: string, callback: MouseEventCallback) {
+export function createButton(labelI18nKey: string, callback: MouseEventCallback) {
     let button = document.createElement('button');
-    button.setAttribute('data-l10n-id', labelL10nKey);
+    button.setAttribute('data-i18n', labelI18nKey);
     on(button, 'click', callback);
     return button;
 }

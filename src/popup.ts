@@ -90,6 +90,10 @@ class Popup {
         });
 
         messageUtil.send('getMostRecentCookieDomains');
+        
+        on(byId('logo_area') as HTMLElement, 'click', ()=> {
+            window.open(browser.runtime.getURL("templates/readme.html"));
+        });
     }
 
     private prepareAddRule(domain: string) {
@@ -289,9 +293,13 @@ class Popup {
 
     private updateSelectedTab(index: number) {
         for (let i = 0; i < this.tabs.length; i++) {
-            let className = i === index ? 'active' : '';
-            this.tabs[i].className = className;
-            this.pages[i].className = className;
+            if(i === index) {
+                this.tabs[i].classList.add('active');
+                this.pages[i].classList.add('active');
+            } else {
+                this.tabs[i].classList.remove('active');
+                this.pages[i].classList.remove('active');
+            }
         }
     }
 

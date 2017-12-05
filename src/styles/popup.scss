@@ -602,3 +602,13 @@ input:checked+.ruleSlider .graylist {
     width: 16px;
     line-height: 16px;
 }
+
+.compact_markdown {
+    h2 {
+        margin: 0;
+        font-size: 14px;
+    }
+    p {
+        margin: 0 0 10px 0;
+    }
+}

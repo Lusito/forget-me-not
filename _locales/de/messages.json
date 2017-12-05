@@ -2,7 +2,6 @@
 	"extensionName": { "message": "Vergiss Mein Nicht", "description": "Name of the extension." },
 	"extensionDescription": { "message": "Lass den Browser Website-Daten vergessen, abseits von denen die du behalten möchtest.", "description": "Description of the extension." },
 	"actionTitle": { "message": "Vergiss Mein Nicht", "description": "Action button title" },
-	"about_page": { "message": "**Autor**  \nErstellt von Santo Pfingsten, © 2017\n\n**Probleme, Fragen und andere Anregungen**  \nBitte Probleme und Featurewünsche auf GitHub posten:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n**Symbolbild Credits**  \n[Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com" },
 	"alert_ok": { "message": "OK" },
 	"alert_title_error": { "message": "Fehler" },
 	"prompt_ok": { "message": "OK" },
@@ -23,6 +22,9 @@
 	"tabs_settings": { "message": "Optionen" },
 	"tabs_log": { "message": "Log" },
 	"tabs_about": { "message": "Über" },
+	"tabs_tutorial": { "message": "Einführung" },
+	"tabs_experimental": { "message": "Experimental" },
+	"tabs_changelog": { "message": "Änderungen" },
 	"button_clean_now": { "message": "Jetzt Löschen!" },
 	"button_import": { "message": "Importieren.." },
 	"button_export": { "message": "Exportieren.." },
@@ -57,5 +59,9 @@
 	"setting_domain_leave_enabled": { "message": "Löschen, wenn alle Instanzen einer Domäne verlassen wurden:" },
 	"setting_domain_leave_enabled@title": { "message": "Regeln werden angewandt" },
 	"setting_remove_thirdparty": { "message": "Cookies von Dritten bei Erstellung löschen:" },
-	"setting_startup_enabled": { "message": "Beim Browserstart löschen:" }
+	"setting_startup_enabled": { "message": "Beim Browserstart löschen:" },
+	"about_page": { "message": "## Autor\nErstellt von Santo Pfingsten, © 2017\n\n## Probleme, Fragen und andere Anregungen\nBitte Probleme und Featurewünsche auf GitHub posten:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Symbolbild Credits\n[Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com" },
+	"tutorial_page": { "message": "## Weiße oder graue Listen\nDomain names (host names of a website, like *google.com*) can be added to gray- or whitelists\n- **Whitelist**: Cookies and local storage will never be removed.\n- **Graylist**: Cookies and local storage will be removed upon browser restart (must be enabled in the settings).\n\n## Valid expressions\n- Jeder hostname (z.B. www.google.de) ist eine gültige Regel.\n- Ein Stern (*) kann als Platzhalter für ein Segment eingesetzt werden (z.B. *.google.de oder www.\\\\*.de).\n- Weiße Listen überstimmen derzeit Graue. Es ist noch nicht klar, ob dies dauerhaft  so bleibt.\n\n## Cookies von Dritten\n- Wird ein Cookie gesetzt, ohne dass die dazu gehörige Domäne in einem Tab aktiv ist, wird er als Cookie Dritter behandelt.\n- Es wird evaluiert, ob es bessere Methoden gibt." },
+	"experimental_page": { "message": "## Experimentale  Funktionalität\n\n- Von Zeit zu Zeit wird es neue Funktionalität geben, die als experimentell markiert ist.\n- Diese sind von Haus aus abgeschaltet und müssen manuell eingeschaltet werden.\n- Damit werden neue Möglichkeiten evaluiert, wie man die Erweiterung verbessern kann.\n- Diese neuen Funktionen können instabil sein oder eine schlechte Performanz haben.\n- Wenn du Probleme bemerkst, versuche diese Funktionalitäten abzuschauten.\n- Bitte Feedback und Fehler auf [GitHub](https://github.com/Lusito/forget-me-not/issues) melden.\n\n\n## Derzeit aktive Experimente\n- Keine" },
+	"changelog_page": { "message": "### Version 0.8.6 (06.12.2017)\n- Anpassungen an der Übersetzung. Einsatz von [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Einführung von in-extension Readme, Tutorial, Änderungshistorie\n\n### Version 0.8.5 (25.11.2017)\n- Tippfehler behoben\n- Wechsel des Regeltyps weicher gestaltet\n- Button zum Hinzufügen neuer Regeln (vorher konnten neue Regeln nur über Enter hinzugefügt werden)\n- Button für weitere Informationen zu gültigen Regeln\n\n### Version 0.8.4 (25.11.2017)\n- Bessere Mobilkompatibilität\n- Inkognitocookies werden nicht mehr gelogged und entfernt\n\n### Version 0.8.3 (24.11.2017)\n- Abschaltung in Inkognitofenstern\n- Eine liste der Domänen, auf denen kürzlich Cookieänderungen durchgeführt wurden\n- Ein Button zum einfacheren Hinzufügen neuer Regeln mit Domänen der oben beschriebenen Liste, als auch der Domäne des aktuellen tabs\n\n### Version 0.8.2 (19.11.2017)\n- Einige Bugfixes und Säuberungen\n\n### Version 0.8.0 (19.11.2017)\n- Erste Version" }
 }

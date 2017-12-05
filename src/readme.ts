@@ -32,7 +32,7 @@ class Readme {
         var hash = document.location.hash.substr(1);
         if (validHash.test(hash)) {
             const tab = document.querySelector('[data-tab=' + hash + ']') as HTMLElement;
-            if (tab && tab.classList.contains('active'))
+            if (tab && !tab.classList.contains('active'))
                 tab.click();
         }
     }

@@ -21,10 +21,10 @@ export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
     });
 }
 
-function setMarkdown(element:HTMLElement, value:string) {
+function setMarkdown(element: HTMLElement, value: string) {
     element.innerHTML = md.render(value);
     const links = element.querySelectorAll('a');
-    for(let i=0; i<links.length; i++)
+    for (let i = 0; i < links.length; i++)
         makeLinkOpenAsTab(links[i]);
 }
 
@@ -38,17 +38,17 @@ export function on<K extends keyof HTMLElementEventMap>(node: Node, event: K, ca
 
 export function translateElement(element: HTMLElement) {
     const i18n = element.dataset.i18n;
-    if(i18n) {
+    if (i18n) {
         let parts = i18n.split('?');
         let id = parts[0];
         parts.splice(0, 1);
         // default to text
-        if(parts.length === 0)
+        if (parts.length === 0)
             parts = ['text'];
         for (const attribute of parts) {
-            if(attribute === 'text')
+            if (attribute === 'text')
                 element.textContent = browser.i18n.getMessage(id);
-            else if(attribute === 'markdown')
+            else if (attribute === 'markdown')
                 setMarkdown(element, browser.i18n.getMessage(id));
             else
                 (element as any)[attribute] = browser.i18n.getMessage(id + '@' + attribute);

@@ -6,7 +6,7 @@
 
 import * as browser from 'webextension-polyfill';
 import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
-import { on, byId, createElement, removeAllChildren, translateChildren } from './lib/htmlUtils';
+import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
 import { isFirefox, browserInfo } from './lib/browserInfo';
 import { connectSettings, permanentDisableSettings, updateFromSettings } from './lib/htmlSettings';
 import * as messageUtil from "./lib/messageUtil";
@@ -65,15 +65,9 @@ class Popup {
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
         on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
-        on(byId('help_link') as HTMLElement, 'click', (e) => {
-            e.stopImmediatePropagation();
-            e.preventDefault();
-            browser.tabs.create({
-                active: true,
-                url: browser.runtime.getURL("templates/readme.html") + '#tutorial'
-            });
-            window.close();
-        })
+        let links = document.querySelectorAll('a.open_as_tab');
+        for (let i = 0; i < links.length; i++)
+            makeLinkOpenAsTab(links[i] as HTMLAnchorElement);
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -293,7 +287,7 @@ class Popup {
 
     private updateSelectedTab(index: number) {
         for (let i = 0; i < this.tabs.length; i++) {
-            if(i === index) {
+            if (i === index) {
                 this.tabs[i].classList.add('active');
                 this.pages[i].classList.add('active');
             } else {

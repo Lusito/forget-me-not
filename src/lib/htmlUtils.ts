@@ -9,11 +9,23 @@ import * as MarkdownIt from 'markdown-it';
 
 const md = new MarkdownIt();
 
+export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
+    on(a, 'click', (e) => {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        browser.tabs.create({
+            active: true,
+            url: a.href
+        });
+        window.close();
+    });
+}
+
 function setMarkdown(element:HTMLElement, value:string) {
     element.innerHTML = md.render(value);
     const links = element.querySelectorAll('a');
     for(let i=0; i<links.length; i++)
-        links[i].target = '_blank';
+        makeLinkOpenAsTab(links[i]);
 }
 
 export function byId(id: string) {

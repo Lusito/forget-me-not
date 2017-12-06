@@ -45,6 +45,8 @@
         "history",
         "notifications",
         "webNavigation",
+        "webRequest",
+        "webRequestBlocking",
         "<all_urls>"
     ]
 }

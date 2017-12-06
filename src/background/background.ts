@@ -44,6 +44,8 @@ class Background {
     private delayedDomainUpdate = new DelayedExecution(this.updateDomainList.bind(this));
     private currentDomains: string[] = [];
     private mostRecentCookieDomains: string[] = [];
+    private readonly tabDomains: { [s: string]: string } = {};
+    private readonly tabNextDomains: { [s: string]: string } = {};
 
     public constructor() {
         this.updateBadge();
@@ -166,8 +168,7 @@ class Background {
         return badge !== badges.none && badge !== badges.forget;
     }
 
-    private isCookieAllowed(cookie: browser.cookies.Cookie) {
-        let domain = cookie.domain;
+    public isCookieDomainAllowed(domain: string) {
         let allowSubDomains = domain.startsWith('.');
         let rawDomain = allowSubDomains ? domain.substr(1) : domain;
         if (this.isDomainAllowed(rawDomain))
@@ -239,7 +240,7 @@ class Background {
                         let delta = Date.now() - this.lastDomainChangeRequest;
                         if (delta < 1000)
                             exec.restart(500);
-                        else if (!this.isCookieAllowed(changeInfo.cookie))
+                        else if (!this.isCookieDomainAllowed(changeInfo.cookie.domain))
                             this.removeCookie(changeInfo.cookie);
                     });
                     exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
@@ -251,7 +252,7 @@ class Background {
     private cleanCookiesWithRulesNow() {
         browser.cookies.getAll({}).then((cookies) => {
             for (const cookie of cookies) {
-                if (!this.isCookieAllowed(cookie))
+                if (!this.isCookieDomainAllowed(cookie.domain))
                     this.removeCookie(cookie);
             }
         });
@@ -262,7 +263,7 @@ class Background {
             for (const cookie of cookies) {
                 let allowSubDomains = cookie.domain.startsWith('.');
                 let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-                if (match && (ignoreRules || !this.isCookieAllowed(cookie)))
+                if (match && (ignoreRules || !this.isCookieDomainAllowed(cookie.domain)))
                     this.removeCookie(cookie);
             }
         });
@@ -362,8 +363,40 @@ class Background {
             }
         });
     }
+
+    public onBeforeNavigate(tabId: number, url: string) {
+        this.tabNextDomains[tabId] = new URL(url).hostname;
+    }
+
+    public onCommitted(tabId: number, url: string) {
+        this.tabDomains[tabId] = new URL(url).hostname;
+        delete this.tabNextDomains[tabId];
+    }
+
+    public onTabRemoved(tabId: number) {
+        delete this.tabDomains[tabId];
+        delete this.tabNextDomains[tabId];
+    }
+
+    public isThirdPartyCookie(tabId: number, domain: string) {
+        const allowSubDomains = domain.startsWith('.');
+        const tabUrl = this.tabDomains[tabId];
+        if (tabUrl && (allowSubDomains ? tabUrl.endsWith(domain) : tabUrl === domain))
+            return false;
+        const tabNextUrl = this.tabNextDomains[tabId];
+        if (tabNextUrl && (allowSubDomains ? tabNextUrl.endsWith(domain) : tabNextUrl === domain))
+            return false;
+        return true;
+    }
 }
 
+const cookieDomainRegexp = /domain=([\.a-z0-9\-]+);/;
+function getCookieDomainFromCookieHeader(header: string) {
+    var match = cookieDomainRegexp.exec(header);
+    if (match)
+        return match[1];
+    return false;
+}
 let background: Background;
 let doStartup = false;
 const UPDATE_NOTIFICATION_ID: string = "UpdateNotification";
@@ -373,8 +406,43 @@ settings.onReady(() => {
     messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
     messageUtil.receive('cleanUrlNow', (url) => background.cleanUrlNow(url));
     browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
-    browser.webNavigation.onCommitted.addListener(() => background.checkDomainChanges());
-    browser.tabs.onRemoved.addListener(() => background.checkDomainChanges());
+    browser.webNavigation.onBeforeNavigate.addListener((details) => {
+        background.onBeforeNavigate(details.tabId, details.url);
+    });
+    browser.webNavigation.onCommitted.addListener((details) => {
+        background.onCommitted(details.tabId, details.url);
+        background.checkDomainChanges();
+    });
+    browser.tabs.onRemoved.addListener((tabId) => {
+        background.onTabRemoved(tabId);
+        background.checkDomainChanges();
+    });
+
+    function onHeadersReceived(details: browser.webRequest.WebResponseHeadersDetails) {
+        if (details.responseHeaders) {
+            return {
+                responseHeaders: details.responseHeaders.filter((x) => {
+                    if (x.name.toLowerCase() === 'set-cookie') {
+                        if (x.value) {
+                            const domain = getCookieDomainFromCookieHeader(x.value);
+                            if (domain && background.isThirdPartyCookie(details.tabId, domain)
+                                && !background.isCookieDomainAllowed(domain))
+                                return false;
+                        }
+                    }
+                    return true;
+                })
+            }
+        }
+        return {};
+    }
+    function applyCleanThirdPartyCookiesBeforeCreationSetting() {
+        if (settings.get('cleanThirdPartyCookies.beforeCreation'))
+            browser.webRequest.onHeadersReceived.addListener(onHeadersReceived, { urls: ["<all_urls>"] }, ["responseHeaders", "blocking"]);
+        else
+            browser.webRequest.onHeadersReceived.removeListener(onHeadersReceived);
+    }
+    applyCleanThirdPartyCookiesBeforeCreationSetting();
 
     // listen for tab changes to update badge
     let badgeUpdater = () => background.updateBadge();
@@ -383,6 +451,8 @@ settings.onReady(() => {
     messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
         if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1)
             background.updateBadge();
+        if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1)
+            applyCleanThirdPartyCookiesBeforeCreationSetting();
     });
 
     // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.

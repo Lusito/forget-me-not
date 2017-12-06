@@ -16,7 +16,7 @@
                 <div data-i18n="tabs_settings"></div>
                 <div data-i18n="tabs_log"></div>
                 <div data-i18n="tabs_about"></div>
-                <a href="readme.html" target="_blank" id="help_link" data-i18n="help_button?title">?</a>
+                <a href="readme.html#tutorial" target="_blank" id="help_link" class="open_as_tab" data-i18n="help_button?title">?</a>
             </div>
             <div id="pages">
                 <div class="active">
@@ -79,6 +79,9 @@
                     <div><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.enabled"><span data-i18n="setting_remove_thirdparty"></span></label></div>
                     <div class="indented">
                         <label><span data-i18n="setting_delay_in_minutes"></span><input type="number" data-settings-key="cleanThirdPartyCookies.delay"></label>
+                        <div><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.beforeCreation"><span data-i18n="setting_thirdparty_before_creation"></span></label>
+                            <a href="readme.html#experimental" target="_blank" class="open_as_tab" data-i18n="experimental_link?title">?</a>
+                        </div>
                     </div>
                     <div><label><input type="checkbox" data-settings-key="startup.enabled"><span data-i18n="setting_startup_enabled"></span></label></div>
                     

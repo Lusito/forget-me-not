@@ -48,6 +48,7 @@ const defaultSettings: SettingsMap = {
 
     "cleanThirdPartyCookies.enabled": false,
     "cleanThirdPartyCookies.delay": 1,
+    "cleanThirdPartyCookies.beforeCreation": false,
 
     "domainLeave.enabled": false,
     "domainLeave.delay": 2,

@@ -26,6 +26,7 @@ export interface SettingsTypeMap {
 
     "cleanThirdPartyCookies.enabled": boolean,
     "cleanThirdPartyCookies.delay": number,
+    "cleanThirdPartyCookies.beforeCreation": boolean,
 
     "domainLeave.enabled": boolean;
     "domainLeave.delay": number;

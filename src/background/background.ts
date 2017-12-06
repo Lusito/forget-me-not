@@ -218,7 +218,7 @@ class Background {
         }
     }
 
-    private addToMostRecentCookieDomains(domain: string) {
+    public addToMostRecentCookieDomains(domain: string) {
         if (domain.startsWith('.'))
             domain = domain.substr(1);
         let index = this.mostRecentCookieDomains.indexOf(domain);
@@ -426,8 +426,10 @@ settings.onReady(() => {
                         if (x.value) {
                             const domain = getCookieDomainFromCookieHeader(x.value);
                             if (domain && background.isThirdPartyCookie(details.tabId, domain)
-                                && !background.isCookieDomainAllowed(domain))
+                                && !background.isCookieDomainAllowed(domain)) {
+                                background.addToMostRecentCookieDomains(domain);
                                 return false;
+                            }
                         }
                     }
                     return true;

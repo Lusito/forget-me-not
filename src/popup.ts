@@ -65,6 +65,15 @@ class Popup {
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
         on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
+        on(byId('help_link') as HTMLElement, 'click', (e) => {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            browser.tabs.create({
+                active: true,
+                url: browser.runtime.getURL("templates/readme.html") + '#tutorial'
+            });
+            window.close();
+        })
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {

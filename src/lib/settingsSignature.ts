@@ -6,6 +6,8 @@
 import { RuleDefinition } from "./settings";
 
 export interface SettingsTypeMap {
+    "version": string;
+    "shopUpdateNotification": boolean;
     "rules": RuleDefinition[],
     "whitelistNoTLD": boolean;
     "domainsToClean": { [s: string]: boolean },

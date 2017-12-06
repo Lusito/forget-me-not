@@ -332,7 +332,7 @@ class Background {
     }
 
     private getBadgeForDomain(domain: string) {
-        if(settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+        if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
             return badges.white;
         let matchingRules = settings.getMatchingRules(domain);
         if (matchingRules.length === 0)
@@ -366,6 +366,8 @@ class Background {
 
 let background: Background;
 let doStartup = false;
+const UPDATE_NOTIFICATION_ID: string = "UpdateNotification";
+
 settings.onReady(() => {
     background = new Background();
     messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
@@ -400,6 +402,27 @@ settings.onReady(() => {
         background.onStartup();
         doStartup = false;
     }
+
+    const manifestVersion = browser.runtime.getManifest().version;
+    if (settings.get('version') !== manifestVersion) {
+        settings.set('version', manifestVersion);
+        settings.save();
+
+        browser.notifications.create(UPDATE_NOTIFICATION_ID, {
+            "type": "basic",
+            "iconUrl": browser.extension.getURL("icons/icon96.png"),
+            "title": browser.i18n.getMessage('update_notification_title'),
+            "message": browser.i18n.getMessage('update_notification_message')
+        });
+    }
+    browser.notifications.onClicked.addListener((id: string) => {
+        if (id === UPDATE_NOTIFICATION_ID) {
+            browser.tabs.create({
+                active: true,
+                url: browser.runtime.getURL("templates/readme.html") + '#changelog'
+            });
+        }
+    });
 });
 browser.runtime.onStartup.addListener(() => {
     if (background)

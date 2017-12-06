@@ -28,6 +28,8 @@ type SettingsMap = { [s: string]: SettingsValue };
 const localStorageDefault: boolean = isFirefox && parseFloat(browserInfo.version) >= 58;
 
 const defaultSettings: SettingsMap = {
+    "version": "",
+    "shopUpdateNotification": true,
     "rules": [],
     "whitelistNoTLD": false,
     "domainsToClean": {},

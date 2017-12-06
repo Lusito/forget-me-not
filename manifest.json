@@ -43,6 +43,7 @@
         "cookies",
         "downloads",
         "history",
+        "notifications",
         "webNavigation",
         "<all_urls>"
     ]

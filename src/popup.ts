@@ -65,7 +65,6 @@ class Popup {
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
         on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
-        on(byId('rules_help') as HTMLElement, 'click', this.showRulesHelp.bind(this));
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -90,10 +89,6 @@ class Popup {
         });
 
         messageUtil.send('getMostRecentCookieDomains');
-        
-        on(byId('logo_area') as HTMLElement, 'click', ()=> {
-            window.open(browser.runtime.getURL("templates/readme.html"));
-        });
     }
 
     private prepareAddRule(domain: string) {
@@ -188,10 +183,6 @@ class Popup {
         dialog.contentNode.setAttribute('data-i18n', 'reset_dialog_content');
         dialog.buttonNodes.confirm_settings_only.focus();
         translateChildren(dialog.domNode);
-    }
-
-    private showRulesHelp() {
-        dialogs.alert('', 'rules_help_dialog_content');
     }
 
     private updateRulesHint(validExpression: boolean, empty: boolean) {

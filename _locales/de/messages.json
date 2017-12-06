@@ -39,7 +39,7 @@
 	"rules_hint_add": { "message": "Eingabe = Weiße Regel hinzuzufügen, Shift+Eingabe = Graue Regel hinzufügen" },
 	"rules_hint_invalid": { "message": "Ungültiger Ausdruck" },
 	"rules_add": { "message": "Hinzufügen" },
-	"rules_help_dialog_content": { "message": "Jeder hostname (z.B. www.google.de) ist eine gültige Regel. Ein Stern (*) kann als Platzhalter für ein Segment eingesetzt werden (z.B. *.google.de oder www.*.de)." },
+	"help_button@title": { "message": "Lese wie Regeln funktionieren, welche Ausdrücke genutzt werden können, über experimentelle Features und was sich kürzlich in dieser Extension geändert hat." },
 	"setting_type_white": { "message": "Weiß" },
 	"setting_type_gray": { "message": "Grau" },
 	"setting_cookies": { "message": "Cookies" },

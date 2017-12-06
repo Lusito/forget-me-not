@@ -297,7 +297,7 @@ body.firefox #logo_area {
     >div:first-child {
         border-left: 0;
     }
-    >div:not(:last-child) {
+    >div:not(:last-of-type) {
         border-right: 0;
     }
 }
@@ -611,4 +611,17 @@ input:checked+.ruleSlider .graylist {
     p {
         margin: 0 0 10px 0;
     }
+}
+#helpLink {
+    background: #214398;
+    color: white;
+    text-decoration: none;
+    line-height: 18px;
+    border-radius: 20px;
+    width: 20px;
+    text-align: center;
+    margin: 4px 4px 4px 10px;
+    border: 1px solid white;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 0px 2px #214398;
 }

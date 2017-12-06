@@ -29,6 +29,7 @@ const localStorageDefault: boolean = isFirefox && parseFloat(browserInfo.version
 
 const defaultSettings: SettingsMap = {
     "rules": [],
+    "whitelistNoTLD": false,
     "domainsToClean": {},
     "cleanAll.cookies": true,
     "cleanAll.cookies.applyRules": true,

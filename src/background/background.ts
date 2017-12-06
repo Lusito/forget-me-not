@@ -332,6 +332,8 @@ class Background {
     }
 
     private getBadgeForDomain(domain: string) {
+        if(settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+            return badges.white;
         let matchingRules = settings.getMatchingRules(domain);
         if (matchingRules.length === 0)
             return badges.forget;
@@ -377,7 +379,7 @@ settings.onReady(() => {
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('rules') !== -1)
+        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1)
             background.updateBadge();
     });
 

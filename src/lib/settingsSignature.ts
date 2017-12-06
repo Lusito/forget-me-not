@@ -7,6 +7,7 @@ import { RuleDefinition } from "./settings";
 
 export interface SettingsTypeMap {
     "rules": RuleDefinition[],
+    "whitelistNoTLD": boolean;
     "domainsToClean": { [s: string]: boolean },
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;

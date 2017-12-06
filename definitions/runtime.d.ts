@@ -209,7 +209,7 @@ declare module 'webextension-polyfill' {
             css?: string[];
             /**
              * Optional.
-             * Since Chrome 45. Warning: this is the current Beta channel. More information available on the API documentation pages.
+             * Warning: this is the current Beta channel. More information available on the API documentation pages.
             * Matches if the bookmarked state of the page is equal to the specified value. Requres the bookmarks permission.
             */
             isBookmarked?: boolean;
@@ -467,7 +467,7 @@ declare module 'webextension-polyfill' {
         export function sendNativeMessage(application: string, message: Object): Promise<any>;
         /**
          * Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 255 characters.
-         * @param url Since Chrome 34.
+         * @param url 
          * URL to be opened after the extension is uninstalled. This URL must have an http: or https: scheme. Set an empty string to not open a new tab upon uninstallation.
          */
         export function setUninstallURL(url: string): Promise<void>;

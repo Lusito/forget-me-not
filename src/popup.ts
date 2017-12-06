@@ -6,7 +6,7 @@
 
 import * as browser from 'webextension-polyfill';
 import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
-import { on, byId, createElement, removeAllChildren, translateChildren } from './lib/htmlUtils';
+import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
 import { isFirefox, browserInfo } from './lib/browserInfo';
 import { connectSettings, permanentDisableSettings, updateFromSettings } from './lib/htmlSettings';
 import * as messageUtil from "./lib/messageUtil";
@@ -65,7 +65,9 @@ class Popup {
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
         on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
-        on(byId('rules_help') as HTMLElement, 'click', this.showRulesHelp.bind(this));
+        let links = document.querySelectorAll('a.open_as_tab');
+        for (let i = 0; i < links.length; i++)
+            makeLinkOpenAsTab(links[i] as HTMLAnchorElement);
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -181,13 +183,9 @@ class Popup {
                 dialog.close();
             }
         });
-        dialog.contentNode.setAttribute('data-l10n-id', 'reset_dialog_content');
+        dialog.contentNode.setAttribute('data-i18n', 'reset_dialog_content');
         dialog.buttonNodes.confirm_settings_only.focus();
         translateChildren(dialog.domNode);
-    }
-
-    private showRulesHelp() {
-        dialogs.alert('', 'rules_help_dialog_content');
     }
 
     private updateRulesHint(validExpression: boolean, empty: boolean) {
@@ -289,9 +287,13 @@ class Popup {
 
     private updateSelectedTab(index: number) {
         for (let i = 0; i < this.tabs.length; i++) {
-            let className = i === index ? 'active' : '';
-            this.tabs[i].className = className;
-            this.pages[i].className = className;
+            if (i === index) {
+                this.tabs[i].classList.add('active');
+                this.pages[i].classList.add('active');
+            } else {
+                this.tabs[i].classList.remove('active');
+                this.pages[i].classList.remove('active');
+            }
         }
     }
 

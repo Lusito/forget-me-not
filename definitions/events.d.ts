@@ -12,7 +12,6 @@ declare module 'webextension-polyfill' {
             schemes?: string[];
             /**
              * Optional.
-             * Since Chrome 23.
             * Matches if the URL (without fragment identifier) matches a specified regular expression. Port numbers are stripped from the URL if they match the default port number. The regular expressions use the RE2 syntax.
             */
             urlMatches?: string;
@@ -52,7 +51,6 @@ declare module 'webextension-polyfill' {
             ports?: any[];
             /**
              * Optional.
-             * Since Chrome 28.
             * Matches if the URL without query segment and fragment identifier matches a specified regular expression. Port numbers are stripped from the URL if they match the default port number. The regular expressions use the RE2 syntax.
             */
             originAndPathMatches?: string;
@@ -113,7 +111,6 @@ declare module 'webextension-polyfill' {
             actions: any[];
             /**
              * Optional.
-             * Since Chrome 28.
             * Tags can be used to annotate rules and perform operations on sets of rules.
             */
             tags?: string[];

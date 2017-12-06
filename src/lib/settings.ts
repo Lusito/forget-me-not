@@ -28,7 +28,10 @@ type SettingsMap = { [s: string]: SettingsValue };
 const localStorageDefault: boolean = isFirefox && parseFloat(browserInfo.version) >= 58;
 
 const defaultSettings: SettingsMap = {
+    "version": "",
+    "shopUpdateNotification": true,
     "rules": [],
+    "whitelistNoTLD": false,
     "domainsToClean": {},
     "cleanAll.cookies": true,
     "cleanAll.cookies.applyRules": true,
@@ -45,6 +48,7 @@ const defaultSettings: SettingsMap = {
 
     "cleanThirdPartyCookies.enabled": false,
     "cleanThirdPartyCookies.delay": 1,
+    "cleanThirdPartyCookies.beforeCreation": false,
 
     "domainLeave.enabled": false,
     "domainLeave.delay": 2,

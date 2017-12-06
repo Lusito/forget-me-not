@@ -28,7 +28,6 @@ declare module 'webextension-polyfill' {
             children?: BookmarkTreeNode[];
             /**
              * Optional.
-             * Since Chrome 37.
             * Indicates the reason why this node is unmodifiable. The managed value indicates that this node was configured by the system administrator or by the custodian of a supervised user. Omitted if the node can be modified by the user and the extension (default).
             */
             unmodifiable?: any;
@@ -143,7 +142,6 @@ declare module 'webextension-polyfill' {
          */
         export function getChildren(id: string): Promise<BookmarkTreeNode[]>;
         /**
-         * Since Chrome 14.
          * Retrieves part of the Bookmarks hierarchy, starting at the specified node.
          * @param id The ID of the root of the subtree to retrieve.
          */

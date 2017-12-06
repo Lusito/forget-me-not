@@ -6,7 +6,10 @@
 import { RuleDefinition } from "./settings";
 
 export interface SettingsTypeMap {
+    "version": string;
+    "shopUpdateNotification": boolean;
     "rules": RuleDefinition[],
+    "whitelistNoTLD": boolean;
     "domainsToClean": { [s: string]: boolean },
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;
@@ -23,6 +26,7 @@ export interface SettingsTypeMap {
 
     "cleanThirdPartyCookies.enabled": boolean,
     "cleanThirdPartyCookies.delay": number,
+    "cleanThirdPartyCookies.beforeCreation": boolean,
 
     "domainLeave.enabled": boolean;
     "domainLeave.delay": number;

@@ -4,19 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { on, translateChildren } from './lib/htmlUtils';
-import { isFirefox } from './lib/browserInfo';
 
 const validHash = /^[a-z]+$/;
 class Readme {
     private pages: NodeListOf<HTMLElement>;
     private tabs: NodeListOf<HTMLElement>;
     public constructor() {
-        browser;
-        if (isFirefox)
-            document.body.className += " firefox";
-
         this.tabs = document.querySelectorAll('#tabs > div');
         this.pages = document.querySelectorAll('#pages > div');
         for (let i = 0; i < this.tabs.length; i++)

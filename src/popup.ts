@@ -36,9 +36,8 @@ class Popup {
     private pages: NodeListOf<Element>;
     private tabs: NodeListOf<Element>;
     public constructor() {
-        browser;
-        if (isFirefox)
-            document.body.className += " firefox";
+        if (browserInfo.mobile)
+            (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
 
         this.tabs = document.querySelectorAll('#tabs > div');
         this.pages = document.querySelectorAll('#pages > div');

@@ -491,7 +491,7 @@ settings.onReady(() => {
         if (id === UPDATE_NOTIFICATION_ID) {
             browser.tabs.create({
                 active: true,
-                url: browser.runtime.getURL("templates/readme.html") + '#changelog'
+                url: browser.runtime.getURL("views/readme.html") + '#changelog'
             });
         }
     });

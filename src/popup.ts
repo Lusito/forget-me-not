@@ -148,9 +148,13 @@ class Popup {
 
     private onImport() {
         // desktop firefox closes popup when dialog is shown
-        if (isFirefox && !browserInfo.mobile)
-            messageUtil.send('import');
-        else {
+        if (isFirefox && !browserInfo.mobile) {
+            browser.tabs.create({
+                url: browser.runtime.getURL('views/import.html'),
+                active: true
+            });
+            window.close();
+        } else {
             loadJSONFile((json) => {
                 if (json && settings.setAll(json)) {
                     console.log('success');

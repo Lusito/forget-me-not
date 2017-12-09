@@ -2,6 +2,7 @@ module.exports = {
     entry: {
         background: "./src/background/background.ts",
         popup: "./src/popup.ts",
+        import: "./src/import.ts",
         readme: "./src/readme.ts"
     },
     output: {

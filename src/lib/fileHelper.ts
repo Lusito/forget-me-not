@@ -6,22 +6,27 @@
 
 import { createElement } from "./htmlUtils";
 
+export function readJSONFile(file: File, callback: (json: any) => void) {
+    var reader = new FileReader();
+    reader.onload = () => {
+        callback(reader.result);
+        try {
+            callback(JSON.parse(reader.result));
+        }
+        catch (e) {
+            callback(null);
+            console.error('Error reading json: ', e);
+        }
+    };
+    reader.readAsText(file);
+}
+
 export function loadJSONFile(callback: (json: any) => void) {
     let input = createElement(document, document.body, 'input', { type: 'file', style: "display:none" }) as HTMLInputElement;
     input.onchange = () => {
         if (!input.files)
             return;
-        var reader = new FileReader();
-        reader.onload = () => {
-            callback(reader.result);
-            try {
-                callback(JSON.parse(reader.result));
-            } catch (e) {
-                callback(null);
-                console.error('Error reading json: ', e);
-            }
-        };
-        reader.readAsText(input.files[0]);
+        readJSONFile(input.files[0], callback);
     };
     input.click();
     document.body.removeChild(input);

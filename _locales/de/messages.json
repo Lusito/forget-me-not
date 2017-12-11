@@ -43,6 +43,7 @@
 	"setting_show_update_notification": { "message": "Zeige eine Notifikation wenn die Erweiterung aktualisiert wurde." },
 	"setting_type_white": { "message": "Weiß" },
 	"setting_type_gray": { "message": "Grau" },
+	"setting_type_forget": { "message": "Vergessen" },
 	"setting_cookies": { "message": "Cookies" },
 	"setting_apply_rules": { "message": "Regeln anwenden" },
 	"setting_local_storage": { "message": "Lokaler Speicher" },

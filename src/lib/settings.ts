@@ -15,7 +15,8 @@ type Callback = () => void;
 
 export enum RuleType {
     WHITE,
-    GRAY
+    GRAY,
+    FORGET
 }
 export interface RuleDefinition {
     rule: string,
@@ -83,6 +84,10 @@ export function isValidExpressionPart(part: string) {
 export function isValidExpression(exp: string) {
     const parts = exp.split('.');
     return parts.length > 0 && parts.findIndex((p) => !isValidExpressionPart(p)) === -1;
+}
+
+function isValidRuleType(ruleType: RuleType) {
+    return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET;
 }
 
 function getRegExForRule(rule: string) {
@@ -166,7 +171,7 @@ class Settings {
                 for (const ruleDef of (json as any).rules as RuleDefinition[]) {
                     if (typeof (ruleDef.rule) !== 'string')
                         continue;
-                    if (isValidExpression(ruleDef.rule) && (ruleDef.type === RuleType.WHITE || ruleDef.type === RuleType.GRAY)) {
+                    if (isValidExpression(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
                         validRules.push({
                             rule: ruleDef.rule,
                             type: ruleDef.type

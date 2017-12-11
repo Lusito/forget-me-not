@@ -71,7 +71,7 @@ export function removeAllChildren(node: HTMLElement) {
 
 type ElementAttributes = { [s: string]: string | number | boolean };
 
-export function createElement(doc: Document, parent: HTMLElement | null, tagName: string, params?: ElementAttributes) {
+export function createElement<K extends keyof HTMLElementTagNameMap>(doc: Document, parent: HTMLElement | null, tagName: K, params?: ElementAttributes): HTMLElementTagNameMap[K] {
     let e = doc.createElement(tagName);
     if (params) {
         for (let key in params) {

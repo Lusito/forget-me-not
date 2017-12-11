@@ -43,6 +43,7 @@
 	"setting_show_update_notification": { "message": "Show a notification when the extension has been updated." },
 	"setting_type_white": { "message": "White" },
 	"setting_type_gray": { "message": "Gray" },
+	"setting_type_forget": { "message": "Forget" },
 	"setting_cookies": { "message": "Cookies" },
 	"setting_apply_rules": { "message": "Apply Rules" },
 	"setting_local_storage": { "message": "Local Storage" },

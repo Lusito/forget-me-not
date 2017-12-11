@@ -22,7 +22,7 @@ export function readJSONFile(file: File, callback: (json: any) => void) {
 }
 
 export function loadJSONFile(callback: (json: any) => void) {
-    let input = createElement(document, document.body, 'input', { type: 'file', style: "display:none" }) as HTMLInputElement;
+    let input = createElement(document, document.body, 'input', { type: 'file', style: "display:none" });
     input.onchange = () => {
         if (!input.files)
             return;

@@ -474,8 +474,8 @@ input[type=checkbox]:checked+span:before {
 }
 .rules_head .type_column,
 .rules_list .type_column {
-    min-width: 90px;
-    width: 90px;
+    min-width: 95px;
+    width: 95px;
 }
 .rules_head .delete_column,
 .rules_list .delete_column {
@@ -512,54 +512,6 @@ html.fullscreen #rules_list {
     max-height: none;
 }
 
-// Rule Switch
-.ruleSwitch {
-    position: relative;
-    display: inline-block;
-    width: 90px;
-    height: 20px;
-}
-
-.ruleSwitch input {
-    display: none;
-}
-
-.ruleSlider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #747474;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-.ruleSlider:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-input:checked+.ruleSlider {
-    background-color: $badgeColorWhite;
-}
-
-input:focus+.ruleSlider {
-    box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked+.ruleSlider:before {
-    transform: translateX(70px);
-}
-
 .whitelist {
     display: none;
 }
@@ -575,12 +527,39 @@ input:checked+.ruleSlider:before {
     font-family: Verdana, sans-serif;
 }
 
-input:checked+.ruleSlider .whitelist {
-    display: block;
-}
+.type_column {
+    select {
+        width: 95px;
+        height: 20px;
+        line-height: 14px;
+        font-size: 13px;
+        text-shadow: none;
+        background-image: url(../icons/downarrow_white.svg);
+        background-position-y: -4px;
+        cursor: pointer;
+        padding: 0 24px 0 3px;
+        text-align: left;
 
-input:checked+.ruleSlider .graylist {
-    display: none;
+        > option {
+            font-size: 13px;
+        }
+    }
+
+    .badge_white:hover {
+        background-color: $badgeColorWhite;
+    }
+    .badge_gray:hover {
+        background-color: $badgeColorGray;
+    }
+    .badge_forget:hover {
+        background-color: $badgeColorForget;
+    }
+    select.badge_white:hover,
+    select.badge_gray:hover,
+    select.badge_forget:hover {
+        box-shadow: inset 0px 0 0 1px white;
+        color: white;
+    }
 }
 
 .log_add_rule {

@@ -64,11 +64,9 @@ export function getBadgeForDomain(domain: string) {
     if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
         return badges.white;
     let matchingRules = settings.getMatchingRules(domain);
-    if (matchingRules.length === 0)
+    if (matchingRules.length === 0 || matchingRules.find((r) => r.type === RuleType.FORGET))
         return badges.forget;
-    for (const rule of matchingRules) {
-        if (rule.type === RuleType.WHITE)
-            return badges.white;
-    }
+    if (matchingRules.find((r) => r.type === RuleType.WHITE))
+        return badges.white;
     return badges.gray;
 }

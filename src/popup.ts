@@ -12,7 +12,7 @@ import { connectSettings, permanentDisableSettings, updateFromSettings } from '.
 import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
-import { CookieDomainInfo } from './background/backgroundShared';
+import { CookieDomainInfo } from './shared';
 import { RuleListItem } from './ruleListItem';
 
 const allowedProtocols = /https?:/;
@@ -119,7 +119,7 @@ class Popup {
             if (cleanAllNow)
                 on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
 
-            let tab = tabs.length && tabs[0];
+            const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
                 let url = new URL(tab.url);
                 let label = byId('current_tab');
@@ -132,7 +132,7 @@ class Popup {
                         label.textContent = this.hostname;
                     if (cleanCurrentTab) {
                         on(cleanCurrentTab, 'click', () => {
-                            messageUtil.send('cleanUrlNow', this.hostname);
+                            messageUtil.send('cleanUrlNow', { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                         });
                     }
                     let addRule = byId('current_tab_add_rule');

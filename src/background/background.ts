@@ -6,43 +6,20 @@
 
 import * as browser from 'webextension-polyfill';
 import * as messageUtil from "../lib/messageUtil";
-import { settings, RuleType } from "../lib/settings";
-import { browserInfo, isFirefox } from '../lib/browserInfo';
+import { settings } from "../lib/settings";
 import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
-import { CookieDomainInfo } from './backgroundShared';
+import { CookieDomainInfo } from '../shared';
+import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain } from './backgroundShared';
+import { CleanStore } from './cleanStore';
 
 const allowedProtocols = /https?:/;
-const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 const MAX_COOKIE_DOMAIN_HISTORY = 20;
 
-interface BadgeInfo {
-    i18nKey?: string;
-    color: string | [number, number, number, number];
-}
-
-const badges = {
-    white: {
-        i18nKey: "badge_white",
-        color: [38, 69, 151, 255]
-    } as BadgeInfo,
-    gray: {
-        i18nKey: "badge_gray",
-        color: [116, 116, 116, 255]
-    } as BadgeInfo,
-    forget: {
-        i18nKey: "badge_forget",
-        color: [190, 23, 38, 255]
-    } as BadgeInfo,
-    none: {
-        color: [0, 0, 0, 255]
-    } as BadgeInfo
-}
-
 class Background {
+    private readonly cleanStores: { [s: string]: CleanStore } = {};
     private lastDomainChangeRequest = Date.now();
     private delayedDomainUpdate = new DelayedExecution(this.updateDomainList.bind(this));
-    private currentDomains: string[] = [];
     private mostRecentCookieDomains: string[] = [];
     private readonly tabDomains: { [s: string]: string } = {};
     private readonly tabNextDomains: { [s: string]: string } = {};
@@ -50,16 +27,6 @@ class Background {
     public constructor() {
         this.updateBadge();
         this.updateDomainList();
-    }
-
-    private getLocalStorageDomains(ignoreGrayList: boolean): string[] {
-        let domainsToClean = settings.get('domainsToClean');
-        let result = [];
-        for (const domain in domainsToClean) {
-            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainAllowed(domain, ignoreGrayList))
-                result.push(domain);
-        }
-        return result;
     }
 
     public onStartup() {
@@ -86,7 +53,7 @@ class Background {
         }
         if (settings.get('startup.localStorage')) {
             if (settings.get('startup.localStorage.applyRules'))
-                this.cleanLocalStorage(this.getLocalStorageDomains(true));
+                cleanLocalStorage(this.getDomainsToClean(true));
             else {
                 typeSet.localStorage = true;
                 settings.set('domainsToClean', {});
@@ -94,6 +61,10 @@ class Background {
             }
         }
         browser.browsingData.remove(options, typeSet);
+    }
+
+    public cleanUrlNow(config: CleanUrlNowConfig) {
+        this.getCleanStore(config.cookieStoreId).cleanUrlNow(config.hostname);
     }
 
     public cleanAllNow() {
@@ -118,7 +89,7 @@ class Background {
         }
         if (settings.get('cleanAll.localStorage')) {
             if (settings.get('cleanAll.localStorage.applyRules'))
-                this.cleanLocalStorage(this.getLocalStorageDomains(false));
+                cleanLocalStorage(this.getDomainsToClean(false));
             else {
                 typeSet.localStorage = true;
                 settings.set('domainsToClean', {});
@@ -128,64 +99,31 @@ class Background {
         browser.browsingData.remove(options, typeSet);
     }
 
-    private cleanLocalStorage(hostnames: string[]) {
-        if (removeLocalStorageByHostname) {
-            let domainsToClean = { ...settings.get('domainsToClean') };
-            for (const hostname of hostnames)
-                delete domainsToClean[hostname];
-            settings.set('domainsToClean', domainsToClean);
-            settings.save();
-            browser.browsingData.remove({
-                originTypes: { unprotectedWeb: true },
-                hostnames: hostnames
-            }, { localStorage: true });
-            return true;
+    private getDomainsToClean(ignoreGrayList: boolean): string[] {
+        let domainsToClean = settings.get('domainsToClean');
+        let result = [];
+        for (const domain in domainsToClean) {
+            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList))
+                result.push(domain);
         }
-        return false;
+        return result;
     }
 
-    public cleanUrlNow(hostname: string) {
-        this.cleanLocalStorage([hostname]);
-        this.cleanCookiesByDomain(hostname, true);
-    }
-
-    private removeCookie(cookie: browser.cookies.Cookie) {
-        let allowSubDomains = cookie.domain.startsWith('.');
-        let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-        browser.cookies.remove({
-            name: cookie.name,
-            url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
-            storeId: cookie.storeId
-        });
-    }
-
-    private isDomainAllowed(domain: string, ignoreGrayList?: boolean): boolean {
-        if (this.currentDomains.indexOf(domain) !== -1)
-            return true;
-        let badge = this.getBadgeForDomain(domain);
+    private isDomainProtected(domain: string, ignoreGrayList?: boolean): boolean {
+        for (let key in this.cleanStores) {
+            if (this.cleanStores[key].isActiveDomain(domain))
+                return true;
+        }
+        let badge = getBadgeForDomain(domain);
         if (ignoreGrayList)
             return badge === badges.white;
         return badge !== badges.none && badge !== badges.forget;
     }
 
-    public isCookieDomainAllowed(domain: string) {
-        let allowSubDomains = domain.startsWith('.');
-        let rawDomain = allowSubDomains ? domain.substr(1) : domain;
-        if (this.isDomainAllowed(rawDomain))
-            return true;
-        if (allowSubDomains) {
-            for (const otherDomain of this.currentDomains) {
-                if (otherDomain.endsWith(domain))
-                    return true;
-            }
-        }
-        return false;
-    }
-
     public getMostRecentCookieDomains(): CookieDomainInfo[] {
         let result: CookieDomainInfo[] = [];
         for (const domain of this.mostRecentCookieDomains) {
-            let badgeKey = this.getBadgeForDomain(domain).i18nKey;
+            let badgeKey = getBadgeForDomain(domain).i18nKey;
             if (badgeKey) {
                 result.push({
                     domain: domain,
@@ -240,8 +178,8 @@ class Background {
                         let delta = Date.now() - this.lastDomainChangeRequest;
                         if (delta < 1000)
                             exec.restart(500);
-                        else if (!this.isCookieDomainAllowed(changeInfo.cookie.domain))
-                            this.removeCookie(changeInfo.cookie);
+                        else if (!this.isCookieDomainAllowed(changeInfo.cookie.storeId, changeInfo.cookie.domain))
+                            removeCookie(changeInfo.cookie);
                     });
                     exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
                 }
@@ -249,79 +187,41 @@ class Background {
         }
     }
 
+    public isCookieDomainAllowed(cookieStoreId: string, domain: string) {
+        return this.getCleanStore(cookieStoreId).isCookieDomainAllowed(domain);
+    }
+
     private cleanCookiesWithRulesNow() {
-        browser.cookies.getAll({}).then((cookies) => {
-            for (const cookie of cookies) {
-                if (!this.isCookieDomainAllowed(cookie.domain))
-                    this.removeCookie(cookie);
-            }
+        browser.cookies.getAllCookieStores().then((stores) => {
+            for (let store of stores)
+                this.getCleanStore(store.id).cleanCookiesWithRulesNow();
         });
     }
 
-    private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
-        browser.cookies.getAll({}).then((cookies) => {
-            for (const cookie of cookies) {
-                let allowSubDomains = cookie.domain.startsWith('.');
-                let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-                if (match && (ignoreRules || !this.isCookieDomainAllowed(cookie.domain)))
-                    this.removeCookie(cookie);
-            }
-        });
-    }
-
-    private cleanByDomainWithRulesNow(domain: string) {
-        if (!settings.get('domainLeave.enabled') || this.isDomainAllowed(domain))
-            return;
-
-        if (settings.get('domainLeave.cookies')) {
-            this.cleanCookiesByDomain(domain);
-        }
-        if (settings.get('domainLeave.localStorage'))
-            this.cleanLocalStorage([domain]);
+    private getCleanStore(id?: string): CleanStore {
+        if (!id)
+            id = 'default';
+        let store = this.cleanStores[id];
+        if (!store)
+            store = this.cleanStores[id] = new CleanStore(id);
+        return store;
     }
 
     private updateDomainList() {
         browser.tabs.query({}).then((tabs) => {
-            let oldDomains = this.currentDomains;
-            this.currentDomains = [];
+            for (let cookieStoreId in this.cleanStores)
+                this.cleanStores[cookieStoreId].prepareNewDomains();
             for (let tab of tabs) {
                 if (tab.url && !tab.incognito) {
                     let url = new URL(tab.url);
-                    if (allowedProtocols.test(url.protocol) && this.currentDomains.indexOf(url.hostname) === -1)
-                        this.currentDomains.push(url.hostname);
+                    if (allowedProtocols.test(url.protocol))
+                        this.getCleanStore(tab.cookieStoreId).addNewDomain(url.hostname);
                 }
             }
 
-            let removedDomains = oldDomains.filter((domain) => this.currentDomains.indexOf(domain) === -1);
-            if (removedDomains.length)
-                this.onDomainsRemoved(removedDomains);
-            let addedDomains = this.currentDomains.filter((domain) => oldDomains.indexOf(domain) === -1);
-            if (addedDomains.length)
-                this.onDomainsAdded(addedDomains);
+            for (let cookieStoreId in this.cleanStores)
+                this.cleanStores[cookieStoreId].finishNewDomains();
         });
-    }
-
-    private onDomainsRemoved(removedDomains: string[]) {
-        let timeout = settings.get('domainLeave.delay') * 60 * 1000;
-        if (timeout <= 0) {
-            for (let domain of removedDomains)
-                this.cleanByDomainWithRulesNow(domain);
-        } else {
-            setTimeout(() => {
-                for (let domain of removedDomains)
-                    this.cleanByDomainWithRulesNow(domain);
-            }, timeout);
-        }
-    }
-
-    private onDomainsAdded(addedDomains: string[]) {
-        if (removeLocalStorageByHostname) {
-            let domainsToClean = { ...settings.get('domainsToClean') };
-            for (const domain of addedDomains)
-                domainsToClean[domain] = true;
-            settings.set('domainsToClean', domainsToClean);
-            settings.save();
-        }
     }
 
     public checkDomainChanges() {
@@ -332,19 +232,6 @@ class Background {
         }
     }
 
-    private getBadgeForDomain(domain: string) {
-        if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
-            return badges.white;
-        let matchingRules = settings.getMatchingRules(domain);
-        if (matchingRules.length === 0)
-            return badges.forget;
-        for (const rule of matchingRules) {
-            if (rule.type === RuleType.WHITE)
-                return badges.white;
-        }
-        return badges.gray;
-    }
-
     public updateBadge() {
         browser.tabs.query({ active: true }).then((tabs) => {
             for (let tab of tabs) {
@@ -352,7 +239,7 @@ class Background {
                     let badge = badges.none;
                     let url = new URL(tab.url);
                     if (allowedProtocols.test(url.protocol))
-                        badge = this.getBadgeForDomain(url.hostname);
+                        badge = getBadgeForDomain(url.hostname);
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
                     browser.browserAction.setBadgeText({ text: text, tabId: tab.id });
                     browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
@@ -400,11 +287,14 @@ function getCookieDomainFromCookieHeader(header: string) {
 let background: Background;
 let doStartup = false;
 const UPDATE_NOTIFICATION_ID: string = "UpdateNotification";
-
+interface CleanUrlNowConfig {
+    hostname: string;
+    cookieStoreId: string;
+}
 settings.onReady(() => {
     background = new Background();
     messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
-    messageUtil.receive('cleanUrlNow', (url) => background.cleanUrlNow(url));
+    messageUtil.receive('cleanUrlNow', (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
     browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
     browser.webNavigation.onBeforeNavigate.addListener((details) => {
         background.onBeforeNavigate(details.tabId, details.url);
@@ -418,6 +308,10 @@ settings.onReady(() => {
         background.checkDomainChanges();
     });
 
+    function isCookieDomainWhiteOrGray(domain: string) {
+        let badge = getBadgeForDomain(domain.startsWith('.') ? domain.substr(1) : domain);
+        return badge !== badges.none && badge !== badges.forget;
+    }
     function onHeadersReceived(details: browser.webRequest.WebResponseHeadersDetails) {
         if (details.responseHeaders) {
             return {
@@ -426,7 +320,7 @@ settings.onReady(() => {
                         if (x.value) {
                             const domain = getCookieDomainFromCookieHeader(x.value);
                             if (domain && background.isThirdPartyCookie(details.tabId, domain)
-                                && !background.isCookieDomainAllowed(domain)) {
+                                && !isCookieDomainWhiteOrGray(domain)) {
                                 background.addToMostRecentCookieDomains(domain);
                                 return false;
                             }

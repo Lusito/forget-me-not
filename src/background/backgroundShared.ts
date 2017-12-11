@@ -43,7 +43,7 @@ export function removeCookie(cookie: browser.cookies.Cookie) {
     });
 }
 
-export function cleanLocalStorage(hostnames: string[], cookieStoreId?: string) {
+export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
     //Fixme: use cookieStoreId when it's supported by firefox
     if (removeLocalStorageByHostname) {
         let domainsToClean = { ...settings.get('domainsToClean') };

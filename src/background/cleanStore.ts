@@ -74,7 +74,7 @@ export class CleanStore {
             this.cleanCookiesByDomain(domain);
 
         if (settings.get('domainLeave.localStorage'))
-            cleanLocalStorage([domain]);
+            cleanLocalStorage([domain], this.id);
     }
 
     public isDomainProtected(domain: string, ignoreGrayList?: boolean): boolean {

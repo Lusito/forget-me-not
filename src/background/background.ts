@@ -53,7 +53,7 @@ class Background {
         }
         if (settings.get('startup.localStorage')) {
             if (settings.get('startup.localStorage.applyRules'))
-                cleanLocalStorage(this.getDomainsToClean(true));
+                this.cleanLocalStorage(this.getDomainsToClean(true));
             else {
                 typeSet.localStorage = true;
                 settings.set('domainsToClean', {});
@@ -61,6 +61,13 @@ class Background {
             }
         }
         browser.browsingData.remove(options, typeSet);
+    }
+
+    public cleanLocalStorage(hostnames: string[]) {
+        browser.cookies.getAllCookieStores().then((cookieStores) => {
+            for (let store of cookieStores)
+                cleanLocalStorage(this.getDomainsToClean(true), store.id);
+        });
     }
 
     public cleanUrlNow(config: CleanUrlNowConfig) {
@@ -89,7 +96,7 @@ class Background {
         }
         if (settings.get('cleanAll.localStorage')) {
             if (settings.get('cleanAll.localStorage.applyRules'))
-                cleanLocalStorage(this.getDomainsToClean(false));
+                this.cleanLocalStorage(this.getDomainsToClean(false));
             else {
                 typeSet.localStorage = true;
                 settings.set('domainsToClean', {});

@@ -33,17 +33,80 @@ declare module 'webextension-polyfill' {
 
         export interface Tab {
             /**
-             * Optional.
-             * Either loading or complete.
+             * Whether the tab is active in its window. (Does not necessarily mean the window is focused.)
              */
-            status?: string;
+            active: boolean;
+            /**
+             * Optional.
+             * Whether the tab has produced sound over the past couple of seconds (but it might not be heard if also muted). Equivalent to whether the speaker audio indicator is showing.
+             */
+            audible?: boolean;
+            /**
+             * Optional.
+             * Whether the tab can be discarded automatically by the browser when resources are low.
+             */
+            autoDiscardable?: boolean;
+            /**
+             * Optional.
+             * The cookie store of the tab. If different tabs can have different cookie stores (for example, to support contextual identity), you can pass this as the storeId option into various methods of the cookies API, to set and get cookies associated with this tab's cookie store. Only present if the extension has the "cookies" permission.
+             */
+            cookieStoreId?: string;
+            /**
+             * Optional.
+             * Whether the tab is discarded. A discarded tab is one whose content has been unloaded from memory, but is still visible in the tab strip. Its content gets reloaded the next time it's activated.
+             */
+            discarded?: boolean;
+            /**
+             * Optional.
+             * The URL of the tab's favicon. This property is only present if the extension's manifest includes the "tabs" permission. It may also be an empty string if the tab is loading.
+             */
+            favIconUrl?: string;
+            /**
+             * Optional. The height of the tab in pixels.
+             */
+            height?: number;
+            /**
+             * Whether the tab is highlighted.
+             */
+            highlighted: boolean;
+            /**
+             * Optional.
+             * The ID of the tab. Tab IDs are unique within a browser session. Under some circumstances a Tab may not be assigned an ID, for example when querying foreign tabs using the sessions API, in which case a session ID may be present. Tab ID can also be set to tabs.TAB_ID_NONE for apps and devtools windows.
+             */
+            id?: number;
+            /** Whether the tab is in an incognito window. */
+            incognito: boolean;
             /** The zero-based index of the tab within its window. */
             index: number;
+            /** True if the tab can be rendered in Reader Mode, false otherwise. */
+            isArticle: boolean;
+            /** True if the tab is currently being rendered in Reader Mode, false otherwise. */
+            isInReaderMode: boolean;
+            /** Time at which the tab was last accessed, in milliseconds since the epoch. */
+            lastAccessed: number;
+            /**
+             * Optional.
+             * Current tab muted state and the reason for the last state change.
+             */
+            mutedInfo?: MutedInfo;
             /**
              * Optional.
              * The ID of the tab that opened this tab, if any. This property is only present if the opener tab still exists.
              */
             openerTabId?: number;
+            /**
+             * Whether the tab is pinned.
+             */
+            pinned: boolean;
+            /**
+             * Optional. The session ID used to uniquely identify a Tab obtained from the sessions API.
+             */
+            sessionId?: string;
+            /**
+             * Optional.
+             * Either loading or complete.
+             */
+            status?: string;
             /**
              * Optional.
              * The title of the tab. This property is only present if the extension's manifest includes the "tabs" permission.
@@ -55,53 +118,11 @@ declare module 'webextension-polyfill' {
              */
             url?: string;
             /**
-             * Whether the tab is pinned.
-             */
-            pinned: boolean;
-            /**
-             * Whether the tab is highlighted.
-             */
-            highlighted: boolean;
-            /** The ID of the window the tab is contained within. */
-            windowId: number;
-            /**
-             * Whether the tab is active in its window. (Does not necessarily mean the window is focused.)
-             */
-            active: boolean;
-            /**
-             * Optional.
-             * The URL of the tab's favicon. This property is only present if the extension's manifest includes the "tabs" permission. It may also be an empty string if the tab is loading.
-             */
-            favIconUrl?: string;
-            /**
-             * Optional.
-             * The ID of the tab. Tab IDs are unique within a browser session. Under some circumstances a Tab may not be assigned an ID, for example when querying foreign tabs using the sessions API, in which case a session ID may be present. Tab ID can also be set to tabs.TAB_ID_NONE for apps and devtools windows.
-             */
-            id?: number;
-            /** Whether the tab is in an incognito window. */
-            incognito: boolean;
-            /**
-             * Optional.
-             * Whether the tab has produced sound over the past couple of seconds (but it might not be heard if also muted). Equivalent to whether the speaker audio indicator is showing.
-             */
-            audible?: boolean;
-            /**
-             * Optional.
-             * Current tab muted state and the reason for the last state change.
-             */
-            mutedInfo?: MutedInfo;
-            /**
              * Optional. The width of the tab in pixels.
              */
             width?: number;
-            /**
-             * Optional. The height of the tab in pixels.
-             */
-            height?: number;
-            /**
-             * Optional. The session ID used to uniquely identify a Tab obtained from the sessions API.
-             */
-            sessionId?: string;
+            /** The ID of the window the tab is contained within. */
+            windowId: number;
         }
 
         /**

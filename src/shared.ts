@@ -8,3 +8,5 @@ export interface CookieDomainInfo {
     domain: string,
     badge: string
 }
+
+export const allowedProtocols = /https?:/;

@@ -12,10 +12,9 @@ import { connectSettings, permanentDisableSettings, updateFromSettings } from '.
 import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
-import { CookieDomainInfo } from './shared';
+import { CookieDomainInfo, allowedProtocols } from './shared';
 import { RuleListItem } from './ruleListItem';
 
-const allowedProtocols = /https?:/;
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {

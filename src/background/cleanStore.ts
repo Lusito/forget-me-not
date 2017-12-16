@@ -6,47 +6,19 @@
 
 import * as browser from 'webextension-polyfill';
 import { settings } from "../lib/settings";
-import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain } from './backgroundShared';
+import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain } from './backgroundShared';
+import { TabWatcher } from './tabWatcher';
 
 export class CleanStore {
+    private readonly tabWatcher: TabWatcher;
     private readonly id: string;
-    private currentDomains: string[] = [];
-    private newDomains: string[] = [];
 
-    public constructor(id: string) {
+    public constructor(id: string, tabWatcher: TabWatcher) {
         this.id = id;
+        this.tabWatcher = tabWatcher;
     }
 
-    public prepareNewDomains() {
-        this.newDomains = [];
-    }
-
-    public addNewDomain(domain: string) {
-        if (this.newDomains.indexOf(domain) === -1)
-            this.newDomains.push(domain);
-    }
-
-    public finishNewDomains() {
-        var oldDomains = this.currentDomains;
-        this.currentDomains = this.newDomains;
-        this.newDomains = [];
-
-        const removed = oldDomains.filter((domain) => this.currentDomains.indexOf(domain) === -1);
-        const added = this.currentDomains.filter((domain) => oldDomains.indexOf(domain) === -1);
-        if (removed.length)
-            this.onDomainsRemoved(removed);
-        if (added.length)
-            this.onDomainsAdded(added);
-        return {
-        };
-    }
-
-    public isActiveDomain(domain: string) {
-        this.currentDomains.indexOf(domain) !== -1
-    }
-
-
-    public cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
+    private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
         browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
             for (const cookie of cookies) {
                 let allowSubDomains = cookie.domain.startsWith('.');
@@ -66,7 +38,7 @@ export class CleanStore {
         });
     }
 
-    public cleanByDomainWithRulesNow(domain: string) {
+    private cleanByDomainWithRulesNow(domain: string) {
         if (!settings.get('domainLeave.enabled') || this.isDomainProtected(domain, false))
             return;
 
@@ -77,8 +49,8 @@ export class CleanStore {
             cleanLocalStorage([domain], this.id);
     }
 
-    public isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
-        if (this.currentDomains.indexOf(domain) !== -1)
+    private isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
+        if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
         let badge = getBadgeForDomain(domain);
         if (ignoreGrayList)
@@ -91,13 +63,7 @@ export class CleanStore {
         let rawDomain = allowSubDomains ? domain.substr(1) : domain;
         if (this.isDomainProtected(rawDomain, ignoreGrayList))
             return true;
-        if (allowSubDomains) {
-            for (const otherDomain of this.currentDomains) {
-                if (otherDomain.endsWith(domain))
-                    return true;
-            }
-        }
-        return false;
+        return this.tabWatcher.cookieStoreContainsSubDomain(this.id, domain);
     }
 
     public cleanUrlNow(hostname: string) {
@@ -105,26 +71,14 @@ export class CleanStore {
         this.cleanCookiesByDomain(hostname, true);
     }
 
-    private onDomainsRemoved(removedDomains: string[]) {
+    public onDomainLeave(removedDomain: string) {
         let timeout = settings.get('domainLeave.delay') * 60 * 1000;
         if (timeout <= 0) {
-            for (let domain of removedDomains)
-                this.cleanByDomainWithRulesNow(domain);
+            this.cleanByDomainWithRulesNow(removedDomain);
         } else {
             setTimeout(() => {
-                for (let domain of removedDomains)
-                    this.cleanByDomainWithRulesNow(domain);
+                this.cleanByDomainWithRulesNow(removedDomain);
             }, timeout);
-        }
-    }
-
-    private onDomainsAdded(addedDomains: string[]) {
-        if (removeLocalStorageByHostname) {
-            let domainsToClean = { ...settings.get('domainsToClean') };
-            for (const domain of addedDomains)
-                domainsToClean[domain] = true;
-            settings.set('domainsToClean', domainsToClean);
-            settings.save();
         }
     }
 }

@@ -47,7 +47,7 @@ class Background {
         };
         if (settings.get('startup.cookies')) {
             if (settings.get('startup.cookies.applyRules'))
-                this.cleanCookiesWithRulesNow();
+                this.cleanCookiesWithRulesNow(true);
             else
                 typeSet.cookies = true;
         }
@@ -90,7 +90,7 @@ class Background {
         };
         if (settings.get('cleanAll.cookies')) {
             if (settings.get('cleanAll.cookies.applyRules'))
-                this.cleanCookiesWithRulesNow();
+                this.cleanCookiesWithRulesNow(false);
             else
                 typeSet.cookies = true;
         }
@@ -116,7 +116,7 @@ class Background {
         return result;
     }
 
-    private isDomainProtected(domain: string, ignoreGrayList?: boolean): boolean {
+    private isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
         for (let key in this.cleanStores) {
             if (this.cleanStores[key].isActiveDomain(domain))
                 return true;
@@ -195,13 +195,13 @@ class Background {
     }
 
     public isCookieDomainAllowed(cookieStoreId: string, domain: string) {
-        return this.getCleanStore(cookieStoreId).isCookieDomainAllowed(domain);
+        return this.getCleanStore(cookieStoreId).isCookieDomainAllowed(domain, false);
     }
 
-    private cleanCookiesWithRulesNow() {
+    private cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
         browser.cookies.getAllCookieStores().then((stores) => {
             for (let store of stores)
-                this.getCleanStore(store.id).cleanCookiesWithRulesNow();
+                this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList);
         });
     }
 

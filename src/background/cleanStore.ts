@@ -51,23 +51,23 @@ export class CleanStore {
             for (const cookie of cookies) {
                 let allowSubDomains = cookie.domain.startsWith('.');
                 let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-                if (match && (ignoreRules || !this.isCookieDomainAllowed(cookie.domain)))
+                if (match && (ignoreRules || !this.isCookieDomainAllowed(cookie.domain, false)))
                     removeCookie(cookie);
             }
         });
     }
 
-    public cleanCookiesWithRulesNow() {
+    public cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
         browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
             for (const cookie of cookies) {
-                if (!this.isCookieDomainAllowed(cookie.domain))
+                if (!this.isCookieDomainAllowed(cookie.domain, ignoreGrayList))
                     removeCookie(cookie);
             }
         });
     }
 
     public cleanByDomainWithRulesNow(domain: string) {
-        if (!settings.get('domainLeave.enabled') || this.isDomainProtected(domain))
+        if (!settings.get('domainLeave.enabled') || this.isDomainProtected(domain, false))
             return;
 
         if (settings.get('domainLeave.cookies'))
@@ -77,7 +77,7 @@ export class CleanStore {
             cleanLocalStorage([domain], this.id);
     }
 
-    public isDomainProtected(domain: string, ignoreGrayList?: boolean): boolean {
+    public isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
         if (this.currentDomains.indexOf(domain) !== -1)
             return true;
         let badge = getBadgeForDomain(domain);
@@ -86,10 +86,10 @@ export class CleanStore {
         return badge !== badges.none && badge !== badges.forget;
     }
 
-    public isCookieDomainAllowed(domain: string) {
+    public isCookieDomainAllowed(domain: string, ignoreGrayList: boolean) {
         let allowSubDomains = domain.startsWith('.');
         let rawDomain = allowSubDomains ? domain.substr(1) : domain;
-        if (this.isDomainProtected(rawDomain))
+        if (this.isDomainProtected(rawDomain, ignoreGrayList))
             return true;
         if (allowSubDomains) {
             for (const otherDomain of this.currentDomains) {

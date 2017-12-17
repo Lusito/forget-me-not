@@ -8,6 +8,7 @@ import { settings, RuleType } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import { Cookies } from "../browser/cookies";
 import { browser } from "../browser/browser";
+import DelayedExecution from "../lib/delayedExecution";
 
 export const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 
@@ -34,6 +35,27 @@ export const badges = {
     } as BadgeInfo
 }
 
+let cookieRemovalCounts: { [s: string]: number } = {};
+const COOKIE_CLEANUP_NOTIFICATION_ID: string = "CookieCleanupNotification";
+const delayCookieRemoveNotification = new DelayedExecution(() => {
+    const lines = [];
+    let totalCount = 0;
+    for (let domain in cookieRemovalCounts) {
+        const count = cookieRemovalCounts[domain];
+        lines.push(browser.i18n.getMessage('cookie_cleanup_notification_line', [domain, count]));
+        totalCount += count;
+    }
+    let title = browser.i18n.getMessage('cookie_cleanup_notification_title', totalCount);
+    cookieRemovalCounts = {};
+    browser.notifications.create(COOKIE_CLEANUP_NOTIFICATION_ID, {
+        "priority": -2,
+        "type": "basic",
+        "iconUrl": browser.extension.getURL("icons/icon96.png"),
+        "title": title,
+        "message": lines.join('\n')
+    });
+});
+
 export function removeCookie(cookie: Cookies.Cookie) {
     let allowSubDomains = cookie.domain.startsWith('.');
     let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
@@ -42,6 +64,10 @@ export function removeCookie(cookie: Cookies.Cookie) {
         url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
         storeId: cookie.storeId
     });
+    if(settings.get('showCookieRemovalNotification')) {
+        cookieRemovalCounts[rawDomain] = (cookieRemovalCounts[rawDomain] || 0) + 1;
+        delayCookieRemoveNotification.restart(500);
+    }
 }
 
 export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {

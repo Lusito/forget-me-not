@@ -31,7 +31,8 @@ const localStorageDefault: boolean = isFirefox && parseFloat(browserInfo.version
 
 const defaultSettings: SettingsMap = {
     "version": "",
-    "shopUpdateNotification": true,
+    "showUpdateNotification": true,
+    "showCookieRemovalNotification": false,
     "rules": [],
     "whitelistNoTLD": false,
     "domainsToClean": {},

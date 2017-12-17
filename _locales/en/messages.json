@@ -41,6 +41,7 @@
 	"rules_add": { "message": "Add" },
 	"help_button@title": { "message": "Read about how rules work, what expressions you can use, experimental features, and recent changes in this extension." },
 	"setting_show_update_notification": { "message": "Show a notification when the extension has been updated." },
+	"setting_show_cookie_removal_notification": { "message": "Show a notification when cookies have been removed." },
 	"setting_show_badge": { "message": "Show matching rule as a badge on the toolbar button" },
 	"setting_type_white": { "message": "White" },
 	"setting_type_gray": { "message": "Gray" },
@@ -75,6 +76,8 @@
 	"changelog_page": { "message": "### Version 0.8.7b (2017/12/15)\n- Workaround for settings  import not working correctly in the Firefox browserAction popup.\n- Partial support for container tabs: Cookies work, local storage does not (Mozilla needs to fix something first)\n- Added new rule \"Forget\" (red) to allow overriding a more generic whitelist rule (read the tutorial for details).\n\n### Version 0.8.6 (2017/12/06)\n- Translation changes, using [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Introduction of an in-extension readme, tutorial and changelog.\n  - This can be accessed through the questionmark button.\n- Showing a notification when the extension has been updated (can be disabled).\n- Domains without a Top Level Domain (like localhost, intranet, etc.) can now be whitelisted with a checkbox.\n- Experimental feature for blocking thirdparty cookies\n\n### Version 0.8.5 (2017/11/25)\n- Typo fixed\n- Made toggle of rule type smoother\n- Button for adding new rules (before you could only add a new rule by pressing enter)\n- Button for getting information on valid expressions \n\n### Version 0.8.4 (2017/11/25)\n- Better mobile compatibility\n- Fix for incognito cookies being logged and removed \n\n### Version 0.8.3 (2017/11/24)\n- Disabled on incognito tabs/windows\n- Added a log to see the domains of recent cookie changes\n- Added buttons to prefill the filter input field with domains of the above and the current tab\n\n### Version 0.8.2 (2017/11/19)\n- Some bugfixes, cleanups \n\n### Version 0.8.0 (2017/11/19)\n- First Version" },
 	"update_notification_title": { "message": "Forget Me Not has been updated!" },
 	"update_notification_message": { "message": "Click here to see what's new." },
+	"cookie_cleanup_notification_title": { "message": "$COUNT$ cookies have been removed", "placeholders": { "count": { "content": "$1", "example": "4"} } },
+	"cookie_cleanup_notification_line": { "message": "$DOMAIN$: $COUNT$ cookies", "placeholders": { "domain": { "content": "$1", "example": "www.google.com"}, "count": { "content": "$2", "example": "4"} } },
 	"import_by_drop_or_click": { "message": "Import settings by dropping a previously exported file in this area or clicking anywhere to select such a file." },
 	"import_success_close_now": { "message": "Imported settings successfully. You can close this window now." },
 	"import_failure": { "message": "Could not import file. Check if the file is a valid settings file." }

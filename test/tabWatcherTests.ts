@@ -110,22 +110,50 @@ import { createSpy, browserMock } from "./BrowserMock";
 		const listener = this.createListener();
 		const watcher = new TabWatcher(listener);
 
-		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', 'google.com'));
-		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-private', 'google.com'));
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-private', '.google.com'));
 
 		const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
-		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', 'google.com'));
-		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', 'www.google.com'));
-		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', 'google.de'));
-		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-private', 'google.com'));
+		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.www.google.com'));
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.de'));
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-private', '.google.com'));
 
 		const tabId2 = browserMock.tabs.create("http://www.google.com", "firefox-default");
-		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', 'google.com'));
+		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
 
 		browserMock.tabs.remove(tabId1);
-		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', 'google.com'));
+		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
 		browserMock.tabs.remove(tabId2);
-		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', 'google.com'));
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
+	}
+
+	@test cookie_store_contains_domain_navigation() {
+		browserMock.reset();
+		const listener = this.createListener();
+		const watcher = new TabWatcher(listener);
+
+		const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
+		browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
+		assert.isTrue(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.com'));
+		assert.isTrue(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.de'));
+		browserMock.webNavigation.commit(tabId1, "http://www.google.de");
+		assert.isFalse(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.com'));
+		assert.isTrue(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.de'));
+	}
+
+	@test cookie_store_contains_sub_domain_navigation() {
+		browserMock.reset();
+		const listener = this.createListener();
+		const watcher = new TabWatcher(listener);
+
+		const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
+		browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
+		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
+		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.de'));
+		browserMock.webNavigation.commit(tabId1, "http://www.google.de");
+		assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
+		assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.de'));
 	}
 
 	@test is_third_party_cookie() {

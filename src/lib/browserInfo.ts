@@ -7,6 +7,10 @@
 // Detect browser information
 
 export let browserInfo = function () {
+    //@ts-ignore
+    if (global && typeof global.it === 'function')
+        return { name: 'NodeTest', version: '1.0.0', mobile: false };
+
     let ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     let mobile = /android|iphone|ipad|ipod/i.test(ua);
     if (/trident/i.test(M[1])) {

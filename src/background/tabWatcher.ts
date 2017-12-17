@@ -7,11 +7,15 @@
 import { allowedProtocols } from '../shared';
 import { browser } from '../browser/browser';
 import { Tabs } from '../browser/tabs';
+import { isFirefox } from '../lib/browserInfo';
+
+export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
+
 
 interface TabInfo {
     tabId: number;
     hostname: string;
-    nextHostname?: string;
+    nextHostname: string;
     cookieStoreId: string;
 }
 
@@ -58,7 +62,7 @@ export class TabWatcher {
             this.checkDomainEnter(tabInfo.cookieStoreId, hostname);
             const previousHostname = tabInfo.hostname;
             tabInfo.hostname = hostname;
-            delete tabInfo.nextHostname;
+            tabInfo.nextHostname = '';
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
         } else {
             this.getTab(tabId);
@@ -66,28 +70,28 @@ export class TabWatcher {
     }
 
     private checkDomainEnter(cookieStoreId: string, hostname: string) {
-        if (!this.cookieStoreContainsDomain(cookieStoreId, hostname))
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true))
             this.listener.onDomainEnter(cookieStoreId, hostname);
     }
 
     private checkDomainLeave(cookieStoreId: string, hostname: string) {
-        if (!this.cookieStoreContainsDomain(cookieStoreId, hostname))
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname))
             this.listener.onDomainLeave(cookieStoreId, hostname);
     }
 
     private getTab(tabId: number) {
         browser.tabs.get(tabId).then((tab) => {
             if (!tab.incognito && !this.tabInfos[tabId]) {
-                const hostname = tab.url ? new URL(tab.url).hostname : '';
+                const hostname = tab.url ? this.getHostname(tab.url) : '';
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
             }
         });
     }
 
     private setTabInfo(tabId: number, hostname: string, cookieStoreId?: string) {
-        cookieStoreId = cookieStoreId || 'default';
+        cookieStoreId = cookieStoreId || DEFAULT_COOKIE_STORE_ID;
         this.checkDomainEnter(cookieStoreId, hostname);
-        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, cookieStoreId };
+        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, nextHostname: '', cookieStoreId };
         let list = this.tabInfosByCookieStore[cookieStoreId];
         if (!list)
             list = this.tabInfosByCookieStore[cookieStoreId] = [tabInfo];
@@ -100,19 +104,17 @@ export class TabWatcher {
         }
     }
 
-    public cookieStoreContainsDomain(cookieStoreId: string, domain: string) {
+    public cookieStoreContainsDomain(cookieStoreId: string, domain: string, ignoreNext?: boolean) {
         let list = this.tabInfosByCookieStore[cookieStoreId];
         if (list)
-            return list.findIndex((ti) => ti.hostname === domain) !== -1;
+            return list.findIndex((ti) => ti.hostname === domain || !ignoreNext && ti.nextHostname === domain) !== -1;
         return false;
     }
 
-    public cookieStoreContainsSubDomain(cookieStoreId: string, domain: string) {
+    public cookieStoreContainsSubDomain(cookieStoreId: string, suffix: string, ignoreNext?: boolean) {
         let list = this.tabInfosByCookieStore[cookieStoreId];
-        if (list) {
-            const suffix = '.' + domain;
-            return list.findIndex((ti) => ti.hostname.endsWith(suffix)) !== -1;
-        }
+        if (list)
+            return list.findIndex((ti) => ti.hostname.endsWith(suffix) || !ignoreNext && ti.nextHostname.endsWith(suffix)) !== -1;
         return false;
     }
 
@@ -132,7 +134,7 @@ export class TabWatcher {
 
     private onTabCreated(tab: Tabs.Tab) {
         if (tab.id && !tab.incognito) {
-            const hostname = tab.url ? new URL(tab.url).hostname : '';
+            const hostname = tab.url ? this.getHostname(tab.url) : '';
             const tabInfo = this.tabInfos[tab.id];
             if (tabInfo)
                 tabInfo.hostname = hostname;

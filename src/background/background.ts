@@ -10,7 +10,7 @@ import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
 import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain } from './backgroundShared';
 import { CleanStore } from './cleanStore';
-import { TabWatcher, TabWatcherListener } from './tabWatcher';
+import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { MostRecentCookieDomains } from './mostRecentCookieDomains';
 import { HeaderFilter } from './headerFilter';
 import { allowedProtocols } from '../shared';
@@ -159,7 +159,7 @@ class Background implements TabWatcherListener {
 
     private getCleanStore(id?: string): CleanStore {
         if (!id)
-            id = 'default';
+            id = DEFAULT_COOKIE_STORE_ID;
         let store = this.cleanStores[id];
         if (!store)
             store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher);

@@ -4,10 +4,10 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { settings } from "../lib/settings";
 import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
+import { browser } from "../browser/browser";
 
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;

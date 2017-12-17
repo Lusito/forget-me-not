@@ -6,10 +6,11 @@
 
 // This file manages all settings, their defaults and changes
 
-import * as browser from 'webextension-polyfill';
 import * as messageUtil from "./messageUtil";
 import { isFirefox, browserInfo } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature } from "./settingsSignature";
+import { Storage } from "../browser/storage";
+import { browser } from "../browser/browser";
 
 type Callback = () => void;
 
@@ -112,7 +113,7 @@ function getRegExForRule(rule: string) {
 }
 
 class Settings {
-    private storage: browser.storage.StorageArea;
+    private storage: Storage.StorageArea;
     private map: SettingsMap = {};
     private readyCallbacks: Callback[] | null = [];
     public constructor() {
@@ -127,7 +128,7 @@ class Settings {
         browser.storage.onChanged.addListener(this.load.bind(this));
     }
 
-    private load(changes?: { [key: string]: browser.storage.StorageChange }) {
+    private load(changes?: { [key: string]: Storage.StorageChange }) {
         this.storage.get(null).then((map) => {
             this.map = map;
             if (this.readyCallbacks) {

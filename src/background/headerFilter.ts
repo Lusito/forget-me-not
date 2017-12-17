@@ -4,12 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import { badges, getBadgeForDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { MostRecentCookieDomains } from './mostRecentCookieDomains';
+import { WebRequest } from "../browser/webRequest";
+import { browser } from "../browser/browser";
 
 const cookieDomainRegexp = /domain=([\.a-z0-9\-]+);/;
 function getCookieDomainFromCookieHeader(header: string) {
@@ -27,7 +28,7 @@ function isCookieDomainWhiteOrGray(domain: string) {
 export class HeaderFilter {
     private readonly tabWatcher: TabWatcher;
     private readonly mostRecentCookieDomains: MostRecentCookieDomains;
-    private readonly onHeadersReceived: (details: browser.webRequest.WebResponseHeadersDetails) => browser.webRequest.BlockingResponse;
+    private readonly onHeadersReceived: (details: WebRequest.WebResponseHeadersDetails) => WebRequest.BlockingResponse;
 
     public constructor(tabWatcher: TabWatcher, mostRecentCookieDomains: MostRecentCookieDomains) {
         this.tabWatcher = tabWatcher;
@@ -47,7 +48,7 @@ export class HeaderFilter {
         });
     }
 
-    private filterResponseHeaders(responseHeaders: browser.webRequest.HttpHeader[], tabId: number): browser.webRequest.HttpHeader[] | undefined {
+    private filterResponseHeaders(responseHeaders: WebRequest.HttpHeader[], tabId: number): WebRequest.HttpHeader[] | undefined {
         return responseHeaders.filter((x) => {
             if (x.name.toLowerCase() === 'set-cookie') {
                 if (x.value) {

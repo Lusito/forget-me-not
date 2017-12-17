@@ -4,9 +4,10 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { settings, RuleType } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
+import { Cookies } from "../browser/cookies";
+import { browser } from "../browser/browser";
 
 export const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 
@@ -33,7 +34,7 @@ export const badges = {
     } as BadgeInfo
 }
 
-export function removeCookie(cookie: browser.cookies.Cookie) {
+export function removeCookie(cookie: Cookies.Cookie) {
     let allowSubDomains = cookie.domain.startsWith('.');
     let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
     browser.cookies.remove({

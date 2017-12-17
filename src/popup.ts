@@ -4,7 +4,6 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
 import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
 import { isFirefox, browserInfo } from './lib/browserInfo';
@@ -14,6 +13,7 @@ import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
 import { CookieDomainInfo, allowedProtocols } from './shared';
 import { RuleListItem } from './ruleListItem';
+import { browser } from "./browser/browser";
 
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 

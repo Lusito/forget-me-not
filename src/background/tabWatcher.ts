@@ -4,8 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { allowedProtocols } from '../shared';
+import { browser } from '../browser/browser';
+import { Tabs } from '../browser/tabs';
 
 interface TabInfo {
     tabId: number;
@@ -36,7 +37,7 @@ export class TabWatcher {
         browser.tabs.onCreated.addListener((tab) => this.onTabCreated(tab));
     }
 
-    private getHostname(url: string) {
+    public getHostname(url: string) {
         const parsedUrl = new URL(url);
         return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : '';
     }
@@ -129,7 +130,7 @@ export class TabWatcher {
         }
     }
 
-    private onTabCreated(tab: browser.tabs.Tab) {
+    private onTabCreated(tab: Tabs.Tab) {
         if (tab.id && !tab.incognito) {
             const hostname = tab.url ? new URL(tab.url).hostname : '';
             const tabInfo = this.tabInfos[tab.id];

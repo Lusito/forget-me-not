@@ -4,7 +4,6 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import DelayedExecution from '../lib/delayedExecution';
@@ -15,6 +14,9 @@ import { TabWatcher, TabWatcherListener } from './tabWatcher';
 import { MostRecentCookieDomains } from './mostRecentCookieDomains';
 import { HeaderFilter } from './headerFilter';
 import { allowedProtocols } from '../shared';
+import { browser } from "../browser/browser";
+import { BrowsingData } from "../browser/browsingData";
+import { Cookies } from "../browser/cookies";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -48,7 +50,7 @@ class Background implements TabWatcherListener {
     }
 
     private runCleanup(startup: boolean) {
-        let typeSet: browser.browsingData.DataTypeSet = {
+        let typeSet: BrowsingData.DataTypeSet = {
             history: settings.get(startup ? 'startup.history' : 'cleanAll.history'),
             downloads: settings.get(startup ? 'startup.downloads' : 'cleanAll.downloads'),
             formData: settings.get(startup ? 'startup.formData' : 'cleanAll.formData'),
@@ -58,7 +60,7 @@ class Background implements TabWatcherListener {
             serverBoundCertificates: settings.get(startup ? 'startup.serverBoundCertificates' : 'cleanAll.serverBoundCertificates'),
             serviceWorkers: settings.get(startup ? 'startup.serviceWorkers' : 'cleanAll.serviceWorkers')
         };
-        let options: browser.browsingData.RemovalOptions = {
+        let options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
         if (settings.get(startup ? 'startup.cookies' : 'cleanAll.cookies')) {
@@ -126,7 +128,7 @@ class Background implements TabWatcherListener {
         this.mostRecentCookieDomains.add(domain);
     }
 
-    public onCookieChanged(changeInfo: browser.cookies.CookieChangeInfo) {
+    public onCookieChanged(changeInfo: Cookies.CookieChangeInfo) {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.mostRecentCookieDomains.add(changeInfo.cookie.domain);

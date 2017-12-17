@@ -4,9 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { settings, RuleType, RuleDefinition } from "./lib/settings";
 import { on, createElement } from './lib/htmlUtils';
+import { browser } from "./browser/browser";
 
 function classNameForRuleType(ruleType: RuleType) {
     if(ruleType === RuleType.WHITE)

@@ -17,5 +17,8 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "experimentalDecorators": true
-  }
+  },
+  "exclude": [
+    "test"
+  ]
 }

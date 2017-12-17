@@ -4,10 +4,10 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { settings } from "./lib/settings";
 import { on, byId } from './lib/htmlUtils';
 import { loadJSONFile, readJSONFile } from './lib/fileHelper';
+import { browser } from "./browser/browser";
 
 settings.onReady(() => {
     const dropzone = byId('dropzone') as HTMLElement;

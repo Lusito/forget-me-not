@@ -1,3 +1,7 @@
+import { Runtime } from "../browser/runtime";
+import { browser } from "../browser/browser";
+import { Tabs } from "../browser/tabs";
+
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
@@ -6,10 +10,8 @@
 
 // This file contains communication helpers
 
-import * as browser from 'webextension-polyfill';
-
 //fixme: types
-export type Callback = (params: any, sender: browser.runtime.MessageSender) => any;
+export type Callback = (params: any, sender: Runtime.MessageSender) => any;
 // export type Callback = (params: any, sender?: browser.runtime.MessageSender, sendResponse?: (response:any)=>void) => any;
 
 type CallbacksMap = { [s: string]: Callback };
@@ -64,7 +66,7 @@ export function sendToAllTabs(name: string, params: any) {
     }
 }
 
-export function sendToTab(tab: browser.tabs.Tab, name: string, params: any, callback?: (value: any) => any) {
+export function sendToTab(tab: Tabs.Tab, name: string, params: any, callback?: (value: any) => any) {
     let data = {
         action: name,
         params: params

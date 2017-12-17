@@ -4,8 +4,8 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import * as MarkdownIt from 'markdown-it';
+import { browser } from '../browser/browser';
 
 const md = new MarkdownIt();
 

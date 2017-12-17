@@ -206,7 +206,6 @@ class Background implements TabWatcherListener {
 }
 
 let background: Background;
-let doStartup = false;
 const UPDATE_NOTIFICATION_ID: string = "UpdateNotification";
 interface CleanUrlNowConfig {
     hostname: string;
@@ -237,10 +236,7 @@ settings.onReady(() => {
         });
     });
 
-    if (doStartup) {
-        background.onStartup();
-        doStartup = false;
-    }
+    background.onStartup();
 
     const manifestVersion = browser.runtime.getManifest().version;
     if (settings.get('version') !== manifestVersion) {
@@ -262,10 +258,4 @@ settings.onReady(() => {
             });
         }
     });
-});
-browser.runtime.onStartup.addListener(() => {
-    if (background)
-        background.onStartup();
-    else
-        doStartup = true;
 });

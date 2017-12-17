@@ -31,7 +31,8 @@ function connectInputSetting(element: HTMLInputElement|HTMLSelectElement) {
             });
         } else {
             on(element, 'change', () => {
-                settings.set(key as any, element.value);
+                const value = element.type === 'number' ? parseFloat(element.value) : element.value;
+                settings.set(key as any, value);
                 settings.save();
             });
         }

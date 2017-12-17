@@ -10,12 +10,12 @@
         <div id="wrapper">
             <div id="logo_area" data-i18n="logo?title"></div>
             <div id="tabs">
-                <div class="active" data-i18n="tabs_this_tab"></div>
-                <div data-i18n="tabs_clean_all"></div>
-                <div data-i18n="tabs_rules"></div>
-                <div data-i18n="tabs_settings"></div>
-                <div data-i18n="tabs_log"></div>
-                <div data-i18n="tabs_about"></div>
+                <div class="active" data-i18n="tabs_this_tab" data-tab="this_tab"></div>
+                <div data-i18n="tabs_clean_all" data-tab="clean_all"></div>
+                <div data-i18n="tabs_rules" data-tab="rules"></div>
+                <div data-i18n="tabs_settings" data-tab="settings"></div>
+                <div data-i18n="tabs_log" data-tab="log"></div>
+                <div data-i18n="tabs_about" data-tab="about"></div>
                 <a href="readme.html#tutorial" target="_blank" id="help_link" class="open_as_tab" data-i18n="help_button?title">?</a>
             </div>
             <div id="pages">
@@ -111,6 +111,15 @@
                     </div>
                     <div><label><input type="checkbox" data-settings-key="shopUpdateNotification"><span data-i18n="setting_show_update_notification"></span></label></div>
                     <div><label><input type="checkbox" data-settings-key="showBadge"><span data-i18n="setting_show_badge"></span></label></div>
+                    <div><label><span data-i18n="setting_initialTab"></span><select data-settings-key="initialTab" style="margin-left: 5px; margin-right: 0;">
+                        <option data-i18n="last_active_tab" value="last_active_tab"></option>
+                        <option data-i18n="tabs_this_tab" value="this_tab"></option>
+                        <option data-i18n="tabs_clean_all" value="clean_all"></option>
+                        <option data-i18n="tabs_rules" value="rules"></option>
+                        <option data-i18n="tabs_settings" value="settings"></option>
+                        <option data-i18n="tabs_log" value="log"></option>
+                        <option data-i18n="tabs_about" value="about"></option>
+                    </select></label></div>
                     <div class="split_equal top_margin">
                         <button id="settings_import" data-i18n="button_import"></button>
                         <button id="settings_export" data-i18n="button_export"></button>

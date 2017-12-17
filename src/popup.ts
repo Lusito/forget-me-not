@@ -14,6 +14,7 @@ import * as dialogs from './lib/dialogs';
 import { CookieDomainInfo, allowedProtocols } from './shared';
 import { RuleListItem } from './ruleListItem';
 import { browser } from "./browser/browser";
+import { TabSupport } from "./lib/tabSupport";
 
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 
@@ -32,16 +33,10 @@ class Popup {
     private rulesListItems: RuleListItem[] = [];
     private matchingRulesListItems: RuleListItem[] = [];
     private rulesList: HTMLElement;
-    private pages: NodeListOf<Element>;
-    private tabs: NodeListOf<Element>;
+    private tabSupport = new TabSupport(this.onTabChange.bind(this));
     public constructor() {
         if (browserInfo.mobile)
             (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
-
-        this.tabs = document.querySelectorAll('#tabs > div');
-        this.pages = document.querySelectorAll('#pages > div');
-        for (let i = 0; i < this.tabs.length; i++)
-            this.linkTab(i);
 
         connectSettings(document.body);
         if (!removeLocalStorageByHostname) {
@@ -51,6 +46,12 @@ class Popup {
                 'startup.localStorage.applyRules'
             ], true);
         }
+
+        const initialTab = settings.get('initialTab');
+        if(!initialTab || initialTab === 'last_active_tab')
+            this.tabSupport.setTab(settings.get('lastTab'));
+        else
+            this.tabSupport.setTab(initialTab);
 
         this.initCurrentTab();
 
@@ -92,9 +93,14 @@ class Popup {
         messageUtil.send('getMostRecentCookieDomains');
     }
 
+    private onTabChange(name: string) {
+        settings.set('lastTab', name);
+        settings.save();
+    }
+
     private prepareAddRule(domain: string) {
         this.rulesInput.value = "*." + domain;
-        this.selectTab(2);
+        this.tabSupport.setTab('rules');
         let value = this.rulesInput.value.trim().toLowerCase();
         let validExpression = isValidExpression(value);
         this.updateRulesHint(validExpression, value.length === 0);
@@ -109,7 +115,8 @@ class Popup {
         let cleanCurrentTab = byId('clean_current_tab');
         if (cleanCurrentTab)
             cleanCurrentTab.style.display = 'none';
-        this.selectTab(1);
+        if (this.tabSupport.getTab() === 'this_tab')
+            this.tabSupport.setTab('clean_all');
     }
 
     private initCurrentTab() {
@@ -278,29 +285,6 @@ class Popup {
         for (let rule of rules)
             newItems.push(new RuleListItem(rule, parent));
         return newItems;
-    }
-
-    private selectTab(index: number) {
-        let tabs = document.querySelectorAll('#tabs > div');
-        let pages = document.querySelectorAll('#pages > div');
-        if (index > 0 && index < tabs.length && index < pages.length)
-            this.updateSelectedTab(index);
-    }
-
-    private updateSelectedTab(index: number) {
-        for (let i = 0; i < this.tabs.length; i++) {
-            if (i === index) {
-                this.tabs[i].classList.add('active');
-                this.pages[i].classList.add('active');
-            } else {
-                this.tabs[i].classList.remove('active');
-                this.pages[i].classList.remove('active');
-            }
-        }
-    }
-
-    private linkTab(index: number) {
-        on(this.tabs[index], 'click', () => this.updateSelectedTab(index));
     }
 
 }

@@ -11,6 +11,7 @@ export interface SettingsTypeMap {
     "rules": RuleDefinition[],
     "whitelistNoTLD": boolean;
     "domainsToClean": { [s: string]: boolean },
+    "showBadge": boolean,
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;
     "cleanAll.localStorage": boolean;

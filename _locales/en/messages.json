@@ -41,6 +41,7 @@
 	"rules_add": { "message": "Add" },
 	"help_button@title": { "message": "Read about how rules work, what expressions you can use, experimental features, and recent changes in this extension." },
 	"setting_show_update_notification": { "message": "Show a notification when the extension has been updated." },
+	"setting_show_badge": { "message": "Show matching rule as a badge on the toolbar button" },
 	"setting_type_white": { "message": "White" },
 	"setting_type_gray": { "message": "Gray" },
 	"setting_type_forget": { "message": "Forget" },

@@ -41,6 +41,7 @@
 	"rules_add": { "message": "Hinzufügen" },
 	"help_button@title": { "message": "Lese wie Regeln funktionieren, welche Ausdrücke genutzt werden können, über experimentelle Features und was sich kürzlich in dieser Extension geändert hat." },
 	"setting_show_update_notification": { "message": "Zeige eine Notifikation wenn die Erweiterung aktualisiert wurde." },
+	"setting_show_badge": { "message": "Zeige die greifende Regel als Markierung auf dem Toolbarbutton" },
 	"setting_type_white": { "message": "Weiß" },
 	"setting_type_gray": { "message": "Grau" },
 	"setting_type_forget": { "message": "Vergessen" },

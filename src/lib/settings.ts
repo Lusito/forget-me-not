@@ -35,6 +35,7 @@ const defaultSettings: SettingsMap = {
     "rules": [],
     "whitelistNoTLD": false,
     "domainsToClean": {},
+    "showBadge": true,
     "cleanAll.cookies": true,
     "cleanAll.cookies.applyRules": true,
     "cleanAll.localStorage": localStorageDefault,

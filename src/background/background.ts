@@ -175,6 +175,8 @@ class Background implements TabWatcherListener {
                     if (allowedProtocols.test(url.protocol))
                         badge = getBadgeForDomain(url.hostname);
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
+                    if (!settings.get('showBadge'))
+                        text = '';
                     browser.browserAction.setBadgeText({ text: text, tabId: tab.id });
                     browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
                     browser.browserAction.enable(tab.id);
@@ -221,7 +223,8 @@ settings.onReady(() => {
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1)
+        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1
+            || changedKeys.indexOf('showBadge') !== -1)
             background.updateBadge();
     });
 

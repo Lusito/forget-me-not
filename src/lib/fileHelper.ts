@@ -9,7 +9,6 @@ import { createElement } from "./htmlUtils";
 export function readJSONFile(file: File, callback: (json: any) => void) {
     var reader = new FileReader();
     reader.onload = () => {
-        callback(reader.result);
         try {
             callback(JSON.parse(reader.result));
         }

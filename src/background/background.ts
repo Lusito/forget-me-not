@@ -236,20 +236,6 @@ settings.onReady(() => {
         });
     });
 
-    background.onStartup();
-
-    const manifestVersion = browser.runtime.getManifest().version;
-    if (settings.get('version') !== manifestVersion) {
-        settings.set('version', manifestVersion);
-        settings.save();
-
-        browser.notifications.create(UPDATE_NOTIFICATION_ID, {
-            "type": "basic",
-            "iconUrl": browser.extension.getURL("icons/icon96.png"),
-            "title": browser.i18n.getMessage('update_notification_title'),
-            "message": browser.i18n.getMessage('update_notification_message')
-        });
-    }
     browser.notifications.onClicked.addListener((id: string) => {
         if (id === UPDATE_NOTIFICATION_ID) {
             browser.tabs.create({
@@ -258,4 +244,21 @@ settings.onReady(() => {
             });
         }
     });
+
+    setTimeout(() => {
+        background.onStartup();
+
+        const manifestVersion = browser.runtime.getManifest().version;
+        if (settings.get('version') !== manifestVersion) {
+            settings.set('version', manifestVersion);
+            settings.save();
+
+            browser.notifications.create(UPDATE_NOTIFICATION_ID, {
+                "type": "basic",
+                "iconUrl": browser.extension.getURL("icons/icon96.png"),
+                "title": browser.i18n.getMessage('update_notification_title'),
+                "message": browser.i18n.getMessage('update_notification_message')
+            });
+        }
+    }, 1000);
 });

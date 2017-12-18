@@ -12,7 +12,7 @@ import { MostRecentCookieDomains } from './mostRecentCookieDomains';
 import { WebRequest } from "../browser/webRequest";
 import { browser } from "../browser/browser";
 
-const cookieDomainRegexp = /domain=([\.a-z0-9\-]+);/;
+const cookieDomainRegexp = /domain=([\.a-z0-9\-]+);/i;
 function getCookieDomainFromCookieHeader(header: string) {
     var match = cookieDomainRegexp.exec(header);
     if (match)

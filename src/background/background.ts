@@ -132,7 +132,8 @@ class Background implements TabWatcherListener {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.mostRecentCookieDomains.add(changeInfo.cookie.domain);
-                if (settings.get('cleanThirdPartyCookies.enabled')) {
+                if (settings.get('cleanThirdPartyCookies.enabled')
+                    && !this.isCookieDomainAllowed(changeInfo.cookie.storeId, changeInfo.cookie.domain)) {
                     let exec = new DelayedExecution(() => {
                         let delta = Date.now() - this.lastDomainChangeRequest;
                         if (delta < 1000)

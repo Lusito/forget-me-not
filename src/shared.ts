@@ -12,6 +12,10 @@ export interface CookieDomainInfo {
 export const allowedProtocols = /https?:/;
 
 export function getValidHostname(url: string) {
-    const parsedUrl = new URL(url);
-    return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : '';
+    try {
+        const parsedUrl = new URL(url);
+        return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : '';
+    } catch(e) {
+        return '';
+    }
 }

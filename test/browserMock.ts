@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
 import { browser } from "../src/browser/browser";
 import { Tabs } from "../src/browser/tabs";
 import { WebNavigation } from "../src/browser/webNavigation";

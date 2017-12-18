@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
 import { suite, test } from "mocha-typescript";
 import { assert } from "chai";
 import { getValidHostname } from "../src/shared";

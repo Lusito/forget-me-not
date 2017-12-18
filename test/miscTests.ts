@@ -14,6 +14,8 @@ describe("Misc functionality", () => {
 			assert.equal(getValidHostname("https://www.google.com"), 'www.google.com');
 		});
 		it("should return emptystring for invalid urls", () => {
+			assert.equal(getValidHostname('hhttp://www.google.com'), '');
+			assert.equal(getValidHostname('httpss://www.google.com'), '');
 			assert.equal(getValidHostname("file://www.google.com"), '');
 			assert.equal(getValidHostname("chrome://www.google.com"), '');
 			assert.equal(getValidHostname("about:preferences"), '');

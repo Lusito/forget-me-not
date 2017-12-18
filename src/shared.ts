@@ -9,7 +9,7 @@ export interface CookieDomainInfo {
     badge: string
 }
 
-export const allowedProtocols = /https?:/;
+export const allowedProtocols = /^https?:$/;
 
 export function getValidHostname(url: string) {
     try {

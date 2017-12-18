@@ -181,8 +181,16 @@ import { createSpy, browserMock } from "./BrowserMock";
 		browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
 		assert.isFalse(watcher.isThirdPartyCookie(tabId1, 'www.google.com'));
 		assert.isFalse(watcher.isThirdPartyCookie(tabId1, 'www.google.de'));
+		assert.isFalse(watcher.isThirdPartyCookie(tabId1, '.google.de'));
+		assert.isFalse(watcher.isThirdPartyCookie(tabId1, '.www.google.de'));
+		assert.isTrue(watcher.isThirdPartyCookie(tabId1, 'nope.www.google.de'));
+		assert.isTrue(watcher.isThirdPartyCookie(tabId1, '.nope.www.google.de'));
 		browserMock.webNavigation.commit(tabId1, "http://www.google.de");
 		assert.isTrue(watcher.isThirdPartyCookie(tabId1, 'www.google.com'));
 		assert.isFalse(watcher.isThirdPartyCookie(tabId1, 'www.google.de'));
+		assert.isFalse(watcher.isThirdPartyCookie(tabId1, '.google.de'));
+		assert.isFalse(watcher.isThirdPartyCookie(tabId1, '.www.google.de'));
+		assert.isTrue(watcher.isThirdPartyCookie(tabId1, 'nope.www.google.de'));
+		assert.isTrue(watcher.isThirdPartyCookie(tabId1, '.nope.www.google.de'));
 	}
 }

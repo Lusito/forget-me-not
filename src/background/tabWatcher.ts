@@ -145,10 +145,15 @@ export class TabWatcher {
             return false;
         }
         const allowSubDomains = domain.startsWith('.');
-        if (tabInfo.hostname && (allowSubDomains ? tabInfo.hostname.endsWith(domain) : tabInfo.hostname === domain))
+        const rawDomain = allowSubDomains ? domain.substr(1) : domain;
+        if (tabInfo.hostname === rawDomain || tabInfo.nextHostname === rawDomain)
             return false;
-        if (tabInfo.nextHostname && (allowSubDomains ? tabInfo.nextHostname.endsWith(domain) : tabInfo.nextHostname === domain))
-            return false;
+        if (allowSubDomains) {
+            if (tabInfo.hostname && tabInfo.hostname.endsWith(domain))
+                return false;
+            if (tabInfo.nextHostname && tabInfo.nextHostname.endsWith(domain))
+                return false;
+        }
         return true;
     }
 }

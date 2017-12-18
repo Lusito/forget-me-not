@@ -11,7 +11,7 @@ import { connectSettings, permanentDisableSettings, updateFromSettings } from '.
 import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
-import { CookieDomainInfo, allowedProtocols } from './shared';
+import { CookieDomainInfo, getValidHostname } from './shared';
 import { RuleListItem } from './ruleListItem';
 import { browser } from "./browser/browser";
 import { TabSupport } from "./lib/tabSupport";
@@ -127,13 +127,13 @@ class Popup {
 
             const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
-                let url = new URL(tab.url);
+                const hostname = getValidHostname(tab.url);
                 let label = byId('current_tab');
                 let cleanCurrentTab = byId('clean_current_tab');
-                if (!allowedProtocols.test(url.protocol)) {
+                if (!hostname) {
                     this.setInvalidTab();
                 } else {
-                    this.hostname = url.hostname;
+                    this.hostname = hostname;
                     if (label)
                         label.textContent = this.hostname;
                     if (cleanCurrentTab) {
@@ -143,7 +143,7 @@ class Popup {
                     }
                     let addRule = byId('current_tab_add_rule');
                     if (addRule)
-                        on(addRule, 'click', () => this.prepareAddRule(url.hostname));
+                        on(addRule, 'click', () => this.prepareAddRule(hostname));
                     this.rebuildMatchingRulesList();
                 }
             } else {

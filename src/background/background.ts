@@ -13,7 +13,7 @@ import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { MostRecentCookieDomains } from './mostRecentCookieDomains';
 import { HeaderFilter } from './headerFilter';
-import { allowedProtocols } from '../shared';
+import { getValidHostname } from '../shared';
 import { browser } from "../browser/browser";
 import { BrowsingData } from "../browser/browsingData";
 import { Cookies } from "../browser/cookies";
@@ -171,9 +171,9 @@ class Background implements TabWatcherListener {
             for (let tab of tabs) {
                 if (tab && tab.url && !tab.incognito) {
                     let badge = badges.none;
-                    let url = new URL(tab.url);
-                    if (allowedProtocols.test(url.protocol))
-                        badge = getBadgeForDomain(url.hostname);
+                    const hostname = getValidHostname(tab.url);
+                    if (hostname)
+                        badge = getBadgeForDomain(hostname);
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
                     if (!settings.get('showBadge'))
                         text = '';

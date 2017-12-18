@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { allowedProtocols } from '../shared';
+import { getValidHostname } from '../shared';
 import { browser } from '../browser/browser';
 import { Tabs } from '../browser/tabs';
 import { isFirefox } from '../lib/browserInfo';
@@ -41,15 +41,10 @@ export class TabWatcher {
         browser.tabs.onCreated.addListener((tab) => this.onTabCreated(tab));
     }
 
-    public getHostname(url: string) {
-        const parsedUrl = new URL(url);
-        return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : '';
-    }
-
     private onBeforeNavigate(tabId: number, url: string) {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
-            tabInfo.nextHostname = this.getHostname(url);
+            tabInfo.nextHostname = getValidHostname(url);
         } else {
             this.getTab(tabId);
         }
@@ -58,7 +53,7 @@ export class TabWatcher {
     private onCommitted(tabId: number, url: string) {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
-            const hostname = this.getHostname(url);
+            const hostname = getValidHostname(url);
             this.checkDomainEnter(tabInfo.cookieStoreId, hostname);
             const previousHostname = tabInfo.hostname;
             tabInfo.hostname = hostname;
@@ -82,7 +77,7 @@ export class TabWatcher {
     private getTab(tabId: number) {
         browser.tabs.get(tabId).then((tab) => {
             if (!tab.incognito && !this.tabInfos[tabId]) {
-                const hostname = tab.url ? this.getHostname(tab.url) : '';
+                const hostname = tab.url ? getValidHostname(tab.url) : '';
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
             }
         });
@@ -134,7 +129,7 @@ export class TabWatcher {
 
     private onTabCreated(tab: Tabs.Tab) {
         if (tab.id && !tab.incognito) {
-            const hostname = tab.url ? this.getHostname(tab.url) : '';
+            const hostname = tab.url ? getValidHostname(tab.url) : '';
             const tabInfo = this.tabInfos[tab.id];
             if (tabInfo)
                 tabInfo.hostname = hostname;

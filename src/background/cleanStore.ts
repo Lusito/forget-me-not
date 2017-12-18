@@ -8,6 +8,7 @@ import { settings } from "../lib/settings";
 import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { browser } from "../browser/browser";
+import { Cookies } from "../browser/cookies";
 
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
@@ -23,7 +24,7 @@ export class CleanStore {
             for (const cookie of cookies) {
                 let allowSubDomains = cookie.domain.startsWith('.');
                 let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-                if (match && (ignoreRules || !this.isCookieDomainAllowed(cookie.domain, false)))
+                if (match && (ignoreRules || !this.isCookieAllowed(cookie, false)))
                     removeCookie(cookie);
             }
         });
@@ -32,7 +33,7 @@ export class CleanStore {
     public cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
         browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
             for (const cookie of cookies) {
-                if (!this.isCookieDomainAllowed(cookie.domain, ignoreGrayList))
+                if (!this.isCookieAllowed(cookie, ignoreGrayList))
                     removeCookie(cookie);
             }
         });
@@ -58,12 +59,12 @@ export class CleanStore {
         return badge !== badges.none && badge !== badges.forget;
     }
 
-    public isCookieDomainAllowed(domain: string, ignoreGrayList: boolean) {
-        let allowSubDomains = domain.startsWith('.');
-        let rawDomain = allowSubDomains ? domain.substr(1) : domain;
+    public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean) {
+        let allowSubDomains = cookie.domain.startsWith('.');
+        let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
         if (this.isDomainProtected(rawDomain, ignoreGrayList))
             return true;
-        return this.tabWatcher.cookieStoreContainsSubDomain(this.id, domain);
+        return this.tabWatcher.cookieStoreContainsSubDomain(this.id, cookie.domain);
     }
 
     public cleanUrlNow(hostname: string) {

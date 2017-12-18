@@ -133,12 +133,12 @@ class Background implements TabWatcherListener {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.mostRecentCookieDomains.add(changeInfo.cookie.domain);
                 if (settings.get('cleanThirdPartyCookies.enabled')
-                    && !this.isCookieDomainAllowed(changeInfo.cookie.storeId, changeInfo.cookie.domain)) {
+                    && !this.isCookieAllowed(changeInfo.cookie)) {
                     let exec = new DelayedExecution(() => {
                         let delta = Date.now() - this.lastDomainChangeRequest;
                         if (delta < 1000)
                             exec.restart(500);
-                        else if (!this.isCookieDomainAllowed(changeInfo.cookie.storeId, changeInfo.cookie.domain))
+                        else if (!this.isCookieAllowed(changeInfo.cookie))
                             removeCookie(changeInfo.cookie);
                     });
                     exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
@@ -147,8 +147,8 @@ class Background implements TabWatcherListener {
         }
     }
 
-    public isCookieDomainAllowed(cookieStoreId: string, domain: string) {
-        return this.getCleanStore(cookieStoreId).isCookieDomainAllowed(domain, false);
+    public isCookieAllowed(cookie: Cookies.Cookie) {
+        return this.getCleanStore(cookie.storeId).isCookieAllowed(cookie, false);
     }
 
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean) {

@@ -35,8 +35,8 @@ export class TabWatcher {
             for (let tab of tabs)
                 this.onTabCreated(tab);
         });
-        browser.webNavigation.onBeforeNavigate.addListener((details) => this.onBeforeNavigate(details.tabId, details.url));
-        browser.webNavigation.onCommitted.addListener((details) => this.onCommitted(details.tabId, details.url));
+        browser.webNavigation.onBeforeNavigate.addListener((details) => details.frameId === 0 && this.onBeforeNavigate(details.tabId, details.url));
+        browser.webNavigation.onCommitted.addListener((details) => details.frameId === 0 && this.onCommitted(details.tabId, details.url));
         browser.tabs.onRemoved.addListener((tabId) => this.onTabRemoved(tabId));
         browser.tabs.onCreated.addListener((tab) => this.onTabCreated(tab));
     }

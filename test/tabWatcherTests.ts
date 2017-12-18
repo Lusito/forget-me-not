@@ -179,16 +179,4 @@ import { createSpy, browserMock } from "./BrowserMock";
 		assert.isTrue(watcher.isThirdPartyCookie(tabId1, 'www.google.com'));
 		assert.isFalse(watcher.isThirdPartyCookie(tabId1, 'www.google.de'));
 	}
-
-	@test get_hostname() {
-		browserMock.reset();
-		const listener = this.createListener();
-		const watcher = new TabWatcher(listener);
-
-		assert.equal(watcher.getHostname("http://www.google.com"), 'www.google.com');
-		assert.equal(watcher.getHostname("https://www.google.com"), 'www.google.com');
-		assert.equal(watcher.getHostname("file://www.google.com"), '');
-		assert.equal(watcher.getHostname("chrome://www.google.com"), '');
-		assert.equal(watcher.getHostname("about:preferences"), '');
-	}
 }

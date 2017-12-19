@@ -11,8 +11,8 @@ import { assert } from "chai";
 
 // @ts-ignore
 const Url = require('url');
-// @ts-ignore
-global.URL = function (url: string) {
+const glob = (function() { return this; }()) || Function('return this')();
+glob.URL = function (url: string) {
     const parsed = Url.parse(url);
     for (let key in parsed) {
         if (parsed.hasOwnProperty(key))

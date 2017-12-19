@@ -9,6 +9,20 @@ module.exports = {
         filename: "[name].js",
         path: __dirname + "/dist"
     },
+    plugins: [
+        {
+            apply: (compiler) => {
+                compiler.plugin('compilation', function (compilation, params) {
+                    params.normalModuleFactory.plugin('parser', function (parser) {
+                        parser.plugin('expression global', function expressionGlobalPlugin() {
+                            this.state.module.addVariable('global', "(function() { return this; }())")
+                            return false
+                        })
+                    })
+                })
+            }
+        }
+    ],
     devtool: "source-map",
     resolve: {
         extensions: [".ts", ".js", ".json"]

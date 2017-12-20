@@ -4,10 +4,11 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import * as MarkdownIt from 'markdown-it';
+import { browser } from '../browser/browser';
 
 const md = new MarkdownIt();
+const domParser = new DOMParser();
 
 export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
     on(a, 'click', (e) => {
@@ -22,7 +23,10 @@ export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
 }
 
 function setMarkdown(element: HTMLElement, value: string) {
-    element.innerHTML = md.render(value);
+    const doc = domParser.parseFromString(md.render(value), 'text/html');
+    removeAllChildren(element);
+    for(let i=0; i<doc.body.childNodes.length; i++)
+        element.appendChild(doc.body.childNodes[i]);
     const links = element.querySelectorAll('a');
     for (let i = 0; i < links.length; i++)
         makeLinkOpenAsTab(links[i]);
@@ -71,7 +75,7 @@ export function removeAllChildren(node: HTMLElement) {
 
 type ElementAttributes = { [s: string]: string | number | boolean };
 
-export function createElement(doc: Document, parent: HTMLElement | null, tagName: string, params?: ElementAttributes) {
+export function createElement<K extends keyof HTMLElementTagNameMap>(doc: Document, parent: HTMLElement | null, tagName: K, params?: ElementAttributes): HTMLElementTagNameMap[K] {
     let e = doc.createElement(tagName);
     if (params) {
         for (let key in params) {

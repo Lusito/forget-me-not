@@ -6,16 +6,18 @@
 
 // This file manages all settings, their defaults and changes
 
-import * as browser from 'webextension-polyfill';
 import * as messageUtil from "./messageUtil";
 import { isFirefox, browserInfo } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature } from "./settingsSignature";
+import { Storage } from "../browser/storage";
+import { browser } from "../browser/browser";
 
 type Callback = () => void;
 
 export enum RuleType {
     WHITE,
-    GRAY
+    GRAY,
+    FORGET
 }
 export interface RuleDefinition {
     rule: string,
@@ -29,10 +31,14 @@ const localStorageDefault: boolean = isFirefox && parseFloat(browserInfo.version
 
 const defaultSettings: SettingsMap = {
     "version": "",
-    "shopUpdateNotification": true,
+    "showUpdateNotification": true,
+    "showCookieRemovalNotification": false,
     "rules": [],
     "whitelistNoTLD": false,
     "domainsToClean": {},
+    "showBadge": true,
+    "initialTab": "this_tab",
+    "lastTab": "this_tab",
     "cleanAll.cookies": true,
     "cleanAll.cookies.applyRules": true,
     "cleanAll.localStorage": localStorageDefault,
@@ -85,6 +91,10 @@ export function isValidExpression(exp: string) {
     return parts.length > 0 && parts.findIndex((p) => !isValidExpressionPart(p)) === -1;
 }
 
+function isValidRuleType(ruleType: RuleType) {
+    return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET;
+}
+
 function getRegExForRule(rule: string) {
     let parts = rule.split('.');
     let reParts = [];
@@ -107,7 +117,7 @@ function getRegExForRule(rule: string) {
 }
 
 class Settings {
-    private storage: browser.storage.StorageArea;
+    private storage: Storage.StorageArea;
     private map: SettingsMap = {};
     private readyCallbacks: Callback[] | null = [];
     public constructor() {
@@ -122,7 +132,7 @@ class Settings {
         browser.storage.onChanged.addListener(this.load.bind(this));
     }
 
-    private load(changes?: { [key: string]: browser.storage.StorageChange }) {
+    private load(changes?: { [key: string]: Storage.StorageChange }) {
         this.storage.get(null).then((map) => {
             this.map = map;
             if (this.readyCallbacks) {
@@ -166,7 +176,7 @@ class Settings {
                 for (const ruleDef of (json as any).rules as RuleDefinition[]) {
                     if (typeof (ruleDef.rule) !== 'string')
                         continue;
-                    if (isValidExpression(ruleDef.rule) && (ruleDef.type === RuleType.WHITE || ruleDef.type === RuleType.GRAY)) {
+                    if (isValidExpression(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
                         validRules.push({
                             rule: ruleDef.rule,
                             type: ruleDef.type

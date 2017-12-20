@@ -7,10 +7,14 @@ import { RuleDefinition } from "./settings";
 
 export interface SettingsTypeMap {
     "version": string;
-    "shopUpdateNotification": boolean;
+    "showUpdateNotification": boolean;
+    "showCookieRemovalNotification": boolean,
     "rules": RuleDefinition[],
     "whitelistNoTLD": boolean;
     "domainsToClean": { [s: string]: boolean },
+    "showBadge": boolean,
+    "initialTab": string,
+    "lastTab": string,
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;
     "cleanAll.localStorage": boolean;

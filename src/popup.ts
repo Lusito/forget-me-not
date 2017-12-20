@@ -4,7 +4,6 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as browser from 'webextension-polyfill';
 import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
 import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
 import { isFirefox, browserInfo } from './lib/browserInfo';
@@ -12,10 +11,11 @@ import { connectSettings, permanentDisableSettings, updateFromSettings } from '.
 import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
-import { CookieDomainInfo } from './background/backgroundShared';
+import { CookieDomainInfo, getValidHostname } from './shared';
 import { RuleListItem } from './ruleListItem';
+import { browser } from "./browser/browser";
+import { TabSupport } from "./lib/tabSupport";
 
-const allowedProtocols = /https?:/;
 const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {
@@ -33,17 +33,10 @@ class Popup {
     private rulesListItems: RuleListItem[] = [];
     private matchingRulesListItems: RuleListItem[] = [];
     private rulesList: HTMLElement;
-    private pages: NodeListOf<Element>;
-    private tabs: NodeListOf<Element>;
+    private tabSupport = new TabSupport(this.onTabChange.bind(this));
     public constructor() {
-        browser;
-        if (isFirefox)
-            document.body.className += " firefox";
-
-        this.tabs = document.querySelectorAll('#tabs > div');
-        this.pages = document.querySelectorAll('#pages > div');
-        for (let i = 0; i < this.tabs.length; i++)
-            this.linkTab(i);
+        if (browserInfo.mobile)
+            (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
 
         connectSettings(document.body);
         if (!removeLocalStorageByHostname) {
@@ -53,6 +46,12 @@ class Popup {
                 'startup.localStorage.applyRules'
             ], true);
         }
+
+        const initialTab = settings.get('initialTab');
+        if(!initialTab || initialTab === 'last_active_tab')
+            this.tabSupport.setTab(settings.get('lastTab'));
+        else
+            this.tabSupport.setTab(initialTab);
 
         this.initCurrentTab();
 
@@ -94,9 +93,14 @@ class Popup {
         messageUtil.send('getMostRecentCookieDomains');
     }
 
+    private onTabChange(name: string) {
+        settings.set('lastTab', name);
+        settings.save();
+    }
+
     private prepareAddRule(domain: string) {
         this.rulesInput.value = "*." + domain;
-        this.selectTab(2);
+        this.tabSupport.setTab('rules');
         let value = this.rulesInput.value.trim().toLowerCase();
         let validExpression = isValidExpression(value);
         this.updateRulesHint(validExpression, value.length === 0);
@@ -111,7 +115,8 @@ class Popup {
         let cleanCurrentTab = byId('clean_current_tab');
         if (cleanCurrentTab)
             cleanCurrentTab.style.display = 'none';
-        this.selectTab(1);
+        if (this.tabSupport.getTab() === 'this_tab')
+            this.tabSupport.setTab('clean_all');
     }
 
     private initCurrentTab() {
@@ -120,25 +125,25 @@ class Popup {
             if (cleanAllNow)
                 on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
 
-            let tab = tabs.length && tabs[0];
+            const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
-                let url = new URL(tab.url);
+                const hostname = getValidHostname(tab.url);
                 let label = byId('current_tab');
                 let cleanCurrentTab = byId('clean_current_tab');
-                if (!allowedProtocols.test(url.protocol)) {
+                if (!hostname) {
                     this.setInvalidTab();
                 } else {
-                    this.hostname = url.hostname;
+                    this.hostname = hostname;
                     if (label)
                         label.textContent = this.hostname;
                     if (cleanCurrentTab) {
                         on(cleanCurrentTab, 'click', () => {
-                            messageUtil.send('cleanUrlNow', this.hostname);
+                            messageUtil.send('cleanUrlNow', { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                         });
                     }
                     let addRule = byId('current_tab_add_rule');
                     if (addRule)
-                        on(addRule, 'click', () => this.prepareAddRule(url.hostname));
+                        on(addRule, 'click', () => this.prepareAddRule(hostname));
                     this.rebuildMatchingRulesList();
                 }
             } else {
@@ -149,9 +154,13 @@ class Popup {
 
     private onImport() {
         // desktop firefox closes popup when dialog is shown
-        if (isFirefox && !browserInfo.mobile)
-            messageUtil.send('import');
-        else {
+        if (isFirefox && !browserInfo.mobile) {
+            browser.tabs.create({
+                url: browser.runtime.getURL('views/import.html'),
+                active: true
+            });
+            window.close();
+        } else {
             loadJSONFile((json) => {
                 if (json && settings.setAll(json)) {
                     console.log('success');
@@ -276,29 +285,6 @@ class Popup {
         for (let rule of rules)
             newItems.push(new RuleListItem(rule, parent));
         return newItems;
-    }
-
-    private selectTab(index: number) {
-        let tabs = document.querySelectorAll('#tabs > div');
-        let pages = document.querySelectorAll('#pages > div');
-        if (index > 0 && index < tabs.length && index < pages.length)
-            this.updateSelectedTab(index);
-    }
-
-    private updateSelectedTab(index: number) {
-        for (let i = 0; i < this.tabs.length; i++) {
-            if (i === index) {
-                this.tabs[i].classList.add('active');
-                this.pages[i].classList.add('active');
-            } else {
-                this.tabs[i].classList.remove('active');
-                this.pages[i].classList.remove('active');
-            }
-        }
-    }
-
-    private linkTab(index: number) {
-        on(this.tabs[index], 'click', () => this.updateSelectedTab(index));
     }
 
 }

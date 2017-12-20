@@ -8,44 +8,31 @@ import { settings } from "./settings";
 import { on } from "./htmlUtils";
 
 interface SettingsInfo {
-    element: HTMLInputElement;
+    element: HTMLInputElement|HTMLSelectElement;
     permanentlyDisabled?: boolean;
     permanentlyUnchecked?: boolean;
-    enablesSetting?: string;
 }
 const settingsInfoMap: { [s: string]: SettingsInfo } = {};
 
-function setSettingDisabled(key: string, disabled: boolean) {
-    let el = settingsInfoMap[key];
-    if (el) {
-        if (!el.permanentlyDisabled)
-            el.element.disabled = disabled;
-    } else {
-        console.error('Element not found: ', key);
-    }
-}
-
-function connectInputSetting(element: HTMLInputElement) {
+function connectInputSetting(element: HTMLInputElement|HTMLSelectElement) {
     let key = element.dataset.settingsKey;
     if (key) {
         if (settingsInfoMap[key]) {
             console.error('Setting already registered: ' + key, element, settingsInfoMap[key].element);
             return;
         }
-        let info = settingsInfoMap[key] = {
-            element: element,
-            enablesSetting: element.dataset.enablesSetting
+        settingsInfoMap[key] = {
+            element: element
         };
         if (element.type === "checkbox") {
             on(element, 'click', () => {
-                if (info.enablesSetting)
-                    setSettingDisabled(info.enablesSetting, !element.checked);
-                settings.set(key as any, element.checked);
+                settings.set(key as any, (element as HTMLInputElement).checked);
                 settings.save();
             });
         } else {
             on(element, 'change', () => {
-                settings.set(key as any, element.value);
+                const value = element.type === 'number' ? parseFloat(element.value) : element.value;
+                settings.set(key as any, value);
                 settings.save();
             });
         }
@@ -60,12 +47,10 @@ export function updateFromSettings() {
         if (info) {
             if (!info.permanentlyUnchecked) {
                 if (info.element.type === 'checkbox')
-                    info.element.checked = settings.get(key as any);
+                    (info.element as HTMLInputElement).checked = settings.get(key as any);
                 else
                     info.element.value = settings.get(key as any);
             }
-            if (info.enablesSetting)
-                setSettingDisabled(info.enablesSetting, !info.element.checked);
         }
     }
 }
@@ -74,6 +59,9 @@ export function connectSettings(parent: NodeSelector) {
     let elements = parent.querySelectorAll('input[data-settings-key]');
     for (let i = 0; i < elements.length; i++)
         connectInputSetting(elements[i] as HTMLInputElement);
+    elements = parent.querySelectorAll('select[data-settings-key]');
+    for (let i = 0; i < elements.length; i++)
+        connectInputSetting(elements[i] as HTMLSelectElement);
     updateFromSettings();
 }
 
@@ -83,8 +71,8 @@ export function permanentDisableSettings(keys: string[], uncheck?: boolean) {
         if (info) {
             info.permanentlyDisabled = true;
             info.element.disabled = true;
-            if (uncheck) {
-                info.element.checked = false;
+            if (uncheck && info.element.type === 'checkbox') {
+                (info.element as HTMLInputElement).checked = false;
                 info.permanentlyUnchecked = true;
             }
         } else {

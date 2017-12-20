@@ -4,7 +4,7 @@
     "description": "__MSG_extensionDescription__",
     "author": "Santo Pfingsten",
     "default_locale": "en",
-    "version": "0.8.6",
+    "version": "0.8.7",
     "applications": {
         "gecko": {
             "id": "forget-me-not@lusito.info",
@@ -28,7 +28,7 @@
             "96": "icons/icon96.png",
             "128": "icons/icon128.png"
         },
-        "default_popup": "templates/popup.html",
+        "default_popup": "views/popup.html",
         "default_title": "__MSG_actionTitle__"
     },
     "background": {

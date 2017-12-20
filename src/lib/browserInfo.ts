@@ -7,6 +7,10 @@
 // Detect browser information
 
 export let browserInfo = function () {
+    // if not in a browser, assume we're in a test
+    if (typeof window === 'undefined')
+        return { name: 'NodeTest', version: '1.0.0', mobile: false };
+
     let ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     let mobile = /android|iphone|ipad|ipod/i.test(ua);
     if (/trident/i.test(M[1])) {

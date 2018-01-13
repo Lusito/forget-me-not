@@ -29,6 +29,8 @@ export namespace Cookies {
         expirationDate?: number;
         /** The ID of the cookie store containing this cookie, as provided in getAllCookieStores(). */
         storeId: string;
+        /** The first party domain if first party isolation is used */
+        firstPartyDomain?: string;
     }
 
     /** Represents a cookie store in the browser. An incognito mode window, for instance, uses a separate cookie store from a non-incognito window. */
@@ -54,6 +56,8 @@ export namespace Cookies {
         session?: boolean;
         /** Optional. The cookie store to retrieve cookies from. If omitted, the current execution context's cookie store will be used.  */
         storeId?: string;
+        /** Optional. The first party domain to filter by. Defaults to emptystring. Set explicitly to null or undefined to disable filtering */
+        firstPartyDomain?: string|null|undefined;
     }
 
     export interface SetDetails {
@@ -75,12 +79,16 @@ export namespace Cookies {
         expirationDate?: number;
         /** Optional. The ID of the cookie store in which to set the cookie. By default, the cookie is set in the current execution context's cookie store.  */
         storeId?: string;
+        /** Optional if first party isolation is disabled. The first party domain to set. Defaults to emptystring. */
+        firstPartyDomain?: string;
     }
 
     export interface Details {
         name: string;
         url: string;
         storeId?: string;
+        /** Optional if first party isolation is disabled. The first party domain to filter by. Defaults to emptystring. */
+        firstPartyDomain?: string;
     }
 
     export type OnChangedCause = "evicted" | "expired" | "explicit" | "expired_overwrite" | "overwrite";

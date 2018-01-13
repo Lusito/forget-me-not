@@ -59,11 +59,15 @@ const delayCookieRemoveNotification = new DelayedExecution(() => {
 export function removeCookie(cookie: Cookies.Cookie) {
     let allowSubDomains = cookie.domain.startsWith('.');
     let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-    browser.cookies.remove({
+    const details: Cookies.Details = {
         name: cookie.name,
         url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
         storeId: cookie.storeId
-    });
+    };
+    if(isFirefox && browserInfo.versionAsNumber >= 59)
+        details.firstPartyDomain = cookie.firstPartyDomain;
+
+    browser.cookies.remove(details);
     if(settings.get('showCookieRemovalNotification')) {
         cookieRemovalCounts[rawDomain] = (cookieRemovalCounts[rawDomain] || 0) + 1;
         delayCookieRemoveNotification.restart(500);

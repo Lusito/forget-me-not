@@ -9,6 +9,7 @@ import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain } from './ba
 import { TabWatcher } from './tabWatcher';
 import { browser } from "../browser/browser";
 import { Cookies } from "../browser/cookies";
+import { isFirefox, browserInfo } from "../lib/browserInfo";
 
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
@@ -20,20 +21,24 @@ export class CleanStore {
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
-        browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
-            for (const cookie of cookies) {
-                let allowSubDomains = cookie.domain.startsWith('.');
-                let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-                if (match && (ignoreRules || !this.isCookieAllowed(cookie, false)))
-                    removeCookie(cookie);
-            }
+        this.removeCookies((cookie) =>  {
+            let allowSubDomains = cookie.domain.startsWith('.');
+            let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
+            return match && (ignoreRules || !this.isCookieAllowed(cookie, false));
         });
     }
 
     public cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
-        browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
+        this.removeCookies((cookie) => !this.isCookieAllowed(cookie, ignoreGrayList));
+    }
+
+    private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
+        const details: Cookies.GetAllDetails = { storeId: this.id };
+        if (isFirefox && browserInfo.versionAsNumber >= 59)
+            details.firstPartyDomain = null;
+        browser.cookies.getAll(details).then((cookies) => {
             for (const cookie of cookies) {
-                if (!this.isCookieAllowed(cookie, ignoreGrayList))
+                if (test(cookie))
                     removeCookie(cookie);
             }
         });

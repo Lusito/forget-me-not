@@ -200,10 +200,6 @@ class Background implements TabWatcherListener {
     public onDomainLeave(cookieStoreId: string, hostname: string): void {
         this.getCleanStore(cookieStoreId).onDomainLeave(hostname);
     }
-
-    public isThirdPartyCookie(tabId: number, domain: string) {
-        return this.tabWatcher.isThirdPartyCookie(tabId, domain);
-    }
 }
 
 let background: Background;

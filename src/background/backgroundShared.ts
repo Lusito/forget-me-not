@@ -35,9 +35,17 @@ export const badges = {
     } as BadgeInfo
 }
 
-let cookieRemovalCounts: { [s: string]: number } = {};
 const COOKIE_CLEANUP_NOTIFICATION_ID: string = "CookieCleanupNotification";
+let cookieRemovalCounts: { [s: string]: number } = {};
+let cookieRemoveNotificationStatus = {
+    starting: false,
+    updateOnStart: false
+};
 const delayCookieRemoveNotification = new DelayedExecution(() => {
+    if(cookieRemoveNotificationStatus.starting) {
+        cookieRemoveNotificationStatus.updateOnStart = true;
+        return;
+    }
     const lines = [];
     let totalCount = 0;
     for (let domain in cookieRemovalCounts) {
@@ -45,15 +53,32 @@ const delayCookieRemoveNotification = new DelayedExecution(() => {
         lines.push(browser.i18n.getMessage('cookie_cleanup_notification_line', [domain, count]));
         totalCount += count;
     }
-    let title = browser.i18n.getMessage('cookie_cleanup_notification_title', totalCount);
-    cookieRemovalCounts = {};
+    cookieRemoveNotificationStatus.starting = true;
+    cookieRemoveNotificationStatus.updateOnStart = false;
     browser.notifications.create(COOKIE_CLEANUP_NOTIFICATION_ID, {
-        "priority": -2,
-        "type": "basic",
-        "iconUrl": browser.extension.getURL("icons/icon96.png"),
-        "title": title,
-        "message": lines.join('\n')
+        priority: -2,
+        type: "basic",
+        iconUrl: browser.extension.getURL("icons/icon96.png"),
+        title: browser.i18n.getMessage('cookie_cleanup_notification_title', totalCount),
+        message: lines.join('\n')
+    }).then((s)=> {
+        cookieRemoveNotificationStatus.starting = false;
+        if(cookieRemoveNotificationStatus.updateOnStart)
+            delayCookieRemoveNotification.restart(100);
     });
+    delayClearCookieRemoveNotification.restart(3000);
+});
+
+const delayClearCookieRemoveNotification = new DelayedExecution(() => {
+    browser.notifications.clear(COOKIE_CLEANUP_NOTIFICATION_ID);
+    cookieRemoveNotificationStatus.starting = false;
+    cookieRemovalCounts = {};
+});
+
+browser.notifications.onClosed.addListener((id)=> {
+    cookieRemoveNotificationStatus.starting = false;
+    cookieRemovalCounts = {};
+    delayClearCookieRemoveNotification.cancel();
 });
 
 export function removeCookie(cookie: Cookies.Cookie) {

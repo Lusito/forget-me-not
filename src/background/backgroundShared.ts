@@ -10,7 +10,7 @@ import { Cookies } from "../browser/cookies";
 import { browser } from "../browser/browser";
 import DelayedExecution from "../lib/delayedExecution";
 
-export const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
+export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 export interface BadgeInfo {
     i18nKey?: string;

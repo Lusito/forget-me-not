@@ -27,7 +27,7 @@ export interface RuleDefinition {
 type SettingsValue = string | boolean | number | (RuleDefinition[]) | { [s: string]: boolean };
 type SettingsMap = { [s: string]: SettingsValue };
 
-const localStorageDefault: boolean = isFirefox && parseFloat(browserInfo.version) >= 58;
+const localStorageDefault: boolean = isFirefox && browserInfo.versionAsNumber >= 58;
 
 const defaultSettings: SettingsMap = {
     "version": "",

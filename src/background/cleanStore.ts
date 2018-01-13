@@ -60,9 +60,7 @@ export class CleanStore {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
         let badge = getBadgeForDomain(domain);
-        if (ignoreGrayList)
-            return badge === badges.white;
-        return badge !== badges.none && badge !== badges.forget;
+        return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean) {

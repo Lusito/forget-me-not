@@ -17,7 +17,8 @@ type Callback = () => void;
 export enum RuleType {
     WHITE,
     GRAY,
-    FORGET
+    FORGET,
+    BLOCK
 }
 export interface RuleDefinition {
     rule: string,
@@ -92,7 +93,7 @@ export function isValidExpression(exp: string) {
 }
 
 function isValidRuleType(ruleType: RuleType) {
-    return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET;
+    return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET || ruleType === RuleType.BLOCK;
 }
 
 function getRegExForRule(rule: string) {
@@ -234,6 +235,10 @@ class Settings {
                 matchingRules.push(rule);
         }
         return matchingRules;
+    }
+
+    public hasBlockingRule() {
+        return !!settings.get('rules').find((r)=> r.type === RuleType.BLOCK);
     }
 }
 export const settings = new Settings();

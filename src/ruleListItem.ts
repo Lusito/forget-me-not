@@ -13,6 +13,8 @@ function classNameForRuleType(ruleType: RuleType) {
         return 'badge_white';
     if(ruleType === RuleType.GRAY)
         return 'badge_gray';
+    if(ruleType === RuleType.BLOCK)
+        return 'badge_block';
     return 'badge_forget';
 }
 export class RuleListItem {
@@ -29,6 +31,7 @@ export class RuleListItem {
         createElement(document, this.selectNode, 'option', { className: 'badge_white', value: RuleType.WHITE, textContent: browser.i18n.getMessage('setting_type_white') });
         createElement(document, this.selectNode, 'option', { className: 'badge_gray', value: RuleType.GRAY, textContent: browser.i18n.getMessage('setting_type_gray') });
         createElement(document, this.selectNode, 'option', { className: 'badge_forget', value: RuleType.FORGET, textContent: browser.i18n.getMessage('setting_type_forget') });
+        createElement(document, this.selectNode, 'option', { className: 'badge_block', value: RuleType.BLOCK, textContent: browser.i18n.getMessage('setting_type_block') });
         this.selectNode.value = ruleDef.type.toString();
         let button = createElement(document, this.itemNode, 'button', { textContent: 'X', className: 'delete_column' });
 

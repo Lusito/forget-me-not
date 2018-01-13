@@ -30,6 +30,10 @@ export const badges = {
         i18nKey: "badge_forget",
         color: [190, 23, 38, 255]
     } as BadgeInfo,
+    block: {
+        i18nKey: "badge_block",
+        color: [0, 0, 0, 255]
+    } as BadgeInfo,
     none: {
         color: [0, 0, 0, 255]
     } as BadgeInfo
@@ -120,6 +124,8 @@ export function getBadgeForDomain(domain: string) {
     if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
         return badges.white;
     let matchingRules = settings.getMatchingRules(domain);
+    if (matchingRules.find((r) => r.type === RuleType.BLOCK))
+        return badges.block;
     if (matchingRules.length === 0 || matchingRules.find((r) => r.type === RuleType.FORGET))
         return badges.forget;
     if (matchingRules.find((r) => r.type === RuleType.WHITE))

@@ -14,6 +14,7 @@ import { isFirefox, browserInfo } from "../lib/browserInfo";
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
+    private domainRemoveTimeouts: { [s: string]: number } = {};
 
     public constructor(id: string, tabWatcher: TabWatcher) {
         this.id = id;
@@ -21,7 +22,7 @@ export class CleanStore {
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
-        this.removeCookies((cookie) =>  {
+        this.removeCookies((cookie) => {
             let allowSubDomains = cookie.domain.startsWith('.');
             let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false));
@@ -78,12 +79,17 @@ export class CleanStore {
     }
 
     public onDomainLeave(removedDomain: string) {
+        if (this.domainRemoveTimeouts[removedDomain]) {
+            clearTimeout(this.domainRemoveTimeouts[removedDomain]);
+            delete this.domainRemoveTimeouts[removedDomain];
+        }
         let timeout = settings.get('domainLeave.delay') * 60 * 1000;
         if (timeout <= 0) {
             this.cleanByDomainWithRulesNow(removedDomain);
         } else {
-            setTimeout(() => {
+            this.domainRemoveTimeouts[removedDomain] = setTimeout(() => {
                 this.cleanByDomainWithRulesNow(removedDomain);
+                delete this.domainRemoveTimeouts[removedDomain];
             }, timeout);
         }
     }

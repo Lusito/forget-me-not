@@ -14,9 +14,7 @@ import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWa
 import { MostRecentCookieDomains } from './mostRecentCookieDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
-import { browser } from "../browser/browser";
-import { BrowsingData } from "../browser/browsingData";
-import { Cookies } from "../browser/cookies";
+import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -126,7 +124,7 @@ class Background implements TabWatcherListener {
         this.mostRecentCookieDomains.add(domain);
     }
 
-    public onCookieChanged(changeInfo: Cookies.CookieChangeInfo) {
+    public onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.mostRecentCookieDomains.add(changeInfo.cookie.domain);

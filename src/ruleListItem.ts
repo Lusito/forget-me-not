@@ -6,7 +6,7 @@
 
 import { settings, RuleType, RuleDefinition } from "./lib/settings";
 import { on, createElement } from './lib/htmlUtils';
-import { browser } from "./browser/browser";
+import { browser } from "webextension-polyfill-ts";
 
 function classNameForRuleType(ruleType: RuleType) {
     if(ruleType === RuleType.WHITE)

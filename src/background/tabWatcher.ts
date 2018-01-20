@@ -5,8 +5,7 @@
  */
 
 import { getValidHostname } from '../shared';
-import { browser } from '../browser/browser';
-import { Tabs } from '../browser/tabs';
+import { browser, Tabs } from 'webextension-polyfill-ts';
 import { isFirefox } from '../lib/browserInfo';
 
 export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';

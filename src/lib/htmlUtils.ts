@@ -5,7 +5,7 @@
  */
 
 import * as MarkdownIt from 'markdown-it';
-import { browser } from '../browser/browser';
+import { browser } from 'webextension-polyfill-ts';
 
 const md = new MarkdownIt();
 const domParser = new DOMParser();

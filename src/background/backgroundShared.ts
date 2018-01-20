@@ -6,8 +6,7 @@
 
 import { settings, RuleType } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
-import { Cookies } from "../browser/cookies";
-import { browser } from "../browser/browser";
+import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
 
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
@@ -88,7 +87,7 @@ browser.notifications.onClosed.addListener((id)=> {
 export function removeCookie(cookie: Cookies.Cookie) {
     let allowSubDomains = cookie.domain.startsWith('.');
     let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-    const details: Cookies.Details = {
+    const details: Cookies.RemoveDetailsType = {
         name: cookie.name,
         url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
         storeId: cookie.storeId

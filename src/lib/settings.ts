@@ -9,8 +9,7 @@
 import * as messageUtil from "./messageUtil";
 import { isFirefox, browserInfo } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature } from "./settingsSignature";
-import { Storage } from "../browser/storage";
-import { browser } from "../browser/browser";
+import { browser, Storage } from "webextension-polyfill-ts";
 
 type Callback = () => void;
 

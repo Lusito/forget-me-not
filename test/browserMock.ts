@@ -4,9 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser } from "../src/browser/browser";
-import { Tabs } from "../src/browser/tabs";
-import { WebNavigation } from "../src/browser/webNavigation";
+import { browser } from "../src/browser";
+import * as Tabs from "../src/browser/tabs";
+import * as WebNavigation from "../src/browser/webNavigation";
 import { assert } from "chai";
 
 // @ts-ignore
@@ -53,7 +53,7 @@ class ListenerMock<T extends Function> {
 class BrowserTabsMock {
     private idCount = 0;
     private tabs: Tabs.Tab[] = [];
-    public onRemoved = new ListenerMock<(tabId: number, removeInfo: Tabs.TabRemoveInfo) => void>();
+    public onRemoved = new ListenerMock<(tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => void>();
     public onCreated = new ListenerMock<(tab: Tabs.Tab) => void>();
 
     public reset() {
@@ -106,8 +106,8 @@ class BrowserTabsMock {
 }
 
 class BrowserWebNavigationMock {
-    public onBeforeNavigate = new ListenerMock<(details: WebNavigation.WebNavigationParentedCallbackDetails) => void>();
-    public onCommitted = new ListenerMock<(details: WebNavigation.WebNavigationTransitionCallbackDetails) => void>();
+    public onBeforeNavigate = new ListenerMock<(details: WebNavigation.OnBeforeNavigateDetailsType) => void>();
+    public onCommitted = new ListenerMock<(details: WebNavigation.OnCommittedDetailsType) => void>();
 
     public reset() {
         this.onBeforeNavigate.reset();

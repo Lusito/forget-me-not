@@ -7,8 +7,7 @@
 import { settings } from "../lib/settings";
 import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
-import { browser } from "../browser/browser";
-import { Cookies } from "../browser/cookies";
+import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
 
 export class CleanStore {
@@ -34,7 +33,7 @@ export class CleanStore {
     }
 
     private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
-        const details: Cookies.GetAllDetails = { storeId: this.id };
+        const details: Cookies.GetAllDetailsType = { storeId: this.id };
         if (isFirefox && browserInfo.versionAsNumber >= 59)
             details.firstPartyDomain = null;
         browser.cookies.getAll(details).then((cookies) => {

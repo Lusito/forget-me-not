@@ -34,7 +34,7 @@
     "ts-node": "^4.0.2",
     "typescript": "^2.5.3",
     "uglify-es": "^3.1.9",
-    "webextension-polyfill-ts": "^0.8.0"
+    "webextension-polyfill-ts": "^0.8.2"
   },
   "dependencies": {
     "markdown-it": "^8.4.0"

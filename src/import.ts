@@ -7,7 +7,7 @@
 import { settings } from "./lib/settings";
 import { on, byId } from './lib/htmlUtils';
 import { loadJSONFile, readJSONFile } from './lib/fileHelper';
-import { browser } from "./browser/browser";
+import { browser } from "webextension-polyfill-ts";
 
 settings.onReady(() => {
     const dropzone = byId('dropzone') as HTMLElement;

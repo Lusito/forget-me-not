@@ -13,10 +13,10 @@ import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
 import { CookieDomainInfo, getValidHostname } from './shared';
 import { RuleListItem } from './ruleListItem';
-import { browser } from "./browser/browser";
+import { browser } from "webextension-polyfill-ts";
 import { TabSupport } from "./lib/tabSupport";
 
-const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
+const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     if (a.rule < b.rule)

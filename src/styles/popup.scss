@@ -9,6 +9,7 @@
 $badgeColorWhite: rgb(38, 69, 151);
 $badgeColorGray: rgb(116, 116, 116);
 $badgeColorForget: rgb(190, 23, 38);
+$badgeColorBlock: rgb(0, 0, 0);
 
 html,
 body {
@@ -474,8 +475,8 @@ input[type=checkbox]:checked+span:before {
 }
 .rules_head .type_column,
 .rules_list .type_column {
-    min-width: 95px;
-    width: 95px;
+    min-width: 105px;
+    width: 105px;
 }
 .rules_head .delete_column,
 .rules_list .delete_column {
@@ -529,7 +530,7 @@ html.fullscreen #rules_list {
 
 .type_column {
     select {
-        width: 95px;
+        width: 105px;
         height: 20px;
         line-height: 14px;
         font-size: 13px;
@@ -554,9 +555,13 @@ html.fullscreen #rules_list {
     .badge_forget:hover {
         background-color: $badgeColorForget;
     }
+    .badge_block:hover {
+        background-color: $badgeColorBlock;
+    }
     select.badge_white:hover,
     select.badge_gray:hover,
-    select.badge_forget:hover {
+    select.badge_forget:hover,
+    select.badge_block:hover {
         box-shadow: inset 0px 0 0 1px white;
         color: white;
     }
@@ -603,9 +608,13 @@ html.fullscreen #rules_list {
 .badge_forget{
     background-color: $badgeColorForget;
 }
+.badge_block{
+    background-color: $badgeColorBlock;
+}
 .badge_white,
 .badge_gray,
-.badge_forget {
+.badge_forget,
+.badge_block {
     display: inline-block;
     color: white;
     margin: 0 5px 0 0;

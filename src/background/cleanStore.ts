@@ -7,12 +7,13 @@
 import { settings } from "../lib/settings";
 import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
-import { browser } from "../browser/browser";
-import { Cookies } from "../browser/cookies";
+import { browser, Cookies } from "webextension-polyfill-ts";
+import { isFirefox, browserInfo } from "../lib/browserInfo";
 
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
+    private domainRemoveTimeouts: { [s: string]: number } = {};
 
     public constructor(id: string, tabWatcher: TabWatcher) {
         this.id = id;
@@ -20,20 +21,24 @@ export class CleanStore {
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
-        browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
-            for (const cookie of cookies) {
-                let allowSubDomains = cookie.domain.startsWith('.');
-                let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-                if (match && (ignoreRules || !this.isCookieAllowed(cookie, false)))
-                    removeCookie(cookie);
-            }
+        this.removeCookies((cookie) => {
+            let allowSubDomains = cookie.domain.startsWith('.');
+            let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
+            return match && (ignoreRules || !this.isCookieAllowed(cookie, false));
         });
     }
 
     public cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
-        browser.cookies.getAll({ storeId: this.id }).then((cookies) => {
+        this.removeCookies((cookie) => !this.isCookieAllowed(cookie, ignoreGrayList));
+    }
+
+    private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
+        const details: Cookies.GetAllDetailsType = { storeId: this.id };
+        if (isFirefox && browserInfo.versionAsNumber >= 59)
+            details.firstPartyDomain = null;
+        browser.cookies.getAll(details).then((cookies) => {
             for (const cookie of cookies) {
-                if (!this.isCookieAllowed(cookie, ignoreGrayList))
+                if (test(cookie))
                     removeCookie(cookie);
             }
         });
@@ -54,9 +59,7 @@ export class CleanStore {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
         let badge = getBadgeForDomain(domain);
-        if (ignoreGrayList)
-            return badge === badges.white;
-        return badge !== badges.none && badge !== badges.forget;
+        return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean) {
@@ -73,12 +76,17 @@ export class CleanStore {
     }
 
     public onDomainLeave(removedDomain: string) {
+        if (this.domainRemoveTimeouts[removedDomain]) {
+            clearTimeout(this.domainRemoveTimeouts[removedDomain]);
+            delete this.domainRemoveTimeouts[removedDomain];
+        }
         let timeout = settings.get('domainLeave.delay') * 60 * 1000;
         if (timeout <= 0) {
             this.cleanByDomainWithRulesNow(removedDomain);
         } else {
-            setTimeout(() => {
+            this.domainRemoveTimeouts[removedDomain] = setTimeout(() => {
                 this.cleanByDomainWithRulesNow(removedDomain);
+                delete this.domainRemoveTimeouts[removedDomain];
             }, timeout);
         }
     }

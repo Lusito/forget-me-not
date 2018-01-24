@@ -6,26 +6,35 @@
 
 // Detect browser information
 
-export let browserInfo = function () {
+export interface BrowserInfo {
+    name: string;
+    version: string;
+    versionAsNumber: number;
+    mobile: boolean;
+}
+
+export let browserInfo = function (): BrowserInfo {
     // if not in a browser, assume we're in a test
     if (typeof window === 'undefined')
-        return { name: 'NodeTest', version: '1.0.0', mobile: false };
+        return { name: 'NodeTest', version: '1.0.0', versionAsNumber: 1, mobile: false };
 
     let ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-    let mobile = /android|iphone|ipad|ipod/i.test(ua);
+    const mobile = /android|iphone|ipad|ipod/i.test(ua);
     if (/trident/i.test(M[1])) {
         tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-        return { name: 'IE', version: (tem[1] || ''), mobile };
+        const version = (tem[1] || '');
+        return { name: 'IE', version: version, versionAsNumber: parseFloat(version), mobile };
     }
     if (M[1] === 'Chrome') {
         tem = ua.match(/\bOPR|Edge\/(\d+)/)
-        if (tem != null) { return { name: 'Opera', version: tem[1], mobile }; }
+        if (tem != null) { return { name: 'Opera', version: tem[1], versionAsNumber: parseFloat(tem[1]), mobile }; }
     }
     M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
     if ((tem = ua.match(/version\/(\d+)/i)) != null) { M.splice(1, 1, tem[1]); }
     return {
         name: M[0],
         version: M[1],
+        versionAsNumber: parseFloat(M[1]),
         mobile
     };
 }();

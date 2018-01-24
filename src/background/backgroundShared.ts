@@ -6,11 +6,10 @@
 
 import { settings, RuleType } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
-import { Cookies } from "../browser/cookies";
-import { browser } from "../browser/browser";
+import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
 
-export const removeLocalStorageByHostname = isFirefox && parseFloat(browserInfo.version) >= 58;
+export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 export interface BadgeInfo {
     i18nKey?: string;
@@ -30,14 +29,26 @@ export const badges = {
         i18nKey: "badge_forget",
         color: [190, 23, 38, 255]
     } as BadgeInfo,
+    block: {
+        i18nKey: "badge_block",
+        color: [0, 0, 0, 255]
+    } as BadgeInfo,
     none: {
         color: [0, 0, 0, 255]
     } as BadgeInfo
 }
 
-let cookieRemovalCounts: { [s: string]: number } = {};
 const COOKIE_CLEANUP_NOTIFICATION_ID: string = "CookieCleanupNotification";
+let cookieRemovalCounts: { [s: string]: number } = {};
+let cookieRemoveNotificationStatus = {
+    starting: false,
+    updateOnStart: false
+};
 const delayCookieRemoveNotification = new DelayedExecution(() => {
+    if(cookieRemoveNotificationStatus.starting) {
+        cookieRemoveNotificationStatus.updateOnStart = true;
+        return;
+    }
     const lines = [];
     let totalCount = 0;
     for (let domain in cookieRemovalCounts) {
@@ -45,25 +56,46 @@ const delayCookieRemoveNotification = new DelayedExecution(() => {
         lines.push(browser.i18n.getMessage('cookie_cleanup_notification_line', [domain, count]));
         totalCount += count;
     }
-    let title = browser.i18n.getMessage('cookie_cleanup_notification_title', totalCount);
-    cookieRemovalCounts = {};
+    cookieRemoveNotificationStatus.starting = true;
+    cookieRemoveNotificationStatus.updateOnStart = false;
     browser.notifications.create(COOKIE_CLEANUP_NOTIFICATION_ID, {
-        "priority": -2,
-        "type": "basic",
-        "iconUrl": browser.extension.getURL("icons/icon96.png"),
-        "title": title,
-        "message": lines.join('\n')
+        priority: -2,
+        type: "basic",
+        iconUrl: browser.extension.getURL("icons/icon96.png"),
+        title: browser.i18n.getMessage('cookie_cleanup_notification_title', totalCount),
+        message: lines.join('\n')
+    }).then((s)=> {
+        cookieRemoveNotificationStatus.starting = false;
+        if(cookieRemoveNotificationStatus.updateOnStart)
+            delayCookieRemoveNotification.restart(100);
     });
+    delayClearCookieRemoveNotification.restart(3000);
+});
+
+const delayClearCookieRemoveNotification = new DelayedExecution(() => {
+    browser.notifications.clear(COOKIE_CLEANUP_NOTIFICATION_ID);
+    cookieRemoveNotificationStatus.starting = false;
+    cookieRemovalCounts = {};
+});
+
+browser.notifications.onClosed.addListener((id)=> {
+    cookieRemoveNotificationStatus.starting = false;
+    cookieRemovalCounts = {};
+    delayClearCookieRemoveNotification.cancel();
 });
 
 export function removeCookie(cookie: Cookies.Cookie) {
     let allowSubDomains = cookie.domain.startsWith('.');
     let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-    browser.cookies.remove({
+    const details: Cookies.RemoveDetailsType = {
         name: cookie.name,
         url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
         storeId: cookie.storeId
-    });
+    };
+    if(isFirefox && browserInfo.versionAsNumber >= 59)
+        details.firstPartyDomain = cookie.firstPartyDomain;
+
+    browser.cookies.remove(details);
     if(settings.get('showCookieRemovalNotification')) {
         cookieRemovalCounts[rawDomain] = (cookieRemovalCounts[rawDomain] || 0) + 1;
         delayCookieRemoveNotification.restart(500);
@@ -91,6 +123,8 @@ export function getBadgeForDomain(domain: string) {
     if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
         return badges.white;
     let matchingRules = settings.getMatchingRules(domain);
+    if (matchingRules.find((r) => r.type === RuleType.BLOCK))
+        return badges.block;
     if (matchingRules.length === 0 || matchingRules.find((r) => r.type === RuleType.FORGET))
         return badges.forget;
     if (matchingRules.find((r) => r.type === RuleType.WHITE))

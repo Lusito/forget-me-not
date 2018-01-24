@@ -1,6 +1,4 @@
-import { Runtime } from "../browser/runtime";
-import { browser } from "../browser/browser";
-import { Tabs } from "../browser/tabs";
+import { browser, Runtime, Tabs } from "webextension-polyfill-ts";
 
 /**
  * License: zlib/libpng

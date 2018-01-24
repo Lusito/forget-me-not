@@ -14,9 +14,7 @@ import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWa
 import { MostRecentCookieDomains } from './mostRecentCookieDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
-import { browser } from "../browser/browser";
-import { BrowsingData } from "../browser/browsingData";
-import { Cookies } from "../browser/cookies";
+import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -97,9 +95,7 @@ class Background implements TabWatcherListener {
                 return true;
         }
         let badge = getBadgeForDomain(domain);
-        if (ignoreGrayList)
-            return badge === badges.white;
-        return badge !== badges.none && badge !== badges.forget;
+        return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
     }
 
     private runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
@@ -128,20 +124,28 @@ class Background implements TabWatcherListener {
         this.mostRecentCookieDomains.add(domain);
     }
 
-    public onCookieChanged(changeInfo: Cookies.CookieChangeInfo) {
+    public onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.mostRecentCookieDomains.add(changeInfo.cookie.domain);
-                if (settings.get('cleanThirdPartyCookies.enabled')
-                    && !this.isCookieAllowed(changeInfo.cookie)) {
-                    let exec = new DelayedExecution(() => {
-                        let delta = Date.now() - this.lastDomainChangeRequest;
-                        if (delta < 1000)
-                            exec.restart(500);
-                        else if (!this.isCookieAllowed(changeInfo.cookie))
-                            removeCookie(changeInfo.cookie);
-                    });
-                    exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+                // Cookies set by javascript can't be denied, but can be removed instantly.
+                let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
+                let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
+                if(getBadgeForDomain(rawDomain) === badges.block) {
+                    removeCookie(changeInfo.cookie);
+                    return;
+                }
+                if (settings.get('cleanThirdPartyCookies.enabled')) {
+                    if(!this.isCookieAllowed(changeInfo.cookie)) {
+                        let exec = new DelayedExecution(() => {
+                            let delta = Date.now() - this.lastDomainChangeRequest;
+                            if (delta < 1000)
+                                exec.restart(500);
+                            else if (!this.isCookieAllowed(changeInfo.cookie))
+                                removeCookie(changeInfo.cookie);
+                        });
+                        exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+                    }
                 }
             });
         }
@@ -199,10 +203,6 @@ class Background implements TabWatcherListener {
 
     public onDomainLeave(cookieStoreId: string, hostname: string): void {
         this.getCleanStore(cookieStoreId).onDomainLeave(hostname);
-    }
-
-    public isThirdPartyCookie(tabId: number, domain: string) {
-        return this.tabWatcher.isThirdPartyCookie(tabId, domain);
     }
 }
 

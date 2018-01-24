@@ -12,9 +12,11 @@
     "scss-release": "node-sass --source-map true --output-style compressed src/styles/ -o dist",
     "scss": "node-sass --source-map true src/styles/ -o dist",
     "pack": "web-ext build -i src test \"!(manifest).json\" \"*.js\" \"dist/*.map\"",
-    "uglify": "run-s uglify-1 uglify-2",
+    "uglify": "run-s uglify-1 uglify-2 uglify-3 uglify-4",
     "uglify-1": "uglifyjs --compress --mangle -o dist/background.js dist/background.js",
-    "uglify-2": "uglifyjs --compress --mangle -o dist/popup.js dist/popup.js"
+    "uglify-2": "uglifyjs --compress --mangle -o dist/popup.js dist/popup.js",
+    "uglify-3": "uglifyjs --compress --mangle -o dist/readme.js dist/readme.js",
+    "uglify-4": "uglifyjs --compress --mangle -o dist/import.js dist/import.js"
   },
   "author": "Santo Pfingsten",
   "license": "Zlib",

@@ -4,9 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser } from "../src/browser";
-import * as Tabs from "../src/browser/tabs";
-import * as WebNavigation from "../src/browser/webNavigation";
+import { browser, Tabs, WebNavigation } from "webextension-polyfill-ts";
 import { assert } from "chai";
 
 // @ts-ignore
@@ -123,7 +121,6 @@ class BrowserWebNavigationMock {
                 url,
                 timeStamp: Date.now(),
                 frameId: 0,
-                processId: 0,
                 parentFrameId: 0
             });
         }
@@ -139,7 +136,6 @@ class BrowserWebNavigationMock {
                 url,
                 timeStamp: Date.now(),
                 frameId: 0,
-                processId: 0,
                 transitionType: "link",
                 transitionQualifiers: []
             });

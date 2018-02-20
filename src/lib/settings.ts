@@ -73,7 +73,10 @@ const defaultSettings: SettingsMap = {
     "startup.indexedDB": true,
     "startup.pluginData": true,
     "startup.serviceWorkers": true,
-    "startup.serverBoundCertificates": false
+    "startup.serverBoundCertificates": false,
+
+    "logRAD.enabled": true,
+    "logRAD.limit": 20
 };
 
 const isAlNum = /^[a-z0-9]+$/;

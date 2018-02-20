@@ -128,8 +128,12 @@
                     </div>
                 </div>
                 <div>
-                    <b data-i18n="most_recent_cookie_domains"></b>
-                    <ul id="most_recent_cookie_domains"></ul>
+                    <div class="split_equal">
+                        <label><input type="checkbox" data-settings-key="logRAD.enabled"><span data-i18n="setting_log_rad_enabled"></span></label>
+                        <label><span data-i18n="setting_log_rad_limit"></span><input type="number" data-settings-key="logRAD.limit"></label>
+                    </div>
+                    <b data-i18n="recently_accessed_domains" class="top_margin"></b>
+                    <ul id="recently_accessed_domains"></ul>
                 </div>
                 <div data-i18n="about_page?markdown" class="compact_markdown"></div>
             </div>

@@ -50,6 +50,9 @@ export interface SettingsTypeMap {
     "startup.pluginData": boolean;
     "startup.serviceWorkers": boolean;
     "startup.serverBoundCertificates": boolean;
+
+    "logRAD.enabled": boolean;
+    "logRAD.limit": number;
 }
 
 export type SettingsSignature = {[K in keyof SettingsTypeMap]: SettingsTypeMap[K]};

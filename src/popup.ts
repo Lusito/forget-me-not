@@ -78,11 +78,11 @@ class Popup {
             }
         });
 
-        let recentCookieDomainsList = byId('most_recent_cookie_domains') as HTMLElement;
-        messageUtil.receive('onMostRecentCookieDomains', (domains: CookieDomainInfo[]) => {
-            removeAllChildren(recentCookieDomainsList);
+        let recentlyAccessedDomainsList = byId('recently_accessed_domains') as HTMLElement;
+        messageUtil.receive('onRecentlyAccessedDomains', (domains: CookieDomainInfo[]) => {
+            removeAllChildren(recentlyAccessedDomainsList);
             for (const info of domains) {
-                let li = createElement(document, recentCookieDomainsList, 'li');
+                let li = createElement(document, recentlyAccessedDomainsList, 'li');
                 createElement(document, li, 'span', { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
                 createElement(document, li, 'span', { textContent: info.domain, title: info.domain });
                 let addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
@@ -90,7 +90,7 @@ class Popup {
             }
         });
 
-        messageUtil.send('getMostRecentCookieDomains');
+        messageUtil.send('getRecentlyAccessedDomains');
     }
 
     private onTabChange(name: string) {

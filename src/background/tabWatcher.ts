@@ -7,6 +7,7 @@
 import { getValidHostname } from '../shared';
 import { browser, Tabs } from 'webextension-polyfill-ts';
 import { isFirefox } from '../lib/browserInfo';
+import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 
 export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
 
@@ -27,9 +28,11 @@ export class TabWatcher {
     private readonly listener: TabWatcherListener;
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
+    private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
 
-    public constructor(listener: TabWatcherListener) {
+    public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains) {
         this.listener = listener;
+        this.recentlyAccessedDomains = recentlyAccessedDomains;
         browser.tabs.query({}).then((tabs) => {
             for (let tab of tabs)
                 this.onTabCreated(tab);
@@ -58,6 +61,7 @@ export class TabWatcher {
             tabInfo.hostname = hostname;
             tabInfo.nextHostname = '';
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
+            this.recentlyAccessedDomains.addUrl(url);
         } else {
             this.getTab(tabId);
         }
@@ -78,6 +82,8 @@ export class TabWatcher {
             if (!tab.incognito && !this.tabInfos[tabId]) {
                 const hostname = tab.url ? getValidHostname(tab.url) : '';
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
+                if(tab.url)
+                    this.recentlyAccessedDomains.addUrl(tab.url);
             }
         });
     }
@@ -134,6 +140,8 @@ export class TabWatcher {
                 tabInfo.hostname = hostname;
             else
                 this.setTabInfo(tab.id, hostname, tab.cookieStoreId);
+            if(tab.url)
+                this.recentlyAccessedDomains.addUrl(tab.url);
         }
     }
 

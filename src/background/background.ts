@@ -11,7 +11,7 @@ import { loadJSONFile } from '../lib/fileHelper';
 import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain } from './backgroundShared';
 import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
-import { MostRecentCookieDomains } from './mostRecentCookieDomains';
+import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
@@ -19,12 +19,12 @@ import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
     private lastDomainChangeRequest = Date.now();
-    private readonly mostRecentCookieDomains = new MostRecentCookieDomains();
-    private readonly tabWatcher = new TabWatcher(this);
+    private readonly recentlyAccessedDomains = new RecentlyAccessedDomains();
+    private readonly tabWatcher = new TabWatcher(this, this.recentlyAccessedDomains);
 
     public constructor() {
         this.updateBadge();
-        new HeaderFilter(this.tabWatcher, this.mostRecentCookieDomains);
+        new HeaderFilter(this.tabWatcher, this.recentlyAccessedDomains);
     }
 
     public onStartup() {
@@ -120,14 +120,10 @@ class Background implements TabWatcherListener {
         }
     }
 
-    public addToMostRecentCookieDomains(domain: string) {
-        this.mostRecentCookieDomains.add(domain);
-    }
-
     public onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
-                this.mostRecentCookieDomains.add(changeInfo.cookie.domain);
+                this.recentlyAccessedDomains.addDomain(changeInfo.cookie.domain);
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;

@@ -7,13 +7,14 @@
 import { settings, RuleType, RuleDefinition } from "./lib/settings";
 import { on, createElement } from './lib/htmlUtils';
 import { browser } from "webextension-polyfill-ts";
+import * as punycode from "punycode";
 
 function classNameForRuleType(ruleType: RuleType) {
-    if(ruleType === RuleType.WHITE)
+    if (ruleType === RuleType.WHITE)
         return 'badge_white';
-    if(ruleType === RuleType.GRAY)
+    if (ruleType === RuleType.GRAY)
         return 'badge_gray';
-    if(ruleType === RuleType.BLOCK)
+    if (ruleType === RuleType.BLOCK)
         return 'badge_block';
     return 'badge_forget';
 }
@@ -25,7 +26,8 @@ export class RuleListItem {
     public constructor(ruleDef: RuleDefinition, parent: HTMLElement) {
         this.ruleDef = ruleDef;
         this.itemNode = createElement(document, parent, 'li');
-        this.labelNode = createElement(document, this.itemNode, 'div', { textContent: ruleDef.rule, title: ruleDef.rule });
+        const punified = this.appendPunycode(ruleDef.rule);
+        this.labelNode = createElement(document, this.itemNode, 'div', { textContent: punified, title: punified });
         let label = createElement(document, this.itemNode, 'label', { className: 'type_column' });
         this.selectNode = createElement(document, label, 'select', { className: classNameForRuleType(ruleDef.type) });
         createElement(document, this.selectNode, 'option', { className: 'badge_white', value: RuleType.WHITE, textContent: browser.i18n.getMessage('setting_type_white') });
@@ -60,11 +62,17 @@ export class RuleListItem {
         return this.ruleDef.rule === ruleDef.rule;
     }
 
+    private appendPunycode(rule: string) {
+        const punified = punycode.toUnicode(rule);
+        return (punified === rule) ? rule : `${rule} (${punified})`;
+    }
+
     public updateRule(ruleDef: RuleDefinition) {
         this.ruleDef = ruleDef;
         this.selectNode.value = ruleDef.type.toString();
         this.selectNode.className = classNameForRuleType(ruleDef.type);
-        this.labelNode.textContent = ruleDef.rule;
-        this.labelNode.title = ruleDef.rule;
+        const punified = this.appendPunycode(ruleDef.rule);
+        this.labelNode.textContent = punified;
+        this.labelNode.title = punified;
     }
 }

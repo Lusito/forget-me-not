@@ -5,7 +5,7 @@
  */
 
 import * as messageUtil from "../lib/messageUtil";
-import { CookieDomainInfo, getValidHostname } from '../shared';
+import { CookieDomainInfo } from '../shared';
 import { getBadgeForDomain } from './backgroundShared';
 import { settings } from "../lib/settings";
 
@@ -54,28 +54,17 @@ export class RecentlyAccessedDomains {
         return result;
     }
 
-    private add(domain: string) {
-        if (domain.startsWith('.'))
-            domain = domain.substr(1);
-        let index = this.domains.indexOf(domain);
-        if (index !== 0) {
-            if (index !== -1)
-                this.domains.splice(index, 1);
-            this.domains.unshift(domain);
-            this.applyLimit();
-        }
-    }
-
-    public addDomain(domain: string) {
-        if (this.enabled && domain)
-            this.add(domain);
-    }
-
-    public addUrl(url: string) {
-        if (this.enabled) {
-            const domain = getValidHostname(url);
-            if (domain)
-                this.add(domain);
+    public add(domain: string) {
+        if (this.enabled && domain) {
+            if (domain.startsWith('.'))
+                domain = domain.substr(1);
+            let index = this.domains.indexOf(domain);
+            if (index !== 0) {
+                if (index !== -1)
+                    this.domains.splice(index, 1);
+                this.domains.unshift(domain);
+                this.applyLimit();
+            }
         }
     }
 }

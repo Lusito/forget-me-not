@@ -55,7 +55,7 @@ export class HeaderFilter {
                 if (x.value) {
                     const domain = getCookieDomainFromCookieHeader(x.value);
                     if(domain && this.shouldCookieBeBlocked(tabId, domain)) {
-                        this.recentlyAccessedDomains.addDomain(domain);
+                        this.recentlyAccessedDomains.add(domain);
                         return false;
                     }
                 }

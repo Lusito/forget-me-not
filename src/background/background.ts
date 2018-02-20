@@ -123,7 +123,7 @@ class Background implements TabWatcherListener {
     public onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
-                this.recentlyAccessedDomains.addDomain(changeInfo.cookie.domain);
+                this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;

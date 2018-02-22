@@ -23,7 +23,7 @@ export class CleanStore {
     private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
         this.removeCookies((cookie) => {
             let allowSubDomains = cookie.domain.startsWith('.');
-            let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
+            let match = allowSubDomains ? (domain.endsWith(cookie.domain) || cookie.domain.substr(1) === domain): (domain === cookie.domain);
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false));
         });
     }

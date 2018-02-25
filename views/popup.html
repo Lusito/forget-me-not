@@ -10,12 +10,12 @@
         <div id="wrapper">
             <div id="logo_area" data-i18n="logo?title"></div>
             <div id="tabs">
-                <div class="active" data-i18n="tabs_this_tab" data-tab="this_tab"></div>
-                <div data-i18n="tabs_clean_all" data-tab="clean_all"></div>
-                <div data-i18n="tabs_rules" data-tab="rules"></div>
-                <div data-i18n="tabs_settings" data-tab="settings"></div>
-                <div data-i18n="tabs_log" data-tab="log"></div>
-                <div data-i18n="tabs_about" data-tab="about"></div>
+                <div class="active" data-i18n="tabs_this_tab?title" data-tab="this_tab" style="background-image: url('../icons/tabs/eye.svg');"></div>
+                <div data-i18n="tabs_clean_all?title" data-tab="clean_all" style="background-image: url('../icons/tabs/delete.svg');"></div>
+                <div data-i18n="tabs_rules?title" data-tab="rules" style="background-image: url('../icons/tabs/shield.svg');"></div>
+                <div data-i18n="tabs_settings?title" data-tab="settings" style="background-image: url('../icons/tabs/settings.svg');"></div>
+                <div data-i18n="tabs_log?title" data-tab="log" style="background-image: url('../icons/tabs/list.svg');"></div>
+                <div data-i18n="tabs_about?title" data-tab="about" style="background-image: url('../icons/tabs/info.svg');"></div>
                 <a href="readme.html#tutorial" target="_blank" id="help_link" class="open_as_tab" data-i18n="help_button?title">?</a>
             </div>
             <div id="pages">
@@ -33,6 +33,7 @@
                     <ul id="rules_list_current_tab" class="rules_list"></ul>
                 </div>
                 <div>
+                    <h2 class="tab_heading" data-i18n="perform_manual_cleanup"></h2>
                     <div class="split_30_70">
                         <label><input type="checkbox" data-settings-key="cleanAll.cookies" data-enables-setting="cleanAll.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
                         <label><input type="checkbox" data-settings-key="cleanAll.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
@@ -60,6 +61,7 @@
                     <div class="top_margin"><button data-i18n="button_clean_now" id="clean_all_now"></button></div>
                 </div>
                 <div id="rules_tab_page">
+                    <h2 class="tab_heading" data-i18n="define_rules"></h2>
                     <div id="rules_input_wrapper">
                         <input id="rules_input" data-i18n="rules_input?placeholder">
                         <button id="rules_add" data-i18n="rules_add"></button>

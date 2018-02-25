@@ -44,7 +44,7 @@ export class HeaderFilter {
 
     private shouldCookieBeBlocked(tabId: number, domain: string) {
         const badge = getBadgeForDomain(domain.startsWith('.') ? domain.substr(1) : domain);
-        if(badge === badges.white || badge === badges.gray)
+        if (badge === badges.white || badge === badges.gray)
             return false;
         return badge === badges.block || this.tabWatcher.isThirdPartyCookie(tabId, domain);
     }
@@ -54,7 +54,7 @@ export class HeaderFilter {
             if (x.name.toLowerCase() === 'set-cookie') {
                 if (x.value) {
                     const domain = getCookieDomainFromCookieHeader(x.value);
-                    if(domain && this.shouldCookieBeBlocked(tabId, domain)) {
+                    if (domain && this.shouldCookieBeBlocked(tabId, domain)) {
                         this.recentlyAccessedDomains.add(domain);
                         return false;
                     }

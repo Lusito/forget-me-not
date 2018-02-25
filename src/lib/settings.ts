@@ -240,7 +240,7 @@ class Settings {
     }
 
     public hasBlockingRule() {
-        return !!settings.get('rules').find((r)=> r.type === RuleType.BLOCK);
+        return !!settings.get('rules').find((r) => r.type === RuleType.BLOCK);
     }
 }
 export const settings = new Settings();

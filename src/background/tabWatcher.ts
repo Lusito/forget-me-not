@@ -28,9 +28,9 @@ export class TabWatcher {
     private readonly listener: TabWatcherListener;
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
-    private readonly recentlyAccessedDomains: RecentlyAccessedDomains|null;
+    private readonly recentlyAccessedDomains: RecentlyAccessedDomains | null;
 
-    public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains|null) {
+    public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains | null) {
         this.listener = listener;
         this.recentlyAccessedDomains = recentlyAccessedDomains;
         browser.tabs.query({}).then((tabs) => {
@@ -61,7 +61,7 @@ export class TabWatcher {
             tabInfo.hostname = hostname;
             tabInfo.nextHostname = '';
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
-            if(hostname && this.recentlyAccessedDomains)
+            if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
         } else {
             this.getTab(tabId);
@@ -83,7 +83,7 @@ export class TabWatcher {
             if (!tab.incognito && !this.tabInfos[tabId]) {
                 const hostname = tab.url ? getValidHostname(tab.url) : '';
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
-                if(hostname && this.recentlyAccessedDomains)
+                if (hostname && this.recentlyAccessedDomains)
                     this.recentlyAccessedDomains.add(hostname);
             }
         });
@@ -141,7 +141,7 @@ export class TabWatcher {
                 tabInfo.hostname = hostname;
             else
                 this.setTabInfo(tab.id, hostname, tab.cookieStoreId);
-            if(hostname && this.recentlyAccessedDomains)
+            if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
         }
     }

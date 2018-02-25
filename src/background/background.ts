@@ -127,12 +127,12 @@ class Background implements TabWatcherListener {
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
-                if(getBadgeForDomain(rawDomain) === badges.block) {
+                if (getBadgeForDomain(rawDomain) === badges.block) {
                     removeCookie(changeInfo.cookie);
                     return;
                 }
                 if (settings.get('cleanThirdPartyCookies.enabled')) {
-                    if(!this.isCookieAllowed(changeInfo.cookie)) {
+                    if (!this.isCookieAllowed(changeInfo.cookie)) {
                         let exec = new DelayedExecution(() => {
                             let delta = Date.now() - this.lastDomainChangeRequest;
                             if (delta < 1000)

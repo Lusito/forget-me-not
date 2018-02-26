@@ -21,6 +21,8 @@ class Background implements TabWatcherListener {
     private lastDomainChangeRequest = Date.now();
     private readonly recentlyAccessedDomains = new RecentlyAccessedDomains();
     private readonly tabWatcher = new TabWatcher(this, this.recentlyAccessedDomains);
+    private snoozing = false;
+    private readonly snoozedThirdpartyCookies: Cookies.Cookie[] = [];
 
     public constructor() {
         this.updateBadge();
@@ -87,8 +89,8 @@ class Background implements TabWatcherListener {
         return result;
     }
 
-    private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains:boolean): boolean {
-        if(protectOpenDomains) {
+    private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains: boolean): boolean {
+        if (protectOpenDomains) {
             for (let key in this.cleanStores) {
                 if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
                     return true;
@@ -127,23 +129,32 @@ class Background implements TabWatcherListener {
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
-                if (getBadgeForDomain(rawDomain) === badges.block) {
+                if (getBadgeForDomain(rawDomain) === badges.block)
                     removeCookie(changeInfo.cookie);
+                else if (settings.get('cleanThirdPartyCookies.enabled'))
+                    this.removeCookieIfThirdparty(changeInfo.cookie);
+            });
+        }
+    }
+
+    public removeCookieIfThirdparty(cookie: Cookies.Cookie) {
+        if (!this.isCookieAllowed(cookie)) {
+            if (this.snoozing) {
+                this.snoozedThirdpartyCookies.push(cookie);
+                return;
+            }
+            let exec = new DelayedExecution(() => {
+                if (this.snoozing) {
+                    this.snoozedThirdpartyCookies.push(cookie);
                     return;
                 }
-                if (settings.get('cleanThirdPartyCookies.enabled')) {
-                    if (!this.isCookieAllowed(changeInfo.cookie)) {
-                        let exec = new DelayedExecution(() => {
-                            let delta = Date.now() - this.lastDomainChangeRequest;
-                            if (delta < 1000)
-                                exec.restart(500);
-                            else if (!this.isCookieAllowed(changeInfo.cookie))
-                                removeCookie(changeInfo.cookie);
-                        });
-                        exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
-                    }
-                }
+                let delta = Date.now() - this.lastDomainChangeRequest;
+                if (delta < 1000)
+                    exec.restart(500);
+                else if (!this.isCookieAllowed(cookie))
+                    removeCookie(cookie);
             });
+            exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
         }
     }
 
@@ -163,7 +174,7 @@ class Background implements TabWatcherListener {
             id = DEFAULT_COOKIE_STORE_ID;
         let store = this.cleanStores[id];
         if (!store)
-            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher);
+            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher, this.snoozing);
         return store;
     }
 
@@ -200,6 +211,24 @@ class Background implements TabWatcherListener {
     public onDomainLeave(cookieStoreId: string, hostname: string): void {
         this.getCleanStore(cookieStoreId).onDomainLeave(hostname);
     }
+
+    public toggleSnoozingState() {
+        this.snoozing = !this.snoozing;
+        for (const key in this.cleanStores)
+            this.cleanStores[key].setSnoozing(this.snoozing);
+
+        if(!this.snoozing) {
+            for (const cookie of this.snoozedThirdpartyCookies)
+                this.removeCookieIfThirdparty(cookie);
+            this.snoozedThirdpartyCookies.length = 0;
+        }
+
+        this.sendSnoozingState();
+    }
+
+    public sendSnoozingState() {
+        messageUtil.send('onSnoozingState', this.snoozing);
+    }
 }
 
 let background: Background;
@@ -212,6 +241,8 @@ settings.onReady(() => {
     background = new Background();
     messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
     messageUtil.receive('cleanUrlNow', (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
+    messageUtil.receive('toggleSnoozingState', () => background.toggleSnoozingState());
+    messageUtil.receive('getSnoozingState', () => background.sendSnoozingState());
     browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
 
     // listen for tab changes to update badge

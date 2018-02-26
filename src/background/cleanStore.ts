@@ -14,10 +14,13 @@ export class CleanStore {
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
     private domainRemoveTimeouts: { [s: string]: number } = {};
+    private snoozing: boolean;
+    private readonly snoozedDomainLeaves: { [s: string]: boolean } = {};
 
-    public constructor(id: string, tabWatcher: TabWatcher) {
+    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean) {
         this.id = id;
         this.tabWatcher = tabWatcher;
+        this.snoozing = snoozing;
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
@@ -80,14 +83,39 @@ export class CleanStore {
             clearTimeout(this.domainRemoveTimeouts[removedDomain]);
             delete this.domainRemoveTimeouts[removedDomain];
         }
+        if (this.snoozing) {
+            this.snoozedDomainLeaves[removedDomain] = true;
+            return;
+        }
         let timeout = settings.get('domainLeave.delay') * 60 * 1000;
         if (timeout <= 0) {
             this.cleanByDomainWithRulesNow(removedDomain);
         } else {
             this.domainRemoveTimeouts[removedDomain] = setTimeout(() => {
-                this.cleanByDomainWithRulesNow(removedDomain);
+                if (this.snoozing)
+                    this.snoozedDomainLeaves[removedDomain] = true;
+                else
+                    this.cleanByDomainWithRulesNow(removedDomain);
                 delete this.domainRemoveTimeouts[removedDomain];
             }, timeout);
+        }
+    }
+
+    public setSnoozing(snoozing: boolean) {
+        this.snoozing = snoozing;
+        if (snoozing) {
+            // cancel countdowns and remember them for later
+            for (const domain in this.domainRemoveTimeouts) {
+                this.snoozedDomainLeaves[domain] = true;
+                clearTimeout(this.domainRemoveTimeouts[domain]);
+                delete this.domainRemoveTimeouts[domain];
+            }
+        } else {
+            // reschedule
+            for (const domain in this.snoozedDomainLeaves) {
+                this.onDomainLeave(domain);
+                delete this.snoozedDomainLeaves[domain];
+            }
         }
     }
 }

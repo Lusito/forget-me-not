@@ -55,6 +55,9 @@ class Popup {
             this.tabSupport.setTab(initialTab);
 
         this.initCurrentTab();
+        this.initSnoozeButton();
+
+        on(byId('clean_all_now') as HTMLElement, 'click', () => messageUtil.send('cleanAllNow'));
 
         this.rulesInput = byId('rules_input') as HTMLInputElement;
         on(this.rulesInput, 'keyup', this.onRulesInputKeyUp.bind(this));
@@ -141,10 +144,6 @@ class Popup {
 
     private initCurrentTab() {
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-            let cleanAllNow = byId('clean_all_now');
-            if (cleanAllNow)
-                on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
-
             const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
                 const hostname = getValidHostname(tab.url);
@@ -168,6 +167,20 @@ class Popup {
                 this.setInvalidTab();
             }
         });
+    }
+
+    private initSnoozeButton() {
+        let toggleSnooze = byId('toggle_snooze') as HTMLButtonElement;
+        toggleSnooze.disabled = true;
+        on(toggleSnooze, 'click', () => {
+            toggleSnooze.disabled = true;
+            messageUtil.send('toggleSnoozingState');
+        });
+        messageUtil.receive('onSnoozingState', (snoozing: boolean) => {
+            toggleSnooze.disabled = false;
+            toggleSnooze.textContent = browser.i18n.getMessage('button_toggle_snooze_' + snoozing);
+        });
+        messageUtil.send('getSnoozingState');
     }
 
     private onImport() {

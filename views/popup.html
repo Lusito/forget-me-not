@@ -14,6 +14,7 @@
                 <div data-i18n="tabs_clean_all?title" data-tab="clean_all" style="background-image: url('../icons/tabs/delete.svg');"></div>
                 <div data-i18n="tabs_rules?title" data-tab="rules" style="background-image: url('../icons/tabs/shield.svg');"></div>
                 <div data-i18n="tabs_settings?title" data-tab="settings" style="background-image: url('../icons/tabs/settings.svg');"></div>
+                <div data-i18n="tabs_snooze?title" data-tab="snooze" style="background-image: url('../icons/tabs/snooze.svg');"></div>
                 <div data-i18n="tabs_log?title" data-tab="log" style="background-image: url('../icons/tabs/list.svg');"></div>
                 <div data-i18n="tabs_about?title" data-tab="about" style="background-image: url('../icons/tabs/info.svg');"></div>
                 <a href="readme.html#tutorial" target="_blank" id="help_link" class="open_as_tab" data-i18n="help_button?title">?</a>
@@ -122,18 +123,25 @@
                     <div><label><input type="checkbox" data-settings-key="showCookieRemovalNotification"><span data-i18n="setting_show_cookie_removal_notification"></span></label></div>
                     <div><label><input type="checkbox" data-settings-key="showBadge"><span data-i18n="setting_show_badge"></span></label></div>
                     <div><label><span data-i18n="setting_initialTab"></span><select data-settings-key="initialTab" style="margin-left: 5px; margin-right: 0;">
-                        <option data-i18n="last_active_tab" value="last_active_tab"></option>
-                        <option data-i18n="tabs_this_tab" value="this_tab"></option>
-                        <option data-i18n="tabs_clean_all" value="clean_all"></option>
-                        <option data-i18n="tabs_rules" value="rules"></option>
-                        <option data-i18n="tabs_settings" value="settings"></option>
-                        <option data-i18n="tabs_log" value="log"></option>
-                        <option data-i18n="tabs_about" value="about"></option>
+                        <option data-i18n="initial_tab_last_active" value="last_active_tab"></option>
+                        <option data-i18n="initial_tab_this_tab" value="this_tab"></option>
+                        <option data-i18n="initial_tab_clean_all" value="clean_all"></option>
+                        <option data-i18n="initial_tab_rules" value="rules"></option>
+                        <option data-i18n="initial_tab_settings" value="settings"></option>
+                        <option data-i18n="initial_tab_snooze" value="snooze"></option>
+                        <option data-i18n="initial_tab_log" value="log"></option>
+                        <option data-i18n="initial_tab_about" value="about"></option>
                     </select></label></div>
                     <div class="split_equal top_margin">
                         <button id="settings_import" data-i18n="button_import"></button>
                         <button id="settings_export" data-i18n="button_export"></button>
                         <button id="settings_reset" data-i18n="button_reset"></button>
+                    </div>
+                </div>
+                <div>
+                    <div data-i18n="toggle_snooze_description?markdown" class="compact_markdown"></div>
+                    <div class="top_margin">
+                        <button id="toggle_snooze"></button>
                     </div>
                 </div>
                 <div>

@@ -54,6 +54,7 @@
 	"setting_apply_rules": { "message": "Regeln anwenden" },
 	"setting_local_storage": { "message": "Lokaler Speicher" },
 	"setting_apply_rules_ff58": { "message": "Regeln anwenden (Firefox 58+)" },
+	"setting_protect_open_domains": { "message": "Offene Domänen beschützen, falls \"Regeln anwenden\" gewählt ist" },
 	"setting_history": { "message": "History" },
 	"setting_downloads": { "message": "Downloads" },
 	"setting_form_data": { "message": "Form Daten" },

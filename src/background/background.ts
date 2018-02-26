@@ -32,13 +32,6 @@ class Background implements TabWatcherListener {
             this.runCleanup(true);
     }
 
-    public cleanLocalStorage(hostnames: string[]) {
-        browser.cookies.getAllCookieStores().then((cookieStores) => {
-            for (let store of cookieStores)
-                cleanLocalStorage(this.getDomainsToClean(true), store.id);
-        });
-    }
-
     public cleanUrlNow(config: CleanUrlNowConfig) {
         this.getCleanStore(config.cookieStoreId).cleanUrlNow(config.hostname);
     }
@@ -61,16 +54,21 @@ class Background implements TabWatcherListener {
         let options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
+        const protectOpenDomains = startup || settings.get('cleanAll.protectOpenDomains');
         if (settings.get(startup ? 'startup.cookies' : 'cleanAll.cookies')) {
             if (settings.get(startup ? 'startup.cookies.applyRules' : 'cleanAll.cookies.applyRules'))
-                this.cleanCookiesWithRulesNow(startup);
+                this.cleanCookiesWithRulesNow(startup, protectOpenDomains);
             else
                 typeSet.cookies = true;
         }
         if (settings.get(startup ? 'startup.localStorage' : 'cleanAll.localStorage')) {
-            if (settings.get(startup ? 'startup.localStorage.applyRules' : 'cleanAll.localStorage.applyRules'))
-                this.cleanLocalStorage(this.getDomainsToClean(startup));
-            else {
+            if (settings.get(startup ? 'startup.localStorage.applyRules' : 'cleanAll.localStorage.applyRules')) {
+                browser.cookies.getAllCookieStores().then((cookieStores) => {
+                    const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
+                    for (let store of cookieStores)
+                        cleanLocalStorage(hostnames, store.id);
+                });
+            } else {
                 typeSet.localStorage = true;
                 settings.set('domainsToClean', {});
                 settings.save();
@@ -79,20 +77,22 @@ class Background implements TabWatcherListener {
         browser.browsingData.remove(options, typeSet);
     }
 
-    private getDomainsToClean(ignoreGrayList: boolean): string[] {
+    private getDomainsToClean(ignoreGrayList: boolean, protectOpenDomains: boolean): string[] {
         let domainsToClean = settings.get('domainsToClean');
         let result = [];
         for (const domain in domainsToClean) {
-            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList))
+            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList, protectOpenDomains))
                 result.push(domain);
         }
         return result;
     }
 
-    private isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
-        for (let key in this.cleanStores) {
-            if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
-                return true;
+    private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains:boolean): boolean {
+        if(protectOpenDomains) {
+            for (let key in this.cleanStores) {
+                if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
+                    return true;
+            }
         }
         let badge = getBadgeForDomain(domain);
         return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
@@ -148,13 +148,13 @@ class Background implements TabWatcherListener {
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie) {
-        return this.getCleanStore(cookie.storeId).isCookieAllowed(cookie, false);
+        return this.getCleanStore(cookie.storeId).isCookieAllowed(cookie, false, true);
     }
 
-    private cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
+    private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
         browser.cookies.getAllCookieStores().then((stores) => {
             for (let store of stores)
-                this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList);
+                this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList, protectOpenDomains);
         });
     }
 

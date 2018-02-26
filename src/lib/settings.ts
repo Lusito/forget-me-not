@@ -43,6 +43,7 @@ const defaultSettings: SettingsMap = {
     "cleanAll.cookies.applyRules": true,
     "cleanAll.localStorage": localStorageDefault,
     "cleanAll.localStorage.applyRules": localStorageDefault,
+    "cleanAll.protectOpenDomains": true,
     "cleanAll.history": false,
     "cleanAll.downloads": true,
     "cleanAll.formData": false,

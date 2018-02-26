@@ -54,6 +54,7 @@
 	"setting_apply_rules": { "message": "Apply Rules" },
 	"setting_local_storage": { "message": "Local Storage" },
 	"setting_apply_rules_ff58": { "message": "Apply Rules (Firefox 58+)" },
+	"setting_protect_open_domains": { "message": "Protect currently open domains if \"Apply Rules\" is checked" },
 	"setting_history": { "message": "History" },
 	"setting_downloads": { "message": "Downloads" },
 	"setting_form_data": { "message": "Form Data" },

@@ -15,7 +15,7 @@ export function getValidHostname(url: string) {
     try {
         const parsedUrl = new URL(url);
         return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : '';
-    } catch(e) {
+    } catch (e) {
         return '';
     }
 }

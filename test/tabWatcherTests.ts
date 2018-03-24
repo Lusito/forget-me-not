@@ -20,7 +20,7 @@ describe("TabWatcher", () => {
 			onDomainEnter: createSpy(),
 			onDomainLeave: createSpy()
 		};
-		watcher = new TabWatcher(listener);
+		watcher = new TabWatcher(listener, null);
 	}
 	describe("listener", () => {
 		it("should be called on tab create and remove", () => {

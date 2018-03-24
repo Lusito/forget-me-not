@@ -111,6 +111,11 @@ label>input[type=radio]+span {
         >p:last-child {
             margin-bottom: 0;
         }
+        >.tab_heading {
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
     }
     >div:not(.active) {
         display: none;
@@ -120,6 +125,10 @@ label>input[type=radio]+span {
 #current_tab {
     font-weight: bold;
     font-size: 16px;
+}
+#current_tab_punyfied {
+    font-style: italic;
+    font-size: 13px;
 }
 
 #clean_current_tab {
@@ -283,22 +292,23 @@ table {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 32px;
-    height: 28px;
-    background-image: url(../icons/icon48.png);
+    width: 40px;
+    height: 38px;
+    background-image: url(../icons/icon64.png);
     background-repeat: no-repeat;
-    background-position: calc(100% + 17px) -2px;
+    background-position: calc(100% + 22px) -2px;
 }
 
 #tabs {
     background: white;
-    height: 28px;
+    height: 38px;
     padding: 0 0 0 0;
     overflow: visible;
     display: flex;
     flex-direction: row;
     >div {
-        height: 29px;
+        height: 39px;
+        width: 50px;
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -306,13 +316,16 @@ table {
         user-select: none;
         -moz-user-select: none;
         background: lightgray;
+        background-size: 24px;
+        background-position: center;
+        background-repeat: no-repeat;
         border: 1px solid #A7A7A7;
         outline: 1px solid transparent;
         padding: 7px 12px;
         z-index: 40;
     }
     >div.active {
-        background: #FBFBFB;
+        background-color: #FBFBFB;
         border-bottom: none;
     }
     >div:first-child {
@@ -578,7 +591,7 @@ html.fullscreen #rules_list {
     cursor: pointer;
 }
 
-#most_recent_cookie_domains {
+#recently_accessed_domains {
     padding-left: 10px;
     list-style-type: none;
     > li {
@@ -637,11 +650,11 @@ html.fullscreen #rules_list {
     background: #214398;
     color: white;
     text-decoration: none;
-    line-height: 18px;
-    border-radius: 20px;
-    width: 20px;
+    line-height: 20px;
+    border-radius: 22px;
+    width: 22px;
     text-align: center;
-    margin: 4px 4px 4px 10px;
+    margin: 8px 4px 8px 10px;
     border: 1px solid white;
     box-sizing: border-box;
     box-shadow: 0px 0px 0px 2px #214398;

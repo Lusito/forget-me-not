@@ -25,7 +25,7 @@ export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
 function setMarkdown(element: HTMLElement, value: string) {
     const doc = domParser.parseFromString(md.render(value), 'text/html');
     removeAllChildren(element);
-    for(let i=0; i<doc.body.childNodes.length; i++)
+    for (let i = 0; i < doc.body.childNodes.length; i++)
         element.appendChild(doc.body.childNodes[i]);
     const links = element.querySelectorAll('a');
     for (let i = 0; i < links.length; i++)

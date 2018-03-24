@@ -15,6 +15,7 @@ import { CookieDomainInfo, getValidHostname } from './shared';
 import { RuleListItem } from './ruleListItem';
 import { browser } from "webextension-polyfill-ts";
 import { TabSupport } from "./lib/tabSupport";
+import * as punycode from "punycode";
 
 const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
@@ -48,12 +49,15 @@ class Popup {
         }
 
         const initialTab = settings.get('initialTab');
-        if(!initialTab || initialTab === 'last_active_tab')
+        if (!initialTab || initialTab === 'last_active_tab')
             this.tabSupport.setTab(settings.get('lastTab'));
         else
             this.tabSupport.setTab(initialTab);
 
         this.initCurrentTab();
+        this.initSnoozeButton();
+
+        on(byId('clean_all_now') as HTMLElement, 'click', () => messageUtil.send('cleanAllNow'));
 
         this.rulesInput = byId('rules_input') as HTMLInputElement;
         on(this.rulesInput, 'keyup', this.onRulesInputKeyUp.bind(this));
@@ -78,19 +82,25 @@ class Popup {
             }
         });
 
-        let recentCookieDomainsList = byId('most_recent_cookie_domains') as HTMLElement;
-        messageUtil.receive('onMostRecentCookieDomains', (domains: CookieDomainInfo[]) => {
-            removeAllChildren(recentCookieDomainsList);
+        let recentlyAccessedDomainsList = byId('recently_accessed_domains') as HTMLElement;
+        messageUtil.receive('onRecentlyAccessedDomains', (domains: CookieDomainInfo[]) => {
+            removeAllChildren(recentlyAccessedDomainsList);
             for (const info of domains) {
-                let li = createElement(document, recentCookieDomainsList, 'li');
+                let li = createElement(document, recentlyAccessedDomainsList, 'li');
                 createElement(document, li, 'span', { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
-                createElement(document, li, 'span', { textContent: info.domain, title: info.domain });
+                const punified = this.appendPunycode(info.domain);
+                createElement(document, li, 'span', { textContent: punified, title: punified });
                 let addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
                 on(addRule, 'click', () => this.prepareAddRule(info.domain));
             }
         });
 
-        messageUtil.send('getMostRecentCookieDomains');
+        messageUtil.send('getRecentlyAccessedDomains');
+    }
+
+    private appendPunycode(domain: string) {
+        const punified = punycode.toUnicode(domain);
+        return (punified === domain) ? domain : `${domain} (${punified})`;
     }
 
     private onTabChange(name: string) {
@@ -108,10 +118,23 @@ class Popup {
         this.rulesInput.focus();
     }
 
-    private setInvalidTab() {
+    setCurrentTabLabel(domain: string | false) {
         let label = byId('current_tab');
         if (label)
-            label.textContent = browser.i18n.getMessage('invalid_tab');
+            label.textContent = domain ? domain : browser.i18n.getMessage('invalid_tab');
+        let labelPunnified = byId('current_tab_punyfied');
+        if (labelPunnified) {
+            let punnified = '';
+            if (domain) {
+                punnified = domain ? punycode.toUnicode(domain) : '';
+                punnified = (punnified === domain) ? '' : `(${punnified})`;
+            }
+            labelPunnified.textContent = punnified;
+        }
+    }
+
+    private setInvalidTab() {
+        this.setCurrentTabLabel(false);
         let cleanCurrentTab = byId('clean_current_tab');
         if (cleanCurrentTab)
             cleanCurrentTab.style.display = 'none';
@@ -121,21 +144,15 @@ class Popup {
 
     private initCurrentTab() {
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-            let cleanAllNow = byId('clean_all_now');
-            if (cleanAllNow)
-                on(cleanAllNow, 'click', () => messageUtil.send('cleanAllNow'));
-
             const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
                 const hostname = getValidHostname(tab.url);
-                let label = byId('current_tab');
                 let cleanCurrentTab = byId('clean_current_tab');
                 if (!hostname) {
                     this.setInvalidTab();
                 } else {
                     this.hostname = hostname;
-                    if (label)
-                        label.textContent = this.hostname;
+                    this.setCurrentTabLabel(hostname);
                     if (cleanCurrentTab) {
                         on(cleanCurrentTab, 'click', () => {
                             messageUtil.send('cleanUrlNow', { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
@@ -150,6 +167,20 @@ class Popup {
                 this.setInvalidTab();
             }
         });
+    }
+
+    private initSnoozeButton() {
+        let toggleSnooze = byId('toggle_snooze') as HTMLButtonElement;
+        toggleSnooze.disabled = true;
+        on(toggleSnooze, 'click', () => {
+            toggleSnooze.disabled = true;
+            messageUtil.send('toggleSnoozingState');
+        });
+        messageUtil.receive('onSnoozingState', (snoozing: boolean) => {
+            toggleSnooze.disabled = false;
+            toggleSnooze.textContent = browser.i18n.getMessage('button_toggle_snooze_' + snoozing);
+        });
+        messageUtil.send('getSnoozingState');
     }
 
     private onImport() {

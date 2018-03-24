@@ -11,7 +11,7 @@ import { loadJSONFile } from '../lib/fileHelper';
 import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain } from './backgroundShared';
 import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
-import { MostRecentCookieDomains } from './mostRecentCookieDomains';
+import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
@@ -19,24 +19,19 @@ import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
     private lastDomainChangeRequest = Date.now();
-    private readonly mostRecentCookieDomains = new MostRecentCookieDomains();
-    private readonly tabWatcher = new TabWatcher(this);
+    private readonly recentlyAccessedDomains = new RecentlyAccessedDomains();
+    private readonly tabWatcher = new TabWatcher(this, this.recentlyAccessedDomains);
+    private snoozing = false;
+    private readonly snoozedThirdpartyCookies: Cookies.Cookie[] = [];
 
     public constructor() {
         this.updateBadge();
-        new HeaderFilter(this.tabWatcher, this.mostRecentCookieDomains);
+        new HeaderFilter(this.tabWatcher, this.recentlyAccessedDomains);
     }
 
     public onStartup() {
         if (settings.get('startup.enabled'))
             this.runCleanup(true);
-    }
-
-    public cleanLocalStorage(hostnames: string[]) {
-        browser.cookies.getAllCookieStores().then((cookieStores) => {
-            for (let store of cookieStores)
-                cleanLocalStorage(this.getDomainsToClean(true), store.id);
-        });
     }
 
     public cleanUrlNow(config: CleanUrlNowConfig) {
@@ -61,16 +56,21 @@ class Background implements TabWatcherListener {
         let options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
+        const protectOpenDomains = startup || settings.get('cleanAll.protectOpenDomains');
         if (settings.get(startup ? 'startup.cookies' : 'cleanAll.cookies')) {
             if (settings.get(startup ? 'startup.cookies.applyRules' : 'cleanAll.cookies.applyRules'))
-                this.cleanCookiesWithRulesNow(startup);
+                this.cleanCookiesWithRulesNow(startup, protectOpenDomains);
             else
                 typeSet.cookies = true;
         }
         if (settings.get(startup ? 'startup.localStorage' : 'cleanAll.localStorage')) {
-            if (settings.get(startup ? 'startup.localStorage.applyRules' : 'cleanAll.localStorage.applyRules'))
-                this.cleanLocalStorage(this.getDomainsToClean(startup));
-            else {
+            if (settings.get(startup ? 'startup.localStorage.applyRules' : 'cleanAll.localStorage.applyRules')) {
+                browser.cookies.getAllCookieStores().then((cookieStores) => {
+                    const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
+                    for (let store of cookieStores)
+                        cleanLocalStorage(hostnames, store.id);
+                });
+            } else {
                 typeSet.localStorage = true;
                 settings.set('domainsToClean', {});
                 settings.save();
@@ -79,20 +79,22 @@ class Background implements TabWatcherListener {
         browser.browsingData.remove(options, typeSet);
     }
 
-    private getDomainsToClean(ignoreGrayList: boolean): string[] {
+    private getDomainsToClean(ignoreGrayList: boolean, protectOpenDomains: boolean): string[] {
         let domainsToClean = settings.get('domainsToClean');
         let result = [];
         for (const domain in domainsToClean) {
-            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList))
+            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList, protectOpenDomains))
                 result.push(domain);
         }
         return result;
     }
 
-    private isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
-        for (let key in this.cleanStores) {
-            if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
-                return true;
+    private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains: boolean): boolean {
+        if (protectOpenDomains) {
+            for (let key in this.cleanStores) {
+                if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
+                    return true;
+            }
         }
         let badge = getBadgeForDomain(domain);
         return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
@@ -120,45 +122,50 @@ class Background implements TabWatcherListener {
         }
     }
 
-    public addToMostRecentCookieDomains(domain: string) {
-        this.mostRecentCookieDomains.add(domain);
-    }
-
     public onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
-                this.mostRecentCookieDomains.add(changeInfo.cookie.domain);
+                this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
-                if(getBadgeForDomain(rawDomain) === badges.block) {
+                if (getBadgeForDomain(rawDomain) === badges.block)
                     removeCookie(changeInfo.cookie);
-                    return;
-                }
-                if (settings.get('cleanThirdPartyCookies.enabled')) {
-                    if(!this.isCookieAllowed(changeInfo.cookie)) {
-                        let exec = new DelayedExecution(() => {
-                            let delta = Date.now() - this.lastDomainChangeRequest;
-                            if (delta < 1000)
-                                exec.restart(500);
-                            else if (!this.isCookieAllowed(changeInfo.cookie))
-                                removeCookie(changeInfo.cookie);
-                        });
-                        exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
-                    }
-                }
+                else if (settings.get('cleanThirdPartyCookies.enabled'))
+                    this.removeCookieIfThirdparty(changeInfo.cookie);
             });
         }
     }
 
-    public isCookieAllowed(cookie: Cookies.Cookie) {
-        return this.getCleanStore(cookie.storeId).isCookieAllowed(cookie, false);
+    public removeCookieIfThirdparty(cookie: Cookies.Cookie) {
+        if (!this.isCookieAllowed(cookie)) {
+            if (this.snoozing) {
+                this.snoozedThirdpartyCookies.push(cookie);
+                return;
+            }
+            let exec = new DelayedExecution(() => {
+                if (this.snoozing) {
+                    this.snoozedThirdpartyCookies.push(cookie);
+                    return;
+                }
+                let delta = Date.now() - this.lastDomainChangeRequest;
+                if (delta < 1000)
+                    exec.restart(500);
+                else if (!this.isCookieAllowed(cookie))
+                    removeCookie(cookie);
+            });
+            exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+        }
     }
 
-    private cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
+    public isCookieAllowed(cookie: Cookies.Cookie) {
+        return this.getCleanStore(cookie.storeId).isCookieAllowed(cookie, false, true);
+    }
+
+    private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
         browser.cookies.getAllCookieStores().then((stores) => {
             for (let store of stores)
-                this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList);
+                this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList, protectOpenDomains);
         });
     }
 
@@ -167,7 +174,7 @@ class Background implements TabWatcherListener {
             id = DEFAULT_COOKIE_STORE_ID;
         let store = this.cleanStores[id];
         if (!store)
-            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher);
+            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher, this.snoozing);
         return store;
     }
 
@@ -204,6 +211,24 @@ class Background implements TabWatcherListener {
     public onDomainLeave(cookieStoreId: string, hostname: string): void {
         this.getCleanStore(cookieStoreId).onDomainLeave(hostname);
     }
+
+    public toggleSnoozingState() {
+        this.snoozing = !this.snoozing;
+        for (const key in this.cleanStores)
+            this.cleanStores[key].setSnoozing(this.snoozing);
+
+        if(!this.snoozing) {
+            for (const cookie of this.snoozedThirdpartyCookies)
+                this.removeCookieIfThirdparty(cookie);
+            this.snoozedThirdpartyCookies.length = 0;
+        }
+
+        this.sendSnoozingState();
+    }
+
+    public sendSnoozingState() {
+        messageUtil.send('onSnoozingState', this.snoozing);
+    }
 }
 
 let background: Background;
@@ -216,6 +241,8 @@ settings.onReady(() => {
     background = new Background();
     messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
     messageUtil.receive('cleanUrlNow', (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
+    messageUtil.receive('toggleSnoozingState', () => background.toggleSnoozingState());
+    messageUtil.receive('getSnoozingState', () => background.sendSnoozingState());
     browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
 
     // listen for tab changes to update badge

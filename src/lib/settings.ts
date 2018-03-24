@@ -43,6 +43,7 @@ const defaultSettings: SettingsMap = {
     "cleanAll.cookies.applyRules": true,
     "cleanAll.localStorage": localStorageDefault,
     "cleanAll.localStorage.applyRules": localStorageDefault,
+    "cleanAll.protectOpenDomains": true,
     "cleanAll.history": false,
     "cleanAll.downloads": true,
     "cleanAll.formData": false,
@@ -73,7 +74,10 @@ const defaultSettings: SettingsMap = {
     "startup.indexedDB": true,
     "startup.pluginData": true,
     "startup.serviceWorkers": true,
-    "startup.serverBoundCertificates": false
+    "startup.serverBoundCertificates": false,
+
+    "logRAD.enabled": true,
+    "logRAD.limit": 20
 };
 
 const isAlNum = /^[a-z0-9]+$/;
@@ -237,7 +241,7 @@ class Settings {
     }
 
     public hasBlockingRule() {
-        return !!settings.get('rules').find((r)=> r.type === RuleType.BLOCK);
+        return !!settings.get('rules').find((r) => r.type === RuleType.BLOCK);
     }
 }
 export const settings = new Settings();

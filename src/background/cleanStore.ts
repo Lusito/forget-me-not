@@ -14,22 +14,25 @@ export class CleanStore {
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
     private domainRemoveTimeouts: { [s: string]: number } = {};
+    private snoozing: boolean;
+    private readonly snoozedDomainLeaves: { [s: string]: boolean } = {};
 
-    public constructor(id: string, tabWatcher: TabWatcher) {
+    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean) {
         this.id = id;
         this.tabWatcher = tabWatcher;
+        this.snoozing = snoozing;
     }
 
-    private cleanCookiesByDomain(domain: string, ignoreRules?: boolean) {
+    private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
         this.removeCookies((cookie) => {
             let allowSubDomains = cookie.domain.startsWith('.');
-            let match = allowSubDomains ? domain.endsWith(cookie.domain) : (domain === cookie.domain);
-            return match && (ignoreRules || !this.isCookieAllowed(cookie, false));
+            let match = allowSubDomains ? (domain.endsWith(cookie.domain) || cookie.domain.substr(1) === domain) : (cookie.domain === domain);
+            return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
         });
     }
 
-    public cleanCookiesWithRulesNow(ignoreGrayList: boolean) {
-        this.removeCookies((cookie) => !this.isCookieAllowed(cookie, ignoreGrayList));
+    public cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
+        this.removeCookies((cookie) => !this.isCookieAllowed(cookie, ignoreGrayList, protectOpenDomains));
     }
 
     private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
@@ -45,29 +48,29 @@ export class CleanStore {
     }
 
     private cleanByDomainWithRulesNow(domain: string) {
-        if (!settings.get('domainLeave.enabled') || this.isDomainProtected(domain, false))
+        if (!settings.get('domainLeave.enabled') || this.isDomainProtected(domain, false, true))
             return;
 
         if (settings.get('domainLeave.cookies'))
-            this.cleanCookiesByDomain(domain);
+            this.cleanCookiesByDomain(domain, false);
 
         if (settings.get('domainLeave.localStorage'))
             cleanLocalStorage([domain], this.id);
     }
 
-    private isDomainProtected(domain: string, ignoreGrayList: boolean): boolean {
-        if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
+    private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains: boolean): boolean {
+        if (protectOpenDomains && this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
         let badge = getBadgeForDomain(domain);
         return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
     }
 
-    public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean) {
+    public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
         let allowSubDomains = cookie.domain.startsWith('.');
         let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-        if (this.isDomainProtected(rawDomain, ignoreGrayList))
+        if (this.isDomainProtected(rawDomain, ignoreGrayList, protectOpenDomains))
             return true;
-        return this.tabWatcher.cookieStoreContainsSubDomain(this.id, cookie.domain);
+        return protectOpenDomains && this.tabWatcher.cookieStoreContainsSubDomain(this.id, cookie.domain);
     }
 
     public cleanUrlNow(hostname: string) {
@@ -80,14 +83,39 @@ export class CleanStore {
             clearTimeout(this.domainRemoveTimeouts[removedDomain]);
             delete this.domainRemoveTimeouts[removedDomain];
         }
+        if (this.snoozing) {
+            this.snoozedDomainLeaves[removedDomain] = true;
+            return;
+        }
         let timeout = settings.get('domainLeave.delay') * 60 * 1000;
         if (timeout <= 0) {
             this.cleanByDomainWithRulesNow(removedDomain);
         } else {
             this.domainRemoveTimeouts[removedDomain] = setTimeout(() => {
-                this.cleanByDomainWithRulesNow(removedDomain);
+                if (this.snoozing)
+                    this.snoozedDomainLeaves[removedDomain] = true;
+                else
+                    this.cleanByDomainWithRulesNow(removedDomain);
                 delete this.domainRemoveTimeouts[removedDomain];
             }, timeout);
+        }
+    }
+
+    public setSnoozing(snoozing: boolean) {
+        this.snoozing = snoozing;
+        if (snoozing) {
+            // cancel countdowns and remember them for later
+            for (const domain in this.domainRemoveTimeouts) {
+                this.snoozedDomainLeaves[domain] = true;
+                clearTimeout(this.domainRemoveTimeouts[domain]);
+                delete this.domainRemoveTimeouts[domain];
+            }
+        } else {
+            // reschedule
+            for (const domain in this.snoozedDomainLeaves) {
+                this.onDomainLeave(domain);
+                delete this.snoozedDomainLeaves[domain];
+            }
         }
     }
 }

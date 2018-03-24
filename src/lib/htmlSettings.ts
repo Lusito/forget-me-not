@@ -8,13 +8,13 @@ import { settings } from "./settings";
 import { on } from "./htmlUtils";
 
 interface SettingsInfo {
-    element: HTMLInputElement|HTMLSelectElement;
+    element: HTMLInputElement | HTMLSelectElement;
     permanentlyDisabled?: boolean;
     permanentlyUnchecked?: boolean;
 }
 const settingsInfoMap: { [s: string]: SettingsInfo } = {};
 
-function connectInputSetting(element: HTMLInputElement|HTMLSelectElement) {
+function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
     let key = element.dataset.settingsKey;
     if (key) {
         if (settingsInfoMap[key]) {

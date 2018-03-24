@@ -8,7 +8,7 @@ import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import { badges, getBadgeForDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
-import { MostRecentCookieDomains } from './mostRecentCookieDomains';
+import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { browser, WebRequest } from "webextension-polyfill-ts";
 
 const cookieDomainRegexp = /domain=([\.a-z0-9\-]+);/i;
@@ -21,12 +21,12 @@ function getCookieDomainFromCookieHeader(header: string) {
 
 export class HeaderFilter {
     private readonly tabWatcher: TabWatcher;
-    private readonly mostRecentCookieDomains: MostRecentCookieDomains;
+    private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
     private readonly onHeadersReceived: (details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse;
 
-    public constructor(tabWatcher: TabWatcher, mostRecentCookieDomains: MostRecentCookieDomains) {
+    public constructor(tabWatcher: TabWatcher, recentlyAccessedDomains: RecentlyAccessedDomains) {
         this.tabWatcher = tabWatcher;
-        this.mostRecentCookieDomains = mostRecentCookieDomains;
+        this.recentlyAccessedDomains = recentlyAccessedDomains;
         this.onHeadersReceived = (details) => {
             if (details.responseHeaders) {
                 return {
@@ -44,7 +44,7 @@ export class HeaderFilter {
 
     private shouldCookieBeBlocked(tabId: number, domain: string) {
         const badge = getBadgeForDomain(domain.startsWith('.') ? domain.substr(1) : domain);
-        if(badge === badges.white || badge === badges.gray)
+        if (badge === badges.white || badge === badges.gray)
             return false;
         return badge === badges.block || this.tabWatcher.isThirdPartyCookie(tabId, domain);
     }
@@ -54,8 +54,8 @@ export class HeaderFilter {
             if (x.name.toLowerCase() === 'set-cookie') {
                 if (x.value) {
                     const domain = getCookieDomainFromCookieHeader(x.value);
-                    if(domain && this.shouldCookieBeBlocked(tabId, domain)) {
-                        this.mostRecentCookieDomains.add(domain);
+                    if (domain && this.shouldCookieBeBlocked(tabId, domain)) {
+                        this.recentlyAccessedDomains.add(domain);
                         return false;
                     }
                 }

@@ -19,6 +19,7 @@ export interface SettingsTypeMap {
     "cleanAll.cookies.applyRules": boolean;
     "cleanAll.localStorage": boolean;
     "cleanAll.localStorage.applyRules": boolean;
+    "cleanAll.protectOpenDomains": boolean;
     "cleanAll.history": boolean;
     "cleanAll.downloads": boolean;
     "cleanAll.formData": boolean;
@@ -50,6 +51,9 @@ export interface SettingsTypeMap {
     "startup.pluginData": boolean;
     "startup.serviceWorkers": boolean;
     "startup.serverBoundCertificates": boolean;
+
+    "logRAD.enabled": boolean;
+    "logRAD.limit": number;
 }
 
 export type SettingsSignature = {[K in keyof SettingsTypeMap]: SettingsTypeMap[K]};

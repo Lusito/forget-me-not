@@ -9,7 +9,7 @@ import { assert } from "chai";
 
 // @ts-ignore
 const Url = require('url');
-const glob = (function() { return this; }()) || Function('return this')();
+const glob = (function () { return this; }()) || Function('return this')();
 glob.URL = function (url: string) {
     const parsed = Url.parse(url);
     for (let key in parsed) {
@@ -135,9 +135,7 @@ class BrowserWebNavigationMock {
                 tabId,
                 url,
                 timeStamp: Date.now(),
-                frameId: 0,
-                transitionType: "link",
-                transitionQualifiers: []
+                frameId: 0
             });
         }
     }

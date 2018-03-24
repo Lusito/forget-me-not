@@ -217,7 +217,7 @@ class Background implements TabWatcherListener {
         for (const key in this.cleanStores)
             this.cleanStores[key].setSnoozing(this.snoozing);
 
-        if(!this.snoozing) {
+        if (!this.snoozing) {
             for (const cookie of this.snoozedThirdpartyCookies)
                 this.removeCookieIfThirdparty(cookie);
             this.snoozedThirdpartyCookies.length = 0;
@@ -281,12 +281,14 @@ settings.onReady(() => {
             settings.set('version', manifestVersion);
             settings.save();
 
-            browser.notifications.create(UPDATE_NOTIFICATION_ID, {
-                "type": "basic",
-                "iconUrl": browser.extension.getURL("icons/icon96.png"),
-                "title": browser.i18n.getMessage('update_notification_title'),
-                "message": browser.i18n.getMessage('update_notification_message')
-            });
+            if (settings.get('showUpdateNotification')) {
+                browser.notifications.create(UPDATE_NOTIFICATION_ID, {
+                    "type": "basic",
+                    "iconUrl": browser.extension.getURL("icons/icon96.png"),
+                    "title": browser.i18n.getMessage('update_notification_title'),
+                    "message": browser.i18n.getMessage('update_notification_message')
+                });
+            }
         }
     }, 1000);
 });

@@ -212,6 +212,20 @@ class Background implements TabWatcherListener {
         this.getCleanStore(cookieStoreId).onDomainLeave(hostname);
     }
 
+    private updateBrowserAction() {
+        const path: { [s: string]: string } = {};
+        const suffix = this.snoozing ? 'z' : '';
+        for (const size of [16, 32, 48, 64, 96, 128])
+            path[size] = `icons/icon${size}${suffix}.png`;
+
+        browser.browserAction.setIcon({
+            path: path
+        });
+        browser.browserAction.setTitle({
+            title: browser.i18n.getMessage(this.snoozing ? 'actionTitleSnooze' : 'actionTitle')
+        });
+    }
+
     public toggleSnoozingState() {
         this.snoozing = !this.snoozing;
         for (const key in this.cleanStores)
@@ -223,6 +237,7 @@ class Background implements TabWatcherListener {
             this.snoozedThirdpartyCookies.length = 0;
         }
 
+        this.updateBrowserAction();
         this.sendSnoozingState();
     }
 

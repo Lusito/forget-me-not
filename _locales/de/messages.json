@@ -2,6 +2,7 @@
 	"extensionName": { "message": "Vergiss Mein Nicht", "description": "Name of the extension." },
 	"extensionDescription": { "message": "Lass den Browser Website-Daten vergessen, abseits von denen die du behalten möchtest.", "description": "Description of the extension." },
 	"actionTitle": { "message": "Vergiss Mein Nicht", "description": "Action button title" },
+	"actionTitleSnooze": { "message": "Vergiss Mein Nicht (temporär abgeschaltet)", "description": "Action button title during snooze" },
 	"alert_ok": { "message": "OK" },
 	"alert_title_error": { "message": "Fehler" },
 	"prompt_ok": { "message": "OK" },

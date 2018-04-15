@@ -2,6 +2,7 @@
 	"extensionName": { "message": "Forget Me Not", "description": "Name of the extension." },
 	"extensionDescription": { "message": "Make the browser forget website data, except for the data you want to keep.", "description": "Description of the extension." },
 	"actionTitle": { "message": "Forget Me Not", "description": "Action button title" },
+	"actionTitleSnooze": { "message": "Forget Me Not (temporarily disabled)", "description": "Action button title during snooze" },
 	"alert_ok": { "message": "OK" },
 	"alert_title_error": { "message": "Error" },
 	"prompt_ok": { "message": "OK" },

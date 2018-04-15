@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
+import { settings, isValidExpression, isValidCookieExpression } from "./lib/settings";
 import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
 import { isFirefox, browserInfo } from './lib/browserInfo';
 import { connectSettings, permanentDisableSettings, updateFromSettings } from './lib/htmlSettings';
@@ -16,25 +16,18 @@ import { RuleListItem, setupRuleSelect, classNameForRuleType } from './ruleListI
 import { browser } from "webextension-polyfill-ts";
 import { TabSupport } from "./lib/tabSupport";
 import * as punycode from "punycode";
+import { RuleList, recreateRuleListItems } from "./ruleList";
 
 const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
-function sortByRule(a: RuleDefinition, b: RuleDefinition) {
-    if (a.rule < b.rule)
-        return -1;
-    else if (a.rule > b.rule)
-        return 1;
-    return 0;
-}
-
 class Popup {
+    //@ts-ignore
+    private readonly cookieRuleList: RuleList;
+    private readonly ruleList: RuleList;
     private hostname?: string;
-    private rulesHint: HTMLElement;
-    private rulesInput: HTMLInputElement;
-    private rulesListItems: RuleListItem[] = [];
     private matchingRulesListItems: RuleListItem[] = [];
-    private rulesList: HTMLElement;
-    private tabSupport = new TabSupport(this.onTabChange.bind(this));
+    private readonly mainTabSupport = new TabSupport(byId('mainTabContainer') as HTMLElement, this.onTabChange.bind(this));
+    private readonly rulesTabSupport = new TabSupport(byId('rulesTabContainer') as HTMLElement);
     public constructor() {
         if (browserInfo.mobile)
             (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
@@ -57,24 +50,20 @@ class Popup {
 
         const initialTab = settings.get('initialTab');
         if (!initialTab || initialTab === 'last_active_tab')
-            this.tabSupport.setTab(settings.get('lastTab'));
+            this.mainTabSupport.setTab(settings.get('lastTab'));
         else
-            this.tabSupport.setTab(initialTab);
+            this.mainTabSupport.setTab(initialTab);
 
         this.initCurrentTab();
         this.initSnoozeButton();
 
         on(byId('clean_all_now') as HTMLElement, 'click', () => messageUtil.send('cleanAllNow'));
 
-        this.rulesInput = byId('rules_input') as HTMLInputElement;
-        on(this.rulesInput, 'keyup', this.onRulesInputKeyUp.bind(this));
-        this.rulesList = byId('rules_list') as HTMLElement;
-        this.rulesHint = byId('rules_hint') as HTMLElement;
-        this.rebuildRulesList();
+        this.ruleList = new RuleList('rules_input', 'rules_list', 'rules_hint', 'rules_add', 'rules', isValidExpression);
+        this.cookieRuleList = new RuleList('cookie_rules_input', 'cookie_rules_list', 'cookie_rules_hint', 'cookie_rules_add', 'cookieRules', isValidCookieExpression);
         on(byId('settings_import') as HTMLElement, 'click', this.onImport.bind(this));
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
-        on(byId('rules_add') as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
         let links = document.querySelectorAll('a.open_as_tab');
         for (let i = 0; i < links.length; i++)
             makeLinkOpenAsTab(links[i] as HTMLAnchorElement);
@@ -83,10 +72,8 @@ class Popup {
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
             if (changedKeys.length > 1 || changedKeys.indexOf('domainsToClean') === -1)
                 updateFromSettings();
-            if (changedKeys.indexOf('rules') !== -1) {
-                this.rebuildRulesList();
+            if (changedKeys.indexOf('rules') !== -1)
                 this.rebuildMatchingRulesList();
-            }
             if (changedKeys.indexOf('fallbackRule') !== -1)
                 fallbackRuleSelect.className = classNameForRuleType(settings.get('fallbackRule'));
         });
@@ -118,13 +105,9 @@ class Popup {
     }
 
     private prepareAddRule(domain: string) {
-        this.rulesInput.value = "*." + domain;
-        this.tabSupport.setTab('rules');
-        let value = this.rulesInput.value.trim().toLowerCase();
-        let validExpression = isValidExpression(value);
-        this.updateRulesHint(validExpression, value.length === 0);
-        this.updateFilter();
-        this.rulesInput.focus();
+        this.ruleList.setInput("*." + domain.trim().toLowerCase());
+        this.mainTabSupport.setTab('rules');
+        this.rulesTabSupport.setTab('main_rules');
     }
 
     setCurrentTabLabel(domain: string | false) {
@@ -147,8 +130,8 @@ class Popup {
         let cleanCurrentTab = byId('clean_current_tab');
         if (cleanCurrentTab)
             cleanCurrentTab.style.display = 'none';
-        if (this.tabSupport.getTab() === 'this_tab')
-            this.tabSupport.setTab('clean_all');
+        if (this.mainTabSupport.getTab() === 'this_tab')
+            this.mainTabSupport.setTab('clean_all');
     }
 
     private initCurrentTab() {
@@ -239,96 +222,14 @@ class Popup {
         translateChildren(dialog.domNode);
     }
 
-    private updateRulesHint(validExpression: boolean, empty: boolean) {
-        this.rulesHint.textContent = empty ? '' : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
-        this.rulesHint.className = validExpression ? '' : 'error';
-    }
-
-    private addRule(type: RuleType) {
-        let value = this.rulesInput.value.trim().toLowerCase();
-        if (isValidExpression(value)) {
-            let rules = settings.get('rules').slice();
-            let entry = rules.find((r) => r.rule === value);
-            if (entry)
-                entry.type = type;
-            else {
-                rules.push({
-                    type: type,
-                    rule: value
-                });
-            }
-            settings.set('rules', rules);
-            settings.save();
-        }
-    }
-
-    private onRulesInputKeyUp(e: KeyboardEvent) {
-        let value = this.rulesInput.value.trim().toLowerCase();
-        let validExpression = isValidExpression(value);
-        this.updateRulesHint(validExpression, value.length === 0);
-        if (e.keyCode === 13)
-            this.addRule(e.shiftKey ? RuleType.GRAY : RuleType.WHITE);
-        this.updateFilter();
-    }
-
-    private updateFilter() {
-        let value = this.rulesInput.value.trim().toLowerCase();
-        if (value.length === 0) {
-            for (const detail of this.rulesListItems)
-                detail.itemNode.style.display = '';
-        }
-        else {
-            for (const detail of this.rulesListItems) {
-                let visible = detail.ruleDef.rule.indexOf(value) !== -1;
-                detail.itemNode.style.display = visible ? '' : 'none';
-            }
-        }
-    }
 
     private rebuildMatchingRulesList() {
         if (this.hostname) {
             let matchingRules = settings.getMatchingRules(this.hostname);
             let list = byId('rules_list_current_tab') as HTMLElement;
-            this.matchingRulesListItems = this.rebuildRulesListEx(this.matchingRulesListItems, matchingRules, list);
+            this.matchingRulesListItems = recreateRuleListItems(this.matchingRulesListItems, matchingRules, list, 'rules');
         }
     }
-
-    private rebuildRulesList() {
-        const rules = settings.get('rules').slice();
-        for (const rule of rules)
-            rule.rule = rule.rule.toLowerCase();
-        rules.sort(sortByRule);
-        let newItems = this.rebuildRulesListEx(this.rulesListItems, rules, this.rulesList);
-        if (newItems !== this.rulesListItems) {
-            this.rulesListItems = newItems;
-            this.updateFilter();
-        }
-    }
-
-    private rebuildRulesListEx(previousItems: RuleListItem[], rules: RuleDefinition[], parent: HTMLElement) {
-        if (rules.length === previousItems.length) {
-            let changed = false;
-            for (let i = 0; i < rules.length; i++) {
-                let item = previousItems[i];
-                let rule = rules[i];
-                if (item.isRule(rule))
-                    item.updateRule(rule);
-                else {
-                    changed = true;
-                    break;
-                }
-            }
-            if (!changed)
-                return previousItems;
-        }
-
-        let newItems: RuleListItem[] = [];
-        removeAllChildren(parent);
-        for (let rule of rules)
-            newItems.push(new RuleListItem(rule, parent));
-        return newItems;
-    }
-
 }
 
 settings.onReady(() => new Popup());

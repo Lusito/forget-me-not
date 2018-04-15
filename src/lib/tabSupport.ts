@@ -6,15 +6,31 @@
 
 import { on } from './htmlUtils';
 
+function getFirstChildWithClass(element: HTMLElement, className: string) {
+    for (let i = 0; i < element.children.length; i++) {
+        if (element.children[i].classList.contains(className))
+            return element.children[i] as HTMLElement;
+    }
+    throw 'Could not find child with class ' + className;
+}
+function getChildrenWithTagName(element: HTMLElement, tagName: string) {
+    const list = [];
+    for (let i = 0; i < element.children.length; i++) {
+        if (element.children[i].tagName.toLowerCase() === tagName)
+            list.push(element.children[i] as HTMLElement);
+    }
+    return list;
+}
+
 const validHash = /^[a-z_]+$/;
 export class TabSupport {
-    private readonly pages: NodeListOf<HTMLElement>;
-    private readonly tabs: NodeListOf<HTMLElement>;
+    private readonly pages: HTMLElement[] = [];
+    private readonly tabs: HTMLElement[] = [];
     private readonly listener: undefined | ((name: string) => void);
-    public constructor(listener?: (name: string) => void) {
+    public constructor(container: HTMLElement, listener?: (name: string) => void) {
         this.listener = listener;
-        this.tabs = document.querySelectorAll('#tabs > div');
-        this.pages = document.querySelectorAll('#pages > div');
+        this.tabs = getChildrenWithTagName(getFirstChildWithClass(container, 'tabsList'), 'div');
+        this.pages = getChildrenWithTagName(getFirstChildWithClass(container, 'tabsPages'), 'div');
         for (let i = 0; i < this.tabs.length; i++)
             this.linkTab(i);
 
@@ -42,7 +58,7 @@ export class TabSupport {
     private updateSelectedTab(index: number) {
         for (let i = 0; i < this.tabs.length; i++) {
             if (i === index) {
-                const name = this.tabs[i].dataset.tab
+                const name = (this.tabs[i] as HTMLElement).dataset.tab
                 document.location.hash = '#' + name;
                 this.tabs[i].classList.add('active');
                 this.pages[i].classList.add('active');

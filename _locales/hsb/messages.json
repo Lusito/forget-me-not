@@ -30,6 +30,8 @@
 	"tabs_tutorial@title": { "message": "Nawod" },
 	"tabs_experimental@title": { "message": "Eksperimentelne funkcije" },
 	"tabs_changelog@title": { "message": "Protokol změnow" },
+	"tabs_main_rules": { "message": "Generic rules" },
+	"tabs_cookie_rules": { "message": "Specific rules" },
 	"button_clean_now": { "message": "Nětko zhašeć!" },
 	"button_import": { "message": "Importować.." },
 	"button_export": { "message": "Eksportować.." },

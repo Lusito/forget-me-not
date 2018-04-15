@@ -10,6 +10,7 @@ export interface SettingsTypeMap {
     "showUpdateNotification": boolean;
     "showCookieRemovalNotification": boolean,
     "rules": RuleDefinition[],
+    "cookieRules": RuleDefinition[],
     "whitelistNoTLD": boolean;
     "fallbackRule": RuleType;
     "domainsToClean": { [s: string]: boolean },
@@ -57,4 +58,4 @@ export interface SettingsTypeMap {
     "logRAD.limit": number;
 }
 
-export type SettingsSignature = {[K in keyof SettingsTypeMap]: SettingsTypeMap[K]};
+export type SettingsSignature = { [K in keyof SettingsTypeMap]: SettingsTypeMap[K] };

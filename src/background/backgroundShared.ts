@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, RuleType } from "../lib/settings";
+import { settings, RuleType, RuleDefinition } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
@@ -133,17 +133,28 @@ export function getBadgeForRuleType(type: RuleType) {
     }
 }
 
-export function getBadgeForDomain(domain: string) {
-    if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
-        return badges.white;
-    let matchingRules = settings.getMatchingRules(domain);
+function getBadgeFromMatchingRules(matchingRules: RuleDefinition[]) {
     if (matchingRules.find((r) => r.type === RuleType.BLOCK))
         return badges.block;
-    if (matchingRules.length === 0)
-        return getBadgeForRuleType(settings.get('fallbackRule'));
     if (matchingRules.find((r) => r.type === RuleType.FORGET))
         return badges.forget;
     if (matchingRules.find((r) => r.type === RuleType.WHITE))
         return badges.white;
     return badges.gray;
+}
+
+export function getBadgeForCookie(domain: string, name: string) {
+    let matchingRules = settings.getMatchingCookieRules(domain, name);
+    if (matchingRules.length)
+        return getBadgeFromMatchingRules(matchingRules);
+    return getBadgeForDomain(domain);
+}
+
+export function getBadgeForDomain(domain: string) {
+    if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+        return badges.white;
+    let matchingRules = settings.getMatchingRules(domain);
+    if (matchingRules.length)
+        return getBadgeFromMatchingRules(matchingRules);
+    return getBadgeForRuleType(settings.get('fallbackRule'));
 }

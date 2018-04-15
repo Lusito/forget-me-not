@@ -34,6 +34,7 @@ const defaultSettings: SettingsMap = {
     "showUpdateNotification": true,
     "showCookieRemovalNotification": false,
     "rules": [],
+    "cookieRules": [],
     "whitelistNoTLD": false,
     "fallbackRule": RuleType.FORGET,
     "domainsToClean": {},
@@ -83,6 +84,7 @@ const defaultSettings: SettingsMap = {
 
 const isAlNum = /^[a-z0-9]+$/;
 const isAlNumDash = /^[a-z0-9\-]+$/;
+const validCookieName = /^[!,#,\$,%,&,',\*,\+,\-,\.,0-9,:,;,A-Z,\\,\^,_,`,a-z,\|,~]+$/i;
 
 export function isValidExpressionPart(part: string) {
     if (part.length === 0)
@@ -91,9 +93,15 @@ export function isValidExpressionPart(part: string) {
         return true;
     return isAlNum.test(part[0]) && isAlNum.test(part[part.length - 1]) && isAlNumDash.test(part);
 }
+
 export function isValidExpression(exp: string) {
     const parts = exp.split('.');
     return parts.length > 0 && parts.findIndex((p) => !isValidExpressionPart(p)) === -1;
+}
+
+export function isValidCookieExpression(exp: string) {
+    const parts = exp.split('@');
+    return parts.length === 2 && validCookieName.test(parts[0]) && isValidExpression(parts[1]);
 }
 
 function isValidRuleType(ruleType: RuleType) {
@@ -119,6 +127,20 @@ function getRegExForRule(rule: string) {
     if (reParts[reParts.length - 1] === '.')
         reParts.pop();
     return new RegExp(reParts.join(''));
+}
+
+function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
+    let validRules: RuleDefinition[] = [];
+    for (const ruleDef of rules) {
+        if (typeof (ruleDef.rule) !== 'string')
+            continue;
+        if (expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
+            validRules.push({
+                rule: ruleDef.rule,
+                type: ruleDef.type
+            });
+        }
+    }
 }
 
 class Settings {
@@ -176,20 +198,14 @@ class Settings {
         if (json.rules) {
             if (!Array.isArray(json.rules))
                 delete json.rules;
-            else {
-                let validRules: RuleDefinition[] = [];
-                for (const ruleDef of (json as any).rules as RuleDefinition[]) {
-                    if (typeof (ruleDef.rule) !== 'string')
-                        continue;
-                    if (isValidExpression(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
-                        validRules.push({
-                            rule: ruleDef.rule,
-                            type: ruleDef.type
-                        });
-                    }
-                }
-                (json as any).rules = validRules;
-            }
+            else
+                (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
+        }
+        if (json.cookieRules) {
+            if (!Array.isArray(json.cookieRules))
+                delete json.cookieRules;
+            else
+                (json as any).cookieRules = sanitizeRules((json as any).cookieRules as RuleDefinition[], isValidCookieExpression);
         }
         for (const key in json) {
             if (!json.hasOwnProperty(key))
@@ -237,6 +253,21 @@ class Settings {
             let re = getRegExForRule(rule.rule);
             if (re.test(domain))
                 matchingRules.push(rule);
+        }
+        return matchingRules;
+    }
+
+    public getMatchingCookieRules(domain: string, name: string) {
+        let lowerName = name.toLowerCase();
+        let rules = settings.get('cookieRules');
+        let matchingRules: RuleDefinition[] = [];
+        for (const rule of rules) {
+            const parts = rule.rule.split('@');
+            if (parts[0].toLowerCase() === lowerName) {
+                let re = getRegExForRule(parts[1]);
+                if (re.test(domain))
+                    matchingRules.push(rule);
+            }
         }
         return matchingRules;
     }

@@ -8,7 +8,7 @@ import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
-import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain } from './backgroundShared';
+import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain, getBadgeForCookie } from './backgroundShared';
 import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
@@ -129,7 +129,7 @@ class Background implements TabWatcherListener {
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
-                if (getBadgeForDomain(rawDomain) === badges.block)
+                if (getBadgeForCookie(rawDomain, changeInfo.cookie.name) === badges.block)
                     removeCookie(changeInfo.cookie);
                 else if (settings.get('cleanThirdPartyCookies.enabled'))
                     this.removeCookieIfThirdparty(changeInfo.cookie);

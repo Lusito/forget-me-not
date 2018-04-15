@@ -35,19 +35,19 @@ body {
 }
 html.fullscreen,
 html.fullscreen > body,
-html.fullscreen #wrapper {
+html.fullscreen #mainTabContainer {
     width: 100%;
     height: 100%;
 }
 
-html.fullscreen #wrapper {
+html.fullscreen #mainTabContainer {
     display: flex;
     flex-direction: column;
-    > #tabs {
+    > .tabsList {
         flex-shrink: 0;
         flex-grow: 0;
     }
-    > #pages {
+    > .tabsPages {
         flex-shrink: 1;
         flex-grow: 1;
         overflow: auto;
@@ -93,7 +93,7 @@ label>input[type=radio]+span {
     border-top: 1px dashed lightgray;
 }
 
-#pages {
+.tabsPages {
     clear: both;
     border-top: 1px solid #A7A7A7;
     padding: 10px;
@@ -299,16 +299,13 @@ table {
     background-position: calc(100% + 22px) -2px;
 }
 
-#tabs {
+.tabsList {
     background: white;
-    height: 38px;
     padding: 0 0 0 0;
     overflow: visible;
     display: flex;
     flex-direction: row;
     >div {
-        height: 39px;
-        width: 50px;
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -321,20 +318,35 @@ table {
         background-repeat: no-repeat;
         border: 1px solid #A7A7A7;
         outline: 1px solid transparent;
-        padding: 7px 12px;
+        padding: 2px 12px;
         z-index: 40;
     }
     >div.active {
         background-color: #FBFBFB;
         border-bottom: none;
     }
-    >div:first-child {
-        border-left: 0;
-    }
+    
     >div:not(:last-of-type) {
         border-right: 0;
     }
 }
+.tabsList > div:first-child {
+    border-left: 0;
+}
+.tabsList_asIcons {
+    height: 38px;
+    >div {
+        height: 39px;
+        width: 50px;
+    }
+}
+.tabsList_asLabels {
+    height: 22px;
+    >div {
+        height: 23px;
+    }
+}
+
 
 input[type=radio],
 input[type=checkbox] {
@@ -435,14 +447,16 @@ input[type=checkbox]:disabled:checked+span:before {
 input[type=checkbox]:checked+span:before {
     color: #5095ea;
 }
-#rules_hint {
+#rules_hint,
+#cookie_rules_hint {
     color: #0d8000;
     height: 18px;
 }
-#rules_hint.error {
+#rules_hint.error,
+#cookie_rules_hint.error {
     color: #800000;
 }
-#rules_input_wrapper {
+.rules_input_wrapper {
     display: flex;
     flex-direction: row;
     > input {
@@ -509,20 +523,20 @@ input[type=checkbox]:checked+span:before {
     overflow-y: scroll;
 }
 
-#rules_input {
+#rules_input,
+#cookie_rules_input {
     width: 100%;
 }
 
-#rules_tab_page {
+#rules_tab_page.active {
     display: flex;
     flex-direction: column;
     height: 100%;
     min-height: 110px;
-    >#rules_list {
-        height: 100%;
-    }
+    margin: 0 -10px -10px -10px;
 }
-html.fullscreen #rules_list {
+html.fullscreen #rules_list,
+html.fullscreen #cookie_rules_list {
     max-height: none;
 }
 

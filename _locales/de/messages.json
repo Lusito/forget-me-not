@@ -30,6 +30,8 @@
 	"tabs_tutorial@title": { "message": "Einführung" },
 	"tabs_experimental@title": { "message": "Experimentelle Features" },
 	"tabs_changelog@title": { "message": "Änderungshistorie" },
+	"tabs_main_rules": { "message": "Allgemeine Regeln" },
+	"tabs_cookie_rules": { "message": "Spezifische Regeln" },
 	"button_clean_now": { "message": "Jetzt Löschen!" },
 	"button_import": { "message": "Importieren.." },
 	"button_export": { "message": "Exportieren.." },

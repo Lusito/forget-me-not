@@ -37,7 +37,7 @@ export class HeaderFilter {
         }
         this.updateSettings();
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1 || changedKeys.indexOf('rules') !== -1)
+            if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1 || changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('fallbackRule') !== -1)
                 this.updateSettings();
         });
     }

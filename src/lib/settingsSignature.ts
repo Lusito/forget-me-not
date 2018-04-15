@@ -3,7 +3,7 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
-import { RuleDefinition } from "./settings";
+import { RuleDefinition, RuleType } from "./settings";
 
 export interface SettingsTypeMap {
     "version": string;
@@ -11,6 +11,7 @@ export interface SettingsTypeMap {
     "showCookieRemovalNotification": boolean,
     "rules": RuleDefinition[],
     "whitelistNoTLD": boolean;
+    "fallbackRule": RuleType;
     "domainsToClean": { [s: string]: boolean },
     "showBadge": boolean,
     "initialTab": string,

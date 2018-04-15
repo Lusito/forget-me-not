@@ -9,7 +9,7 @@ import { on, createElement } from './lib/htmlUtils';
 import { browser } from "webextension-polyfill-ts";
 import * as punycode from "punycode";
 
-function classNameForRuleType(ruleType: RuleType) {
+export function classNameForRuleType(ruleType: RuleType) {
     if (ruleType === RuleType.WHITE)
         return 'badge_white';
     if (ruleType === RuleType.GRAY)
@@ -18,6 +18,17 @@ function classNameForRuleType(ruleType: RuleType) {
         return 'badge_block';
     return 'badge_forget';
 }
+
+export function setupRuleSelect(select: HTMLSelectElement, type: RuleType) {
+    select.className = classNameForRuleType(type);
+    createElement(document, select, 'option', { className: 'badge_white', value: RuleType.WHITE, textContent: browser.i18n.getMessage('setting_type_white') });
+    createElement(document, select, 'option', { className: 'badge_gray', value: RuleType.GRAY, textContent: browser.i18n.getMessage('setting_type_gray') });
+    createElement(document, select, 'option', { className: 'badge_forget', value: RuleType.FORGET, textContent: browser.i18n.getMessage('setting_type_forget') });
+    createElement(document, select, 'option', { className: 'badge_block', value: RuleType.BLOCK, textContent: browser.i18n.getMessage('setting_type_block') });
+    on(select, 'change', () => select.className = classNameForRuleType(parseInt(select.value)));
+    select.value = type.toString();
+}
+
 export class RuleListItem {
     public readonly labelNode: HTMLElement;
     public ruleDef: RuleDefinition;
@@ -29,12 +40,8 @@ export class RuleListItem {
         const punified = this.appendPunycode(ruleDef.rule);
         this.labelNode = createElement(document, this.itemNode, 'div', { textContent: punified, title: punified });
         let label = createElement(document, this.itemNode, 'label', { className: 'type_column' });
-        this.selectNode = createElement(document, label, 'select', { className: classNameForRuleType(ruleDef.type) });
-        createElement(document, this.selectNode, 'option', { className: 'badge_white', value: RuleType.WHITE, textContent: browser.i18n.getMessage('setting_type_white') });
-        createElement(document, this.selectNode, 'option', { className: 'badge_gray', value: RuleType.GRAY, textContent: browser.i18n.getMessage('setting_type_gray') });
-        createElement(document, this.selectNode, 'option', { className: 'badge_forget', value: RuleType.FORGET, textContent: browser.i18n.getMessage('setting_type_forget') });
-        createElement(document, this.selectNode, 'option', { className: 'badge_block', value: RuleType.BLOCK, textContent: browser.i18n.getMessage('setting_type_block') });
-        this.selectNode.value = ruleDef.type.toString();
+        this.selectNode = createElement(document, label, 'select');
+        setupRuleSelect(this.selectNode, ruleDef.type);
         let button = createElement(document, this.itemNode, 'button', { textContent: 'X', className: 'delete_column' });
 
         on(this.selectNode, 'change', () => {
@@ -42,7 +49,6 @@ export class RuleListItem {
             let rule = rules.find((r) => r.rule === this.ruleDef.rule);
             if (rule) {
                 rule.type = parseInt(this.selectNode.value);
-                this.selectNode.className = classNameForRuleType(rule.type);
                 settings.set('rules', rules);
                 settings.save();
             }

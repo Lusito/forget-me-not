@@ -265,7 +265,7 @@ settings.onReady(() => {
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1
+        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('fallbackRule') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1
             || changedKeys.indexOf('showBadge') !== -1)
             background.updateBadge();
     });

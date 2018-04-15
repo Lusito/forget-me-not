@@ -77,6 +77,7 @@
 	"setting_startup_enabled": { "message": "Beim Browserstart löschen:" },
 	"setting_whitelist_no_tld": { "message": "Domänen ohne Top Level Domäne zur weißen Liste hinzufügen" },
 	"setting_whitelist_no_tld@title": { "message": "Domänen, wie z.B. localhost, intranet, etc. (ohne .com, .net, etc.)" },
+	"settings_fallback_rule": { "message": "Verhalten falls keine Regel greift (default: Vergessen):" },
 	"setting_log_rad_enabled": { "message": "Kürzlich verwendete Domänen loggen." },
 	"setting_log_rad_limit": { "message": "Limitieren auf:" },
 	"experimental_link@title": { "message": "Dies ist eine experimentelle Funktionalität. Klicke auf den Link um mehr herauszufinden." },

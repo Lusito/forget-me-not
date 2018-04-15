@@ -77,6 +77,7 @@
 	"setting_startup_enabled": { "message": "Clean on browser start:" },
 	"setting_whitelist_no_tld": { "message": "Add domains without a Top Level Domain to whitelist" },
 	"setting_whitelist_no_tld@title": { "message": "Domains like localhost, intranet, etc. (without .com, .net, etc.)" },
+	"settings_fallback_rule": { "message": "Behavior if no rule matches (default: Forget):" },
 	"setting_log_rad_enabled": { "message": "Log recently accessed domains." },
 	"setting_log_rad_limit": { "message": "Limit to:" },
 	"experimental_link@title": { "message": "This is an experimental feature. Click on this link to find out more." },

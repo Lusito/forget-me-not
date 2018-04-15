@@ -119,13 +119,29 @@ export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
     return false;
 }
 
+export function getBadgeForRuleType(type: RuleType) {
+    switch (type) {
+        case RuleType.WHITE:
+            return badges.white;
+        case RuleType.GRAY:
+            return badges.gray;
+        default:
+        case RuleType.FORGET:
+            return badges.forget;
+        case RuleType.BLOCK:
+            return badges.block;
+    }
+}
+
 export function getBadgeForDomain(domain: string) {
     if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
         return badges.white;
     let matchingRules = settings.getMatchingRules(domain);
     if (matchingRules.find((r) => r.type === RuleType.BLOCK))
         return badges.block;
-    if (matchingRules.length === 0 || matchingRules.find((r) => r.type === RuleType.FORGET))
+    if (matchingRules.length === 0)
+        return getBadgeForRuleType(settings.get('fallbackRule'));
+    if (matchingRules.find((r) => r.type === RuleType.FORGET))
         return badges.forget;
     if (matchingRules.find((r) => r.type === RuleType.WHITE))
         return badges.white;

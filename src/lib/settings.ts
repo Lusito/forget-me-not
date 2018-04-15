@@ -35,6 +35,7 @@ const defaultSettings: SettingsMap = {
     "showCookieRemovalNotification": false,
     "rules": [],
     "whitelistNoTLD": false,
+    "fallbackRule": RuleType.FORGET,
     "domainsToClean": {},
     "showBadge": true,
     "initialTab": "this_tab",
@@ -241,7 +242,7 @@ class Settings {
     }
 
     public hasBlockingRule() {
-        return !!settings.get('rules').find((r) => r.type === RuleType.BLOCK);
+        return settings.get('fallbackRule') === RuleType.BLOCK || !!settings.get('rules').find((r) => r.type === RuleType.BLOCK);
     }
 }
 export const settings = new Settings();

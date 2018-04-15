@@ -12,7 +12,7 @@ import * as messageUtil from "./lib/messageUtil";
 import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
 import * as dialogs from './lib/dialogs';
 import { CookieDomainInfo, getValidHostname } from './shared';
-import { RuleListItem } from './ruleListItem';
+import { RuleListItem, setupRuleSelect, classNameForRuleType } from './ruleListItem';
 import { browser } from "webextension-polyfill-ts";
 import { TabSupport } from "./lib/tabSupport";
 import * as punycode from "punycode";
@@ -38,6 +38,13 @@ class Popup {
     public constructor() {
         if (browserInfo.mobile)
             (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
+
+        const fallbackRuleSelect = document.querySelector('#fallbackRule') as HTMLSelectElement;
+        setupRuleSelect(fallbackRuleSelect, settings.get('fallbackRule'));
+        on(fallbackRuleSelect, 'change', () => {
+            settings.set('fallbackRule', parseInt(fallbackRuleSelect.value));
+            settings.save();
+        });
 
         connectSettings(document.body);
         if (!removeLocalStorageByHostname) {
@@ -80,6 +87,8 @@ class Popup {
                 this.rebuildRulesList();
                 this.rebuildMatchingRulesList();
             }
+            if (changedKeys.indexOf('fallbackRule') !== -1)
+                fallbackRuleSelect.className = classNameForRuleType(settings.get('fallbackRule'));
         });
 
         let recentlyAccessedDomainsList = byId('recently_accessed_domains') as HTMLElement;
@@ -216,7 +225,9 @@ class Popup {
                 dialog.close();
                 settings.setAll({
                     domainsToClean: settings.get('domainsToClean'),
-                    rules: settings.get('rules')
+                    rules: settings.get('rules'),
+                    fallbackRule: settings.get('fallbackRule'),
+                    whitelistNoTLD: settings.get('whitelistNoTLD')
                 });
             },
             'confirm_cancel': () => {

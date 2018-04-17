@@ -100,7 +100,7 @@ function isValidDomainExpression(exp: string) {
 
 export function isValidExpression(exp: string) {
     const parts = exp.split('@');
-    if(parts.length === 1)
+    if (parts.length === 1)
         return isValidDomainExpression(exp);
     return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
 }
@@ -142,7 +142,15 @@ function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: str
     }
 }
 
+interface CompiledRuleDefinition {
+    rule: RuleDefinition;
+    regex: RegExp;
+    cookieName?: string;
+}
+
 class Settings {
+    private rules: CompiledRuleDefinition[] = [];
+    private cookieRules: CompiledRuleDefinition[] = [];
     private storage: Storage.StorageArea;
     private map: SettingsMap = {};
     private readyCallbacks: Callback[] | null = [];
@@ -161,13 +169,34 @@ class Settings {
     private load(changes?: { [key: string]: Storage.StorageChange }) {
         this.storage.get(null).then((map) => {
             this.map = map;
+            let changedKeys = Object.getOwnPropertyNames(changes || map);
+            if (changedKeys.indexOf('rules')) {
+                this.rules = [];
+                this.cookieRules = [];
+                let rules = settings.get('rules');
+                for (const rule of rules) {
+                    const parts = rule.rule.split('@');
+                    const isCookieRule = parts.length === 2;
+                    if (isCookieRule) {
+                        this.cookieRules.push({
+                            rule: rule,
+                            regex: getRegExForRule(parts[1]),
+                            cookieName: parts[0]
+                        });
+                    } else {
+                        this.rules.push({
+                            rule: rule,
+                            regex: getRegExForRule(rule.rule)
+                        });
+                    }
+                }
+            }
             if (this.readyCallbacks) {
                 for (let callback of this.readyCallbacks)
                     callback();
                 this.readyCallbacks = null;
             }
             if (typeof (messageUtil) !== 'undefined') {
-                let changedKeys = Object.getOwnPropertyNames(changes || map);
                 messageUtil.send('settingsChanged', changedKeys); // to other background scripts
                 messageUtil.sendSelf('settingsChanged', changedKeys); // since the above does not fire on the same process
             }
@@ -239,22 +268,13 @@ class Settings {
     }
 
     // Convenience methods
-    public getMatchingRules(domain: string, cookieName: string|false = false) {
-        //Fixme: create compiled rules on save instead of compiling them on every request
-        const cookieRules = cookieName !== false;
+    public getMatchingRules(domain: string, cookieName: string | false = false) {
+        const rules = cookieName !== false ? this.cookieRules : this.rules;
         let lowerCookieName = cookieName && cookieName.toLowerCase();
-        let rules = settings.get('rules');
         let matchingRules: RuleDefinition[] = [];
         for (const rule of rules) {
-            const parts = rule.rule.split('@');
-            const isCookieRule = parts.length === 2;
-
-            if(isCookieRule === cookieRules) {
-                const rulePart = isCookieRule ? parts[1] : rule.rule;
-                let re = getRegExForRule(rulePart);
-                if (re.test(domain) && (!isCookieRule || parts[0].toLowerCase() === lowerCookieName))
-                    matchingRules.push(rule);
-            }
+            if (rule.regex.test(domain) && (!rule.cookieName || rule.cookieName.toLowerCase() === lowerCookieName))
+                matchingRules.push(rule.rule);
         }
         return matchingRules;
     }

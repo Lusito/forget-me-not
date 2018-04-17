@@ -7,16 +7,11 @@
     "test": "mocha --require source-map-support/register --require ts-node/register test/**/*.ts",
     "release": "run-s build-release scss-release pack",
     "all": "run-s build scss",
-    "build": "webpack",
-    "build-release": "run-s build uglify",
+    "build": "webpack --mode=development",
+    "build-release": "webpack --mode=production",
     "scss-release": "node-sass --source-map true --output-style compressed src/styles/ -o dist",
     "scss": "node-sass --source-map true src/styles/ -o dist",
-    "pack": "web-ext build -i src test \"!(manifest).json\" \"*.js\" \"dist/*.map\"",
-    "uglify": "run-s uglify-1 uglify-2 uglify-3 uglify-4",
-    "uglify-1": "uglifyjs --compress --mangle -o dist/background.js dist/background.js",
-    "uglify-2": "uglifyjs --compress --mangle -o dist/popup.js dist/popup.js",
-    "uglify-3": "uglifyjs --compress --mangle -o dist/readme.js dist/readme.js",
-    "uglify-4": "uglifyjs --compress --mangle -o dist/import.js dist/import.js"
+    "pack": "web-ext build -i src test \"!(manifest).json\" \"*.js\" \"dist/*.map\""
   },
   "author": "Santo Pfingsten",
   "license": "Zlib",
@@ -34,7 +29,6 @@
     "source-map-support": "^0.5.0",
     "ts-node": "^4.0.2",
     "typescript": "^2.5.3",
-    "uglify-es": "^3.1.9",
     "webextension-polyfill-ts": "^0.8.3",
     "webpack": "^4.5.0",
     "webpack-cli": "^2.0.14"

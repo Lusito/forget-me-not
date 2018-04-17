@@ -10,6 +10,23 @@ import { browser } from 'webextension-polyfill-ts';
 const md = new MarkdownIt();
 const domParser = new DOMParser();
 
+export function getFirstChildWithClass(element: HTMLElement, className: string) {
+    for (let i = 0; i < element.children.length; i++) {
+        if (element.children[i].classList.contains(className))
+            return element.children[i] as HTMLElement;
+    }
+    throw 'Could not find child with class ' + className;
+}
+
+export function getChildrenWithTagName(element: HTMLElement, tagName: string) {
+    const list = [];
+    for (let i = 0; i < element.children.length; i++) {
+        if (element.children[i].tagName.toLowerCase() === tagName)
+            list.push(element.children[i] as HTMLElement);
+    }
+    return list;
+}
+
 export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
     on(a, 'click', (e) => {
         e.stopImmediatePropagation();

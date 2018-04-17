@@ -132,9 +132,7 @@ function getRegExForRule(rule: string) {
 function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
     let validRules: RuleDefinition[] = [];
     for (const ruleDef of rules) {
-        if (typeof (ruleDef.rule) !== 'string')
-            continue;
-        if (expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
+        if (typeof (ruleDef.rule) === 'string' && expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
             validRules.push({
                 rule: ruleDef.rule,
                 type: ruleDef.type

@@ -48,14 +48,13 @@ export class CleanStore {
     }
 
     private cleanByDomainWithRulesNow(domain: string) {
-        if (!settings.get('domainLeave.enabled'))
-            return;
+        if (settings.get('domainLeave.enabled')) {
+            if (settings.get('domainLeave.cookies'))
+                this.cleanCookiesByDomain(domain, false);
 
-        if (settings.get('domainLeave.cookies'))
-            this.cleanCookiesByDomain(domain, false);
-
-        if (settings.get('domainLeave.localStorage') && !this.isLocalStorageProtected(domain))
-            cleanLocalStorage([domain], this.id);
+            if (settings.get('domainLeave.localStorage') && !this.isLocalStorageProtected(domain))
+                cleanLocalStorage([domain], this.id);
+        }
     }
 
     private isLocalStorageProtected(domain: string): boolean {

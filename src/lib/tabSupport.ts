@@ -4,23 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { on } from './htmlUtils';
-
-function getFirstChildWithClass(element: HTMLElement, className: string) {
-    for (let i = 0; i < element.children.length; i++) {
-        if (element.children[i].classList.contains(className))
-            return element.children[i] as HTMLElement;
-    }
-    throw 'Could not find child with class ' + className;
-}
-function getChildrenWithTagName(element: HTMLElement, tagName: string) {
-    const list = [];
-    for (let i = 0; i < element.children.length; i++) {
-        if (element.children[i].tagName.toLowerCase() === tagName)
-            list.push(element.children[i] as HTMLElement);
-    }
-    return list;
-}
+import { on, getChildrenWithTagName, getFirstChildWithClass } from './htmlUtils';
 
 const validHash = /^[a-z_]+$/;
 export class TabSupport {
@@ -58,7 +42,7 @@ export class TabSupport {
     private updateSelectedTab(index: number) {
         for (let i = 0; i < this.tabs.length; i++) {
             if (i === index) {
-                const name = (this.tabs[i] as HTMLElement).dataset.tab
+                const name = (this.tabs[i]).dataset.tab
                 document.location.hash = '#' + name;
                 this.tabs[i].classList.add('active');
                 this.pages[i].classList.add('active');

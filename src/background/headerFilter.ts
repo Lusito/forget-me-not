@@ -19,15 +19,15 @@ interface SetCookieInfo {
 }
 const cookieDomainRegexp = /^domain=;/i;
 const keyValueRegexpSplit = /=(.+)/;
-function parseSetCookies(header: string, fallbackDomain: string) : SetCookieInfo {
+function parseSetCookies(header: string, fallbackDomain: string): SetCookieInfo {
     const parts = header.split(';');
     const kv = parts[0].split(keyValueRegexpSplit);
-    const domainPart = parts.find((part, i)=> i>0 && cookieDomainRegexp.test(part));
+    const domainPart = parts.find((part, i) => i > 0 && cookieDomainRegexp.test(part));
     let domain = null;
-    if(domainPart)
+    if (domainPart)
         domain = domainPart.split('=')[1];
     domain = (domain || fallbackDomain);
-    if(domain.startsWith('.'))
+    if (domain.startsWith('.'))
         domain = domain.substr(1);
     //fixme: get first party domain?
     return {

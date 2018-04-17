@@ -143,7 +143,7 @@ function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: str
 }
 
 interface CompiledRuleDefinition {
-    rule: RuleDefinition;
+    definition: RuleDefinition;
     regex: RegExp;
     cookieName?: string;
 }
@@ -179,13 +179,13 @@ class Settings {
                     const isCookieRule = parts.length === 2;
                     if (isCookieRule) {
                         this.cookieRules.push({
-                            rule: rule,
+                            definition: rule,
                             regex: getRegExForRule(parts[1]),
                             cookieName: parts[0]
                         });
                     } else {
                         this.rules.push({
-                            rule: rule,
+                            definition: rule,
                             regex: getRegExForRule(rule.rule)
                         });
                     }
@@ -274,7 +274,7 @@ class Settings {
         let matchingRules: RuleDefinition[] = [];
         for (const rule of rules) {
             if (rule.regex.test(domain) && (!rule.cookieName || rule.cookieName.toLowerCase() === lowerCookieName))
-                matchingRules.push(rule.rule);
+                matchingRules.push(rule.definition);
         }
         return matchingRules;
     }

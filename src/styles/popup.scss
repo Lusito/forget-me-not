@@ -5,12 +5,10 @@
  */
 
 @import "shared";
-
 $badgeColorWhite: rgb(38, 69, 151);
 $badgeColorGray: rgb(116, 116, 116);
 $badgeColorForget: rgb(190, 23, 38);
 $badgeColorBlock: rgb(0, 0, 0);
-
 html,
 body {
     margin: 0;
@@ -22,6 +20,7 @@ body {
     flex-direction: column;
     box-sizing: border-box;
 }
+
 html {
     padding-top: 4px;
 }
@@ -33,8 +32,9 @@ body {
     background: white;
     position: relative;
 }
+
 html.fullscreen,
-html.fullscreen > body,
+html.fullscreen>body,
 html.fullscreen #mainTabContainer {
     width: 100%;
     height: 100%;
@@ -43,15 +43,15 @@ html.fullscreen #mainTabContainer {
 html.fullscreen #mainTabContainer {
     display: flex;
     flex-direction: column;
-    > .tabsList {
+    >.tabsList {
         flex-shrink: 0;
         flex-grow: 0;
     }
-    > .tabsPages {
+    >.tabsPages {
         flex-shrink: 1;
         flex-grow: 1;
         overflow: auto;
-        > div {
+        >div {
             overflow: hidden;
         }
     }
@@ -126,6 +126,7 @@ label>input[type=radio]+span {
     font-weight: bold;
     font-size: 16px;
 }
+
 #current_tab_punyfied {
     font-style: italic;
     font-size: 13px;
@@ -325,14 +326,15 @@ table {
         background-color: #FBFBFB;
         border-bottom: none;
     }
-    
     >div:not(:last-of-type) {
         border-right: 0;
     }
 }
-.tabsList > div:first-child {
+
+.tabsList>div:first-child {
     border-left: 0;
 }
+
 .tabsList_asIcons {
     height: 38px;
     >div {
@@ -340,13 +342,13 @@ table {
         width: 50px;
     }
 }
+
 .tabsList_asLabels {
     height: 22px;
     >div {
         height: 23px;
     }
 }
-
 
 input[type=radio],
 input[type=checkbox] {
@@ -447,71 +449,78 @@ input[type=checkbox]:disabled:checked+span:before {
 input[type=checkbox]:checked+span:before {
     color: #5095ea;
 }
-#rules_hint,
-#cookie_rules_hint {
+
+#rules_hint {
     color: #0d8000;
     height: 18px;
 }
-#rules_hint.error,
-#cookie_rules_hint.error {
+
+#rules_hint.error {
     color: #800000;
 }
+
 .rules_input_wrapper {
     display: flex;
     flex-direction: row;
-    > input {
+    >input {
         flex-grow: 1;
     }
-    > button {
+    >button {
         flex-shrink: 0;
         margin: 0 0 0 4px;
     }
 }
+
 .rules_head {
     margin-top: 5px;
     margin-right: 19px;
     font-weight: bold;
 }
+
 .rules_list {
     list-style: none;
     padding: 0 2px 0 0;
     margin: 0;
-    > li {
+    >li {
         margin: 0 0 2px 0;
-        > div {
+        >div {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
     }
 }
+
 .rules_head,
-.rules_list > li {
+.rules_list>li {
     display: flex;
     flex-direction: row;
-    > * {
+    >* {
         flex-grow: 1;
         width: 100%;
     }
 }
+
 .rules_head .type_column,
 .rules_head .delete_column,
 .rules_list .type_column,
 .rules_list .delete_column {
     text-align: center;
 }
+
 .rules_head .type_column,
 .rules_list .type_column {
     min-width: 105px;
     width: 105px;
 }
+
 .rules_head .delete_column,
 .rules_list .delete_column {
     min-width: 60px;
     width: 60px;
 }
 
-.rules_list > li > button {
+.rules_list>li>button {
     margin: 0;
     height: 20px;
     padding: 0;
@@ -523,8 +532,7 @@ input[type=checkbox]:checked+span:before {
     overflow-y: scroll;
 }
 
-#rules_input,
-#cookie_rules_input {
+#rules_input {
     width: 100%;
 }
 
@@ -533,10 +541,9 @@ input[type=checkbox]:checked+span:before {
     flex-direction: column;
     height: 100%;
     min-height: 110px;
-    margin: 0 -10px -10px -10px;
 }
-html.fullscreen #rules_list,
-html.fullscreen #cookie_rules_list {
+
+html.fullscreen #rules_list {
     max-height: none;
 }
 
@@ -567,12 +574,10 @@ html.fullscreen #cookie_rules_list {
         cursor: pointer;
         padding: 0 24px 0 3px;
         text-align: left;
-
-        > option {
+        >option {
             font-size: 13px;
         }
     }
-
     .badge_white:hover {
         background-color: $badgeColorWhite;
     }
@@ -608,7 +613,7 @@ html.fullscreen #cookie_rules_list {
 #recently_accessed_domains {
     padding-left: 10px;
     list-style-type: none;
-    > li {
+    >li {
         display: flex;
         flex-direction: row;
         margin: 5px 0px;
@@ -629,15 +634,19 @@ html.fullscreen #cookie_rules_list {
 .badge_white {
     background-color: $badgeColorWhite;
 }
+
 .badge_gray {
     background-color: $badgeColorGray;
 }
-.badge_forget{
+
+.badge_forget {
     background-color: $badgeColorForget;
 }
-.badge_block{
+
+.badge_block {
     background-color: $badgeColorBlock;
 }
+
 .badge_white,
 .badge_gray,
 .badge_forget,
@@ -660,6 +669,7 @@ html.fullscreen #cookie_rules_list {
         margin: 0 0 10px 0;
     }
 }
+
 #help_link {
     background: #214398;
     color: white;

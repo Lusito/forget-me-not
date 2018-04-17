@@ -34,7 +34,6 @@ const defaultSettings: SettingsMap = {
     "showUpdateNotification": true,
     "showCookieRemovalNotification": false,
     "rules": [],
-    "cookieRules": [],
     "whitelistNoTLD": false,
     "fallbackRule": RuleType.FORGET,
     "domainsToClean": {},
@@ -86,7 +85,7 @@ const isAlNum = /^[a-z0-9]+$/;
 const isAlNumDash = /^[a-z0-9\-]+$/;
 const validCookieName = /^[!,#,\$,%,&,',\*,\+,\-,\.,0-9,:,;,A-Z,\\,\^,_,`,a-z,\|,~]+$/i;
 
-export function isValidExpressionPart(part: string) {
+function isValidExpressionPart(part: string) {
     if (part.length === 0)
         return false;
     if (part === '*')
@@ -94,14 +93,16 @@ export function isValidExpressionPart(part: string) {
     return isAlNum.test(part[0]) && isAlNum.test(part[part.length - 1]) && isAlNumDash.test(part);
 }
 
-export function isValidExpression(exp: string) {
+function isValidDomainExpression(exp: string) {
     const parts = exp.split('.');
     return parts.length > 0 && parts.findIndex((p) => !isValidExpressionPart(p)) === -1;
 }
 
-export function isValidCookieExpression(exp: string) {
+export function isValidExpression(exp: string) {
     const parts = exp.split('@');
-    return parts.length === 2 && validCookieName.test(parts[0]) && isValidExpression(parts[1]);
+    if(parts.length === 1)
+        return isValidDomainExpression(exp);
+    return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
 }
 
 function isValidRuleType(ruleType: RuleType) {
@@ -199,12 +200,6 @@ class Settings {
             else
                 (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
         }
-        if (json.cookieRules) {
-            if (!Array.isArray(json.cookieRules))
-                delete json.cookieRules;
-            else
-                (json as any).cookieRules = sanitizeRules((json as any).cookieRules as RuleDefinition[], isValidCookieExpression);
-        }
         for (const key in json) {
             if (!json.hasOwnProperty(key))
                 continue;
@@ -244,26 +239,20 @@ class Settings {
     }
 
     // Convenience methods
-    public getMatchingRules(domain: string) {
+    public getMatchingRules(domain: string, cookieName: string|false = false) {
+        //Fixme: create compiled rules on save instead of compiling them on every request
+        const cookieRules = cookieName !== false;
+        let lowerCookieName = cookieName && cookieName.toLowerCase();
         let rules = settings.get('rules');
         let matchingRules: RuleDefinition[] = [];
         for (const rule of rules) {
-            let re = getRegExForRule(rule.rule);
-            if (re.test(domain))
-                matchingRules.push(rule);
-        }
-        return matchingRules;
-    }
-
-    public getMatchingCookieRules(domain: string, name: string) {
-        let lowerName = name.toLowerCase();
-        let rules = settings.get('cookieRules');
-        let matchingRules: RuleDefinition[] = [];
-        for (const rule of rules) {
             const parts = rule.rule.split('@');
-            if (parts[0].toLowerCase() === lowerName) {
-                let re = getRegExForRule(parts[1]);
-                if (re.test(domain))
+            const isCookieRule = parts.length === 2;
+
+            if(isCookieRule === cookieRules) {
+                const rulePart = isCookieRule ? parts[1] : rule.rule;
+                let re = getRegExForRule(rulePart);
+                if (re.test(domain) && (!isCookieRule || parts[0].toLowerCase() === lowerCookieName))
                     matchingRules.push(rule);
             }
         }

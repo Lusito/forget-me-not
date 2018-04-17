@@ -144,7 +144,7 @@ function getBadgeFromMatchingRules(matchingRules: RuleDefinition[]) {
 }
 
 export function getBadgeForCookie(domain: string, name: string) {
-    let matchingRules = settings.getMatchingCookieRules(domain, name);
+    let matchingRules = settings.getMatchingRules(domain, name);
     if (matchingRules.length)
         return getBadgeFromMatchingRules(matchingRules);
     return getBadgeForDomain(domain);

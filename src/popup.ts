@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, isValidExpression, isValidCookieExpression } from "./lib/settings";
+import { settings } from "./lib/settings";
 import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
 import { isFirefox, browserInfo } from './lib/browserInfo';
 import { connectSettings, permanentDisableSettings, updateFromSettings } from './lib/htmlSettings';
@@ -22,12 +22,10 @@ const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >=
 
 class Popup {
     //@ts-ignore
-    private readonly cookieRuleList: RuleList;
     private readonly ruleList: RuleList;
     private hostname?: string;
     private matchingRulesListItems: RuleListItem[] = [];
     private readonly mainTabSupport = new TabSupport(byId('mainTabContainer') as HTMLElement, this.onTabChange.bind(this));
-    private readonly rulesTabSupport = new TabSupport(byId('rulesTabContainer') as HTMLElement);
     public constructor() {
         if (browserInfo.mobile)
             (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
@@ -59,8 +57,7 @@ class Popup {
 
         on(byId('clean_all_now') as HTMLElement, 'click', () => messageUtil.send('cleanAllNow'));
 
-        this.ruleList = new RuleList('rules_input', 'rules_list', 'rules_hint', 'rules_add', 'rules', isValidExpression);
-        this.cookieRuleList = new RuleList('cookie_rules_input', 'cookie_rules_list', 'cookie_rules_hint', 'cookie_rules_add', 'cookieRules', isValidCookieExpression);
+        this.ruleList = new RuleList('rules_input', 'rules_list', 'rules_hint', 'rules_add');
         on(byId('settings_import') as HTMLElement, 'click', this.onImport.bind(this));
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
@@ -107,7 +104,6 @@ class Popup {
     private prepareAddRule(domain: string) {
         this.ruleList.setInput("*." + domain.trim().toLowerCase());
         this.mainTabSupport.setTab('rules');
-        this.rulesTabSupport.setTab('main_rules');
     }
 
     setCurrentTabLabel(domain: string | false) {
@@ -227,7 +223,7 @@ class Popup {
         if (this.hostname) {
             let matchingRules = settings.getMatchingRules(this.hostname);
             let list = byId('rules_list_current_tab') as HTMLElement;
-            this.matchingRulesListItems = recreateRuleListItems(this.matchingRulesListItems, matchingRules, list, 'rules');
+            this.matchingRulesListItems = recreateRuleListItems(this.matchingRulesListItems, matchingRules, list);
         }
     }
 }

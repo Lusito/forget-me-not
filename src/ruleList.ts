@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, RuleType, RuleDefinition } from "./lib/settings";
+import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
 import { on, byId, removeAllChildren } from './lib/htmlUtils';
 import * as messageUtil from "./lib/messageUtil";
 import { RuleListItem } from './ruleListItem';
@@ -18,7 +18,7 @@ function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     return 0;
 }
 
-export function recreateRuleListItems(previousItems: RuleListItem[], rules: RuleDefinition[], parent: HTMLElement, settingsKey: 'rules' | 'cookieRules') {
+export function recreateRuleListItems(previousItems: RuleListItem[], rules: RuleDefinition[], parent: HTMLElement) {
     if (rules.length === previousItems.length) {
         let changed = false;
         for (let i = 0; i < rules.length; i++) {
@@ -38,28 +38,24 @@ export function recreateRuleListItems(previousItems: RuleListItem[], rules: Rule
     let newItems: RuleListItem[] = [];
     removeAllChildren(parent);
     for (let rule of rules)
-        newItems.push(new RuleListItem(rule, parent, settingsKey));
+        newItems.push(new RuleListItem(rule, parent));
     return newItems;
 }
 
 export class RuleList {
-    private settingsKey: 'rules' | 'cookieRules';
     private hint: HTMLElement;
     private input: HTMLInputElement;
     private items: RuleListItem[] = [];
     private list: HTMLElement;
-    private expressionValidator: (value: string) => boolean;
 
-    public constructor(inputId: string, listId: string, hintId: string, addId: string, settingsKey: 'rules' | 'cookieRules', expressionValidator: (value: string) => boolean) {
-        this.settingsKey = settingsKey;
-        this.expressionValidator = expressionValidator;
+    public constructor(inputId: string, listId: string, hintId: string, addId: string) {
         this.input = byId(inputId) as HTMLInputElement;
         on(this.input, 'keyup', this.onRulesInputKeyUp.bind(this));
         this.list = byId(listId) as HTMLElement;
         this.hint = byId(hintId) as HTMLElement;
         this.rebuildRulesList();
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf(settingsKey) !== -1)
+            if (changedKeys.indexOf('rules') !== -1)
                 this.rebuildRulesList();
         });
         on(byId(addId) as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
@@ -67,7 +63,7 @@ export class RuleList {
 
     public setInput(value: string) {
         this.input.value = value;
-        let validExpression = this.expressionValidator(value);
+        let validExpression = isValidExpression(value);
         this.updateRulesHint(validExpression, value.length === 0);
         this.updateFilter();
         this.input.focus();
@@ -75,7 +71,7 @@ export class RuleList {
 
     private onRulesInputKeyUp(e: KeyboardEvent) {
         let value = this.input.value.trim().toLowerCase();
-        let validExpression = this.expressionValidator(value);
+        let validExpression = isValidExpression(value);
         this.updateRulesHint(validExpression, value.length === 0);
         if (e.keyCode === 13)
             this.addRule(e.shiftKey ? RuleType.GRAY : RuleType.WHITE);
@@ -98,8 +94,8 @@ export class RuleList {
 
     private addRule(type: RuleType) {
         let value = this.input.value.trim().toLowerCase();
-        if (this.expressionValidator(value)) {
-            let rules = settings.get(this.settingsKey).slice();
+        if (isValidExpression(value)) {
+            let rules = settings.get('rules').slice();
             let entry = rules.find((r) => r.rule === value);
             if (entry)
                 entry.type = type;
@@ -109,7 +105,7 @@ export class RuleList {
                     rule: value
                 });
             }
-            settings.set(this.settingsKey, rules);
+            settings.set('rules', rules);
             settings.save();
         }
     }
@@ -120,11 +116,11 @@ export class RuleList {
     }
 
     private rebuildRulesList() {
-        const rules = settings.get(this.settingsKey).slice();
+        const rules = settings.get('rules').slice();
         for (const rule of rules)
             rule.rule = rule.rule.toLowerCase();
         rules.sort(sortByRule);
-        let newItems = recreateRuleListItems(this.items, rules, this.list, this.settingsKey);
+        let newItems = recreateRuleListItems(this.items, rules, this.list);
         if (newItems !== this.items) {
             this.items = newItems;
             this.updateFilter();

@@ -10,7 +10,6 @@ export interface SettingsTypeMap {
     "showUpdateNotification": boolean;
     "showCookieRemovalNotification": boolean,
     "rules": RuleDefinition[],
-    "cookieRules": RuleDefinition[],
     "whitelistNoTLD": boolean;
     "fallbackRule": RuleType;
     "domainsToClean": { [s: string]: boolean },

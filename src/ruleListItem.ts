@@ -34,10 +34,8 @@ export class RuleListItem {
     public ruleDef: RuleDefinition;
     public readonly itemNode: HTMLElement;
     public readonly selectNode: HTMLSelectElement;
-    private readonly settingsKey: 'rules' | 'cookieRules';
-    public constructor(ruleDef: RuleDefinition, parent: HTMLElement, settingsKey: 'rules' | 'cookieRules') {
+    public constructor(ruleDef: RuleDefinition, parent: HTMLElement) {
         this.ruleDef = ruleDef;
-        this.settingsKey = settingsKey;
         this.itemNode = createElement(document, parent, 'li');
         const punified = this.appendPunycode(ruleDef.rule);
         this.labelNode = createElement(document, this.itemNode, 'div', { textContent: punified, title: punified });
@@ -47,20 +45,20 @@ export class RuleListItem {
         let button = createElement(document, this.itemNode, 'button', { textContent: 'X', className: 'delete_column' });
 
         on(this.selectNode, 'change', () => {
-            let rules = settings.get(this.settingsKey).slice();
+            let rules = settings.get('rules').slice();
             let rule = rules.find((r) => r.rule === this.ruleDef.rule);
             if (rule) {
                 rule.type = parseInt(this.selectNode.value);
-                settings.set(this.settingsKey, rules);
+                settings.set('rules', rules);
                 settings.save();
             }
         });
         on(button, 'click', () => {
-            let rules = settings.get(this.settingsKey).slice();
+            let rules = settings.get('rules').slice();
             let index = rules.findIndex((r) => r.rule === this.ruleDef.rule);
             if (index !== -1) {
                 rules.splice(index, 1);
-                settings.set(this.settingsKey, rules);
+                settings.set('rules', rules);
                 settings.save();
             }
         });

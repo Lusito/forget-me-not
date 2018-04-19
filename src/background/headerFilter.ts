@@ -65,7 +65,7 @@ export class HeaderFilter {
         const badge = getBadgeForCookie(cookieInfo.domain.startsWith('.') ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
         if (badge === badges.white || badge === badges.gray)
             return false;
-        return badge === badges.block || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookie(tabId, cookieInfo.domain);
+        return badge === badges.block || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
     }
 
     private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, fallbackDomain: string, tabId: number): WebRequest.HttpHeaders | undefined {

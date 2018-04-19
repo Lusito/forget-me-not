@@ -79,6 +79,10 @@ export class CleanStore {
         return protectOpenDomains && this.tabWatcher.cookieStoreContainsSubDomain(this.id, cookie.domain);
     }
 
+    public isThirdPartyCookie(domain: string) {
+        return this.tabWatcher.isThirdPartyCookieOnCookieStore(this.id, domain);
+    }
+
     public cleanUrlNow(hostname: string) {
         cleanLocalStorage([hostname], this.id);
         this.cleanCookiesByDomain(hostname, true);

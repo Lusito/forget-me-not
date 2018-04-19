@@ -19,21 +19,22 @@
     "@types/chai": "^4.0.4",
     "@types/markdown-it": "0.0.4",
     "@types/mocha": "^2.2.43",
+    "@types/tldjs": "^1.7.1",
     "awesome-typescript-loader": "^3.2.3",
     "chai": "^4.1.2",
+    "markdown-it": "^8.4.0",
     "mocha": "^4.0.1",
     "node-sass": "^4.6.0",
     "npm-run-all": "^4.1.2",
     "punycode": "^2.1.0",
     "source-map-loader": "^0.2.2",
     "source-map-support": "^0.5.0",
+    "tldjs": "^2.3.1",
     "ts-node": "^4.0.2",
     "typescript": "^2.5.3",
     "webextension-polyfill-ts": "^0.8.3",
     "webpack": "^4.5.0",
     "webpack-cli": "^2.0.14"
   },
-  "dependencies": {
-    "markdown-it": "^8.4.0"
-  }
+  "dependencies": {}
 }

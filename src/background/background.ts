@@ -15,6 +15,7 @@ import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
+import { getDomain } from "tldjs";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -138,7 +139,7 @@ class Background implements TabWatcherListener {
     }
 
     public removeCookieIfThirdparty(cookie: Cookies.Cookie) {
-        if (!this.isCookieAllowed(cookie)) {
+        if (this.isThirdpartyCookie(cookie)) {
             if (this.snoozing) {
                 this.snoozedThirdpartyCookies.push(cookie);
                 return;
@@ -151,15 +152,17 @@ class Background implements TabWatcherListener {
                 let delta = Date.now() - this.lastDomainChangeRequest;
                 if (delta < 1000)
                     exec.restart(500);
-                else if (!this.isCookieAllowed(cookie))
+                else if (this.isThirdpartyCookie(cookie))
                     removeCookie(cookie);
             });
             exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
         }
     }
 
-    public isCookieAllowed(cookie: Cookies.Cookie) {
-        return this.getCleanStore(cookie.storeId).isCookieAllowed(cookie, false, true);
+    private isThirdpartyCookie(cookie: Cookies.Cookie) {
+        if (cookie.firstPartyDomain && cookie.firstPartyDomain !== (getDomain(cookie.domain) || cookie.domain))
+            return true;
+        return this.getCleanStore(cookie.storeId).isThirdPartyCookie(cookie.domain);
     }
 
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {

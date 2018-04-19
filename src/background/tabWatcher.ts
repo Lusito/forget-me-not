@@ -8,6 +8,7 @@ import { getValidHostname } from '../shared';
 import { browser, Tabs } from 'webextension-polyfill-ts';
 import { isFirefox } from '../lib/browserInfo';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
+import { getDomain } from "tldjs";
 
 export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
 
@@ -15,7 +16,9 @@ export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
 interface TabInfo {
     tabId: number;
     hostname: string;
+    hostnameFP: string;
     nextHostname: string;
+    nextHostnameFP: string;
     cookieStoreId: string;
 }
 
@@ -47,6 +50,7 @@ export class TabWatcher {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
             tabInfo.nextHostname = getValidHostname(url);
+            tabInfo.nextHostnameFP = (tabInfo.nextHostname && getDomain(tabInfo.nextHostname)) || tabInfo.nextHostname;
         } else {
             this.getTab(tabId);
         }
@@ -59,7 +63,8 @@ export class TabWatcher {
             this.checkDomainEnter(tabInfo.cookieStoreId, hostname);
             const previousHostname = tabInfo.hostname;
             tabInfo.hostname = hostname;
-            tabInfo.nextHostname = '';
+            tabInfo.hostnameFP = getDomain(hostname) || hostname;
+            tabInfo.nextHostname = tabInfo.nextHostnameFP = '';
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
@@ -92,7 +97,7 @@ export class TabWatcher {
     private setTabInfo(tabId: number, hostname: string, cookieStoreId?: string) {
         cookieStoreId = cookieStoreId || DEFAULT_COOKIE_STORE_ID;
         this.checkDomainEnter(cookieStoreId, hostname);
-        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, nextHostname: '', cookieStoreId };
+        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, hostnameFP: getDomain(hostname) || hostname, nextHostname: '', nextHostnameFP: '', cookieStoreId };
         let list = this.tabInfosByCookieStore[cookieStoreId];
         if (!list)
             list = this.tabInfosByCookieStore[cookieStoreId] = [tabInfo];
@@ -137,31 +142,38 @@ export class TabWatcher {
         if (tab.id && !tab.incognito) {
             const hostname = tab.url ? getValidHostname(tab.url) : '';
             const tabInfo = this.tabInfos[tab.id];
-            if (tabInfo)
+            if (tabInfo) {
                 tabInfo.hostname = hostname;
-            else
+                tabInfo.hostnameFP = getDomain(hostname) || hostname;
+            } else {
                 this.setTabInfo(tab.id, hostname, tab.cookieStoreId);
+            }
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
         }
     }
 
-    public isThirdPartyCookie(tabId: number, domain: string) {
+    public isThirdPartyCookieOnTab(tabId: number, domain: string) {
         const tabInfo = this.tabInfos[tabId];
         if (!tabInfo) {
             console.warn(`No info about tabId ${tabId} available`);
             return false;
         }
-        const allowSubDomains = domain.startsWith('.');
-        const rawDomain = allowSubDomains ? domain.substr(1) : domain;
-        if (tabInfo.hostname === rawDomain || tabInfo.nextHostname === rawDomain)
+        const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
+        const domainFP = getDomain(rawDomain) || rawDomain;
+        return tabInfo.hostnameFP !== domainFP && tabInfo.nextHostnameFP !== domainFP;
+    }
+
+    public isThirdPartyCookieOnCookieStore(storeId: string, domain: string) {
+        const tabInfos = this.tabInfosByCookieStore[storeId];
+        if (!tabInfos) {
+            console.warn(`No info about storeId ${storeId} available`);
             return false;
-        if (allowSubDomains) {
-            if (tabInfo.hostname && tabInfo.hostname.endsWith(domain))
-                return false;
-            if (tabInfo.nextHostname && tabInfo.nextHostname.endsWith(domain))
-                return false;
         }
-        return true;
+        if (!tabInfos.length)
+            return true;
+        const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
+        const domainFP = getDomain(rawDomain) || rawDomain;
+        return !tabInfos.find((tabInfo) => tabInfo.hostnameFP === domainFP || tabInfo.nextHostnameFP === domainFP);
     }
 }

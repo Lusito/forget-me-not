@@ -5,7 +5,7 @@
  */
 
 import { assert } from "chai";
-import { getValidHostname } from "../src/shared";
+import { getValidHostname, getFirstPartyCookieDomain } from "../src/shared";
 
 describe("Misc functionality", () => {
 	describe("getValidHostname", () => {
@@ -21,6 +21,17 @@ describe("Misc functionality", () => {
 			assert.equal(getValidHostname("about:preferences"), '');
 			assert.equal(getValidHostname('Bu][$<|-|!7'), '');
 			assert.equal(getValidHostname(null), '');
+		});
+	});
+
+	describe("getFirstPartyCookieDomain", () => {
+		it("should return first party domains for valid cookie domains", () => {
+			assert.equal(getFirstPartyCookieDomain("www.google.com"), 'google.com');
+			assert.equal(getFirstPartyCookieDomain(".google.com"), 'google.com');
+			assert.equal(getFirstPartyCookieDomain("google.com"), 'google.com');
+			assert.equal(getFirstPartyCookieDomain(".michelgagne.blogspot.de"), 'michelgagne.blogspot.de');
+			assert.equal(getFirstPartyCookieDomain("michelgagne.blogspot.de"), 'michelgagne.blogspot.de');
+			assert.equal(getFirstPartyCookieDomain("hello.michelgagne.blogspot.de"), 'michelgagne.blogspot.de');
 		});
 	});
 });

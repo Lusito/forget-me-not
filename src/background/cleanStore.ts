@@ -5,10 +5,11 @@
  */
 
 import { settings } from "../lib/settings";
-import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain, getBadgeForCookie, getFirstPartyCookieDomain } from './backgroundShared';
+import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain, getBadgeForCookie } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
+import { getFirstPartyCookieDomain } from "../shared";
 
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;

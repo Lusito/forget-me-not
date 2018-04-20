@@ -8,7 +8,6 @@ import { settings, RuleType, RuleDefinition } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
-import { getDomain } from "tldjs";
 
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
@@ -158,9 +157,4 @@ export function getBadgeForDomain(domain: string) {
     if (matchingRules.length)
         return getBadgeFromMatchingRules(matchingRules);
     return getBadgeForRuleType(settings.get('fallbackRule'));
-}
-
-export function getFirstPartyCookieDomain(domain: string) {
-    const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
-    return getDomain(rawDomain) || rawDomain;
 }

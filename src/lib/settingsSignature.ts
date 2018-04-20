@@ -3,7 +3,18 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
-import { RuleDefinition, RuleType } from "./settings";
+
+export enum RuleType {
+    WHITE,
+    GRAY,
+    FORGET,
+    BLOCK
+}
+
+export interface RuleDefinition {
+    rule: string,
+    type: RuleType
+}
 
 export interface SettingsTypeMap {
     "version": string;

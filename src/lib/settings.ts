@@ -8,21 +8,10 @@
 
 import * as messageUtil from "./messageUtil";
 import { isFirefox, browserInfo } from "./browserInfo";
-import { SettingsTypeMap, SettingsSignature } from "./settingsSignature";
+import { SettingsTypeMap, SettingsSignature, RuleDefinition, RuleType } from "./settingsSignature";
 import { browser, Storage } from "webextension-polyfill-ts";
 
 type Callback = () => void;
-
-export enum RuleType {
-    WHITE,
-    GRAY,
-    FORGET,
-    BLOCK
-}
-export interface RuleDefinition {
-    rule: string,
-    type: RuleType
-}
 
 type SettingsValue = string | boolean | number | (RuleDefinition[]) | { [s: string]: boolean };
 type SettingsMap = { [s: string]: SettingsValue };

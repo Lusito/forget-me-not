@@ -117,13 +117,6 @@ export class TabWatcher {
         return false;
     }
 
-    public cookieStoreContainsSubDomain(cookieStoreId: string, suffix: string, ignoreNext?: boolean) {
-        let list = this.tabInfosByCookieStore[cookieStoreId];
-        if (list)
-            return list.findIndex((ti) => ti.hostname.endsWith(suffix) || !ignoreNext && ti.nextHostname.endsWith(suffix)) !== -1;
-        return false;
-    }
-
     private onTabRemoved(tabId: number) {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
@@ -164,16 +157,14 @@ export class TabWatcher {
         return tabInfo.hostnameFP !== domainFP && tabInfo.nextHostnameFP !== domainFP;
     }
 
-    public isThirdPartyCookieOnCookieStore(storeId: string, domain: string) {
+    public isFirstPartyDomainOnCookieStore(storeId: string, domainFP: string) {
         const tabInfos = this.tabInfosByCookieStore[storeId];
         if (!tabInfos) {
             console.warn(`No info about storeId ${storeId} available`);
             return false;
         }
         if (!tabInfos.length)
-            return true;
-        const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
-        const domainFP = getDomain(rawDomain) || rawDomain;
-        return !tabInfos.find((tabInfo) => tabInfo.hostnameFP === domainFP || tabInfo.nextHostnameFP === domainFP);
+            return false;
+        return tabInfos.findIndex((tabInfo) => tabInfo.hostnameFP === domainFP || tabInfo.nextHostnameFP === domainFP) >= 0;
     }
 }

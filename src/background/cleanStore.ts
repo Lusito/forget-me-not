@@ -5,7 +5,7 @@
  */
 
 import { settings } from "../lib/settings";
-import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain, getBadgeForCookie } from './backgroundShared';
+import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain, getBadgeForCookie, getFirstPartyCookieDomain } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
@@ -64,23 +64,18 @@ export class CleanStore {
         return badge === badges.white || (badge === badges.gray);
     }
 
-    private isCookieProtected(domain: string, name: string, ignoreGrayList: boolean, protectOpenDomains: boolean): boolean {
-        if (protectOpenDomains && this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
-            return true;
-        let badge = getBadgeForCookie(domain, name);
-        return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
-    }
-
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
         let allowSubDomains = cookie.domain.startsWith('.');
         let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-        if (this.isCookieProtected(rawDomain, cookie.name, ignoreGrayList, protectOpenDomains))
+        const badge = getBadgeForCookie(rawDomain, cookie.name);
+        if (badge === badges.white || (badge === badges.gray && !ignoreGrayList))
             return true;
-        return protectOpenDomains && this.tabWatcher.cookieStoreContainsSubDomain(this.id, cookie.domain);
-    }
-
-    public isThirdPartyCookie(domain: string) {
-        return this.tabWatcher.isThirdPartyCookieOnCookieStore(this.id, domain);
+        if(badge === badges.block || !protectOpenDomains)
+            return false;
+        if (cookie.firstPartyDomain)
+            return this.tabWatcher.isFirstPartyDomainOnCookieStore(this.id, cookie.firstPartyDomain);
+        const firstPartyDomain = getFirstPartyCookieDomain(cookie.domain);
+        return this.tabWatcher.isFirstPartyDomainOnCookieStore(this.id, firstPartyDomain);
     }
 
     public cleanUrlNow(hostname: string) {

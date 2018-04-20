@@ -8,14 +8,13 @@ import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
-import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain, getBadgeForCookie } from './backgroundShared';
+import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain, getBadgeForCookie, getFirstPartyCookieDomain } from './backgroundShared';
 import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
-import { getDomain } from "tldjs";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -160,9 +159,10 @@ class Background implements TabWatcherListener {
     }
 
     private isThirdpartyCookie(cookie: Cookies.Cookie) {
-        if (cookie.firstPartyDomain && cookie.firstPartyDomain !== (getDomain(cookie.domain) || cookie.domain))
-            return true;
-        return this.getCleanStore(cookie.storeId).isThirdPartyCookie(cookie.domain);
+        const firstPartyDomain = getFirstPartyCookieDomain(cookie.domain);
+        if (cookie.firstPartyDomain)
+            return cookie.firstPartyDomain !== firstPartyDomain;
+        return !this.tabWatcher.isFirstPartyDomainOnCookieStore(cookie.storeId, firstPartyDomain);
     }
 
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {

@@ -112,41 +112,8 @@ describe("TabWatcher", () => {
 			assert.isTrue(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.de'));
 		});
 	});
-	describe("cookieStoreContainsSubDomain", () => {
-		it("should work with multiple cookie stores", () => {
-			setupWatcher();
-
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-private', '.google.com'));
-
-			const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
-			assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.www.google.com'));
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.de'));
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-private', '.google.com'));
-
-			const tabId2 = browserMock.tabs.create("http://www.google.com", "firefox-default");
-			assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-
-			browserMock.tabs.remove(tabId1);
-			assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-			browserMock.tabs.remove(tabId2);
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-		});
-		it("should work during navigation", () => {
-			setupWatcher();
-
-			const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
-			browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
-			assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-			assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.de'));
-			browserMock.webNavigation.commit(tabId1, "http://www.google.de");
-			assert.isFalse(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.com'));
-			assert.isTrue(watcher.cookieStoreContainsSubDomain('firefox-default', '.google.de'));
-		});
-	});
 	describe("isThirdPartyCookieOnTab", () => {
-		it("should detect third party cookies correctly", () => {
+		it("should detect if a cookie domain is third-party for a specified tab", () => {
 			setupWatcher();
 
 			assert.isFalse(watcher.isThirdPartyCookieOnTab(1, 'google.com'));
@@ -184,56 +151,40 @@ describe("TabWatcher", () => {
 			assert.isTrue(watcher.isThirdPartyCookieOnTab(tabId1, 'blogspot.de'));
 		});
 	});
-	describe("isThirdPartyCookieOnCookieStore", () => {
-		it("should detect third party cookies correctly", () => {
+	describe("isFirstPartyDomainOnCookieStore", () => {
+		it("should detect if a first party domain is opened in a cookie store and if it is not", () => {
 			setupWatcher();
 
 			const cookieStoreId = "firefox-default";
 			const cookieStoreId2 = "firefox-alternative";
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'google.com'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.com'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'google.de'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.com'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.de'));
 
 			const tabId1 = browserMock.tabs.create("http://www.google.com", cookieStoreId);
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.google.com'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'google.com'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.com'));
+			assert.isTrue(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.com'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.de'));
 			// in another store
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, '.google.com'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, 'google.com'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, 'google.de'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, 'www.google.com'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId2, 'google.com'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId2, 'google.de'));
 			// if there is a tab open in the other store
 			browserMock.tabs.create("http://www.google.de", cookieStoreId2);
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, '.google.com'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, 'google.com'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, 'google.de'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId2, 'www.google.com'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId2, 'google.com'));
+			assert.isTrue(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId2, 'google.de'));
 
 			// during navigation both domains are first party
 			browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.com'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.www.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'what.www.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.what.www.google.de'));
+			assert.isTrue(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.com'));
+			assert.isTrue(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.de'));
 			browserMock.webNavigation.commit(tabId1, "http://www.google.de");
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.com'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.www.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'what.www.google.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, '.what.www.google.de'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.com'));
+			assert.isTrue(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.de'));
 
 			// Second level
 			browserMock.webNavigation.beforeNavigate(tabId1, "http://michelgagne.blogspot.de");
 			browserMock.webNavigation.commit(tabId1, "http://michelgagne.blogspot.de");
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'www.google.com'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'michelgagne.blogspot.de'));
-			assert.isFalse(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'hello.michelgagne.blogspot.de'));
-			assert.isTrue(watcher.isThirdPartyCookieOnCookieStore(cookieStoreId, 'blogspot.de'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.com'));
+			assert.isTrue(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'michelgagne.blogspot.de'));
+			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'blogspot.de'));
 		});
 	});
 });

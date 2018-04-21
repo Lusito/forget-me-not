@@ -4,11 +4,12 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, RuleType, RuleDefinition, isValidExpression } from "./lib/settings";
+import { settings, isValidExpression } from "./lib/settings";
 import { on, byId, removeAllChildren } from './lib/htmlUtils';
 import * as messageUtil from "./lib/messageUtil";
 import { RuleListItem } from './ruleListItem';
 import { browser } from "webextension-polyfill-ts";
+import { RuleDefinition, RuleType } from "./lib/settingsSignature";
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     if (a.rule < b.rule)

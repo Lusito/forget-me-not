@@ -4,10 +4,11 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, RuleType, RuleDefinition } from "./lib/settings";
+import { settings } from "./lib/settings";
 import { on, createElement } from './lib/htmlUtils';
 import { browser } from "webextension-polyfill-ts";
 import * as punycode from "punycode";
+import { RuleType, RuleDefinition } from "./lib/settingsSignature";
 
 export function classNameForRuleType(ruleType: RuleType) {
     if (ruleType === RuleType.WHITE)

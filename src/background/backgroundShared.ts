@@ -4,10 +4,11 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings, RuleType, RuleDefinition } from "../lib/settings";
+import { settings } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
+import { RuleType, RuleDefinition } from "../lib/settingsSignature";
 
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 

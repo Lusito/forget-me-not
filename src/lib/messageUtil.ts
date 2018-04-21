@@ -1,10 +1,10 @@
-import { browser, Runtime, Tabs } from "webextension-polyfill-ts";
-
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
+
+import { browser, Runtime } from "webextension-polyfill-ts";
 
 // This file contains communication helpers
 
@@ -12,21 +12,21 @@ import { browser, Runtime, Tabs } from "webextension-polyfill-ts";
 export type Callback = (params: any, sender: Runtime.MessageSender) => any;
 // export type Callback = (params: any, sender?: browser.runtime.MessageSender, sendResponse?: (response:any)=>void) => any;
 
-type CallbacksMap = { [s: string]: Callback };
+type CallbacksMap = { [s: string]: Callback[] };
 
-let callbacks: CallbacksMap | null = null;
+let callbacksMap: CallbacksMap | null = null;
 
 function init() {
-    let callbacks: CallbacksMap = {};
-    browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        if (callbacks) {
-            let callback = callbacks[request.action];
-            if (callback) {
-                return callback(request.params, sender);
+    if (callbacksMap === null) {
+        callbacksMap = {};
+        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            if (callbacksMap) {
+                const callbacks = callbacksMap[request.action];
+                callbacks && callbacks.forEach((cb) => cb(request.params, sender));
             }
-        }
-    });
-    return callbacks;
+        });
+    }
+    return callbacksMap;
 }
 
 export function send(name: string, params?: any, callback?: (value: any) => any) {
@@ -40,43 +40,17 @@ export function send(name: string, params?: any, callback?: (value: any) => any)
 }
 
 export function sendSelf(name: string, params: any) {
-    if (callbacks) {
-        let callback = callbacks[name];
-        if (callback) {
-            return callback(params, {});
-        }
-    }
-}
-
-export function sendToAllTabs(name: string, params: any) {
-    if (browser.tabs) {
-        let data = {
-            action: name,
-            params: params
-        };
-        browser.tabs.query({}).then((tabs) => {
-            for (let tab of tabs) {
-                let id = tab.id;
-                if (id)
-                    browser.tabs.sendMessage(id, data);
-            }
-        });
-    }
-}
-
-export function sendToTab(tab: Tabs.Tab, name: string, params: any, callback?: (value: any) => any) {
-    let data = {
-        action: name,
-        params: params
-    };
-    if (tab.id) {
-        let promise = browser.tabs.sendMessage(tab.id, data);
-        if (callback)
-            promise.then(callback);
+    if (callbacksMap) {
+        const callbacks = callbacksMap[name];
+        callbacks && callbacks.forEach((cb) => cb(params, {}));
     }
 }
 
 export function receive(name: string, callback: Callback) {
-    callbacks = init();
-    callbacks[name] = callback;
+    callbacksMap = init();
+    const callbacks = callbacksMap[name];
+    if (callbacks)
+        callbacks.push(callback);
+    else
+        callbacksMap[name] = [callback];
 }

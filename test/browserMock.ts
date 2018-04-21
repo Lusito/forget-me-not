@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime } from "webextension-polyfill-ts";
 import { assert } from "chai";
 
 // @ts-ignore
@@ -141,9 +141,21 @@ class BrowserWebNavigationMock {
     }
 }
 
+class BrowserRuntimeMock {
+    public onMessage = new ListenerMock<(message: any | undefined, sender: Runtime.MessageSender, sendResponse: () => void) => void>();
+
+    public sendMessage(message: any, options?: Runtime.SendMessageOptionsType): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.onMessage.emit(message, { id: 'mock' }, () => { });
+            resolve();
+        });
+    }
+}
+
 export const browserMock = {
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
+    runtime: new BrowserRuntimeMock(),
     reset: () => {
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
@@ -167,6 +179,12 @@ browser.tabs = {
 browser.webNavigation = {
     onBeforeNavigate: browserMock.webNavigation.onBeforeNavigate.get(),
     onCommitted: browserMock.webNavigation.onCommitted.get()
+}
+
+//@ts-ignore
+browser.runtime = {
+    onMessage: browserMock.runtime.onMessage.get(),
+    sendMessage: browserMock.runtime.sendMessage.bind(browserMock.runtime)
 }
 
 export interface SpyData {

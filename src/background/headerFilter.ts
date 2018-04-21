@@ -6,11 +6,12 @@
 
 import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
-import { badges, getBadgeForCookie } from './backgroundShared';
+import { getRuleTypeForCookie } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { browser, WebRequest } from "webextension-polyfill-ts";
 import { getValidHostname } from "../shared";
+import { RuleType } from "../lib/settingsSignature";
 
 interface SetCookieInfo {
     name: string;
@@ -62,10 +63,10 @@ export class HeaderFilter {
     }
 
     private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieInfo) {
-        const badge = getBadgeForCookie(cookieInfo.domain.startsWith('.') ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
-        if (badge === badges.white || badge === badges.gray)
+        const type = getRuleTypeForCookie(cookieInfo.domain.startsWith('.') ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
+        if (type === RuleType.WHITE || type === RuleType.GRAY)
             return false;
-        return badge === badges.block || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
+        return type === RuleType.BLOCK || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
     }
 
     private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, fallbackDomain: string, tabId: number): WebRequest.HttpHeaders | undefined {

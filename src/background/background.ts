@@ -8,13 +8,14 @@ import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
-import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForDomain, getBadgeForCookie } from './backgroundShared';
+import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getRuleTypeForDomain, getRuleTypeForCookie, getBadgeForRuleType } from './backgroundShared';
 import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { HeaderFilter } from './headerFilter';
 import { getValidHostname, getFirstPartyCookieDomain } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
+import { RuleType } from "../lib/settingsSignature";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -96,8 +97,8 @@ class Background implements TabWatcherListener {
                     return true;
             }
         }
-        let badge = getBadgeForDomain(domain);
-        return badge === badges.white || (badge === badges.gray && !ignoreGrayList);
+        let type = getRuleTypeForDomain(domain);
+        return type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList);
     }
 
     private runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
@@ -129,7 +130,7 @@ class Background implements TabWatcherListener {
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
                 let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
-                if (getBadgeForCookie(rawDomain, changeInfo.cookie.name) === badges.block)
+                if (getRuleTypeForCookie(rawDomain, changeInfo.cookie.name) === RuleType.BLOCK)
                     removeCookie(changeInfo.cookie);
                 else if (settings.get('cleanThirdPartyCookies.enabled'))
                     this.removeCookieIfThirdparty(changeInfo.cookie);
@@ -188,7 +189,7 @@ class Background implements TabWatcherListener {
                     let badge = badges.none;
                     const hostname = getValidHostname(tab.url);
                     if (hostname)
-                        badge = getBadgeForDomain(hostname);
+                        badge = getBadgeForRuleType(getRuleTypeForDomain(hostname));
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
                     if (!settings.get('showBadge'))
                         text = '';

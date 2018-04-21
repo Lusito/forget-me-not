@@ -134,28 +134,28 @@ export function getBadgeForRuleType(type: RuleType) {
     }
 }
 
-function getBadgeFromMatchingRules(matchingRules: RuleDefinition[]) {
+function getRuleTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
     if (matchingRules.find((r) => r.type === RuleType.BLOCK))
-        return badges.block;
+        return RuleType.BLOCK;
     if (matchingRules.find((r) => r.type === RuleType.FORGET))
-        return badges.forget;
+        return RuleType.FORGET;
     if (matchingRules.find((r) => r.type === RuleType.WHITE))
-        return badges.white;
-    return badges.gray;
+        return RuleType.WHITE;
+    return RuleType.GRAY;
 }
 
-export function getBadgeForCookie(domain: string, name: string) {
+export function getRuleTypeForCookie(domain: string, name: string) {
     let matchingRules = settings.getMatchingRules(domain, name);
     if (matchingRules.length)
-        return getBadgeFromMatchingRules(matchingRules);
-    return getBadgeForDomain(domain);
+        return getRuleTypeFromMatchingRules(matchingRules);
+    return getRuleTypeForDomain(domain);
 }
 
-export function getBadgeForDomain(domain: string) {
+export function getRuleTypeForDomain(domain: string) {
     if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
-        return badges.white;
+        return RuleType.WHITE;
     let matchingRules = settings.getMatchingRules(domain);
     if (matchingRules.length)
-        return getBadgeFromMatchingRules(matchingRules);
-    return getBadgeForRuleType(settings.get('fallbackRule'));
+        return getRuleTypeFromMatchingRules(matchingRules);
+    return settings.get('fallbackRule');
 }

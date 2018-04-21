@@ -6,7 +6,7 @@
 
 import * as messageUtil from "../lib/messageUtil";
 import { CookieDomainInfo } from '../shared';
-import { getBadgeForDomain } from './backgroundShared';
+import { getRuleTypeForDomain, getBadgeForRuleType } from './backgroundShared';
 import { settings } from "../lib/settings";
 
 export class RecentlyAccessedDomains {
@@ -43,7 +43,7 @@ export class RecentlyAccessedDomains {
     private get(): CookieDomainInfo[] {
         let result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
-            let badgeKey = getBadgeForDomain(domain).i18nKey;
+            let badgeKey = getBadgeForRuleType(getRuleTypeForDomain(domain)).i18nKey;
             if (badgeKey) {
                 result.push({
                     domain: domain,

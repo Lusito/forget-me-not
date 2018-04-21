@@ -5,11 +5,12 @@
  */
 
 import { settings } from "../lib/settings";
-import { badges, removeCookie, cleanLocalStorage, getBadgeForDomain, getBadgeForCookie } from './backgroundShared';
+import { removeCookie, cleanLocalStorage, getRuleTypeForDomain, getRuleTypeForCookie } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "../shared";
+import { RuleType } from "../lib/settingsSignature";
 
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
@@ -61,17 +62,17 @@ export class CleanStore {
     private isLocalStorageProtected(domain: string): boolean {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
-        let badge = getBadgeForDomain(domain);
-        return badge === badges.white || (badge === badges.gray);
+        let type = getRuleTypeForDomain(domain);
+        return type === RuleType.WHITE || type === RuleType.GRAY;
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
         let allowSubDomains = cookie.domain.startsWith('.');
         let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-        const badge = getBadgeForCookie(rawDomain, cookie.name);
-        if (badge === badges.white || (badge === badges.gray && !ignoreGrayList))
+        const type = getRuleTypeForCookie(rawDomain, cookie.name);
+        if (type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList))
             return true;
-        if(badge === badges.block || !protectOpenDomains)
+        if(type === RuleType.BLOCK || !protectOpenDomains)
             return false;
         if (cookie.firstPartyDomain)
             return this.tabWatcher.isFirstPartyDomainOnCookieStore(this.id, cookie.firstPartyDomain);

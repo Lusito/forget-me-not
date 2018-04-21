@@ -9,7 +9,7 @@ import { removeCookie, cleanLocalStorage, getRuleTypeForDomain, getRuleTypeForCo
 import { TabWatcher } from './tabWatcher';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
-import { getFirstPartyCookieDomain } from "../shared";
+import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
 
 export class CleanStore {

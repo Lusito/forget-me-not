@@ -5,7 +5,8 @@
  */
 
 import { assert } from "chai";
-import { getValidHostname, getFirstPartyCookieDomain } from "../src/shared";
+import { getValidHostname } from "../src/shared";
+import { getFirstPartyCookieDomain, parseSetCookieHeader } from "../src/background/backgroundHelpers";
 
 describe("Misc functionality", () => {
 	describe("getValidHostname", () => {
@@ -32,6 +33,52 @@ describe("Misc functionality", () => {
 			assert.equal(getFirstPartyCookieDomain(".michelgagne.blogspot.de"), 'michelgagne.blogspot.de');
 			assert.equal(getFirstPartyCookieDomain("michelgagne.blogspot.de"), 'michelgagne.blogspot.de');
 			assert.equal(getFirstPartyCookieDomain("hello.michelgagne.blogspot.de"), 'michelgagne.blogspot.de');
+		});
+	});
+
+	describe("parseSetCookieHeader", () => {
+		const fallbackDomain = "fallback.de";
+		it("should parse set-cookie headers correctly", () => {
+			assert.deepEqual(parseSetCookieHeader("hello=world;domain=www.google.de", fallbackDomain), {
+				name: "hello",
+				value: "world",
+				domain: "www.google.de"
+			});
+			//fixme: not sure if whitespaces should be trimmed from key and value...
+			assert.deepEqual(parseSetCookieHeader("foo = bar; domain=www.google.com", fallbackDomain), {
+				name: "foo",
+				value: "bar",
+				domain: "www.google.com"
+			});
+			assert.deepEqual(parseSetCookieHeader("foo=bar; domain=.google.com", fallbackDomain), {
+				name: "foo",
+				value: "bar",
+				domain: ".google.com"
+			});
+			assert.deepEqual(parseSetCookieHeader("foo=bar; shit=.google.com", fallbackDomain), {
+				name: "foo",
+				value: "bar",
+				domain: fallbackDomain
+			});
+			assert.deepEqual(parseSetCookieHeader("foo=bar", fallbackDomain), {
+				name: "foo",
+				value: "bar",
+				domain: fallbackDomain
+			});
+			assert.deepEqual(parseSetCookieHeader("foo=bar;some-domain=www.google.de;domain=mail.google.com", fallbackDomain), {
+				name: "foo",
+				value: "bar",
+				domain: "mail.google.com"
+			});
+			assert.deepEqual(parseSetCookieHeader("foo=bar;domain=mail.google.com;domain=www.google.de", fallbackDomain), {
+				name: "foo",
+				value: "bar",
+				domain: "mail.google.com"
+			});
+		});
+		it("should return null if set-cookie headers is invalid", () => {
+			assert.equal(parseSetCookieHeader("hello; domain=www.google.de", fallbackDomain), null);
+			assert.equal(parseSetCookieHeader("", fallbackDomain), null);
 		});
 	});
 });

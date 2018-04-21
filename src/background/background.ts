@@ -13,9 +13,10 @@ import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { HeaderFilter } from './headerFilter';
-import { getValidHostname, getFirstPartyCookieDomain } from '../shared';
+import { getValidHostname } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { RuleType } from "../lib/settingsSignature";
+import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};

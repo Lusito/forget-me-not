@@ -1,5 +1,3 @@
-import { getDomain } from "tldjs";
-
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
@@ -20,9 +18,4 @@ export function getValidHostname(url: string) {
     } catch (e) {
         return '';
     }
-}
-
-export function getFirstPartyCookieDomain(domain: string) {
-    const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
-    return getDomain(rawDomain) || rawDomain;
 }

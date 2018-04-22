@@ -16,19 +16,6 @@ type CallbacksMap = { [s: string]: Callback[] };
 
 let callbacksMap: CallbacksMap | null = null;
 
-function init() {
-    if (callbacksMap === null) {
-        callbacksMap = {};
-        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            if (callbacksMap) {
-                const callbacks = callbacksMap[request.action];
-                callbacks && callbacks.forEach((cb) => cb(request.params, sender));
-            }
-        });
-    }
-    return callbacksMap;
-}
-
 export function send(name: string, params?: any, callback?: (value: any) => any) {
     let data = {
         action: name,
@@ -47,7 +34,15 @@ export function sendSelf(name: string, params: any) {
 }
 
 export function receive(name: string, callback: Callback) {
-    callbacksMap = init();
+    if (callbacksMap === null) {
+        callbacksMap = {};
+        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            if (callbacksMap) {
+                const callbacks = callbacksMap[request.action];
+                callbacks && callbacks.forEach((cb) => cb(request.params, sender));
+            }
+        });
+    }
     const callbacks = callbacksMap[name];
     if (callbacks)
         callbacks.push(callback);

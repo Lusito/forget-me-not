@@ -23,67 +23,51 @@ describe("Message Utility", () => {
 
     describe("sendSelf", () => {
         it("should call receive methods in order", () => {
-            let calledWith: CalledWithData[] = [];
-            messageUtil.receive(event1, (data, sender) => {
-                calledWith.push({ index: 1, data, sender });
-            });
-            messageUtil.receive(event1, (data, sender) => {
-                calledWith.push({ index: 2, data, sender });
-            });
-            messageUtil.receive(event2, (data, sender) => {
-                calledWith.push({ index: 3, data, sender });
-            });
-            messageUtil.receive(event1, (data, sender) => {
-                calledWith.push({ index: 4, data, sender });
-            });
-            messageUtil.receive(event2, (data, sender) => {
-                calledWith.push({ index: 5, data, sender });
-            });
+            const spy = createSpy();
+            messageUtil.receive(event1, spy.bind(1));
+            messageUtil.receive(event1, spy.bind(2));
+            messageUtil.receive(event2, spy.bind(3));
+            messageUtil.receive(event1, spy.bind(4));
+            messageUtil.receive(event2, spy.bind(5));
+
             messageUtil.sendSelf(event1, data1);
-            assert.deepEqual(calledWith, [
-                { index: 1, data: data1, sender: {} },
-                { index: 2, data: data1, sender: {} },
-                { index: 4, data: data1, sender: {} }
-            ]);
-            calledWith = [];
+            spy.assertCalls([
+                [data1, {}],
+                [data1, {}],
+                [data1, {}]
+            ], [1,2,4]);
+
             messageUtil.sendSelf(event2, data2);
-            assert.deepEqual(calledWith, [
-                { index: 3, data: data2, sender: {} },
-                { index: 5, data: data2, sender: {} }
-            ]);
+            spy.assertCalls([
+                [data2, {}],
+                [data2, {}]
+            ], [3,5]);
         });
     });
 
     describe("send", () => {
         it("should call receive methods in order", () => {
-            let calledWith: CalledWithData[] = [];
-            messageUtil.receive(event1, (data, sender) => {
-                calledWith.push({ index: 1, data, sender });
-            });
-            messageUtil.receive(event1, (data, sender) => {
-                calledWith.push({ index: 2, data, sender });
-            });
-            messageUtil.receive(event2, (data, sender) => {
-                calledWith.push({ index: 3, data, sender });
-            });
-            messageUtil.receive(event1, (data, sender) => {
-                calledWith.push({ index: 4, data, sender });
-            });
-            messageUtil.receive(event2, (data, sender) => {
-                calledWith.push({ index: 5, data, sender });
-            });
+            
+            const spy = createSpy();
+            const sender = { id: 'mock' };
+            messageUtil.receive(event1, spy.bind(1));
+            messageUtil.receive(event1, spy.bind(2));
+            messageUtil.receive(event2, spy.bind(3));
+            messageUtil.receive(event1, spy.bind(4));
+            messageUtil.receive(event2, spy.bind(5));
+
             messageUtil.send(event1, data1);
-            assert.deepEqual(calledWith, [
-                { index: 1, data: data1, sender: { id: 'mock' } },
-                { index: 2, data: data1, sender: { id: 'mock' } },
-                { index: 4, data: data1, sender: { id: 'mock' } }
-            ]);
-            calledWith = [];
+            spy.assertCalls([
+                [data1, sender],
+                [data1, sender],
+                [data1, sender]
+            ], [1,2,4]);
+
             messageUtil.send(event2, data2);
-            assert.deepEqual(calledWith, [
-                { index: 3, data: data2, sender: { id: 'mock' } },
-                { index: 5, data: data2, sender: { id: 'mock' } }
-            ]);
+            spy.assertCalls([
+                [data2, sender],
+                [data2, sender]
+            ], [3,5]);
         });
     });
 });

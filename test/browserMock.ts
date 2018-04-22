@@ -192,25 +192,33 @@ export interface SpyData {
     callCount: number;
     thisValues: any[];
     args: any[][];
-    assertCall: (callIndex: number, args: any[]) => void;
-    assertNoCall: (callIndex: number) => void;
+    assertCalls: (args: any[], thisValues?: any[]) => void;
+    assertNoCall: () => void;
+    reset: () => void;
 }
 export function createSpy() {
-    let value = function () {
-        value.callCount++;
-        // @ts-ignore
-        value.thisValues.push(this);
-        value.args.push(Array.from(arguments));
+    const spyData = function () {
+        spyData.callCount++;
+        spyData.thisValues.push(this);
+        spyData.args.push(Array.from(arguments));
     } as SpyData;
-    value.callCount = 0;
-    value.thisValues = [];
-    value.args = [];
-    value.assertCall = (callIndex, args) => {
-        assert.isAtLeast(value.callCount, callIndex + 1);
-        assert.sameOrderedMembers(value.args[callIndex], args);
+    spyData.callCount = 0;
+    spyData.thisValues = [];
+    spyData.args = [];
+    spyData.assertCalls = (args, thisValues?) => {
+        assert.deepEqual(spyData.args, args);
+        if(thisValues)
+            assert.deepEqual(spyData.thisValues, thisValues);
+        spyData.reset();
     };
-    value.assertNoCall = (callIndex) => {
-        assert.equal(value.callCount, callIndex);
+    spyData.assertNoCall = () => {
+        assert.equal(spyData.callCount, 0);
     };
-    return value;
+
+    spyData.reset = () => {
+        spyData.callCount = 0;
+        spyData.thisValues.length = 0;
+        spyData.args.length = 0;
+    }
+    return spyData;
 }

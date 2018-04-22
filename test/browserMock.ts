@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation, Runtime } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime, Storage } from "webextension-polyfill-ts";
 import { assert } from "chai";
 
 // @ts-ignore
@@ -39,6 +39,12 @@ class ListenerMock<T extends Function> {
             },
             removeListener: (listener: ListenerCallback) => {
                 this.listeners = this.listeners.filter((cb) => listener !== cb);
+            },
+            hasListener: (listener: ListenerCallback) => {
+                return this.listeners.indexOf(listener) >= 0;
+            },
+            hasListeners: () => {
+                return this.listeners.length > 0;
             }
         };
     }
@@ -152,13 +158,80 @@ class BrowserRuntimeMock {
     }
 }
 
+const clone = (value: string) => JSON.parse(JSON.stringify(value));
+
+class StorageAreaMock {
+    public readonly QUOTA_BYTES: 5242880 = 5242880;
+    private readonly data: any = {};
+
+    public get(keys?: null | string | string[] | { [s: string]: any }) {
+        return new Promise<{ [s: string]: any }>((resolve, reject) => {
+            assert.equal(keys, null); // only null supported for now
+            resolve(clone(this.data));
+        });
+    }
+
+    private setInternal(key: string, newValue: any, changes: { [key: string]: Storage.StorageChange }) {
+        if (!this.data.hasOwnProperty(key)) {
+            this.data[key] = clone(newValue);
+            changes[key] = { newValue: clone(newValue) };
+        }
+        else if (JSON.stringify(this.data[key]) !== JSON.stringify(stringified)) {
+            const oldValue = this.data[key];
+            this.data[key] = clone(newValue);
+            changes[key] = { oldValue: clone(oldValue), newValue: clone(newValue) };
+        }
+    }
+
+    public set(items: Storage.StorageAreaSetItemsType) {
+        return new Promise<void>((resolve, reject) => {
+            const changes = {};
+            for (const key in items)
+                this.setInternal(key, items[key], changes);
+            browserMock.storage.onChanged.emit(changes, 'local');
+            resolve();
+        });
+    }
+
+    private removeInternal(key: string, changes: { [key: string]: Storage.StorageChange }) {
+        if (this.data.hasOwnProperty(key)) {
+            const oldValue = this.data[key];
+            changes[key] = { oldValue: clone(oldValue) };
+            delete this.data[key];
+        }
+    }
+
+    public remove(keys: string | string[]) {
+        return new Promise<void>((resolve, reject) => {
+            const changes = {};
+            if (typeof (keys) === "string")
+                this.removeInternal(keys, changes);
+            else {
+                for (const key of keys)
+                    this.removeInternal(key, changes);
+            }
+            browserMock.storage.onChanged.emit(changes, 'local');
+            resolve();
+        });
+    }
+
+    public clear() {
+        return this.remove(Object.getOwnPropertyNames(this.data));
+    }
+}
+
 export const browserMock = {
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
     runtime: new BrowserRuntimeMock(),
+    storage: {
+        local: new StorageAreaMock(),
+        onChanged: new ListenerMock<(changes: Storage.OnChangedChangesType, areaName: string) => void>()
+    },
     reset: () => {
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
+        browser.storage.local.clear();
     }
 };
 
@@ -187,6 +260,13 @@ browser.runtime = {
     sendMessage: browserMock.runtime.sendMessage.bind(browserMock.runtime)
 }
 
+//@ts-ignore
+browser.storage = {
+    //Fixme: definition of onChanged is wrong.. should be {[s:string] : OnChangedChangesType}
+    onChanged: browserMock.storage.onChanged.get(),
+    local: browserMock.storage.local
+};
+
 export interface SpyData {
     (...args: any[]): any;
     callCount: number;
@@ -207,7 +287,7 @@ export function createSpy() {
     spyData.args = [];
     spyData.assertCalls = (args, thisValues?) => {
         assert.deepEqual(spyData.args, args);
-        if(thisValues)
+        if (thisValues)
             assert.deepEqual(spyData.thisValues, thisValues);
         spyData.reset();
     };

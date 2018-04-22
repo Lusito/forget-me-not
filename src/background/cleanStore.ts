@@ -5,7 +5,7 @@
  */
 
 import { settings } from "../lib/settings";
-import { removeCookie, cleanLocalStorage, getRuleTypeForDomain, getRuleTypeForCookie } from './backgroundShared';
+import { removeCookie, cleanLocalStorage } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
@@ -62,14 +62,14 @@ export class CleanStore {
     private isLocalStorageProtected(domain: string): boolean {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
-        let type = getRuleTypeForDomain(domain);
+        let type = settings.getRuleTypeForDomain(domain);
         return type === RuleType.WHITE || type === RuleType.GRAY;
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
         let allowSubDomains = cookie.domain.startsWith('.');
         let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-        const type = getRuleTypeForCookie(rawDomain, cookie.name);
+        const type = settings.getRuleTypeForCookie(rawDomain, cookie.name);
         if (type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList))
             return true;
         if(type === RuleType.BLOCK || !protectOpenDomains)

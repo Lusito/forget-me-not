@@ -6,7 +6,6 @@
 
 import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
-import { getRuleTypeForCookie } from './backgroundShared';
 import { TabWatcher } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { browser, WebRequest } from "webextension-polyfill-ts";
@@ -40,7 +39,7 @@ export class HeaderFilter {
     }
 
     private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {
-        const type = getRuleTypeForCookie(cookieInfo.domain.startsWith('.') ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
+        const type = settings.getRuleTypeForCookie(cookieInfo.domain.startsWith('.') ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
         if (type === RuleType.WHITE || type === RuleType.GRAY)
             return false;
         return type === RuleType.BLOCK || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);

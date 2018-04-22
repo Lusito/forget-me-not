@@ -6,7 +6,7 @@
 
 import * as messageUtil from "../lib/messageUtil";
 import { CookieDomainInfo } from '../shared';
-import { getRuleTypeForDomain, getBadgeForRuleType } from './backgroundShared';
+import { getBadgeForRuleType } from './backgroundShared';
 import { settings } from "../lib/settings";
 
 // fixme: make this file unit-testable and add tests
@@ -44,7 +44,7 @@ export class RecentlyAccessedDomains {
     private get(): CookieDomainInfo[] {
         let result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
-            let badgeKey = getBadgeForRuleType(getRuleTypeForDomain(domain)).i18nKey;
+            let badgeKey = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;
             if (badgeKey) {
                 result.push({
                     domain: domain,

@@ -8,7 +8,7 @@ import { settings } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
-import { RuleType, RuleDefinition } from "../lib/settingsSignature";
+import { RuleType } from "../lib/settingsSignature";
 
 // fixme: make this file unit-testable and add tests
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
@@ -133,30 +133,4 @@ export function getBadgeForRuleType(type: RuleType) {
         case RuleType.BLOCK:
             return badges.block;
     }
-}
-
-function getRuleTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
-    if (matchingRules.find((r) => r.type === RuleType.BLOCK))
-        return RuleType.BLOCK;
-    if (matchingRules.find((r) => r.type === RuleType.FORGET))
-        return RuleType.FORGET;
-    if (matchingRules.find((r) => r.type === RuleType.WHITE))
-        return RuleType.WHITE;
-    return RuleType.GRAY;
-}
-
-export function getRuleTypeForCookie(domain: string, name: string) {
-    let matchingRules = settings.getMatchingRules(domain, name);
-    if (matchingRules.length)
-        return getRuleTypeFromMatchingRules(matchingRules);
-    return getRuleTypeForDomain(domain);
-}
-
-export function getRuleTypeForDomain(domain: string) {
-    if (settings.get('whitelistNoTLD') && domain.indexOf('.') === -1)
-        return RuleType.WHITE;
-    let matchingRules = settings.getMatchingRules(domain);
-    if (matchingRules.length)
-        return getRuleTypeFromMatchingRules(matchingRules);
-    return settings.get('fallbackRule');
 }

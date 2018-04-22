@@ -40,3 +40,4 @@ export let browserInfo = function (): BrowserInfo {
 }();
 
 export let isFirefox = browserInfo.name.toLocaleLowerCase() === 'firefox';
+export let isNodeTest = browserInfo.name.toLocaleLowerCase() === 'NodeTest';

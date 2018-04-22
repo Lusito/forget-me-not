@@ -5,21 +5,20 @@
  */
 
 // This file manages all settings, their defaults and changes
-// fixme: make this file unit-testable and add tests
 
 import * as messageUtil from "./messageUtil";
-import { isFirefox, browserInfo } from "./browserInfo";
+import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature, RuleDefinition, RuleType } from "./settingsSignature";
 import { browser, Storage } from "webextension-polyfill-ts";
 
 type Callback = () => void;
 
 type SettingsValue = string | boolean | number | (RuleDefinition[]) | { [s: string]: boolean };
-type SettingsMap = { [s: string]: SettingsValue };
+export type SettingsMap = { [s: string]: SettingsValue };
 
-const localStorageDefault: boolean = isFirefox && browserInfo.versionAsNumber >= 58;
+export const localStorageDefault: boolean = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 58);
 
-const defaultSettings: SettingsMap = {
+export const defaultSettings: SettingsMap = {
     "version": "",
     "showUpdateNotification": true,
     "showCookieRemovalNotification": false,
@@ -130,6 +129,7 @@ function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: str
             });
         }
     }
+    return validRules;
 }
 
 interface CompiledRuleDefinition {
@@ -138,25 +138,25 @@ interface CompiledRuleDefinition {
     cookieName?: string;
 }
 
-class Settings {
+export class Settings {
     private rules: CompiledRuleDefinition[] = [];
     private cookieRules: CompiledRuleDefinition[] = [];
-    private storage: Storage.StorageArea;
+    private readonly storage: Storage.StorageArea;
     private map: SettingsMap = {};
     private readyCallbacks: Callback[] | null = [];
     public constructor() {
-        //firefox sync is broken, not sure how to test against this exact problem, for now, always use local storage on firefox
-        if (isFirefox) {
-            this.storage = browser.storage.local;
-        } else {
-            this.storage = browser.storage.sync || browser.storage.local;
-        }
-
+        this.storage = browser.storage.local;
         this.load();
-        browser.storage.onChanged.addListener(this.load.bind(this));
+        this.load = this.load.bind(this);
+        browser.storage.onChanged.addListener(this.load as any); //Fixme: once onChanged is corrected, adapt this
     }
 
-    private load(changes?: { [key: string]: Storage.StorageChange }) {
+    public destroy() {
+        browser.storage.onChanged.removeListener(this.load as any); //Fixme: once onChanged is corrected, adapt this
+    }
+
+    public load(changes?: { [key: string]: Storage.StorageChange }) {
+        console.error('load');
         this.storage.get(null).then((map) => {
             this.map = map;
             let changedKeys = Object.getOwnPropertyNames(changes || map);
@@ -222,8 +222,12 @@ class Settings {
         for (const key in json) {
             if (!json.hasOwnProperty(key))
                 continue;
-            if (!defaultSettings.hasOwnProperty(key) || typeof (defaultSettings[key]) !== typeof (json[key])) {
-                console.warn('Could not import setting: ', key);
+            if (!defaultSettings.hasOwnProperty(key)) {
+                console.warn('Unknown setting: ', key);
+                delete json[key];
+            }
+            if (typeof (defaultSettings[key]) !== typeof (json[key])) {
+                console.warn('Types do not match while importing setting: ', key, typeof (defaultSettings[key]), typeof (json[key]));
                 delete json[key];
             }
         }
@@ -271,6 +275,32 @@ class Settings {
 
     public hasBlockingRule() {
         return this.get('fallbackRule') === RuleType.BLOCK || !!this.get('rules').find((r) => r.type === RuleType.BLOCK);
+    }
+
+    private getRuleTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
+        if (matchingRules.find((r) => r.type === RuleType.BLOCK))
+            return RuleType.BLOCK;
+        if (matchingRules.find((r) => r.type === RuleType.FORGET))
+            return RuleType.FORGET;
+        if (matchingRules.find((r) => r.type === RuleType.WHITE))
+            return RuleType.WHITE;
+        return RuleType.GRAY;
+    }
+
+    public getRuleTypeForCookie(domain: string, name: string) {
+        let matchingRules = this.getMatchingRules(domain, name);
+        if (matchingRules.length)
+            return this.getRuleTypeFromMatchingRules(matchingRules);
+        return this.getRuleTypeForDomain(domain);
+    }
+
+    public getRuleTypeForDomain(domain: string) {
+        if (this.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+            return RuleType.WHITE;
+        let matchingRules = this.getMatchingRules(domain);
+        if (matchingRules.length)
+            return this.getRuleTypeFromMatchingRules(matchingRules);
+        return this.get('fallbackRule');
     }
 }
 export const settings = new Settings();

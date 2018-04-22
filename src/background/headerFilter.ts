@@ -14,6 +14,7 @@ import { getValidHostname } from "../shared";
 import { RuleType } from "../lib/settingsSignature";
 import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 
+// fixme: make this file unit-testable and add tests
 export class HeaderFilter {
     private blockThirdpartyCookies = false;
     private readonly tabWatcher: TabWatcher;

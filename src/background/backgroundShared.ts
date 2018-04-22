@@ -10,6 +10,7 @@ import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
 import { RuleType, RuleDefinition } from "../lib/settingsSignature";
 
+// fixme: make this file unit-testable and add tests
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 export interface BadgeInfo {

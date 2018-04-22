@@ -18,6 +18,8 @@ import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { RuleType } from "../lib/settingsSignature";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 
+// fixme: make this file unit-testable and add tests
+
 class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
     private lastDomainChangeRequest = Date.now();

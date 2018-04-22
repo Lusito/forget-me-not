@@ -9,6 +9,7 @@ import { CookieDomainInfo } from '../shared';
 import { getRuleTypeForDomain, getBadgeForRuleType } from './backgroundShared';
 import { settings } from "../lib/settings";
 
+// fixme: make this file unit-testable and add tests
 export class RecentlyAccessedDomains {
     private enabled = false;
     private limit = 0;

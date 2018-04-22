@@ -5,6 +5,7 @@
  */
 
 // This file manages all settings, their defaults and changes
+// fixme: make this file unit-testable and add tests
 
 import * as messageUtil from "./messageUtil";
 import { isFirefox, browserInfo } from "./browserInfo";

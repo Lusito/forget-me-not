@@ -156,7 +156,6 @@ export class Settings {
     }
 
     public load(changes?: { [key: string]: Storage.StorageChange }) {
-        console.error('load');
         this.storage.get(null).then((map) => {
             this.map = map;
             let changedKeys = Object.getOwnPropertyNames(changes || map);

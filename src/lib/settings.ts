@@ -162,7 +162,7 @@ class Settings {
             if (changedKeys.indexOf('rules')) {
                 this.rules = [];
                 this.cookieRules = [];
-                let rules = settings.get('rules');
+                let rules = this.get('rules');
                 for (const rule of rules) {
                     const parts = rule.rule.split('@');
                     const isCookieRule = parts.length === 2;
@@ -227,7 +227,7 @@ class Settings {
             }
         }
 
-        let keysToRemove = Object.getOwnPropertyNames(settings.getAll()).filter((key) => !json.hasOwnProperty(key));
+        let keysToRemove = Object.getOwnPropertyNames(this.getAll()).filter((key) => !json.hasOwnProperty(key));
         this.storage.remove(keysToRemove);
 
         this.map = json;
@@ -269,7 +269,7 @@ class Settings {
     }
 
     public hasBlockingRule() {
-        return settings.get('fallbackRule') === RuleType.BLOCK || !!settings.get('rules').find((r) => r.type === RuleType.BLOCK);
+        return this.get('fallbackRule') === RuleType.BLOCK || !!this.get('rules').find((r) => r.type === RuleType.BLOCK);
     }
 }
 export const settings = new Settings();

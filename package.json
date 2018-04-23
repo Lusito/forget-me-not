@@ -32,7 +32,7 @@
     "tldjs": "^2.3.1",
     "ts-node": "^4.0.2",
     "typescript": "^2.5.3",
-    "webextension-polyfill-ts": "^0.8.3",
+    "webextension-polyfill-ts": "^0.8.4",
     "webpack": "^4.5.0",
     "webpack-cli": "^2.0.14"
   },

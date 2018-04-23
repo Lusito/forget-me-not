@@ -148,11 +148,11 @@ export class Settings {
         this.storage = browser.storage.local;
         this.load();
         this.load = this.load.bind(this);
-        browser.storage.onChanged.addListener(this.load as any); //Fixme: once onChanged is corrected, adapt this
+        browser.storage.onChanged.addListener(this.load);
     }
 
     public destroy() {
-        browser.storage.onChanged.removeListener(this.load as any); //Fixme: once onChanged is corrected, adapt this
+        browser.storage.onChanged.removeListener(this.load);
     }
 
     public load(changes?: { [key: string]: Storage.StorageChange }) {

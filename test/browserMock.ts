@@ -176,7 +176,7 @@ class StorageAreaMock {
             this.data[key] = clone(newValue);
             changes[key] = { newValue: clone(newValue) };
         }
-        else if (JSON.stringify(this.data[key]) !== JSON.stringify(stringified)) {
+        else if (JSON.stringify(this.data[key]) !== JSON.stringify(newValue)) {
             const oldValue = this.data[key];
             this.data[key] = clone(newValue);
             changes[key] = { oldValue: clone(oldValue), newValue: clone(newValue) };
@@ -185,7 +185,7 @@ class StorageAreaMock {
 
     public set(items: Storage.StorageAreaSetItemsType) {
         return new Promise<void>((resolve, reject) => {
-            const changes = {};
+            const changes: { [s: string]: Storage.StorageChange } = {};
             for (const key in items)
                 this.setInternal(key, items[key], changes);
             browserMock.storage.onChanged.emit(changes, 'local');
@@ -203,7 +203,7 @@ class StorageAreaMock {
 
     public remove(keys: string | string[]) {
         return new Promise<void>((resolve, reject) => {
-            const changes = {};
+            const changes: { [s: string]: Storage.StorageChange } = {};
             if (typeof (keys) === "string")
                 this.removeInternal(keys, changes);
             else {
@@ -226,7 +226,7 @@ export const browserMock = {
     runtime: new BrowserRuntimeMock(),
     storage: {
         local: new StorageAreaMock(),
-        onChanged: new ListenerMock<(changes: Storage.OnChangedChangesType, areaName: string) => void>()
+        onChanged: new ListenerMock<(changes: { [s: string]: Storage.StorageChange }, areaName: string) => void>()
     },
     reset: () => {
         browserMock.tabs.reset();
@@ -262,7 +262,6 @@ browser.runtime = {
 
 //@ts-ignore
 browser.storage = {
-    //Fixme: definition of onChanged is wrong.. should be {[s:string] : OnChangedChangesType}
     onChanged: browserMock.storage.onChanged.get(),
     local: browserMock.storage.local
 };

@@ -160,25 +160,7 @@ export class Settings {
             this.map = map;
             let changedKeys = Object.getOwnPropertyNames(changes || map);
             if (changedKeys.indexOf('rules')) {
-                this.rules = [];
-                this.cookieRules = [];
-                let rules = this.get('rules');
-                for (const rule of rules) {
-                    const parts = rule.rule.split('@');
-                    const isCookieRule = parts.length === 2;
-                    if (isCookieRule) {
-                        this.cookieRules.push({
-                            definition: rule,
-                            regex: getRegExForRule(parts[1]),
-                            cookieName: parts[0]
-                        });
-                    } else {
-                        this.rules.push({
-                            definition: rule,
-                            regex: getRegExForRule(rule.rule)
-                        });
-                    }
-                }
+                this.rebuildRules();
             }
             if (this.readyCallbacks) {
                 for (let callback of this.readyCallbacks)
@@ -190,6 +172,28 @@ export class Settings {
                 messageUtil.sendSelf('settingsChanged', changedKeys); // since the above does not fire on the same process
             }
         });
+    }
+
+    private rebuildRules() {
+        this.rules = [];
+        this.cookieRules = [];
+        let rules = this.get('rules');
+        for (const rule of rules) {
+            const parts = rule.rule.split('@');
+            const isCookieRule = parts.length === 2;
+            if (isCookieRule) {
+                this.cookieRules.push({
+                    definition: rule,
+                    regex: getRegExForRule(parts[1]),
+                    cookieName: parts[0]
+                });
+            } else {
+                this.rules.push({
+                    definition: rule,
+                    regex: getRegExForRule(rule.rule)
+                });
+            }
+        }
     }
 
     public save() {
@@ -206,6 +210,8 @@ export class Settings {
     public restoreDefaults() {
         this.map = {};
         this.storage.clear();
+        this.rebuildRules();
+        this.save();
     }
 
     public setAll(json: any) {
@@ -235,6 +241,7 @@ export class Settings {
         this.storage.remove(keysToRemove);
 
         this.map = json;
+        this.rebuildRules();
         this.save();
         return true;
     }
@@ -258,6 +265,8 @@ export class Settings {
 
     public set<K extends keyof SettingsTypeMap>(key: K, value: SettingsTypeMap[K]) {
         this.map[key] = value;
+        if (key === 'rules')
+            this.rebuildRules();
     }
 
     // Convenience methods
@@ -287,6 +296,8 @@ export class Settings {
     }
 
     public getRuleTypeForCookie(domain: string, name: string) {
+        if (this.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+            return RuleType.WHITE;
         let matchingRules = this.getMatchingRules(domain, name);
         if (matchingRules.length)
             return this.getRuleTypeFromMatchingRules(matchingRules);

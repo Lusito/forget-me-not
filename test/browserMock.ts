@@ -158,7 +158,7 @@ class BrowserRuntimeMock {
     }
 }
 
-const clone = (value: string) => JSON.parse(JSON.stringify(value));
+export const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 class StorageAreaMock {
     public readonly QUOTA_BYTES: 5242880 = 5242880;

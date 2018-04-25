@@ -12,6 +12,8 @@ import { isFirefox, browserInfo } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
 
+// fixme: make this file unit-testable and add tests
+
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;

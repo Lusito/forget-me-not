@@ -6,27 +6,42 @@
 
 import * as messageUtil from "../lib/messageUtil";
 import { CookieDomainInfo } from '../shared';
-import { getBadgeForRuleType } from './backgroundShared';
+import { getBadgeForRuleType } from './backgroundHelpers';
 import { settings } from "../lib/settings";
+import { ReceiverHandle } from "../lib/messageUtil";
 
-// fixme: make this file unit-testable and add tests
 export class RecentlyAccessedDomains {
+    private receivers: ReceiverHandle[];
     private enabled = false;
     private limit = 0;
     private domains: string[] = [];
 
     public constructor() {
-        messageUtil.receive('getRecentlyAccessedDomains', (params: any, sender: any) => {
-            messageUtil.send('onRecentlyAccessedDomains', this.get());
-        });
-
-        messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf('logRAD.enabled') !== -1 || changedKeys.indexOf('logRAD.limit') !== -1) {
-                this.applySettings();
+        this.receivers = [
+            messageUtil.receive('getRecentlyAccessedDomains', (params: any, sender: any) => {
                 messageUtil.send('onRecentlyAccessedDomains', this.get());
-            }
-        });
+            }),
+            messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
+                if (changedKeys.indexOf('logRAD.enabled') !== -1 || changedKeys.indexOf('logRAD.limit') !== -1) {
+                    this.applySettings();
+                    messageUtil.send('onRecentlyAccessedDomains', this.get());
+                }
+            })
+        ];
         settings.onReady(this.applySettings.bind(this));
+    }
+
+    public destroy() {
+        this.receivers.forEach((r) => r.clear());
+        this.receivers.length = 0;
+    }
+
+    public isEnabled() {
+        return this.enabled;
+    }
+
+    public getLimit() {
+        return this.limit;
     }
 
     private applySettings() {
@@ -41,7 +56,7 @@ export class RecentlyAccessedDomains {
             this.domains.length = limit;
     }
 
-    private get(): CookieDomainInfo[] {
+    public get(): CookieDomainInfo[] {
         let result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
             let badgeKey = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;

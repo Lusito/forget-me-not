@@ -8,37 +8,9 @@ import { settings } from "../lib/settings";
 import { browserInfo, isFirefox } from '../lib/browserInfo';
 import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
-import { RuleType } from "../lib/settingsSignature";
 
 // fixme: make this file unit-testable and add tests
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
-
-export interface BadgeInfo {
-    i18nKey?: string;
-    color: string | [number, number, number, number];
-}
-
-export const badges = {
-    white: {
-        i18nKey: "badge_white",
-        color: [38, 69, 151, 255]
-    } as BadgeInfo,
-    gray: {
-        i18nKey: "badge_gray",
-        color: [116, 116, 116, 255]
-    } as BadgeInfo,
-    forget: {
-        i18nKey: "badge_forget",
-        color: [190, 23, 38, 255]
-    } as BadgeInfo,
-    block: {
-        i18nKey: "badge_block",
-        color: [0, 0, 0, 255]
-    } as BadgeInfo,
-    none: {
-        color: [0, 0, 0, 255]
-    } as BadgeInfo
-}
 
 const COOKIE_CLEANUP_NOTIFICATION_ID: string = "CookieCleanupNotification";
 let cookieRemovalCounts: { [s: string]: number } = {};
@@ -119,18 +91,4 @@ export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
         return true;
     }
     return false;
-}
-
-export function getBadgeForRuleType(type: RuleType) {
-    switch (type) {
-        case RuleType.WHITE:
-            return badges.white;
-        case RuleType.GRAY:
-            return badges.gray;
-        default:
-        case RuleType.FORGET:
-            return badges.forget;
-        case RuleType.BLOCK:
-            return badges.block;
-    }
 }

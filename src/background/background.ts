@@ -8,7 +8,7 @@ import * as messageUtil from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import DelayedExecution from '../lib/delayedExecution';
 import { loadJSONFile } from '../lib/fileHelper';
-import { badges, removeCookie, cleanLocalStorage, removeLocalStorageByHostname, getBadgeForRuleType } from './backgroundShared';
+import { removeCookie, cleanLocalStorage, removeLocalStorageByHostname } from './backgroundShared';
 import { CleanStore } from './cleanStore';
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
@@ -16,7 +16,7 @@ import { HeaderFilter } from './headerFilter';
 import { getValidHostname } from '../shared';
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { RuleType } from "../lib/settingsSignature";
-import { getFirstPartyCookieDomain } from "./backgroundHelpers";
+import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
 
 // fixme: make this file unit-testable and add tests
 

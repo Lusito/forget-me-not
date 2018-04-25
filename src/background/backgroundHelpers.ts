@@ -5,6 +5,7 @@
  */
 
 import { getDomain } from "tldjs";
+import { RuleType } from "../lib/settingsSignature";
 
 export function getFirstPartyCookieDomain(domain: string) {
     const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
@@ -34,5 +35,46 @@ export function parseSetCookieHeader(header: string, fallbackDomain: string): Se
         };
     } catch (e) {
         return null;
+    }
+}
+
+export interface BadgeInfo {
+    i18nKey?: string;
+    color: string | [number, number, number, number];
+}
+
+export const badges = {
+    white: {
+        i18nKey: "badge_white",
+        color: [38, 69, 151, 255]
+    } as BadgeInfo,
+    gray: {
+        i18nKey: "badge_gray",
+        color: [116, 116, 116, 255]
+    } as BadgeInfo,
+    forget: {
+        i18nKey: "badge_forget",
+        color: [190, 23, 38, 255]
+    } as BadgeInfo,
+    block: {
+        i18nKey: "badge_block",
+        color: [0, 0, 0, 255]
+    } as BadgeInfo,
+    none: {
+        color: [0, 0, 0, 255]
+    } as BadgeInfo
+}
+
+export function getBadgeForRuleType(type: RuleType) {
+    switch (type) {
+        case RuleType.WHITE:
+            return badges.white;
+        case RuleType.GRAY:
+            return badges.gray;
+        default:
+        case RuleType.FORGET:
+            return badges.forget;
+        case RuleType.BLOCK:
+            return badges.block;
     }
 }

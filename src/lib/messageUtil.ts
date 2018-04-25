@@ -16,6 +16,10 @@ type CallbacksMap = { [s: string]: Callback[] };
 
 let callbacksMap: CallbacksMap | null = null;
 
+export interface ReceiverHandle {
+    clear(): void;
+}
+
 export function send(name: string, params?: any, callback?: (value: any) => any) {
     let data = {
         action: name,
@@ -33,7 +37,7 @@ export function sendSelf(name: string, params: any) {
     }
 }
 
-export function receive(name: string, callback: Callback) {
+function getCallbacksList(name: string) {
     if (callbacksMap === null) {
         callbacksMap = {};
         browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -45,7 +49,18 @@ export function receive(name: string, callback: Callback) {
     }
     const callbacks = callbacksMap[name];
     if (callbacks)
-        callbacks.push(callback);
-    else
-        callbacksMap[name] = [callback];
+        return callbacks;
+    return callbacksMap[name] = [];
+}
+
+export function receive(name: string, callback: Callback): ReceiverHandle {
+    const callbacks = getCallbacksList(name);
+    callbacks.push(callback);
+    return {
+        clear() {
+            const index = callbacks.indexOf(callback);
+            if (index !== -1)
+                callbacks.splice(index, 1);
+        }
+    };
 }

@@ -6,7 +6,7 @@
 
 import { getValidHostname } from '../shared';
 import { browser, Tabs } from 'webextension-polyfill-ts';
-import { isFirefox } from '../lib/browserInfo';
+import { isFirefox, isNodeTest } from '../lib/browserInfo';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { getDomain } from "tldjs";
 
@@ -149,7 +149,8 @@ export class TabWatcher {
     public isThirdPartyCookieOnTab(tabId: number, domain: string) {
         const tabInfo = this.tabInfos[tabId];
         if (!tabInfo) {
-            console.warn(`No info about tabId ${tabId} available`);
+            if(!isNodeTest)
+                console.warn(`No info about tabId ${tabId} available`);
             return false;
         }
         const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
@@ -160,7 +161,8 @@ export class TabWatcher {
     public isFirstPartyDomainOnCookieStore(storeId: string, domainFP: string) {
         const tabInfos = this.tabInfosByCookieStore[storeId];
         if (!tabInfos) {
-            console.warn(`No info about storeId ${storeId} available`);
+            if(!isNodeTest)
+                console.warn(`No info about storeId ${storeId} available`);
             return false;
         }
         if (!tabInfos.length)

@@ -228,11 +228,13 @@ export class Settings {
             if (!json.hasOwnProperty(key))
                 continue;
             if (!defaultSettings.hasOwnProperty(key)) {
-                console.warn('Unknown setting: ', key);
+                if(!isNodeTest)
+                    console.warn('Unknown setting: ', key);
                 delete json[key];
             }
             if (typeof (defaultSettings[key]) !== typeof (json[key])) {
-                console.warn('Types do not match while importing setting: ', key, typeof (defaultSettings[key]), typeof (json[key]));
+                if(!isNodeTest)
+                    console.warn('Types do not match while importing setting: ', key, typeof (defaultSettings[key]), typeof (json[key]));
                 delete json[key];
             }
         }

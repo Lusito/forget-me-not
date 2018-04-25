@@ -13,13 +13,16 @@ export interface BrowserInfo {
     mobile: boolean;
 }
 
-export let browserInfo = function (): BrowserInfo {
+export const isNodeTest = typeof window === 'undefined';
+
+export const browserInfo = function (): BrowserInfo {
     // if not in a browser, assume we're in a test
-    if (typeof window === 'undefined')
+    if (isNodeTest)
         return { name: 'NodeTest', version: '1.0.0', versionAsNumber: 1, mobile: false };
 
-    let ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    const ua = navigator.userAgent;
     const mobile = /android|iphone|ipad|ipod/i.test(ua);
+    let tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if (/trident/i.test(M[1])) {
         tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
         const version = (tem[1] || '');
@@ -39,5 +42,4 @@ export let browserInfo = function (): BrowserInfo {
     };
 }();
 
-export let isFirefox = browserInfo.name.toLocaleLowerCase() === 'firefox';
-export let isNodeTest = browserInfo.name.toLocaleLowerCase() === 'NodeTest';
+export const isFirefox = browserInfo.name.toLocaleLowerCase() === 'firefox';

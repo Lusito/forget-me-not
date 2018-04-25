@@ -5,7 +5,7 @@
  */
 
 import { getValidHostname } from '../shared';
-import { browser, Tabs } from 'webextension-polyfill-ts';
+import { browser, Tabs, WebNavigation } from 'webextension-polyfill-ts';
 import { isFirefox, isNodeTest } from '../lib/browserInfo';
 import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
 import { getDomain } from "tldjs";
@@ -28,6 +28,7 @@ export interface TabWatcherListener {
 }
 
 export class TabWatcher {
+    public destroy: () => void;
     private readonly listener: TabWatcherListener;
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
@@ -40,10 +41,23 @@ export class TabWatcher {
             for (let tab of tabs)
                 this.onTabCreated(tab);
         });
-        browser.webNavigation.onBeforeNavigate.addListener((details) => details.frameId === 0 && this.onBeforeNavigate(details.tabId, details.url));
-        browser.webNavigation.onCommitted.addListener((details) => details.frameId === 0 && this.onCommitted(details.tabId, details.url));
-        browser.tabs.onRemoved.addListener((tabId) => this.onTabRemoved(tabId));
-        browser.tabs.onCreated.addListener((tab) => this.onTabCreated(tab));
+
+        const onBeforeNavigate: (details: WebNavigation.OnBeforeNavigateDetailsType) => void = (details) => details.frameId === 0 && this.onBeforeNavigate(details.tabId, details.url);
+        const onCommitted: (details: WebNavigation.OnCommittedDetailsType) => void = (details) => details.frameId === 0 && this.onCommitted(details.tabId, details.url);
+        const onRemoved: (tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => void = (tabId) => this.onTabRemoved(tabId);
+        const onCreated: (tab: Tabs.Tab) => void = (tab) => this.onTabCreated(tab);
+        browser.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate);
+        browser.webNavigation.onCommitted.addListener(onCommitted);
+        browser.tabs.onRemoved.addListener(onRemoved);
+        browser.tabs.onCreated.addListener(onCreated);
+
+        this.destroy = () => {
+            browser.webNavigation.onBeforeNavigate.removeListener(onBeforeNavigate);
+            browser.webNavigation.onCommitted.removeListener(onCommitted);
+            browser.tabs.onRemoved.removeListener(onRemoved);
+            browser.tabs.onCreated.removeListener(onCreated);
+            this.destroy = () => { };
+        }
     }
 
     private onBeforeNavigate(tabId: number, url: string) {
@@ -149,7 +163,7 @@ export class TabWatcher {
     public isThirdPartyCookieOnTab(tabId: number, domain: string) {
         const tabInfo = this.tabInfos[tabId];
         if (!tabInfo) {
-            if(!isNodeTest)
+            if (!isNodeTest)
                 console.warn(`No info about tabId ${tabId} available`);
             return false;
         }
@@ -161,7 +175,7 @@ export class TabWatcher {
     public isFirstPartyDomainOnCookieStore(storeId: string, domainFP: string) {
         const tabInfos = this.tabInfosByCookieStore[storeId];
         if (!tabInfos) {
-            if(!isNodeTest)
+            if (!isNodeTest)
                 console.warn(`No info about storeId ${storeId} available`);
             return false;
         }

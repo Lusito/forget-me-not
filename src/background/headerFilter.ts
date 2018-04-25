@@ -15,6 +15,7 @@ import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 
 // fixme: make this file unit-testable and add tests
 export class HeaderFilter {
+    private settingsReceiver: messageUtil.ReceiverHandle | null = null;
     private blockThirdpartyCookies = false;
     private readonly tabWatcher: TabWatcher;
     private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
@@ -32,10 +33,18 @@ export class HeaderFilter {
             return {};
         }
         this.updateSettings();
-        messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
+        this.settingsReceiver = messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
             if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1 || changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('fallbackRule') !== -1)
                 this.updateSettings();
         });
+    }
+
+    public destroy() {
+        if(this.settingsReceiver) {
+            this.settingsReceiver.clear();
+            this.settingsReceiver = null;
+        }
+        browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
     }
 
     private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {

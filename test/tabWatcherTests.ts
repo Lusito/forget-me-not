@@ -22,6 +22,14 @@ describe("TabWatcher", () => {
 		};
 		watcher = new TabWatcher(listener, null);
 	}
+
+	afterEach(() => {
+		if (watcher) {
+			watcher.destroy();
+			watcher = null;
+		}
+	});
+
 	describe("listener", () => {
 		it("should be called on tab create and remove", () => {
 			setupWatcher();

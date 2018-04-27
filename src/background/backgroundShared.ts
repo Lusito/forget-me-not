@@ -5,16 +5,16 @@
  */
 
 import { settings } from "../lib/settings";
-import { browserInfo, isFirefox } from '../lib/browserInfo';
+import { browserInfo, isFirefox } from "../lib/browserInfo";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import DelayedExecution from "../lib/delayedExecution";
 
 // fixme: make this file unit-testable and add tests
 export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
-const COOKIE_CLEANUP_NOTIFICATION_ID: string = "CookieCleanupNotification";
+const COOKIE_CLEANUP_NOTIFICATION_ID = "CookieCleanupNotification";
 let cookieRemovalCounts: { [s: string]: number } = {};
-let cookieRemoveNotificationStatus = {
+const cookieRemoveNotificationStatus = {
     starting: false,
     updateOnStart: false
 };
@@ -25,7 +25,7 @@ const delayCookieRemoveNotification = new DelayedExecution(() => {
     }
     const lines = [];
     let totalCount = 0;
-    for (let domain in cookieRemovalCounts) {
+    for (const domain in cookieRemovalCounts) {
         const count = cookieRemovalCounts[domain];
         lines.push(browser.i18n.getMessage('cookie_cleanup_notification_line', [domain, count]));
         totalCount += count;
@@ -59,8 +59,8 @@ browser.notifications.onClosed.addListener((id) => {
 });
 
 export function removeCookie(cookie: Cookies.Cookie) {
-    let allowSubDomains = cookie.domain.startsWith('.');
-    let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+    const allowSubDomains = cookie.domain.startsWith('.');
+    const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
     const details: Cookies.RemoveDetailsType = {
         name: cookie.name,
         url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
@@ -77,16 +77,16 @@ export function removeCookie(cookie: Cookies.Cookie) {
 }
 
 export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
-    //Fixme: use cookieStoreId when it's supported by firefox
+    // Fixme: use cookieStoreId when it's supported by firefox
     if (removeLocalStorageByHostname) {
-        let domainsToClean = { ...settings.get('domainsToClean') };
+        const domainsToClean = { ...settings.get('domainsToClean') };
         for (const hostname of hostnames)
             delete domainsToClean[hostname];
         settings.set('domainsToClean', domainsToClean);
         settings.save();
         browser.browsingData.remove({
             originTypes: { unprotectedWeb: true },
-            hostnames: hostnames
+            hostnames
         }, { localStorage: true });
         return true;
     }

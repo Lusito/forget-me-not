@@ -4,22 +4,24 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as MarkdownIt from 'markdown-it';
-import { browser } from 'webextension-polyfill-ts';
+import * as MarkdownIt from "markdown-it";
+import { browser } from "webextension-polyfill-ts";
 
 const md = new MarkdownIt();
 const domParser = new DOMParser();
 
 export function getFirstChildWithClass(element: HTMLElement, className: string) {
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < element.children.length; i++) {
         if (element.children[i].classList.contains(className))
             return element.children[i] as HTMLElement;
     }
-    throw 'Could not find child with class ' + className;
+    throw new Error('Could not find child with class ' + className);
 }
 
 export function getChildrenWithTagName(element: HTMLElement, tagName: string) {
     const list = [];
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < element.children.length; i++) {
         if (element.children[i].tagName.toLowerCase() === tagName)
             list.push(element.children[i] as HTMLElement);
@@ -42,11 +44,11 @@ export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
 function setMarkdown(element: HTMLElement, value: string) {
     const doc = domParser.parseFromString(md.render(value), 'text/html');
     removeAllChildren(element);
-    for (let i = 0; i < doc.body.childNodes.length; i++)
-        element.appendChild(doc.body.childNodes[i]);
+    for (const child of doc.body.childNodes)
+        element.appendChild(child);
     const links = element.querySelectorAll('a');
-    for (let i = 0; i < links.length; i++)
-        makeLinkOpenAsTab(links[i]);
+    for (const link of links)
+        makeLinkOpenAsTab(link);
 }
 
 export function byId(id: string) {
@@ -61,7 +63,7 @@ export function translateElement(element: HTMLElement) {
     const i18n = element.dataset.i18n;
     if (i18n) {
         let parts = i18n.split('?');
-        let id = parts[0];
+        const id = parts[0];
         parts.splice(0, 1);
         // default to text
         if (parts.length === 0)
@@ -78,9 +80,9 @@ export function translateElement(element: HTMLElement) {
 }
 
 export function translateChildren(parent: NodeSelector) {
-    let elements = parent.querySelectorAll('[data-i18n]');
-    for (let i = 0; i < elements.length; i++)
-        translateElement(elements[i] as HTMLElement);
+    const elements = parent.querySelectorAll('[data-i18n]');
+    for (const element of elements)
+        translateElement(element as HTMLElement);
 }
 
 export function removeAllChildren(node: HTMLElement) {
@@ -93,9 +95,9 @@ export function removeAllChildren(node: HTMLElement) {
 type ElementAttributes = { [s: string]: string | number | boolean };
 
 export function createElement<K extends keyof HTMLElementTagNameMap>(doc: Document, parent: HTMLElement | null, tagName: K, params?: ElementAttributes): HTMLElementTagNameMap[K] {
-    let e = doc.createElement(tagName);
+    const e = doc.createElement(tagName);
     if (params) {
-        for (let key in params) {
+        for (const key in params) {
             (e as any)[key] = params[key];
         }
     }
@@ -105,7 +107,7 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(doc: Docume
 }
 
 export function addLink(doc: Document, path: string) {
-    let head = doc.querySelector('head');
+    const head = doc.querySelector('head');
     if (head) {
         createElement(doc, head, 'link', {
             href: browser.runtime.getURL(path),
@@ -118,7 +120,7 @@ export function addLink(doc: Document, path: string) {
 export type MouseEventCallback = (this: HTMLInputElement, ev: MouseEvent) => any;
 
 export function createButton(labelI18nKey: string, callback: MouseEventCallback) {
-    let button = document.createElement('button');
+    const button = document.createElement('button');
     button.setAttribute('data-i18n', labelI18nKey);
     on(button, 'click', callback);
     return button;

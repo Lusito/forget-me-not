@@ -10,8 +10,8 @@ import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/set
 import { SettingsTypeMap, RuleType, RuleDefinition } from "../src/lib/settingsSignature";
 
 // generate settings map that is unequal to default settings
-const testOverrides:SettingsMap = {};
-const invalidOverrides:SettingsMap = {};
+const testOverrides: SettingsMap = {};
+const invalidOverrides: SettingsMap = {};
 for (const key in defaultSettings) {
     const type = typeof (defaultSettings[key]);
     if (type === 'boolean')
@@ -25,14 +25,14 @@ for (const key in defaultSettings) {
     else if (type === 'object')
         testOverrides[key] = { 'test-override.com': true };
     else
-        throw 'Unknown settings type';
+        throw new Error('Unknown settings type');
 
     if (type === 'boolean' || type === 'number' || type === 'object')
         invalidOverrides[key] = 'test-override';
     else if (type === 'string')
         invalidOverrides[key] = 42;
     else if (key === 'rules') {
-        //@ts-ignore
+        // @ts-ignore
         invalidOverrides[key] = [{ rule: '@@@', type: RuleType.FORGET }, 'sadasd'];
     }
 }
@@ -97,7 +97,7 @@ describe("Settings", () => {
     });
 
     describe("save", () => {
-        let settings2: Settings|null = null;
+        let settings2: Settings | null = null;
         beforeEach(() => {
             if (!settings2)
                 settings2 = new Settings();
@@ -150,7 +150,7 @@ describe("Settings", () => {
         });
         it("should respect the order of matching rules", () => {
             assert.equal(settings.getRuleTypeForDomain('google.com'), RuleType.FORGET);
-            const rules:RuleDefinition[] = [];
+            const rules: RuleDefinition[] = [];
             function addAndTest(type: RuleType) {
                 rules.push({ rule: 'google.com', type });
                 settings.set('rules', rules);
@@ -218,7 +218,7 @@ describe("Settings", () => {
         });
         it("should respect the order of matching rules", () => {
             assert.equal(settings.getRuleTypeForCookie('google.com', 'hello'), RuleType.FORGET);
-            const rules:RuleDefinition[] = [];
+            const rules: RuleDefinition[] = [];
             function addAndTest(type: RuleType) {
                 rules.push({ rule: 'hello@google.com', type });
                 settings.set('rules', rules);

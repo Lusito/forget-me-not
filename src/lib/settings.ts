@@ -6,7 +6,7 @@
 
 // This file manages all settings, their defaults and changes
 
-import * as messageUtil from "./messageUtil";
+import { messageUtil } from "../lib/messageUtil";
 import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature, RuleDefinition, RuleType } from "./settingsSignature";
 import { browser, Storage } from "webextension-polyfill-ts";
@@ -99,8 +99,8 @@ function isValidRuleType(ruleType: RuleType) {
 }
 
 function getRegExForRule(rule: string) {
-    let parts = rule.split('.');
-    let reParts = [];
+    const parts = rule.split('.');
+    const reParts = [];
     if (parts[0] === '*') {
         reParts.push('(^|\.)');
         parts.shift();
@@ -120,7 +120,7 @@ function getRegExForRule(rule: string) {
 }
 
 function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
-    let validRules: RuleDefinition[] = [];
+    const validRules: RuleDefinition[] = [];
     for (const ruleDef of rules) {
         if (typeof (ruleDef.rule) === 'string' && expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
             validRules.push({
@@ -158,12 +158,12 @@ export class Settings {
     public load(changes?: { [key: string]: Storage.StorageChange }) {
         this.storage.get(null).then((map) => {
             this.map = map;
-            let changedKeys = Object.getOwnPropertyNames(changes || map);
+            const changedKeys = Object.getOwnPropertyNames(changes || map);
             if (changedKeys.indexOf('rules')) {
                 this.rebuildRules();
             }
             if (this.readyCallbacks) {
-                for (let callback of this.readyCallbacks)
+                for (const callback of this.readyCallbacks)
                     callback();
                 this.readyCallbacks = null;
             }
@@ -177,7 +177,7 @@ export class Settings {
     private rebuildRules() {
         this.rules = [];
         this.cookieRules = [];
-        let rules = this.get('rules');
+        const rules = this.get('rules');
         for (const rule of rules) {
             const parts = rule.rule.split('@');
             const isCookieRule = parts.length === 2;
@@ -228,18 +228,18 @@ export class Settings {
             if (!json.hasOwnProperty(key))
                 continue;
             if (!defaultSettings.hasOwnProperty(key)) {
-                if(!isNodeTest)
+                if (!isNodeTest)
                     console.warn('Unknown setting: ', key);
                 delete json[key];
             }
             if (typeof (defaultSettings[key]) !== typeof (json[key])) {
-                if(!isNodeTest)
+                if (!isNodeTest)
                     console.warn('Types do not match while importing setting: ', key, typeof (defaultSettings[key]), typeof (json[key]));
                 delete json[key];
             }
         }
 
-        let keysToRemove = Object.getOwnPropertyNames(this.getAll()).filter((key) => !json.hasOwnProperty(key));
+        const keysToRemove = Object.getOwnPropertyNames(this.getAll()).filter((key) => !json.hasOwnProperty(key));
         this.storage.remove(keysToRemove);
 
         this.map = json;
@@ -249,8 +249,8 @@ export class Settings {
     }
 
     public getAll() {
-        let result: SettingsMap = {};
-        for (let key in defaultSettings) {
+        const result: SettingsMap = {};
+        for (const key in defaultSettings) {
             if (this.map.hasOwnProperty(key))
                 result[key] = this.map[key];
             else
@@ -274,8 +274,8 @@ export class Settings {
     // Convenience methods
     public getMatchingRules(domain: string, cookieName: string | false = false) {
         const rules = cookieName !== false ? this.cookieRules : this.rules;
-        let lowerCookieName = cookieName && cookieName.toLowerCase();
-        let matchingRules: RuleDefinition[] = [];
+        const lowerCookieName = cookieName && cookieName.toLowerCase();
+        const matchingRules: RuleDefinition[] = [];
         for (const rule of rules) {
             if (rule.regex.test(domain) && (!rule.cookieName || rule.cookieName.toLowerCase() === lowerCookieName))
                 matchingRules.push(rule.definition);
@@ -300,7 +300,7 @@ export class Settings {
     public getRuleTypeForCookie(domain: string, name: string) {
         if (this.get('whitelistNoTLD') && domain.indexOf('.') === -1)
             return RuleType.WHITE;
-        let matchingRules = this.getMatchingRules(domain, name);
+        const matchingRules = this.getMatchingRules(domain, name);
         if (matchingRules.length)
             return this.getRuleTypeFromMatchingRules(matchingRules);
         return this.getRuleTypeForDomain(domain);
@@ -309,7 +309,7 @@ export class Settings {
     public getRuleTypeForDomain(domain: string) {
         if (this.get('whitelistNoTLD') && domain.indexOf('.') === -1)
             return RuleType.WHITE;
-        let matchingRules = this.getMatchingRules(domain);
+        const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length)
             return this.getRuleTypeFromMatchingRules(matchingRules);
         return this.get('fallbackRule');

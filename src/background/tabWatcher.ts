@@ -4,14 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { getValidHostname } from '../shared';
-import { browser, Tabs, WebNavigation } from 'webextension-polyfill-ts';
-import { isFirefox, isNodeTest } from '../lib/browserInfo';
-import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
+import { getValidHostname } from "../shared";
+import { browser, Tabs, WebNavigation } from "webextension-polyfill-ts";
+import { isFirefox, isNodeTest } from "../lib/browserInfo";
+import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { getDomain } from "tldjs";
 
 export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
-
 
 interface TabInfo {
     tabId: number;
@@ -38,7 +37,7 @@ export class TabWatcher {
         this.listener = listener;
         this.recentlyAccessedDomains = recentlyAccessedDomains;
         browser.tabs.query({}).then((tabs) => {
-            for (let tab of tabs)
+            for (const tab of tabs)
                 this.onTabCreated(tab);
         });
 
@@ -56,8 +55,8 @@ export class TabWatcher {
             browser.webNavigation.onCommitted.removeListener(onCommitted);
             browser.tabs.onRemoved.removeListener(onRemoved);
             browser.tabs.onCreated.removeListener(onCreated);
-            this.destroy = () => { };
-        }
+            this.destroy = () => undefined;
+        };
     }
 
     private onBeforeNavigate(tabId: number, url: string) {
@@ -125,7 +124,7 @@ export class TabWatcher {
     }
 
     public cookieStoreContainsDomain(cookieStoreId: string, domain: string, ignoreNext?: boolean) {
-        let list = this.tabInfosByCookieStore[cookieStoreId];
+        const list = this.tabInfosByCookieStore[cookieStoreId];
         if (list)
             return list.findIndex((ti) => ti.hostname === domain || !ignoreNext && ti.nextHostname === domain) !== -1;
         return false;
@@ -135,7 +134,7 @@ export class TabWatcher {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
             delete this.tabInfos[tabId];
-            let list = this.tabInfosByCookieStore[tabInfo.cookieStoreId];
+            const list = this.tabInfosByCookieStore[tabInfo.cookieStoreId];
             if (list) {
                 const index = list.findIndex((ti) => ti.tabId === tabId);
                 if (index !== -1)

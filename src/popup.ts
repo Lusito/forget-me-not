@@ -5,14 +5,14 @@
  */
 
 import { settings } from "./lib/settings";
-import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from './lib/htmlUtils';
-import { isFirefox, browserInfo } from './lib/browserInfo';
-import { connectSettings, permanentDisableSettings, updateFromSettings } from './lib/htmlSettings';
-import * as messageUtil from "./lib/messageUtil";
-import { loadJSONFile, saveJSONFile } from './lib/fileHelper';
-import * as dialogs from './lib/dialogs';
-import { CookieDomainInfo, getValidHostname } from './shared';
-import { RuleListItem, setupRuleSelect, classNameForRuleType } from './ruleListItem';
+import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from "./lib/htmlUtils";
+import { isFirefox, browserInfo } from "./lib/browserInfo";
+import { connectSettings, permanentDisableSettings, updateFromSettings } from "./lib/htmlSettings";
+import { messageUtil } from "./lib/messageUtil";
+import { loadJSONFile, saveJSONFile } from "./lib/fileHelper";
+import * as dialogs from "./lib/dialogs";
+import { CookieDomainInfo, getValidHostname } from "./shared";
+import { RuleListItem, setupRuleSelect, classNameForRuleType } from "./ruleListItem";
 import { browser } from "webextension-polyfill-ts";
 import { TabSupport } from "./lib/tabSupport";
 import * as punycode from "punycode";
@@ -21,7 +21,7 @@ import { RuleList, recreateRuleListItems } from "./ruleList";
 const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 class Popup {
-    //@ts-ignore
+    // @ts-ignore
     private readonly ruleList: RuleList;
     private hostname?: string;
     private matchingRulesListItems: RuleListItem[] = [];
@@ -61,9 +61,9 @@ class Popup {
         on(byId('settings_import') as HTMLElement, 'click', this.onImport.bind(this));
         on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
         on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
-        let links = document.querySelectorAll('a.open_as_tab');
-        for (let i = 0; i < links.length; i++)
-            makeLinkOpenAsTab(links[i] as HTMLAnchorElement);
+        const links = document.querySelectorAll('a.open_as_tab');
+        for (const link of links)
+            makeLinkOpenAsTab(link as HTMLAnchorElement);
 
         translateChildren(document.body);
         messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -75,15 +75,15 @@ class Popup {
                 fallbackRuleSelect.className = classNameForRuleType(settings.get('fallbackRule'));
         });
 
-        let recentlyAccessedDomainsList = byId('recently_accessed_domains') as HTMLElement;
+        const recentlyAccessedDomainsList = byId('recently_accessed_domains') as HTMLElement;
         messageUtil.receive('onRecentlyAccessedDomains', (domains: CookieDomainInfo[]) => {
             removeAllChildren(recentlyAccessedDomainsList);
             for (const info of domains) {
-                let li = createElement(document, recentlyAccessedDomainsList, 'li');
+                const li = createElement(document, recentlyAccessedDomainsList, 'li');
                 createElement(document, li, 'span', { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
                 const punified = this.appendPunycode(info.domain);
                 createElement(document, li, 'span', { textContent: punified, title: punified });
-                let addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
+                const addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
                 on(addRule, 'click', () => this.prepareAddRule(info.domain));
             }
         });
@@ -106,11 +106,11 @@ class Popup {
         this.mainTabSupport.setTab('rules');
     }
 
-    setCurrentTabLabel(domain: string | false) {
-        let label = byId('current_tab');
+    private setCurrentTabLabel(domain: string | false) {
+        const label = byId('current_tab');
         if (label)
             label.textContent = domain ? domain : browser.i18n.getMessage('invalid_tab');
-        let labelPunnified = byId('current_tab_punyfied');
+        const labelPunnified = byId('current_tab_punyfied');
         if (labelPunnified) {
             let punnified = '';
             if (domain) {
@@ -123,7 +123,7 @@ class Popup {
 
     private setInvalidTab() {
         this.setCurrentTabLabel(false);
-        let cleanCurrentTab = byId('clean_current_tab');
+        const cleanCurrentTab = byId('clean_current_tab');
         if (cleanCurrentTab)
             cleanCurrentTab.style.display = 'none';
         if (this.mainTabSupport.getTab() === 'this_tab')
@@ -135,7 +135,7 @@ class Popup {
             const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
                 const hostname = getValidHostname(tab.url);
-                let cleanCurrentTab = byId('clean_current_tab');
+                const cleanCurrentTab = byId('clean_current_tab');
                 if (!hostname) {
                     this.setInvalidTab();
                 } else {
@@ -146,7 +146,7 @@ class Popup {
                             messageUtil.send('cleanUrlNow', { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                         });
                     }
-                    let addRule = byId('current_tab_add_rule');
+                    const addRule = byId('current_tab_add_rule');
                     if (addRule)
                         on(addRule, 'click', () => this.prepareAddRule(hostname));
                     this.rebuildMatchingRulesList();
@@ -158,7 +158,7 @@ class Popup {
     }
 
     private initSnoozeButton() {
-        let toggleSnooze = byId('toggle_snooze') as HTMLButtonElement;
+        const toggleSnooze = byId('toggle_snooze') as HTMLButtonElement;
         toggleSnooze.disabled = true;
         on(toggleSnooze, 'click', () => {
             toggleSnooze.disabled = true;
@@ -193,14 +193,14 @@ class Popup {
     }
 
     private onReset() {
-        let dialog = dialogs.createDialog('confirm', 'reset_dialog_title', {
-            'confirm_settings_and_rules': () => {
+        const dialog = dialogs.createDialog('confirm', 'reset_dialog_title', {
+            confirm_settings_and_rules: () => {
                 dialog.close();
                 settings.setAll({
                     domainsToClean: settings.get('domainsToClean')
                 });
             },
-            'confirm_settings_only': () => {
+            confirm_settings_only: () => {
                 dialog.close();
                 settings.setAll({
                     domainsToClean: settings.get('domainsToClean'),
@@ -209,7 +209,7 @@ class Popup {
                     whitelistNoTLD: settings.get('whitelistNoTLD')
                 });
             },
-            'confirm_cancel': () => {
+            confirm_cancel: () => {
                 dialog.close();
             }
         });
@@ -218,11 +218,10 @@ class Popup {
         translateChildren(dialog.domNode);
     }
 
-
     private rebuildMatchingRulesList() {
         if (this.hostname) {
-            let matchingRules = settings.getMatchingRules(this.hostname);
-            let list = byId('rules_list_current_tab') as HTMLElement;
+            const matchingRules = settings.getMatchingRules(this.hostname);
+            const list = byId('rules_list_current_tab') as HTMLElement;
             this.matchingRulesListItems = recreateRuleListItems(this.matchingRulesListItems, matchingRules, list);
         }
     }

@@ -12,21 +12,21 @@ export enum RuleType {
 }
 
 export interface RuleDefinition {
-    rule: string,
-    type: RuleType
+    rule: string;
+    type: RuleType;
 }
 
 export interface SettingsTypeMap {
     "version": string;
     "showUpdateNotification": boolean;
-    "showCookieRemovalNotification": boolean,
-    "rules": RuleDefinition[],
+    "showCookieRemovalNotification": boolean;
+    "rules": RuleDefinition[];
     "whitelistNoTLD": boolean;
     "fallbackRule": RuleType;
-    "domainsToClean": { [s: string]: boolean },
-    "showBadge": boolean,
-    "initialTab": string,
-    "lastTab": string,
+    "domainsToClean": { [s: string]: boolean };
+    "showBadge": boolean;
+    "initialTab": string;
+    "lastTab": string;
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;
     "cleanAll.localStorage": boolean;
@@ -41,9 +41,9 @@ export interface SettingsTypeMap {
     "cleanAll.serviceWorkers": boolean;
     "cleanAll.serverBoundCertificates": boolean;
 
-    "cleanThirdPartyCookies.enabled": boolean,
-    "cleanThirdPartyCookies.delay": number,
-    "cleanThirdPartyCookies.beforeCreation": boolean,
+    "cleanThirdPartyCookies.enabled": boolean;
+    "cleanThirdPartyCookies.delay": number;
+    "cleanThirdPartyCookies.beforeCreation": boolean;
 
     "domainLeave.enabled": boolean;
     "domainLeave.delay": number;

@@ -4,13 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as messageUtil from "../lib/messageUtil";
+import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
-import { loadJSONFile } from '../lib/fileHelper';
+import { loadJSONFile } from "../lib/fileHelper";
 import { browser } from "webextension-polyfill-ts";
 import { Background, CleanUrlNowConfig } from "./background";
 
-const UPDATE_NOTIFICATION_ID: string = "UpdateNotification";
+const UPDATE_NOTIFICATION_ID = "UpdateNotification";
 
 settings.onReady(() => {
     const background = new Background();
@@ -21,7 +21,7 @@ settings.onReady(() => {
     browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
 
     // listen for tab changes to update badge
-    let badgeUpdater = () => background.updateBadge();
+    const badgeUpdater = () => background.updateBadge();
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
@@ -58,10 +58,10 @@ settings.onReady(() => {
 
             if (settings.get('showUpdateNotification')) {
                 browser.notifications.create(UPDATE_NOTIFICATION_ID, {
-                    "type": "basic",
-                    "iconUrl": browser.extension.getURL("icons/icon96.png"),
-                    "title": browser.i18n.getMessage('update_notification_title'),
-                    "message": browser.i18n.getMessage('update_notification_message')
+                    type: "basic",
+                    iconUrl: browser.extension.getURL("icons/icon96.png"),
+                    title: browser.i18n.getMessage('update_notification_title'),
+                    message: browser.i18n.getMessage('update_notification_message')
                 });
             }
         }

@@ -4,8 +4,8 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { translateChildren, byId } from './lib/htmlUtils';
-import { TabSupport } from './lib/tabSupport';
+import { translateChildren, byId } from "./lib/htmlUtils";
+import { TabSupport } from "./lib/tabSupport";
 
 class Readme {
     private tabSupport = new TabSupport(byId('mainTabContainer') as HTMLElement);

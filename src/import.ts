@@ -5,8 +5,8 @@
  */
 
 import { settings } from "./lib/settings";
-import { on, byId } from './lib/htmlUtils';
-import { loadJSONFile, readJSONFile } from './lib/fileHelper';
+import { on, byId } from "./lib/htmlUtils";
+import { loadJSONFile, readJSONFile } from "./lib/fileHelper";
 import { browser } from "webextension-polyfill-ts";
 
 settings.onReady(() => {

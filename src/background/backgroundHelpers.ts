@@ -27,7 +27,7 @@ export function parseSetCookieHeader(header: string, fallbackDomain: string): Se
         const kv = parts[0].split(keyValueRegexpSplit);
         const domainPart = parts.find((part, i) => i > 0 && cookieDomainRegexp.test(part.trim()));
         const domain = domainPart && domainPart.split('=')[1].trim();
-        //fixme: get first party domain?
+        // fixme: get first party domain?
         return {
             name: kv[0].trim(),
             value: kv[1].trim(),
@@ -43,27 +43,27 @@ export interface BadgeInfo {
     color: string | [number, number, number, number];
 }
 
-export const badges = {
+export const badges: { [s: string]: BadgeInfo } = {
     white: {
         i18nKey: "badge_white",
         color: [38, 69, 151, 255]
-    } as BadgeInfo,
+    },
     gray: {
         i18nKey: "badge_gray",
         color: [116, 116, 116, 255]
-    } as BadgeInfo,
+    },
     forget: {
         i18nKey: "badge_forget",
         color: [190, 23, 38, 255]
-    } as BadgeInfo,
+    },
     block: {
         i18nKey: "badge_block",
         color: [0, 0, 0, 255]
-    } as BadgeInfo,
+    },
     none: {
         color: [0, 0, 0, 255]
-    } as BadgeInfo
-}
+    }
+};
 
 export function getBadgeForRuleType(type: RuleType) {
     switch (type) {

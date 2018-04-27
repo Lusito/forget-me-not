@@ -16,7 +16,7 @@ This web-extension deletes data websites store in the browser in the following s
 - When the browser starts:
     - Cookies (optionally only when not whitelisted)
     - Local Storage (optionally only when not whitelisted on Firefox 58+)
-	- History
+    - History
     - Downloads
     - Form Data
     - Passwords

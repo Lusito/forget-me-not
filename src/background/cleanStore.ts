@@ -5,8 +5,8 @@
  */
 
 import { settings } from "../lib/settings";
-import { removeCookie, cleanLocalStorage } from './backgroundShared';
-import { TabWatcher } from './tabWatcher';
+import { removeCookie, cleanLocalStorage } from "./backgroundShared";
+import { TabWatcher } from "./tabWatcher";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
@@ -29,8 +29,8 @@ export class CleanStore {
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
         this.removeCookies((cookie) => {
-            let allowSubDomains = cookie.domain.startsWith('.');
-            let match = allowSubDomains ? (domain.endsWith(cookie.domain) || cookie.domain.substr(1) === domain) : (cookie.domain === domain);
+            const allowSubDomains = cookie.domain.startsWith('.');
+            const match = allowSubDomains ? (domain.endsWith(cookie.domain) || cookie.domain.substr(1) === domain) : (cookie.domain === domain);
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
         });
     }
@@ -64,17 +64,17 @@ export class CleanStore {
     private isLocalStorageProtected(domain: string): boolean {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
-        let type = settings.getRuleTypeForDomain(domain);
+        const type = settings.getRuleTypeForDomain(domain);
         return type === RuleType.WHITE || type === RuleType.GRAY;
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
-        let allowSubDomains = cookie.domain.startsWith('.');
-        let rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+        const allowSubDomains = cookie.domain.startsWith('.');
+        const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
         const type = settings.getRuleTypeForCookie(rawDomain, cookie.name);
         if (type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList))
             return true;
-        if(type === RuleType.BLOCK || !protectOpenDomains)
+        if (type === RuleType.BLOCK || !protectOpenDomains)
             return false;
         if (cookie.firstPartyDomain)
             return this.tabWatcher.isFirstPartyDomainOnCookieStore(this.id, cookie.firstPartyDomain);
@@ -96,7 +96,7 @@ export class CleanStore {
             this.snoozedDomainLeaves[removedDomain] = true;
             return;
         }
-        let timeout = settings.get('domainLeave.delay') * 60 * 1000;
+        const timeout = settings.get('domainLeave.delay') * 60 * 1000;
         if (timeout <= 0) {
             this.cleanByDomainWithRulesNow(removedDomain);
         } else {

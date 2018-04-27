@@ -5,7 +5,7 @@
  */
 
 import { settings } from "./lib/settings";
-import { on, createElement } from './lib/htmlUtils';
+import { on, createElement } from "./lib/htmlUtils";
 import { browser } from "webextension-polyfill-ts";
 import * as punycode from "punycode";
 import { RuleType, RuleDefinition } from "./lib/settingsSignature";
@@ -40,14 +40,14 @@ export class RuleListItem {
         this.itemNode = createElement(document, parent, 'li');
         const punified = this.appendPunycode(ruleDef.rule);
         this.labelNode = createElement(document, this.itemNode, 'div', { textContent: punified, title: punified });
-        let label = createElement(document, this.itemNode, 'label', { className: 'type_column' });
+        const label = createElement(document, this.itemNode, 'label', { className: 'type_column' });
         this.selectNode = createElement(document, label, 'select');
         setupRuleSelect(this.selectNode, ruleDef.type);
-        let button = createElement(document, this.itemNode, 'button', { textContent: 'X', className: 'delete_column' });
+        const button = createElement(document, this.itemNode, 'button', { textContent: 'X', className: 'delete_column' });
 
         on(this.selectNode, 'change', () => {
-            let rules = settings.get('rules').slice();
-            let rule = rules.find((r) => r.rule === this.ruleDef.rule);
+            const rules = settings.get('rules').slice();
+            const rule = rules.find((r) => r.rule === this.ruleDef.rule);
             if (rule) {
                 rule.type = parseInt(this.selectNode.value);
                 settings.set('rules', rules);
@@ -55,8 +55,8 @@ export class RuleListItem {
             }
         });
         on(button, 'click', () => {
-            let rules = settings.get('rules').slice();
-            let index = rules.findIndex((r) => r.rule === this.ruleDef.rule);
+            const rules = settings.get('rules').slice();
+            const index = rules.findIndex((r) => r.rule === this.ruleDef.rule);
             if (index !== -1) {
                 rules.splice(index, 1);
                 settings.set('rules', rules);

@@ -8,28 +8,28 @@ import { browser, Tabs, WebNavigation, Runtime, Storage } from "webextension-pol
 import { assert } from "chai";
 
 // @ts-ignore
-const Url = require('url');
+// tslint:disable-next-line:no-var-requires
+const parseUrl = require('url').parse;
 // @ts-ignore
 const glob = (function () { return this; }()) || Function('return this')();
-glob.URL = function (url: string)
-{
-    const parsed = Url.parse(url);
-    for (let key in parsed) {
+glob.URL = function (url: string) {
+    const parsed = parseUrl(url);
+    for (const key in parsed) {
         if (parsed.hasOwnProperty(key))
             this[key] = parsed[key];
     }
-}
+};
 
 type ListenerCallback = (...args: any[]) => any;
+// tslint:disable-next-line:ban-types
 class ListenerMock<T extends Function> {
     private listeners: ListenerCallback[] = [];
     public emit: T;
     public constructor() {
-        const self = this;
-        //@ts-ignore
-        this.emit = function () {
-            for (const listener of self.listeners) {
-                listener.apply(null, arguments);
+        // @ts-ignore
+        this.emit = (...args) => {
+            for (const listener of this.listeners) {
+                listener.apply(null, args);
             }
         };
     }
@@ -76,19 +76,19 @@ class BrowserTabsMock {
     }
 
     public create(url: string, cookieStoreId: string) {
-        const id = ++this.idCount
+        const id = ++this.idCount;
         const tab: Tabs.Tab = {
             active: true,
-            cookieStoreId: cookieStoreId,
+            cookieStoreId,
             highlighted: false,
-            id: id,
+            id,
             incognito: false,
             index: this.tabs.length,
             isArticle: false,
             isInReaderMode: false,
             lastAccessed: Date.now(),
             pinned: false,
-            url: url,
+            url,
             windowId: 1
         };
         this.tabs.push(tab);
@@ -154,7 +154,7 @@ class BrowserRuntimeMock {
 
     public sendMessage(message: any, options?: Runtime.SendMessageOptionsType): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.onMessage.emit(message, { id: 'mock' }, () => { });
+            this.onMessage.emit(message, { id: 'mock' }, () => undefined);
             resolve();
         });
     }
@@ -189,7 +189,7 @@ class StorageAreaMock {
         return new Promise<void>((resolve, reject) => {
             const changes: { [s: string]: Storage.StorageChange } = {};
             for (const key in items) {
-                //@ts-ignore
+                // @ts-ignore
                 const value = items[key];
                 this.setInternal(key, value, changes);
             }
@@ -240,7 +240,7 @@ export const browserMock = {
     }
 };
 
-//@ts-ignore
+// @ts-ignore
 browser.tabs = {
     query: () => {
         return {
@@ -253,19 +253,19 @@ browser.tabs = {
     onCreated: browserMock.tabs.onCreated.get()
 };
 
-//@ts-ignore
+// @ts-ignore
 browser.webNavigation = {
     onBeforeNavigate: browserMock.webNavigation.onBeforeNavigate.get(),
     onCommitted: browserMock.webNavigation.onCommitted.get()
-}
+};
 
-//@ts-ignore
+// @ts-ignore
 browser.runtime = {
     onMessage: browserMock.runtime.onMessage.get(),
     sendMessage: browserMock.runtime.sendMessage.bind(browserMock.runtime)
-}
+};
 
-//@ts-ignore
+// @ts-ignore
 browser.storage = {
     onChanged: browserMock.storage.onChanged.get(),
     local: browserMock.storage.local
@@ -281,11 +281,11 @@ export interface SpyData {
     reset: () => void;
 }
 export function createSpy() {
-    const spyData = function () {
+    const spyData = function (...args: any[]) {
         spyData.callCount++;
-        //@ts-ignore
+        // @ts-ignore
         spyData.thisValues.push(this);
-        spyData.args.push(Array.from(arguments));
+        spyData.args.push(Array.from(args));
     } as SpyData;
     spyData.callCount = 0;
     spyData.thisValues = [];
@@ -304,11 +304,11 @@ export function createSpy() {
         spyData.callCount = 0;
         spyData.thisValues.length = 0;
         spyData.args.length = 0;
-    }
+    };
     return spyData;
 }
 
-export function ensureNotNull<T>(value: T | null) : T {
+export function ensureNotNull<T>(value: T | null): T {
     assert.isNotNull(value);
     // @ts-ignore
     return value;

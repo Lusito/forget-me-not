@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { on, getChildrenWithTagName, getFirstChildWithClass } from './htmlUtils';
+import { on, getChildrenWithTagName, getFirstChildWithClass } from "./htmlUtils";
 
 const validHash = /^[a-z_]+$/;
 export class TabSupport {
@@ -42,7 +42,7 @@ export class TabSupport {
     private updateSelectedTab(index: number) {
         for (let i = 0; i < this.tabs.length; i++) {
             if (i === index) {
-                const name = (this.tabs[i]).dataset.tab
+                const name = (this.tabs[i]).dataset.tab;
                 document.location.hash = '#' + name;
                 this.tabs[i].classList.add('active');
                 this.pages[i].classList.add('active');

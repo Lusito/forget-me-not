@@ -4,11 +4,10 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as messageUtil from "../lib/messageUtil";
-import { CookieDomainInfo } from '../shared';
-import { getBadgeForRuleType } from './backgroundHelpers';
+import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
+import { CookieDomainInfo } from "../shared";
+import { getBadgeForRuleType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
-import { ReceiverHandle } from "../lib/messageUtil";
 
 export class RecentlyAccessedDomains {
     private receivers: ReceiverHandle[];
@@ -57,14 +56,11 @@ export class RecentlyAccessedDomains {
     }
 
     public get(): CookieDomainInfo[] {
-        let result: CookieDomainInfo[] = [];
+        const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
-            let badgeKey = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;
-            if (badgeKey) {
-                result.push({
-                    domain: domain,
-                    badge: badgeKey
-                });
+            const badge = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;
+            if (badge) {
+                result.push({ domain, badge });
             }
         }
         return result;
@@ -74,7 +70,7 @@ export class RecentlyAccessedDomains {
         if (this.enabled && domain) {
             if (domain.startsWith('.'))
                 domain = domain.substr(1);
-            let index = this.domains.indexOf(domain);
+            const index = this.domains.indexOf(domain);
             if (index !== 0) {
                 if (index !== -1)
                     this.domains.splice(index, 1);

@@ -5,26 +5,25 @@
  */
 
 export default class DelayedExecution {
-    callback: () => void;
-    private _execute: () => void;
+    private callback: () => void;
     private instance: number | null = null;
 
     constructor(callback: () => void) {
         this.callback = callback;
-        this._execute = this.execute.bind(this);
+        this.execute = this.execute.bind(this);
     }
 
-    restart(ms: number) {
+    public restart(ms: number) {
         this.cancel();
-        this.instance = setTimeout(this._execute, ms);
+        this.instance = setTimeout(this.execute, ms);
     }
 
-    execute() {
+    public execute() {
         this.cancel();
         this.callback();
     }
 
-    cancel() {
+    public cancel() {
         if (this.instance) {
             clearTimeout(this.instance);
             this.instance = null;

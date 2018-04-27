@@ -4,15 +4,15 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as messageUtil from "../lib/messageUtil";
+import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
-import DelayedExecution from '../lib/delayedExecution';
-import { removeCookie, cleanLocalStorage, removeLocalStorageByHostname } from './backgroundShared';
-import { CleanStore } from './cleanStore';
-import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from './tabWatcher';
-import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
-import { HeaderFilter } from './headerFilter';
-import { getValidHostname } from '../shared';
+import DelayedExecution from "../lib/delayedExecution";
+import { removeCookie, cleanLocalStorage, removeLocalStorageByHostname } from "./backgroundShared";
+import { CleanStore } from "./cleanStore";
+import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from "./tabWatcher";
+import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
+import { HeaderFilter } from "./headerFilter";
+import { getValidHostname } from "../shared";
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { RuleType } from "../lib/settingsSignature";
 import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
@@ -46,7 +46,7 @@ export class Background implements TabWatcherListener {
     }
 
     private runCleanup(startup: boolean) {
-        let typeSet: BrowsingData.DataTypeSet = {
+        const typeSet: BrowsingData.DataTypeSet = {
             history: settings.get(startup ? 'startup.history' : 'cleanAll.history'),
             downloads: settings.get(startup ? 'startup.downloads' : 'cleanAll.downloads'),
             formData: settings.get(startup ? 'startup.formData' : 'cleanAll.formData'),
@@ -56,7 +56,7 @@ export class Background implements TabWatcherListener {
             serverBoundCertificates: settings.get(startup ? 'startup.serverBoundCertificates' : 'cleanAll.serverBoundCertificates'),
             serviceWorkers: settings.get(startup ? 'startup.serviceWorkers' : 'cleanAll.serviceWorkers')
         };
-        let options: BrowsingData.RemovalOptions = {
+        const options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
         const protectOpenDomains = startup || settings.get('cleanAll.protectOpenDomains');
@@ -70,7 +70,7 @@ export class Background implements TabWatcherListener {
             if (settings.get(startup ? 'startup.localStorage.applyRules' : 'cleanAll.localStorage.applyRules')) {
                 browser.cookies.getAllCookieStores().then((cookieStores) => {
                     const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
-                    for (let store of cookieStores)
+                    for (const store of cookieStores)
                         cleanLocalStorage(hostnames, store.id);
                 });
             } else {
@@ -83,8 +83,8 @@ export class Background implements TabWatcherListener {
     }
 
     private getDomainsToClean(ignoreGrayList: boolean, protectOpenDomains: boolean): string[] {
-        let domainsToClean = settings.get('domainsToClean');
-        let result = [];
+        const domainsToClean = settings.get('domainsToClean');
+        const result = [];
         for (const domain in domainsToClean) {
             if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList, protectOpenDomains))
                 result.push(domain);
@@ -94,12 +94,12 @@ export class Background implements TabWatcherListener {
 
     private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains: boolean): boolean {
         if (protectOpenDomains) {
-            for (let key in this.cleanStores) {
+            for (const key in this.cleanStores) {
                 if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
                     return true;
             }
         }
-        let type = settings.getRuleTypeForDomain(domain);
+        const type = settings.getRuleTypeForDomain(domain);
         return type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList);
     }
 
@@ -110,7 +110,7 @@ export class Background implements TabWatcherListener {
             callback();
         else {
             browser.cookies.getAllCookieStores().then((cookieStores) => {
-                for (let store of cookieStores) {
+                for (const store of cookieStores) {
                     if (store.id === storeId) {
                         if (store.tabIds.length) {
                             browser.tabs.get(store.tabIds[0]).then((tab) => {
@@ -130,8 +130,8 @@ export class Background implements TabWatcherListener {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
                 // Cookies set by javascript can't be denied, but can be removed instantly.
-                let allowSubDomains = changeInfo.cookie.domain.startsWith('.');
-                let rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
+                const allowSubDomains = changeInfo.cookie.domain.startsWith('.');
+                const rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
                 if (settings.getRuleTypeForCookie(rawDomain, changeInfo.cookie.name) === RuleType.BLOCK)
                     removeCookie(changeInfo.cookie);
                 else if (settings.get('cleanThirdPartyCookies.enabled'))
@@ -146,12 +146,12 @@ export class Background implements TabWatcherListener {
                 this.snoozedThirdpartyCookies.push(cookie);
                 return;
             }
-            let exec = new DelayedExecution(() => {
+            const exec = new DelayedExecution(() => {
                 if (this.snoozing) {
                     this.snoozedThirdpartyCookies.push(cookie);
                     return;
                 }
-                let delta = Date.now() - this.lastDomainChangeRequest;
+                const delta = Date.now() - this.lastDomainChangeRequest;
                 if (delta < 1000)
                     exec.restart(500);
                 else if (this.isThirdpartyCookie(cookie))
@@ -170,7 +170,7 @@ export class Background implements TabWatcherListener {
 
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
         browser.cookies.getAllCookieStores().then((stores) => {
-            for (let store of stores)
+            for (const store of stores)
                 this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList, protectOpenDomains);
         });
     }
@@ -186,7 +186,7 @@ export class Background implements TabWatcherListener {
 
     public updateBadge() {
         browser.tabs.query({ active: true }).then((tabs) => {
-            for (let tab of tabs) {
+            for (const tab of tabs) {
                 if (tab && tab.url && !tab.incognito) {
                     let badge = badges.none;
                     const hostname = getValidHostname(tab.url);
@@ -195,7 +195,7 @@ export class Background implements TabWatcherListener {
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
                     if (!settings.get('showBadge'))
                         text = '';
-                    browser.browserAction.setBadgeText({ text: text, tabId: tab.id });
+                    browser.browserAction.setBadgeText({ text, tabId: tab.id });
                     browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
                     browser.browserAction.enable(tab.id);
                 } else {
@@ -207,7 +207,7 @@ export class Background implements TabWatcherListener {
 
     public onDomainEnter(cookieStoreId: string, hostname: string): void {
         if (removeLocalStorageByHostname) {
-            let domainsToClean = { ...settings.get('domainsToClean') };
+            const domainsToClean = { ...settings.get('domainsToClean') };
             domainsToClean[hostname] = true;
             settings.set('domainsToClean', domainsToClean);
             settings.save();
@@ -224,9 +224,7 @@ export class Background implements TabWatcherListener {
         for (const size of [16, 32, 48, 64, 96, 128])
             path[size] = `icons/icon${size}${suffix}.png`;
 
-        browser.browserAction.setIcon({
-            path: path
-        });
+        browser.browserAction.setIcon({ path });
         browser.browserAction.setTitle({
             title: browser.i18n.getMessage(this.snoozing ? 'actionTitleSnooze' : 'actionTitle')
         });

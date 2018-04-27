@@ -5,9 +5,9 @@
  */
 
 import { settings, isValidExpression } from "./lib/settings";
-import { on, byId, removeAllChildren } from './lib/htmlUtils';
-import * as messageUtil from "./lib/messageUtil";
-import { RuleListItem } from './ruleListItem';
+import { on, byId, removeAllChildren } from "./lib/htmlUtils";
+import { messageUtil } from "./lib/messageUtil";
+import { RuleListItem } from "./ruleListItem";
 import { browser } from "webextension-polyfill-ts";
 import { RuleDefinition, RuleType } from "./lib/settingsSignature";
 
@@ -23,8 +23,8 @@ export function recreateRuleListItems(previousItems: RuleListItem[], rules: Rule
     if (rules.length === previousItems.length) {
         let changed = false;
         for (let i = 0; i < rules.length; i++) {
-            let item = previousItems[i];
-            let rule = rules[i];
+            const item = previousItems[i];
+            const rule = rules[i];
             if (item.isRule(rule))
                 item.updateRule(rule);
             else {
@@ -36,9 +36,9 @@ export function recreateRuleListItems(previousItems: RuleListItem[], rules: Rule
             return previousItems;
     }
 
-    let newItems: RuleListItem[] = [];
+    const newItems: RuleListItem[] = [];
     removeAllChildren(parent);
-    for (let rule of rules)
+    for (const rule of rules)
         newItems.push(new RuleListItem(rule, parent));
     return newItems;
 }
@@ -64,15 +64,15 @@ export class RuleList {
 
     public setInput(value: string) {
         this.input.value = value;
-        let validExpression = isValidExpression(value);
+        const validExpression = isValidExpression(value);
         this.updateRulesHint(validExpression, value.length === 0);
         this.updateFilter();
         this.input.focus();
     }
 
     private onRulesInputKeyUp(e: KeyboardEvent) {
-        let value = this.input.value.trim().toLowerCase();
-        let validExpression = isValidExpression(value);
+        const value = this.input.value.trim().toLowerCase();
+        const validExpression = isValidExpression(value);
         this.updateRulesHint(validExpression, value.length === 0);
         if (e.keyCode === 13)
             this.addRule(e.shiftKey ? RuleType.GRAY : RuleType.WHITE);
@@ -80,32 +80,29 @@ export class RuleList {
     }
 
     private updateFilter() {
-        let value = this.input.value.trim().toLowerCase();
+        const value = this.input.value.trim().toLowerCase();
         if (value.length === 0) {
             for (const detail of this.items)
                 detail.itemNode.style.display = '';
         }
         else {
             for (const detail of this.items) {
-                let visible = detail.ruleDef.rule.indexOf(value) !== -1;
+                const visible = detail.ruleDef.rule.indexOf(value) !== -1;
                 detail.itemNode.style.display = visible ? '' : 'none';
             }
         }
     }
 
     private addRule(type: RuleType) {
-        let value = this.input.value.trim().toLowerCase();
-        if (isValidExpression(value)) {
-            let rules = settings.get('rules').slice();
-            let entry = rules.find((r) => r.rule === value);
+        const rule = this.input.value.trim().toLowerCase();
+        if (isValidExpression(rule)) {
+            const rules = settings.get('rules').slice();
+            const entry = rules.find((r) => r.rule === rule);
             if (entry)
                 entry.type = type;
-            else {
-                rules.push({
-                    type: type,
-                    rule: value
-                });
-            }
+            else
+                rules.push({ type, rule });
+
             settings.set('rules', rules);
             settings.save();
         }
@@ -121,7 +118,7 @@ export class RuleList {
         for (const rule of rules)
             rule.rule = rule.rule.toLowerCase();
         rules.sort(sortByRule);
-        let newItems = recreateRuleListItems(this.items, rules, this.list);
+        const newItems = recreateRuleListItems(this.items, rules, this.list);
         if (newItems !== this.items) {
             this.items = newItems;
             this.updateFilter();

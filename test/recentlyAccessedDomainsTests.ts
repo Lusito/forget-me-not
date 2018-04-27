@@ -6,8 +6,7 @@
 
 import { assert } from "chai";
 import { createSpy, ensureNotNull } from "./browserMock";
-import * as messageUtil from "../src/lib/messageUtil";
-import { ReceiverHandle } from "../src/lib/messageUtil";
+import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";
 import { settings } from "../src/lib/settings";
 
@@ -137,9 +136,9 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.jp");
 
             let isDone = false;
-            receiver = messageUtil.receive('onRecentlyAccessedDomains', (list)=> {
+            receiver = messageUtil.receive('onRecentlyAccessedDomains', (list) => {
                 // during tests, some events get send twice (once for send and once for sendSelf)
-                if(!isDone) {
+                if (!isDone) {
                     assert.deepEqual(list, [
                         { domain: 'google.jp', badge: 'badge_forget' },
                         { domain: 'google.dk', badge: 'badge_forget' },
@@ -161,9 +160,9 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.jp");
 
             let isDone = false;
-            receiver = messageUtil.receive('onRecentlyAccessedDomains', (list)=> {
+            receiver = messageUtil.receive('onRecentlyAccessedDomains', (list) => {
                 // during tests, some events get send twice (once for send and once for sendSelf)
-                if(!isDone) {
+                if (!isDone) {
                     assert.deepEqual(list, []);
                     done();
                     isDone = true;

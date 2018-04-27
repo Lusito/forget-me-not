@@ -5,11 +5,10 @@
  */
 
 import { createSpy } from "./browserMock";
-import * as messageUtil from "../src/lib/messageUtil";
-import { ReceiverHandle } from "../src/lib/messageUtil";
+import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 
 describe("Message Utility", () => {
-    const receivers:ReceiverHandle[] = [];
+    const receivers: ReceiverHandle[] = [];
     afterEach(() => {
         receivers.forEach((r) => r.clear());
         receivers.length = 0;

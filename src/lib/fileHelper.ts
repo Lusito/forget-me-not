@@ -7,7 +7,7 @@
 import { createElement } from "./htmlUtils";
 
 export function readJSONFile(file: File, callback: (json: any) => void) {
-    var reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = () => {
         try {
             callback(JSON.parse(reader.result));
@@ -21,7 +21,7 @@ export function readJSONFile(file: File, callback: (json: any) => void) {
 }
 
 export function loadJSONFile(callback: (json: any) => void) {
-    let input = createElement(document, document.body, 'input', { type: 'file', style: "display:none" });
+    const input = createElement(document, document.body, 'input', { type: 'file', style: "display:none" });
     input.onchange = () => {
         if (!input.files)
             return;
@@ -32,8 +32,8 @@ export function loadJSONFile(callback: (json: any) => void) {
 }
 
 export function saveJSONFile(json: any, filename: string) {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
-    let a = createElement(document, document.body, 'a', { href: dataStr, download: filename, style: "display:none" });
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
+    const a = createElement(document, document.body, 'a', { href: dataStr, download: filename, style: "display:none" });
     a.click();
     document.body.removeChild(a);
 }

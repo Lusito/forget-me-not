@@ -4,10 +4,10 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as messageUtil from "../lib/messageUtil";
+import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
-import { TabWatcher } from './tabWatcher';
-import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
+import { TabWatcher } from "./tabWatcher";
+import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { browser, WebRequest } from "webextension-polyfill-ts";
 import { getValidHostname } from "../shared";
 import { RuleType } from "../lib/settingsSignature";
@@ -15,7 +15,7 @@ import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 
 // fixme: make this file unit-testable and add tests
 export class HeaderFilter {
-    private settingsReceiver: messageUtil.ReceiverHandle | null = null;
+    private settingsReceiver: ReceiverHandle | null = null;
     private blockThirdpartyCookies = false;
     private readonly tabWatcher: TabWatcher;
     private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
@@ -28,10 +28,10 @@ export class HeaderFilter {
             if (details.responseHeaders) {
                 return {
                     responseHeaders: this.filterResponseHeaders(details.responseHeaders, getValidHostname(details.url), details.tabId)
-                }
+                };
             }
             return {};
-        }
+        };
         this.updateSettings();
         this.settingsReceiver = messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
             if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1 || changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('fallbackRule') !== -1)
@@ -40,7 +40,7 @@ export class HeaderFilter {
     }
 
     public destroy() {
-        if(this.settingsReceiver) {
+        if (this.settingsReceiver) {
             this.settingsReceiver.clear();
             this.settingsReceiver = null;
         }

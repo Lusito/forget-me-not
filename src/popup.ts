@@ -25,70 +25,70 @@ class Popup {
     private readonly ruleList: RuleList;
     private hostname?: string;
     private matchingRulesListItems: RuleListItem[] = [];
-    private readonly mainTabSupport = new TabSupport(byId('mainTabContainer') as HTMLElement, this.onTabChange.bind(this));
+    private readonly mainTabSupport = new TabSupport(byId("mainTabContainer") as HTMLElement, this.onTabChange.bind(this));
     public constructor() {
         if (browserInfo.mobile)
-            (document.querySelector('html') as HTMLHtmlElement).className = 'fullscreen';
+            (document.querySelector("html") as HTMLHtmlElement).className = "fullscreen";
 
-        const fallbackRuleSelect = document.querySelector('#fallbackRule') as HTMLSelectElement;
-        setupRuleSelect(fallbackRuleSelect, settings.get('fallbackRule'));
-        on(fallbackRuleSelect, 'change', () => {
-            settings.set('fallbackRule', parseInt(fallbackRuleSelect.value));
+        const fallbackRuleSelect = document.querySelector("#fallbackRule") as HTMLSelectElement;
+        setupRuleSelect(fallbackRuleSelect, settings.get("fallbackRule"));
+        on(fallbackRuleSelect, "change", () => {
+            settings.set("fallbackRule", parseInt(fallbackRuleSelect.value));
             settings.save();
         });
 
         connectSettings(document.body);
         if (!removeLocalStorageByHostname) {
             permanentDisableSettings([
-                'cleanAll.localStorage.applyRules',
-                'domainLeave.localStorage',
-                'startup.localStorage.applyRules'
+                "cleanAll.localStorage.applyRules",
+                "domainLeave.localStorage",
+                "startup.localStorage.applyRules"
             ], true);
         }
 
-        const initialTab = settings.get('initialTab');
-        if (!initialTab || initialTab === 'last_active_tab')
-            this.mainTabSupport.setTab(settings.get('lastTab'));
+        const initialTab = settings.get("initialTab");
+        if (!initialTab || initialTab === "last_active_tab")
+            this.mainTabSupport.setTab(settings.get("lastTab"));
         else
             this.mainTabSupport.setTab(initialTab);
 
         this.initCurrentTab();
         this.initSnoozeButton();
 
-        on(byId('clean_all_now') as HTMLElement, 'click', () => messageUtil.send('cleanAllNow'));
+        on(byId("clean_all_now") as HTMLElement, "click", () => messageUtil.send("cleanAllNow"));
 
-        this.ruleList = new RuleList('rules_input', 'rules_list', 'rules_hint', 'rules_add');
-        on(byId('settings_import') as HTMLElement, 'click', this.onImport.bind(this));
-        on(byId('settings_export') as HTMLElement, 'click', this.onExport.bind(this));
-        on(byId('settings_reset') as HTMLElement, 'click', this.onReset.bind(this));
-        const links = document.querySelectorAll('a.open_as_tab');
+        this.ruleList = new RuleList("rules_input", "rules_list", "rules_hint", "rules_add");
+        on(byId("settings_import") as HTMLElement, "click", this.onImport.bind(this));
+        on(byId("settings_export") as HTMLElement, "click", this.onExport.bind(this));
+        on(byId("settings_reset") as HTMLElement, "click", this.onReset.bind(this));
+        const links = document.querySelectorAll("a.open_as_tab");
         for (const link of links)
             makeLinkOpenAsTab(link as HTMLAnchorElement);
 
         translateChildren(document.body);
-        messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.length > 1 || changedKeys.indexOf('domainsToClean') === -1)
+        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+            if (changedKeys.length > 1 || changedKeys.indexOf("domainsToClean") === -1)
                 updateFromSettings();
-            if (changedKeys.indexOf('rules') !== -1)
+            if (changedKeys.indexOf("rules") !== -1)
                 this.rebuildMatchingRulesList();
-            if (changedKeys.indexOf('fallbackRule') !== -1)
-                fallbackRuleSelect.className = classNameForRuleType(settings.get('fallbackRule'));
+            if (changedKeys.indexOf("fallbackRule") !== -1)
+                fallbackRuleSelect.className = classNameForRuleType(settings.get("fallbackRule"));
         });
 
-        const recentlyAccessedDomainsList = byId('recently_accessed_domains') as HTMLElement;
-        messageUtil.receive('onRecentlyAccessedDomains', (domains: CookieDomainInfo[]) => {
+        const recentlyAccessedDomainsList = byId("recently_accessed_domains") as HTMLElement;
+        messageUtil.receive("onRecentlyAccessedDomains", (domains: CookieDomainInfo[]) => {
             removeAllChildren(recentlyAccessedDomainsList);
             for (const info of domains) {
-                const li = createElement(document, recentlyAccessedDomainsList, 'li');
-                createElement(document, li, 'span', { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
+                const li = createElement(document, recentlyAccessedDomainsList, "li");
+                createElement(document, li, "span", { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
                 const punified = this.appendPunycode(info.domain);
-                createElement(document, li, 'span', { textContent: punified, title: punified });
-                const addRule = createElement(document, li, 'span', { textContent: browser.i18n.getMessage('button_log_add_rule'), className: 'log_add_rule' });
-                on(addRule, 'click', () => this.prepareAddRule(info.domain));
+                createElement(document, li, "span", { textContent: punified, title: punified });
+                const addRule = createElement(document, li, "span", { textContent: browser.i18n.getMessage("button_log_add_rule"), className: "log_add_rule" });
+                on(addRule, "click", () => this.prepareAddRule(info.domain));
             }
         });
 
-        messageUtil.send('getRecentlyAccessedDomains');
+        messageUtil.send("getRecentlyAccessedDomains");
     }
 
     private appendPunycode(domain: string) {
@@ -97,25 +97,25 @@ class Popup {
     }
 
     private onTabChange(name: string) {
-        settings.set('lastTab', name);
+        settings.set("lastTab", name);
         settings.save();
     }
 
     private prepareAddRule(domain: string) {
         this.ruleList.setInput("*." + domain.trim().toLowerCase());
-        this.mainTabSupport.setTab('rules');
+        this.mainTabSupport.setTab("rules");
     }
 
     private setCurrentTabLabel(domain: string | false) {
-        const label = byId('current_tab');
+        const label = byId("current_tab");
         if (label)
-            label.textContent = domain ? domain : browser.i18n.getMessage('invalid_tab');
-        const labelPunnified = byId('current_tab_punyfied');
+            label.textContent = domain ? domain : browser.i18n.getMessage("invalid_tab");
+        const labelPunnified = byId("current_tab_punyfied");
         if (labelPunnified) {
-            let punnified = '';
+            let punnified = "";
             if (domain) {
-                punnified = domain ? punycode.toUnicode(domain) : '';
-                punnified = (punnified === domain) ? '' : `(${punnified})`;
+                punnified = domain ? punycode.toUnicode(domain) : "";
+                punnified = (punnified === domain) ? "" : `(${punnified})`;
             }
             labelPunnified.textContent = punnified;
         }
@@ -123,11 +123,11 @@ class Popup {
 
     private setInvalidTab() {
         this.setCurrentTabLabel(false);
-        const cleanCurrentTab = byId('clean_current_tab');
+        const cleanCurrentTab = byId("clean_current_tab");
         if (cleanCurrentTab)
-            cleanCurrentTab.style.display = 'none';
-        if (this.mainTabSupport.getTab() === 'this_tab')
-            this.mainTabSupport.setTab('clean_all');
+            cleanCurrentTab.style.display = "none";
+        if (this.mainTabSupport.getTab() === "this_tab")
+            this.mainTabSupport.setTab("clean_all");
     }
 
     private initCurrentTab() {
@@ -135,20 +135,20 @@ class Popup {
             const tab = tabs.length && tabs[0];
             if (tab && tab.url && !tab.incognito) {
                 const hostname = getValidHostname(tab.url);
-                const cleanCurrentTab = byId('clean_current_tab');
+                const cleanCurrentTab = byId("clean_current_tab");
                 if (!hostname) {
                     this.setInvalidTab();
                 } else {
                     this.hostname = hostname;
                     this.setCurrentTabLabel(hostname);
                     if (cleanCurrentTab) {
-                        on(cleanCurrentTab, 'click', () => {
-                            messageUtil.send('cleanUrlNow', { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
+                        on(cleanCurrentTab, "click", () => {
+                            messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                         });
                     }
-                    const addRule = byId('current_tab_add_rule');
+                    const addRule = byId("current_tab_add_rule");
                     if (addRule)
-                        on(addRule, 'click', () => this.prepareAddRule(hostname));
+                        on(addRule, "click", () => this.prepareAddRule(hostname));
                     this.rebuildMatchingRulesList();
                 }
             } else {
@@ -158,62 +158,62 @@ class Popup {
     }
 
     private initSnoozeButton() {
-        const toggleSnooze = byId('toggle_snooze') as HTMLButtonElement;
+        const toggleSnooze = byId("toggle_snooze") as HTMLButtonElement;
         toggleSnooze.disabled = true;
-        on(toggleSnooze, 'click', () => {
+        on(toggleSnooze, "click", () => {
             toggleSnooze.disabled = true;
-            messageUtil.send('toggleSnoozingState');
+            messageUtil.send("toggleSnoozingState");
         });
-        messageUtil.receive('onSnoozingState', (snoozing: boolean) => {
+        messageUtil.receive("onSnoozingState", (snoozing: boolean) => {
             toggleSnooze.disabled = false;
-            toggleSnooze.textContent = browser.i18n.getMessage('button_toggle_snooze_' + snoozing);
+            toggleSnooze.textContent = browser.i18n.getMessage("button_toggle_snooze_" + snoozing);
         });
-        messageUtil.send('getSnoozingState');
+        messageUtil.send("getSnoozingState");
     }
 
     private onImport() {
         // desktop firefox closes popup when dialog is shown
         if (isFirefox && !browserInfo.mobile) {
             browser.tabs.create({
-                url: browser.runtime.getURL('views/import.html'),
+                url: browser.runtime.getURL("views/import.html"),
                 active: true
             });
             window.close();
         } else {
             loadJSONFile((json) => {
                 if (json && settings.setAll(json)) {
-                    console.log('success');
+                    console.log("success");
                 }
             });
         }
     }
 
     private onExport() {
-        saveJSONFile(settings.getAll(), 'forget-me-not-settings.json');
+        saveJSONFile(settings.getAll(), "forget-me-not-settings.json");
     }
 
     private onReset() {
-        const dialog = dialogs.createDialog('confirm', 'reset_dialog_title', {
+        const dialog = dialogs.createDialog("confirm", "reset_dialog_title", {
             confirm_settings_and_rules: () => {
                 dialog.close();
                 settings.setAll({
-                    domainsToClean: settings.get('domainsToClean')
+                    domainsToClean: settings.get("domainsToClean")
                 });
             },
             confirm_settings_only: () => {
                 dialog.close();
                 settings.setAll({
-                    domainsToClean: settings.get('domainsToClean'),
-                    rules: settings.get('rules'),
-                    fallbackRule: settings.get('fallbackRule'),
-                    whitelistNoTLD: settings.get('whitelistNoTLD')
+                    domainsToClean: settings.get("domainsToClean"),
+                    rules: settings.get("rules"),
+                    fallbackRule: settings.get("fallbackRule"),
+                    whitelistNoTLD: settings.get("whitelistNoTLD")
                 });
             },
             confirm_cancel: () => {
                 dialog.close();
             }
         });
-        dialog.contentNode.setAttribute('data-i18n', 'reset_dialog_content');
+        dialog.contentNode.setAttribute("data-i18n", "reset_dialog_content");
         dialog.buttonNodes.confirm_settings_only.focus();
         translateChildren(dialog.domNode);
     }
@@ -221,7 +221,7 @@ class Popup {
     private rebuildMatchingRulesList() {
         if (this.hostname) {
             const matchingRules = settings.getMatchingRules(this.hostname);
-            const list = byId('rules_list_current_tab') as HTMLElement;
+            const list = byId("rules_list_current_tab") as HTMLElement;
             this.matchingRulesListItems = recreateRuleListItems(this.matchingRulesListItems, matchingRules, list);
         }
     }

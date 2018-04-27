@@ -77,18 +77,18 @@ const validCookieName = /^[!,#,\$,%,&,',\*,\+,\-,\.,0-9,:,;,A-Z,\\,\^,_,`,a-z,\|
 function isValidExpressionPart(part: string) {
     if (part.length === 0)
         return false;
-    if (part === '*')
+    if (part === "*")
         return true;
     return isAlNum.test(part[0]) && isAlNum.test(part[part.length - 1]) && isAlNumDash.test(part);
 }
 
 function isValidDomainExpression(exp: string) {
-    const parts = exp.split('.');
+    const parts = exp.split(".");
     return parts.length > 0 && parts.findIndex((p) => !isValidExpressionPart(p)) === -1;
 }
 
 export function isValidExpression(exp: string) {
-    const parts = exp.split('@');
+    const parts = exp.split("@");
     if (parts.length === 1)
         return isValidDomainExpression(exp);
     return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
@@ -99,30 +99,30 @@ function isValidRuleType(ruleType: RuleType) {
 }
 
 function getRegExForRule(rule: string) {
-    const parts = rule.split('.');
+    const parts = rule.split(".");
     const reParts = [];
-    if (parts[0] === '*') {
-        reParts.push('(^|\.)');
+    if (parts[0] === "*") {
+        reParts.push("(^|\.)");
         parts.shift();
     } else {
-        reParts.push('^');
+        reParts.push("^");
     }
     for (const part of parts) {
-        if (part === '*')
-            reParts.push('.*');
+        if (part === "*")
+            reParts.push(".*");
         else
             reParts.push(part);
-        reParts.push('.');
+        reParts.push(".");
     }
-    if (reParts[reParts.length - 1] === '.')
+    if (reParts[reParts.length - 1] === ".")
         reParts.pop();
-    return new RegExp(reParts.join(''));
+    return new RegExp(reParts.join(""));
 }
 
 function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
     const validRules: RuleDefinition[] = [];
     for (const ruleDef of rules) {
-        if (typeof (ruleDef.rule) === 'string' && expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
+        if (typeof (ruleDef.rule) === "string" && expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
             validRules.push({
                 rule: ruleDef.rule,
                 type: ruleDef.type
@@ -159,7 +159,7 @@ export class Settings {
         this.storage.get(null).then((map) => {
             this.map = map;
             const changedKeys = Object.getOwnPropertyNames(changes || map);
-            if (changedKeys.indexOf('rules')) {
+            if (changedKeys.indexOf("rules")) {
                 this.rebuildRules();
             }
             if (this.readyCallbacks) {
@@ -167,9 +167,9 @@ export class Settings {
                     callback();
                 this.readyCallbacks = null;
             }
-            if (typeof (messageUtil) !== 'undefined') {
-                messageUtil.send('settingsChanged', changedKeys); // to other background scripts
-                messageUtil.sendSelf('settingsChanged', changedKeys); // since the above does not fire on the same process
+            if (typeof (messageUtil) !== "undefined") {
+                messageUtil.send("settingsChanged", changedKeys); // to other background scripts
+                messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
             }
         });
     }
@@ -177,9 +177,9 @@ export class Settings {
     private rebuildRules() {
         this.rules = [];
         this.cookieRules = [];
-        const rules = this.get('rules');
+        const rules = this.get("rules");
         for (const rule of rules) {
-            const parts = rule.rule.split('@');
+            const parts = rule.rule.split("@");
             const isCookieRule = parts.length === 2;
             if (isCookieRule) {
                 this.cookieRules.push({
@@ -216,7 +216,7 @@ export class Settings {
 
     public setAll(json: any) {
         // Validate and throw out anything that is no longer valid
-        if (typeof (json) !== 'object')
+        if (typeof (json) !== "object")
             return false;
         if (json.rules) {
             if (!Array.isArray(json.rules))
@@ -229,12 +229,12 @@ export class Settings {
                 continue;
             if (!defaultSettings.hasOwnProperty(key)) {
                 if (!isNodeTest)
-                    console.warn('Unknown setting: ', key);
+                    console.warn("Unknown setting: ", key);
                 delete json[key];
             }
             if (typeof (defaultSettings[key]) !== typeof (json[key])) {
                 if (!isNodeTest)
-                    console.warn('Types do not match while importing setting: ', key, typeof (defaultSettings[key]), typeof (json[key]));
+                    console.warn("Types do not match while importing setting: ", key, typeof (defaultSettings[key]), typeof (json[key]));
                 delete json[key];
             }
         }
@@ -267,7 +267,7 @@ export class Settings {
 
     public set<K extends keyof SettingsTypeMap>(key: K, value: SettingsTypeMap[K]) {
         this.map[key] = value;
-        if (key === 'rules')
+        if (key === "rules")
             this.rebuildRules();
     }
 
@@ -284,7 +284,7 @@ export class Settings {
     }
 
     public hasBlockingRule() {
-        return this.get('fallbackRule') === RuleType.BLOCK || !!this.get('rules').find((r) => r.type === RuleType.BLOCK);
+        return this.get("fallbackRule") === RuleType.BLOCK || !!this.get("rules").find((r) => r.type === RuleType.BLOCK);
     }
 
     private getRuleTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
@@ -298,7 +298,7 @@ export class Settings {
     }
 
     public getRuleTypeForCookie(domain: string, name: string) {
-        if (this.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+        if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
             return RuleType.WHITE;
         const matchingRules = this.getMatchingRules(domain, name);
         if (matchingRules.length)
@@ -307,12 +307,12 @@ export class Settings {
     }
 
     public getRuleTypeForDomain(domain: string) {
-        if (this.get('whitelistNoTLD') && domain.indexOf('.') === -1)
+        if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
             return RuleType.WHITE;
         const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length)
             return this.getRuleTypeFromMatchingRules(matchingRules);
-        return this.get('fallbackRule');
+        return this.get("fallbackRule");
     }
 }
 export const settings = new Settings();

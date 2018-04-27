@@ -13,10 +13,10 @@ describe("Message Utility", () => {
         receivers.forEach((r) => r.clear());
         receivers.length = 0;
     });
-    const event1 = 'event1';
-    const event2 = 'event2';
-    const data1 = 'mydata1';
-    const data2 = 'mydata2';
+    const event1 = "event1";
+    const event2 = "event2";
+    const data1 = "mydata1";
+    const data2 = "mydata2";
 
     describe("sendSelf", () => {
         it("should call receive methods in order", () => {
@@ -53,7 +53,7 @@ describe("Message Utility", () => {
     describe("send", () => {
         it("should call receive methods in order", () => {
             const spy = createSpy();
-            const sender = { id: 'mock' };
+            const sender = { id: "mock" };
             receivers.push(messageUtil.receive(event1, spy.bind(1)));
             receivers.push(messageUtil.receive(event1, spy.bind(2)));
             receivers.push(messageUtil.receive(event2, spy.bind(3)));

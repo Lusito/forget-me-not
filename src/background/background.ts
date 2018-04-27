@@ -33,7 +33,7 @@ export class Background implements TabWatcherListener {
     }
 
     public onStartup() {
-        if (settings.get('startup.enabled'))
+        if (settings.get("startup.enabled"))
             this.runCleanup(true);
     }
 
@@ -47,27 +47,27 @@ export class Background implements TabWatcherListener {
 
     private runCleanup(startup: boolean) {
         const typeSet: BrowsingData.DataTypeSet = {
-            history: settings.get(startup ? 'startup.history' : 'cleanAll.history'),
-            downloads: settings.get(startup ? 'startup.downloads' : 'cleanAll.downloads'),
-            formData: settings.get(startup ? 'startup.formData' : 'cleanAll.formData'),
-            passwords: settings.get(startup ? 'startup.passwords' : 'cleanAll.passwords'),
-            indexedDB: settings.get(startup ? 'startup.indexedDB' : 'cleanAll.indexedDB'),
-            pluginData: settings.get(startup ? 'startup.pluginData' : 'cleanAll.pluginData'),
-            serverBoundCertificates: settings.get(startup ? 'startup.serverBoundCertificates' : 'cleanAll.serverBoundCertificates'),
-            serviceWorkers: settings.get(startup ? 'startup.serviceWorkers' : 'cleanAll.serviceWorkers')
+            history: settings.get(startup ? "startup.history" : "cleanAll.history"),
+            downloads: settings.get(startup ? "startup.downloads" : "cleanAll.downloads"),
+            formData: settings.get(startup ? "startup.formData" : "cleanAll.formData"),
+            passwords: settings.get(startup ? "startup.passwords" : "cleanAll.passwords"),
+            indexedDB: settings.get(startup ? "startup.indexedDB" : "cleanAll.indexedDB"),
+            pluginData: settings.get(startup ? "startup.pluginData" : "cleanAll.pluginData"),
+            serverBoundCertificates: settings.get(startup ? "startup.serverBoundCertificates" : "cleanAll.serverBoundCertificates"),
+            serviceWorkers: settings.get(startup ? "startup.serviceWorkers" : "cleanAll.serviceWorkers")
         };
         const options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
-        const protectOpenDomains = startup || settings.get('cleanAll.protectOpenDomains');
-        if (settings.get(startup ? 'startup.cookies' : 'cleanAll.cookies')) {
-            if (settings.get(startup ? 'startup.cookies.applyRules' : 'cleanAll.cookies.applyRules'))
+        const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
+        if (settings.get(startup ? "startup.cookies" : "cleanAll.cookies")) {
+            if (settings.get(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules"))
                 this.cleanCookiesWithRulesNow(startup, protectOpenDomains);
             else
                 typeSet.cookies = true;
         }
-        if (settings.get(startup ? 'startup.localStorage' : 'cleanAll.localStorage')) {
-            if (settings.get(startup ? 'startup.localStorage.applyRules' : 'cleanAll.localStorage.applyRules')) {
+        if (settings.get(startup ? "startup.localStorage" : "cleanAll.localStorage")) {
+            if (settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
                 browser.cookies.getAllCookieStores().then((cookieStores) => {
                     const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
                     for (const store of cookieStores)
@@ -75,7 +75,7 @@ export class Background implements TabWatcherListener {
                 });
             } else {
                 typeSet.localStorage = true;
-                settings.set('domainsToClean', {});
+                settings.set("domainsToClean", {});
                 settings.save();
             }
         }
@@ -83,7 +83,7 @@ export class Background implements TabWatcherListener {
     }
 
     private getDomainsToClean(ignoreGrayList: boolean, protectOpenDomains: boolean): string[] {
-        const domainsToClean = settings.get('domainsToClean');
+        const domainsToClean = settings.get("domainsToClean");
         const result = [];
         for (const domain in domainsToClean) {
             if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList, protectOpenDomains))
@@ -104,9 +104,9 @@ export class Background implements TabWatcherListener {
     }
 
     private runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
-        if (storeId.indexOf('private') >= 0)
+        if (storeId.indexOf("private") >= 0)
             return;
-        if (storeId.indexOf('firefox') >= 0)
+        if (storeId.indexOf("firefox") >= 0)
             callback();
         else {
             browser.cookies.getAllCookieStores().then((cookieStores) => {
@@ -130,11 +130,11 @@ export class Background implements TabWatcherListener {
             this.runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
                 this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
                 // Cookies set by javascript can't be denied, but can be removed instantly.
-                const allowSubDomains = changeInfo.cookie.domain.startsWith('.');
+                const allowSubDomains = changeInfo.cookie.domain.startsWith(".");
                 const rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
                 if (settings.getRuleTypeForCookie(rawDomain, changeInfo.cookie.name) === RuleType.BLOCK)
                     removeCookie(changeInfo.cookie);
-                else if (settings.get('cleanThirdPartyCookies.enabled'))
+                else if (settings.get("cleanThirdPartyCookies.enabled"))
                     this.removeCookieIfThirdparty(changeInfo.cookie);
             });
         }
@@ -157,7 +157,7 @@ export class Background implements TabWatcherListener {
                 else if (this.isThirdpartyCookie(cookie))
                     removeCookie(cookie);
             });
-            exec.restart(settings.get('cleanThirdPartyCookies.delay') * 60 * 1000);
+            exec.restart(settings.get("cleanThirdPartyCookies.delay") * 60 * 1000);
         }
     }
 
@@ -193,8 +193,8 @@ export class Background implements TabWatcherListener {
                     if (hostname)
                         badge = getBadgeForRuleType(settings.getRuleTypeForDomain(hostname));
                     let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
-                    if (!settings.get('showBadge'))
-                        text = '';
+                    if (!settings.get("showBadge"))
+                        text = "";
                     browser.browserAction.setBadgeText({ text, tabId: tab.id });
                     browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
                     browser.browserAction.enable(tab.id);
@@ -207,9 +207,9 @@ export class Background implements TabWatcherListener {
 
     public onDomainEnter(cookieStoreId: string, hostname: string): void {
         if (removeLocalStorageByHostname) {
-            const domainsToClean = { ...settings.get('domainsToClean') };
+            const domainsToClean = { ...settings.get("domainsToClean") };
             domainsToClean[hostname] = true;
-            settings.set('domainsToClean', domainsToClean);
+            settings.set("domainsToClean", domainsToClean);
             settings.save();
         }
     }
@@ -220,13 +220,13 @@ export class Background implements TabWatcherListener {
 
     private updateBrowserAction() {
         const path: { [s: string]: string } = {};
-        const suffix = this.snoozing ? 'z' : '';
+        const suffix = this.snoozing ? "z" : "";
         for (const size of [16, 32, 48, 64, 96, 128])
             path[size] = `icons/icon${size}${suffix}.png`;
 
         browser.browserAction.setIcon({ path });
         browser.browserAction.setTitle({
-            title: browser.i18n.getMessage(this.snoozing ? 'actionTitleSnooze' : 'actionTitle')
+            title: browser.i18n.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle")
         });
     }
 
@@ -246,7 +246,7 @@ export class Background implements TabWatcherListener {
     }
 
     public sendSnoozingState() {
-        messageUtil.send('onSnoozingState', this.snoozing);
+        messageUtil.send("onSnoozingState", this.snoozing);
     }
 }
 

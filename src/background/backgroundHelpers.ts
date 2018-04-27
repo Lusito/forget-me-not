@@ -8,7 +8,7 @@ import { getDomain } from "tldjs";
 import { RuleType } from "../lib/settingsSignature";
 
 export function getFirstPartyCookieDomain(domain: string) {
-    const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
+    const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
     return getDomain(rawDomain) || rawDomain;
 }
 
@@ -23,10 +23,10 @@ const keyValueRegexpSplit = /=(.+)/;
 
 export function parseSetCookieHeader(header: string, fallbackDomain: string): SetCookieHeader | null {
     try {
-        const parts = header.split(';');
+        const parts = header.split(";");
         const kv = parts[0].split(keyValueRegexpSplit);
         const domainPart = parts.find((part, i) => i > 0 && cookieDomainRegexp.test(part.trim()));
-        const domain = domainPart && domainPart.split('=')[1].trim();
+        const domain = domainPart && domainPart.split("=")[1].trim();
         // fixme: get first party domain?
         return {
             name: kv[0].trim(),

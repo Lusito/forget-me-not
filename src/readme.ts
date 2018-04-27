@@ -8,7 +8,7 @@ import { translateChildren, byId } from "./lib/htmlUtils";
 import { TabSupport } from "./lib/tabSupport";
 
 class Readme {
-    private tabSupport = new TabSupport(byId('mainTabContainer') as HTMLElement);
+    private tabSupport = new TabSupport(byId("mainTabContainer") as HTMLElement);
     public constructor() {
         this.tabSupport; // shut up typescript
         translateChildren(document.body);

@@ -27,7 +27,7 @@ const delayCookieRemoveNotification = new DelayedExecution(() => {
     let totalCount = 0;
     for (const domain in cookieRemovalCounts) {
         const count = cookieRemovalCounts[domain];
-        lines.push(browser.i18n.getMessage('cookie_cleanup_notification_line', [domain, count]));
+        lines.push(browser.i18n.getMessage("cookie_cleanup_notification_line", [domain, count]));
         totalCount += count;
     }
     cookieRemoveNotificationStatus.starting = true;
@@ -36,8 +36,8 @@ const delayCookieRemoveNotification = new DelayedExecution(() => {
         priority: -2,
         type: "basic",
         iconUrl: browser.extension.getURL("icons/icon96.png"),
-        title: browser.i18n.getMessage('cookie_cleanup_notification_title', totalCount),
-        message: lines.join('\n')
+        title: browser.i18n.getMessage("cookie_cleanup_notification_title", totalCount),
+        message: lines.join("\n")
     }).then((s) => {
         cookieRemoveNotificationStatus.starting = false;
         if (cookieRemoveNotificationStatus.updateOnStart)
@@ -59,18 +59,18 @@ browser.notifications.onClosed.addListener((id) => {
 });
 
 export function removeCookie(cookie: Cookies.Cookie) {
-    const allowSubDomains = cookie.domain.startsWith('.');
+    const allowSubDomains = cookie.domain.startsWith(".");
     const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
     const details: Cookies.RemoveDetailsType = {
         name: cookie.name,
-        url: (cookie.secure ? 'https://' : 'http://') + rawDomain + cookie.path,
+        url: (cookie.secure ? "https://" : "http://") + rawDomain + cookie.path,
         storeId: cookie.storeId
     };
     if (isFirefox && browserInfo.versionAsNumber >= 59)
         details.firstPartyDomain = cookie.firstPartyDomain;
 
     browser.cookies.remove(details);
-    if (settings.get('showCookieRemovalNotification')) {
+    if (settings.get("showCookieRemovalNotification")) {
         cookieRemovalCounts[rawDomain] = (cookieRemovalCounts[rawDomain] || 0) + 1;
         delayCookieRemoveNotification.restart(500);
     }
@@ -79,10 +79,10 @@ export function removeCookie(cookie: Cookies.Cookie) {
 export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
     // Fixme: use cookieStoreId when it's supported by firefox
     if (removeLocalStorageByHostname) {
-        const domainsToClean = { ...settings.get('domainsToClean') };
+        const domainsToClean = { ...settings.get("domainsToClean") };
         for (const hostname of hostnames)
             delete domainsToClean[hostname];
-        settings.set('domainsToClean', domainsToClean);
+        settings.set("domainsToClean", domainsToClean);
         settings.save();
         browser.browsingData.remove({
             originTypes: { unprotectedWeb: true },

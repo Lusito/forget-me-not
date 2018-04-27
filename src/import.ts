@@ -10,29 +10,29 @@ import { loadJSONFile, readJSONFile } from "./lib/fileHelper";
 import { browser } from "webextension-polyfill-ts";
 
 settings.onReady(() => {
-    const dropzone = byId('dropzone') as HTMLElement;
+    const dropzone = byId("dropzone") as HTMLElement;
     function onFileLoaded(json: any) {
         if (json && settings.setAll(json))
-            dropzone.textContent = browser.i18n.getMessage('import_success_close_now');
+            dropzone.textContent = browser.i18n.getMessage("import_success_close_now");
         else
-            dropzone.textContent = browser.i18n.getMessage('import_failure') + ' ' + browser.i18n.getMessage('import_by_drop_or_click');
+            dropzone.textContent = browser.i18n.getMessage("import_failure") + " " + browser.i18n.getMessage("import_by_drop_or_click");
     }
-    on(dropzone, 'dragover', (evt) => {
+    on(dropzone, "dragover", (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'copy';
+        evt.dataTransfer.dropEffect = "copy";
     });
-    on(dropzone, 'drop', (evt) => {
+    on(dropzone, "drop", (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
         if (evt.dataTransfer.files.length)
             readJSONFile(evt.dataTransfer.files[0], onFileLoaded);
     });
 
-    on(dropzone, 'click', (evt) => {
+    on(dropzone, "click", (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
         loadJSONFile(onFileLoaded);
     });
-    dropzone.textContent = browser.i18n.getMessage('import_by_drop_or_click');
+    dropzone.textContent = browser.i18n.getMessage("import_by_drop_or_click");
 });

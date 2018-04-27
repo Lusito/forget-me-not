@@ -17,13 +17,13 @@ export class RecentlyAccessedDomains {
 
     public constructor() {
         this.receivers = [
-            messageUtil.receive('getRecentlyAccessedDomains', (params: any, sender: any) => {
-                messageUtil.send('onRecentlyAccessedDomains', this.get());
+            messageUtil.receive("getRecentlyAccessedDomains", (params: any, sender: any) => {
+                messageUtil.send("onRecentlyAccessedDomains", this.get());
             }),
-            messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-                if (changedKeys.indexOf('logRAD.enabled') !== -1 || changedKeys.indexOf('logRAD.limit') !== -1) {
+            messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+                if (changedKeys.indexOf("logRAD.enabled") !== -1 || changedKeys.indexOf("logRAD.limit") !== -1) {
                     this.applySettings();
-                    messageUtil.send('onRecentlyAccessedDomains', this.get());
+                    messageUtil.send("onRecentlyAccessedDomains", this.get());
                 }
             })
         ];
@@ -44,8 +44,8 @@ export class RecentlyAccessedDomains {
     }
 
     private applySettings() {
-        this.enabled = settings.get('logRAD.enabled');
-        this.limit = settings.get('logRAD.limit');
+        this.enabled = settings.get("logRAD.enabled");
+        this.limit = settings.get("logRAD.limit");
         this.applyLimit();
     }
 
@@ -68,7 +68,7 @@ export class RecentlyAccessedDomains {
 
     public add(domain: string) {
         if (this.enabled && domain) {
-            if (domain.startsWith('.'))
+            if (domain.startsWith("."))
                 domain = domain.substr(1);
             const index = this.domains.indexOf(domain);
             if (index !== 0) {

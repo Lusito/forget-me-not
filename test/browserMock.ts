@@ -9,9 +9,9 @@ import { assert } from "chai";
 
 // @ts-ignore
 // tslint:disable-next-line:no-var-requires
-const parseUrl = require('url').parse;
+const parseUrl = require("url").parse;
 // @ts-ignore
-const glob = (function () { return this; }()) || Function('return this')();
+const glob = (function () { return this; }()) || Function("return this")();
 glob.URL = function (url: string) {
     const parsed = parseUrl(url);
     for (const key in parsed) {
@@ -154,7 +154,7 @@ class BrowserRuntimeMock {
 
     public sendMessage(message: any, options?: Runtime.SendMessageOptionsType): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.onMessage.emit(message, { id: 'mock' }, () => undefined);
+            this.onMessage.emit(message, { id: "mock" }, () => undefined);
             resolve();
         });
     }
@@ -193,7 +193,7 @@ class StorageAreaMock {
                 const value = items[key];
                 this.setInternal(key, value, changes);
             }
-            browserMock.storage.onChanged.emit(changes, 'local');
+            browserMock.storage.onChanged.emit(changes, "local");
             resolve();
         });
     }
@@ -215,7 +215,7 @@ class StorageAreaMock {
                 for (const key of keys)
                     this.removeInternal(key, changes);
             }
-            browserMock.storage.onChanged.emit(changes, 'local');
+            browserMock.storage.onChanged.emit(changes, "local");
             resolve();
         });
     }

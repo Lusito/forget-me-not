@@ -7,15 +7,15 @@
 import { MouseEventCallback, createButton, translateChildren, on } from "../lib/htmlUtils";
 
 export function createDialog(className: string, titleI18nKey: string, buttons: { [s: string]: MouseEventCallback }) {
-    const overlay = document.createElement('div');
-    overlay.className = 'dialogOverlay';
-    const dialog = document.createElement('div');
-    dialog.className = 'dialog ' + className;
-    const titleNode = document.createElement('h2');
-    titleNode.setAttribute('data-i18n', titleI18nKey);
-    const contentNode = document.createElement('div');
-    const buttonsNode = document.createElement('div');
-    buttonsNode.className = 'dialogButtons';
+    const overlay = document.createElement("div");
+    overlay.className = "dialogOverlay";
+    const dialog = document.createElement("div");
+    dialog.className = "dialog " + className;
+    const titleNode = document.createElement("h2");
+    titleNode.setAttribute("data-i18n", titleI18nKey);
+    const contentNode = document.createElement("div");
+    const buttonsNode = document.createElement("div");
+    buttonsNode.className = "dialogButtons";
     dialog.appendChild(titleNode);
     dialog.appendChild(contentNode);
     dialog.appendChild(buttonsNode);
@@ -36,7 +36,7 @@ export function createDialog(className: string, titleI18nKey: string, buttons: {
 }
 
 export function alert(titleI18nKey: string, contentI18nKey: string, content?: string, callback?: () => void) {
-    const dialog = createDialog('alert', titleI18nKey, {
+    const dialog = createDialog("alert", titleI18nKey, {
         alert_ok: () => {
             dialog.close();
             if (callback)
@@ -44,7 +44,7 @@ export function alert(titleI18nKey: string, contentI18nKey: string, content?: st
         }
     });
     if (contentI18nKey)
-        dialog.contentNode.setAttribute('data-i18n', contentI18nKey);
+        dialog.contentNode.setAttribute("data-i18n", contentI18nKey);
     if (content)
         dialog.contentNode.textContent = content;
     dialog.buttonNodes.alert_ok.focus();
@@ -52,7 +52,7 @@ export function alert(titleI18nKey: string, contentI18nKey: string, content?: st
 }
 
 export function confirm(titleI18nKey: string, contentI18nKey: string | null, content: string | null, callback: (value: boolean) => void) {
-    const dialog = createDialog('confirm', titleI18nKey, {
+    const dialog = createDialog("confirm", titleI18nKey, {
         confirm_ok: () => {
             dialog.close();
             callback(true);
@@ -63,7 +63,7 @@ export function confirm(titleI18nKey: string, contentI18nKey: string | null, con
         }
     });
     if (contentI18nKey)
-        dialog.contentNode.setAttribute('data-i18n', contentI18nKey);
+        dialog.contentNode.setAttribute("data-i18n", contentI18nKey);
     if (content)
         dialog.contentNode.textContent = content;
     dialog.buttonNodes.confirm_ok.focus();
@@ -71,9 +71,9 @@ export function confirm(titleI18nKey: string, contentI18nKey: string | null, con
 }
 
 export function prompt(titleI18nKey: string, value: string, callback: (value: string | null) => void) {
-    const input = document.createElement('input');
+    const input = document.createElement("input");
     input.value = value;
-    const dialog = createDialog('prompt', titleI18nKey, {
+    const dialog = createDialog("prompt", titleI18nKey, {
         prompt_ok: () => {
             dialog.close();
             callback(input.value);
@@ -85,8 +85,8 @@ export function prompt(titleI18nKey: string, value: string, callback: (value: st
     });
     dialog.contentNode.appendChild(input);
     input.focus();
-    input.addEventListener('keydown', (e) => undefined);
-    on(input, 'keydown', (e) => {
+    input.addEventListener("keydown", (e) => undefined);
+    on(input, "keydown", (e) => {
         if (e.keyCode === 13) {
             dialog.close();
             callback(input.value);

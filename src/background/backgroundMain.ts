@@ -14,27 +14,27 @@ const UPDATE_NOTIFICATION_ID = "UpdateNotification";
 
 settings.onReady(() => {
     const background = new Background();
-    messageUtil.receive('cleanAllNow', () => background.cleanAllNow());
-    messageUtil.receive('cleanUrlNow', (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
-    messageUtil.receive('toggleSnoozingState', () => background.toggleSnoozingState());
-    messageUtil.receive('getSnoozingState', () => background.sendSnoozingState());
+    messageUtil.receive("cleanAllNow", () => background.cleanAllNow());
+    messageUtil.receive("cleanUrlNow", (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
+    messageUtil.receive("toggleSnoozingState", () => background.toggleSnoozingState());
+    messageUtil.receive("getSnoozingState", () => background.sendSnoozingState());
     browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
 
     // listen for tab changes to update badge
     const badgeUpdater = () => background.updateBadge();
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
-    messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-        if (changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('fallbackRule') !== -1 || changedKeys.indexOf('whitelistNoTLD') !== -1
-            || changedKeys.indexOf('showBadge') !== -1)
+    messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        if (changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("fallbackRule") !== -1 || changedKeys.indexOf("whitelistNoTLD") !== -1
+            || changedKeys.indexOf("showBadge") !== -1)
             background.updateBadge();
     });
 
     // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.
-    messageUtil.receive('import', () => {
+    messageUtil.receive("import", () => {
         loadJSONFile((json) => {
             if (json && settings.setAll(json)) {
-                console.log('success');
+                console.log("success");
             }
         });
     });
@@ -43,7 +43,7 @@ settings.onReady(() => {
         if (id === UPDATE_NOTIFICATION_ID) {
             browser.tabs.create({
                 active: true,
-                url: browser.runtime.getURL("views/readme.html") + '#changelog'
+                url: browser.runtime.getURL("views/readme.html") + "#changelog"
             });
         }
     });
@@ -52,16 +52,16 @@ settings.onReady(() => {
         background.onStartup();
 
         const manifestVersion = browser.runtime.getManifest().version;
-        if (settings.get('version') !== manifestVersion) {
-            settings.set('version', manifestVersion);
+        if (settings.get("version") !== manifestVersion) {
+            settings.set("version", manifestVersion);
             settings.save();
 
-            if (settings.get('showUpdateNotification')) {
+            if (settings.get("showUpdateNotification")) {
                 browser.notifications.create(UPDATE_NOTIFICATION_ID, {
                     type: "basic",
                     iconUrl: browser.extension.getURL("icons/icon96.png"),
-                    title: browser.i18n.getMessage('update_notification_title'),
-                    message: browser.i18n.getMessage('update_notification_message')
+                    title: browser.i18n.getMessage("update_notification_title"),
+                    message: browser.i18n.getMessage("update_notification_message")
                 });
             }
         }

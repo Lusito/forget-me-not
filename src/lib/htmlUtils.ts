@@ -16,7 +16,7 @@ export function getFirstChildWithClass(element: HTMLElement, className: string) 
         if (element.children[i].classList.contains(className))
             return element.children[i] as HTMLElement;
     }
-    throw new Error('Could not find child with class ' + className);
+    throw new Error("Could not find child with class " + className);
 }
 
 export function getChildrenWithTagName(element: HTMLElement, tagName: string) {
@@ -30,7 +30,7 @@ export function getChildrenWithTagName(element: HTMLElement, tagName: string) {
 }
 
 export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
-    on(a, 'click', (e) => {
+    on(a, "click", (e) => {
         e.stopImmediatePropagation();
         e.preventDefault();
         browser.tabs.create({
@@ -42,11 +42,11 @@ export function makeLinkOpenAsTab(a: HTMLAnchorElement) {
 }
 
 function setMarkdown(element: HTMLElement, value: string) {
-    const doc = domParser.parseFromString(md.render(value), 'text/html');
+    const doc = domParser.parseFromString(md.render(value), "text/html");
     removeAllChildren(element);
     for (const child of doc.body.childNodes)
         element.appendChild(child);
-    const links = element.querySelectorAll('a');
+    const links = element.querySelectorAll("a");
     for (const link of links)
         makeLinkOpenAsTab(link);
 }
@@ -62,25 +62,25 @@ export function on<K extends keyof HTMLElementEventMap>(node: Node, event: K, ca
 export function translateElement(element: HTMLElement) {
     const i18n = element.dataset.i18n;
     if (i18n) {
-        let parts = i18n.split('?');
+        let parts = i18n.split("?");
         const id = parts[0];
         parts.splice(0, 1);
         // default to text
         if (parts.length === 0)
-            parts = ['text'];
+            parts = ["text"];
         for (const attribute of parts) {
-            if (attribute === 'text')
+            if (attribute === "text")
                 element.textContent = browser.i18n.getMessage(id);
-            else if (attribute === 'markdown')
+            else if (attribute === "markdown")
                 setMarkdown(element, browser.i18n.getMessage(id));
             else
-                (element as any)[attribute] = browser.i18n.getMessage(id + '@' + attribute);
+                (element as any)[attribute] = browser.i18n.getMessage(id + "@" + attribute);
         }
     }
 }
 
 export function translateChildren(parent: NodeSelector) {
-    const elements = parent.querySelectorAll('[data-i18n]');
+    const elements = parent.querySelectorAll("[data-i18n]");
     for (const element of elements)
         translateElement(element as HTMLElement);
 }
@@ -107,9 +107,9 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(doc: Docume
 }
 
 export function addLink(doc: Document, path: string) {
-    const head = doc.querySelector('head');
+    const head = doc.querySelector("head");
     if (head) {
-        createElement(doc, head, 'link', {
+        createElement(doc, head, "link", {
             href: browser.runtime.getURL(path),
             type: "text/css",
             rel: "stylesheet"
@@ -120,8 +120,8 @@ export function addLink(doc: Document, path: string) {
 export type MouseEventCallback = (this: HTMLInputElement, ev: MouseEvent) => any;
 
 export function createButton(labelI18nKey: string, callback: MouseEventCallback) {
-    const button = document.createElement('button');
-    button.setAttribute('data-i18n', labelI18nKey);
-    on(button, 'click', callback);
+    const button = document.createElement("button");
+    button.setAttribute("data-i18n", labelI18nKey);
+    on(button, "click", callback);
     return button;
 }

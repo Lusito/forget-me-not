@@ -18,25 +18,25 @@ function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
     const key = element.dataset.settingsKey;
     if (key) {
         if (settingsInfoMap[key]) {
-            console.error('Setting already registered: ' + key, element, settingsInfoMap[key].element);
+            console.error("Setting already registered: " + key, element, settingsInfoMap[key].element);
             return;
         }
         settingsInfoMap[key] = { element };
 
         if (element.type === "checkbox") {
-            on(element, 'click', () => {
+            on(element, "click", () => {
                 settings.set(key as any, (element as HTMLInputElement).checked);
                 settings.save();
             });
         } else {
-            on(element, 'change', () => {
-                const value = element.type === 'number' ? parseFloat(element.value) : element.value;
+            on(element, "change", () => {
+                const value = element.type === "number" ? parseFloat(element.value) : element.value;
                 settings.set(key as any, value);
                 settings.save();
             });
         }
     } else {
-        console.error('data-settings-key is empty for element', element);
+        console.error("data-settings-key is empty for element", element);
     }
 }
 
@@ -45,7 +45,7 @@ export function updateFromSettings() {
         const info = settingsInfoMap[key];
         if (info) {
             if (!info.permanentlyUnchecked) {
-                if (info.element.type === 'checkbox')
+                if (info.element.type === "checkbox")
                     (info.element as HTMLInputElement).checked = settings.get(key as any);
                 else
                     info.element.value = settings.get(key as any);
@@ -55,9 +55,9 @@ export function updateFromSettings() {
 }
 
 export function connectSettings(parent: NodeSelector) {
-    for (const element of parent.querySelectorAll('input[data-settings-key]'))
+    for (const element of parent.querySelectorAll("input[data-settings-key]"))
         connectInputSetting(element as HTMLInputElement);
-    for (const element of parent.querySelectorAll('select[data-settings-key]'))
+    for (const element of parent.querySelectorAll("select[data-settings-key]"))
         connectInputSetting(element as HTMLSelectElement);
     updateFromSettings();
 }
@@ -68,12 +68,12 @@ export function permanentDisableSettings(keys: string[], uncheck?: boolean) {
         if (info) {
             info.permanentlyDisabled = true;
             info.element.disabled = true;
-            if (uncheck && info.element.type === 'checkbox') {
+            if (uncheck && info.element.type === "checkbox") {
                 (info.element as HTMLInputElement).checked = false;
                 info.permanentlyUnchecked = true;
             }
         } else {
-            console.error('Element not found: ', key);
+            console.error("Element not found: ", key);
         }
     }
 }

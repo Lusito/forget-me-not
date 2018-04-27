@@ -51,15 +51,15 @@ export class RuleList {
 
     public constructor(inputId: string, listId: string, hintId: string, addId: string) {
         this.input = byId(inputId) as HTMLInputElement;
-        on(this.input, 'keyup', this.onRulesInputKeyUp.bind(this));
+        on(this.input, "keyup", this.onRulesInputKeyUp.bind(this));
         this.list = byId(listId) as HTMLElement;
         this.hint = byId(hintId) as HTMLElement;
         this.rebuildRulesList();
-        messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf('rules') !== -1)
+        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+            if (changedKeys.indexOf("rules") !== -1)
                 this.rebuildRulesList();
         });
-        on(byId(addId) as HTMLElement, 'click', () => this.addRule(RuleType.WHITE));
+        on(byId(addId) as HTMLElement, "click", () => this.addRule(RuleType.WHITE));
     }
 
     public setInput(value: string) {
@@ -83,12 +83,12 @@ export class RuleList {
         const value = this.input.value.trim().toLowerCase();
         if (value.length === 0) {
             for (const detail of this.items)
-                detail.itemNode.style.display = '';
+                detail.itemNode.style.display = "";
         }
         else {
             for (const detail of this.items) {
                 const visible = detail.ruleDef.rule.indexOf(value) !== -1;
-                detail.itemNode.style.display = visible ? '' : 'none';
+                detail.itemNode.style.display = visible ? "" : "none";
             }
         }
     }
@@ -96,25 +96,25 @@ export class RuleList {
     private addRule(type: RuleType) {
         const rule = this.input.value.trim().toLowerCase();
         if (isValidExpression(rule)) {
-            const rules = settings.get('rules').slice();
+            const rules = settings.get("rules").slice();
             const entry = rules.find((r) => r.rule === rule);
             if (entry)
                 entry.type = type;
             else
                 rules.push({ type, rule });
 
-            settings.set('rules', rules);
+            settings.set("rules", rules);
             settings.save();
         }
     }
 
     private updateRulesHint(validExpression: boolean, empty: boolean) {
-        this.hint.textContent = empty ? '' : browser.i18n.getMessage(validExpression ? 'rules_hint_add' : 'rules_hint_invalid');
-        this.hint.className = validExpression ? '' : 'error';
+        this.hint.textContent = empty ? "" : browser.i18n.getMessage(validExpression ? "rules_hint_add" : "rules_hint_invalid");
+        this.hint.className = validExpression ? "" : "error";
     }
 
     private rebuildRulesList() {
-        const rules = settings.get('rules').slice();
+        const rules = settings.get("rules").slice();
         for (const rule of rules)
             rule.rule = rule.rule.toLowerCase();
         rules.sort(sortByRule);

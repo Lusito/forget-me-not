@@ -10,7 +10,7 @@ import { isFirefox, isNodeTest } from "../lib/browserInfo";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { getDomain } from "tldjs";
 
-export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
+export const DEFAULT_COOKIE_STORE_ID = isFirefox ? "firefox-default" : "0";
 
 interface TabInfo {
     tabId: number;
@@ -77,7 +77,7 @@ export class TabWatcher {
             const previousHostname = tabInfo.hostname;
             tabInfo.hostname = hostname;
             tabInfo.hostnameFP = getDomain(hostname) || hostname;
-            tabInfo.nextHostname = tabInfo.nextHostnameFP = '';
+            tabInfo.nextHostname = tabInfo.nextHostnameFP = "";
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
@@ -99,7 +99,7 @@ export class TabWatcher {
     private getTab(tabId: number) {
         browser.tabs.get(tabId).then((tab) => {
             if (!tab.incognito && !this.tabInfos[tabId]) {
-                const hostname = tab.url ? getValidHostname(tab.url) : '';
+                const hostname = tab.url ? getValidHostname(tab.url) : "";
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
                 if (hostname && this.recentlyAccessedDomains)
                     this.recentlyAccessedDomains.add(hostname);
@@ -110,7 +110,7 @@ export class TabWatcher {
     private setTabInfo(tabId: number, hostname: string, cookieStoreId?: string) {
         cookieStoreId = cookieStoreId || DEFAULT_COOKIE_STORE_ID;
         this.checkDomainEnter(cookieStoreId, hostname);
-        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, hostnameFP: getDomain(hostname) || hostname, nextHostname: '', nextHostnameFP: '', cookieStoreId };
+        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, hostnameFP: getDomain(hostname) || hostname, nextHostname: "", nextHostnameFP: "", cookieStoreId };
         let list = this.tabInfosByCookieStore[cookieStoreId];
         if (!list)
             list = this.tabInfosByCookieStore[cookieStoreId] = [tabInfo];
@@ -146,7 +146,7 @@ export class TabWatcher {
 
     private onTabCreated(tab: Tabs.Tab) {
         if (tab.id && !tab.incognito) {
-            const hostname = tab.url ? getValidHostname(tab.url) : '';
+            const hostname = tab.url ? getValidHostname(tab.url) : "";
             const tabInfo = this.tabInfos[tab.id];
             if (tabInfo) {
                 tabInfo.hostname = hostname;
@@ -166,7 +166,7 @@ export class TabWatcher {
                 console.warn(`No info about tabId ${tabId} available`);
             return false;
         }
-        const rawDomain = domain.startsWith('.') ? domain.substr(1) : domain;
+        const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
         const domainFP = getDomain(rawDomain) || rawDomain;
         return tabInfo.hostnameFP !== domainFP && tabInfo.nextHostnameFP !== domainFP;
     }

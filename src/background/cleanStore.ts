@@ -29,7 +29,7 @@ export class CleanStore {
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
         this.removeCookies((cookie) => {
-            const allowSubDomains = cookie.domain.startsWith('.');
+            const allowSubDomains = cookie.domain.startsWith(".");
             const match = allowSubDomains ? (domain.endsWith(cookie.domain) || cookie.domain.substr(1) === domain) : (cookie.domain === domain);
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
         });
@@ -52,11 +52,11 @@ export class CleanStore {
     }
 
     private cleanByDomainWithRulesNow(domain: string) {
-        if (settings.get('domainLeave.enabled')) {
-            if (settings.get('domainLeave.cookies'))
+        if (settings.get("domainLeave.enabled")) {
+            if (settings.get("domainLeave.cookies"))
                 this.cleanCookiesByDomain(domain, false);
 
-            if (settings.get('domainLeave.localStorage') && !this.isLocalStorageProtected(domain))
+            if (settings.get("domainLeave.localStorage") && !this.isLocalStorageProtected(domain))
                 cleanLocalStorage([domain], this.id);
         }
     }
@@ -69,7 +69,7 @@ export class CleanStore {
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
-        const allowSubDomains = cookie.domain.startsWith('.');
+        const allowSubDomains = cookie.domain.startsWith(".");
         const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
         const type = settings.getRuleTypeForCookie(rawDomain, cookie.name);
         if (type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList))
@@ -96,7 +96,7 @@ export class CleanStore {
             this.snoozedDomainLeaves[removedDomain] = true;
             return;
         }
-        const timeout = settings.get('domainLeave.delay') * 60 * 1000;
+        const timeout = settings.get("domainLeave.delay") * 60 * 1000;
         if (timeout <= 0) {
             this.cleanByDomainWithRulesNow(removedDomain);
         } else {

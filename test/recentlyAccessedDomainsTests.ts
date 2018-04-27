@@ -27,8 +27,8 @@ describe("Recently Accessed Domains", () => {
 
     describe("add", () => {
         it("should detect settings on creation", () => {
-            settings.set('logRAD.enabled', false);
-            settings.set('logRAD.limit', 42);
+            settings.set("logRAD.enabled", false);
+            settings.set("logRAD.limit", 42);
             settings.save();
             recentlyAccessedDomains = new RecentlyAccessedDomains();
             assert.isFalse(recentlyAccessedDomains.isEnabled());
@@ -38,8 +38,8 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains = new RecentlyAccessedDomains();
             assert.isTrue(recentlyAccessedDomains.isEnabled());
             assert.notEqual(recentlyAccessedDomains.getLimit(), 42);
-            settings.set('logRAD.enabled', false);
-            settings.set('logRAD.limit', 42);
+            settings.set("logRAD.enabled", false);
+            settings.set("logRAD.limit", 42);
             settings.save();
 
             // settings take a frame to kick in
@@ -51,21 +51,21 @@ describe("Recently Accessed Domains", () => {
             }, 10);
         });
         it("should not do anything if logRAD.enabled === false", () => {
-            settings.set('logRAD.enabled', false);
+            settings.set("logRAD.enabled", false);
             settings.save();
             recentlyAccessedDomains = new RecentlyAccessedDomains();
             recentlyAccessedDomains.add("google.com");
             assert.deepEqual(recentlyAccessedDomains.get(), []);
         });
         it("should not do anything if logRAD.limit === 0", () => {
-            settings.set('logRAD.limit', 0);
+            settings.set("logRAD.limit", 0);
             settings.save();
             recentlyAccessedDomains = new RecentlyAccessedDomains();
             recentlyAccessedDomains.add("google.com");
             assert.deepEqual(recentlyAccessedDomains.get(), []);
         });
         it("should only add domains up to the limit and discard the oldest ones", () => {
-            settings.set('logRAD.limit', 3);
+            settings.set("logRAD.limit", 3);
             settings.save();
             recentlyAccessedDomains = new RecentlyAccessedDomains();
             recentlyAccessedDomains.add("google.com");
@@ -74,9 +74,9 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
             assert.deepEqual(recentlyAccessedDomains.get(), [
-                { domain: 'google.jp', badge: 'badge_forget' },
-                { domain: 'google.dk', badge: 'badge_forget' },
-                { domain: 'google.co.uk', badge: 'badge_forget' }
+                { domain: "google.jp", badge: "badge_forget" },
+                { domain: "google.dk", badge: "badge_forget" },
+                { domain: "google.co.uk", badge: "badge_forget" }
             ]);
         });
         it("should drop all domains above the limit when the limit has been changed", (done) => {
@@ -87,21 +87,21 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
             assert.deepEqual(recentlyAccessedDomains.get(), [
-                { domain: 'google.jp', badge: 'badge_forget' },
-                { domain: 'google.dk', badge: 'badge_forget' },
-                { domain: 'google.co.uk', badge: 'badge_forget' },
-                { domain: 'google.de', badge: 'badge_forget' },
-                { domain: 'google.com', badge: 'badge_forget' }
+                { domain: "google.jp", badge: "badge_forget" },
+                { domain: "google.dk", badge: "badge_forget" },
+                { domain: "google.co.uk", badge: "badge_forget" },
+                { domain: "google.de", badge: "badge_forget" },
+                { domain: "google.com", badge: "badge_forget" }
             ]);
-            settings.set('logRAD.limit', 3);
+            settings.set("logRAD.limit", 3);
             settings.save();
             // settings take a frame to kick in
             setTimeout(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: 'google.jp', badge: 'badge_forget' },
-                    { domain: 'google.dk', badge: 'badge_forget' },
-                    { domain: 'google.co.uk', badge: 'badge_forget' }
+                    { domain: "google.jp", badge: "badge_forget" },
+                    { domain: "google.dk", badge: "badge_forget" },
+                    { domain: "google.co.uk", badge: "badge_forget" }
                 ]);
                 done();
             }, 10);
@@ -114,17 +114,17 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
             const expected = [
-                { domain: 'google.jp', badge: 'badge_forget' },
-                { domain: 'google.dk', badge: 'badge_forget' },
-                { domain: 'google.co.uk', badge: 'badge_forget' },
-                { domain: 'google.de', badge: 'badge_forget' },
-                { domain: 'google.com', badge: 'badge_forget' }
+                { domain: "google.jp", badge: "badge_forget" },
+                { domain: "google.dk", badge: "badge_forget" },
+                { domain: "google.co.uk", badge: "badge_forget" },
+                { domain: "google.de", badge: "badge_forget" },
+                { domain: "google.com", badge: "badge_forget" }
             ];
             assert.deepEqual(recentlyAccessedDomains.get(), expected);
 
             const spy = createSpy();
-            receiver = messageUtil.receive('onRecentlyAccessedDomains', spy);
-            messageUtil.send('getRecentlyAccessedDomains');
+            receiver = messageUtil.receive("onRecentlyAccessedDomains", spy);
+            messageUtil.send("getRecentlyAccessedDomains");
             spy.assertCalls([[expected, { id: "mock" }]]);
         });
         it("should fire an event 'onRecentlyAccessedDomains' when logRAD.limit changed", (done) => {
@@ -136,19 +136,19 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.jp");
 
             let isDone = false;
-            receiver = messageUtil.receive('onRecentlyAccessedDomains', (list) => {
+            receiver = messageUtil.receive("onRecentlyAccessedDomains", (list) => {
                 // during tests, some events get send twice (once for send and once for sendSelf)
                 if (!isDone) {
                     assert.deepEqual(list, [
-                        { domain: 'google.jp', badge: 'badge_forget' },
-                        { domain: 'google.dk', badge: 'badge_forget' },
-                        { domain: 'google.co.uk', badge: 'badge_forget' }
+                        { domain: "google.jp", badge: "badge_forget" },
+                        { domain: "google.dk", badge: "badge_forget" },
+                        { domain: "google.co.uk", badge: "badge_forget" }
                     ]);
                     done();
                     isDone = true;
                 }
             });
-            settings.set('logRAD.limit', 3);
+            settings.set("logRAD.limit", 3);
             settings.save();
         });
         it("should fire an event 'onRecentlyAccessedDomains' when logRAD.enabled changed", (done) => {
@@ -160,7 +160,7 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.jp");
 
             let isDone = false;
-            receiver = messageUtil.receive('onRecentlyAccessedDomains', (list) => {
+            receiver = messageUtil.receive("onRecentlyAccessedDomains", (list) => {
                 // during tests, some events get send twice (once for send and once for sendSelf)
                 if (!isDone) {
                     assert.deepEqual(list, []);
@@ -168,7 +168,7 @@ describe("Recently Accessed Domains", () => {
                     isDone = true;
                 }
             });
-            settings.set('logRAD.enabled', false);
+            settings.set("logRAD.enabled", false);
             settings.save();
         });
     });

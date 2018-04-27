@@ -33,8 +33,8 @@ export class HeaderFilter {
             return {};
         };
         this.updateSettings();
-        this.settingsReceiver = messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1 || changedKeys.indexOf('rules') !== -1 || changedKeys.indexOf('fallbackRule') !== -1)
+        this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+            if (changedKeys.indexOf("cleanThirdPartyCookies.beforeCreation") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("fallbackRule") !== -1)
                 this.updateSettings();
         });
     }
@@ -48,7 +48,7 @@ export class HeaderFilter {
     }
 
     private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {
-        const type = settings.getRuleTypeForCookie(cookieInfo.domain.startsWith('.') ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
+        const type = settings.getRuleTypeForCookie(cookieInfo.domain.startsWith(".") ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
         if (type === RuleType.WHITE || type === RuleType.GRAY)
             return false;
         return type === RuleType.BLOCK || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
@@ -56,7 +56,7 @@ export class HeaderFilter {
 
     private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, fallbackDomain: string, tabId: number): WebRequest.HttpHeaders | undefined {
         return responseHeaders.filter((x) => {
-            if (x.name.toLowerCase() === 'set-cookie') {
+            if (x.name.toLowerCase() === "set-cookie") {
                 if (x.value) {
                     const cookieInfo = parseSetCookieHeader(x.value, fallbackDomain);
                     if (cookieInfo && this.shouldCookieBeBlocked(tabId, cookieInfo)) {
@@ -70,7 +70,7 @@ export class HeaderFilter {
     }
 
     private updateSettings() {
-        this.blockThirdpartyCookies = settings.get('cleanThirdPartyCookies.beforeCreation');
+        this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
         if (this.blockThirdpartyCookies || settings.hasBlockingRule())
             browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, { urls: ["<all_urls>"] }, ["responseHeaders", "blocking"]);
         else

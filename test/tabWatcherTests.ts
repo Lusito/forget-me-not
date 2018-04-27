@@ -5,8 +5,8 @@
  */
 
 import { assert } from "chai";
-import { TabWatcher, TabWatcherListener } from "../src/background/tabWatcher";
-import { createSpy, browserMock, SpyData } from "./BrowserMock";
+import { TabWatcher } from "../src/background/tabWatcher";
+import { createSpy, browserMock, SpyData, ensureNotNull } from "./browserMock";
 
 describe("TabWatcher", () => {
 	beforeEach(() => browserMock.reset());
@@ -14,7 +14,7 @@ describe("TabWatcher", () => {
 		onDomainEnter: SpyData,
 		onDomainLeave: SpyData
 	};
-	let watcher: TabWatcher;
+	let watcher: TabWatcher | null = null;
 	function setupWatcher() {
 		listener = {
 			onDomainEnter: createSpy(),
@@ -81,8 +81,8 @@ describe("TabWatcher", () => {
 			listener.onDomainLeave.assertCalls([['firefox-default', 'www.google.com']]);
 		});
 		it("should be called if tabs exist before creation", () => {
-			const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
-			const tabId2 = browserMock.tabs.create("http://www.google.de", "firefox-private");
+			browserMock.tabs.create("http://www.google.com", "firefox-default");
+			browserMock.tabs.create("http://www.google.de", "firefox-private");
 			setupWatcher();
 			listener.onDomainEnter.assertCalls([
 				['firefox-default', 'www.google.com'],
@@ -94,6 +94,7 @@ describe("TabWatcher", () => {
 		it("should work with multiple cookie stores", () => {
 			setupWatcher();
 
+			watcher = ensureNotNull(watcher);
 			assert.isFalse(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.com'));
 			assert.isFalse(watcher.cookieStoreContainsDomain('firefox-private', 'www.google.com'));
 
@@ -113,6 +114,7 @@ describe("TabWatcher", () => {
 		it("should work during navigation", () => {
 			setupWatcher();
 
+			watcher = ensureNotNull(watcher);
 			const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
 			browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
 			assert.isTrue(watcher.cookieStoreContainsDomain('firefox-default', 'www.google.com'));
@@ -126,6 +128,7 @@ describe("TabWatcher", () => {
 		it("should detect if a cookie domain is third-party for a specified tab", () => {
 			setupWatcher();
 
+			watcher = ensureNotNull(watcher);
 			assert.isFalse(watcher.isThirdPartyCookieOnTab(1, 'google.com'));
 			assert.isFalse(watcher.isThirdPartyCookieOnTab(1, 'www.google.com'));
 			assert.isFalse(watcher.isThirdPartyCookieOnTab(1, 'google.de'));
@@ -167,6 +170,7 @@ describe("TabWatcher", () => {
 
 			const cookieStoreId = "firefox-default";
 			const cookieStoreId2 = "firefox-alternative";
+			watcher = ensureNotNull(watcher);
 			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.com'));
 			assert.isFalse(watcher.isFirstPartyDomainOnCookieStore(cookieStoreId, 'google.de'));
 

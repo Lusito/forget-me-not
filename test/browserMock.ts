@@ -9,8 +9,10 @@ import { assert } from "chai";
 
 // @ts-ignore
 const Url = require('url');
+// @ts-ignore
 const glob = (function () { return this; }()) || Function('return this')();
-glob.URL = function (url: string) {
+glob.URL = function (url: string)
+{
     const parsed = Url.parse(url);
     for (let key in parsed) {
         if (parsed.hasOwnProperty(key))
@@ -98,7 +100,7 @@ class BrowserTabsMock {
         let i = 0;
         while (i < this.tabs.length) {
             if (this.tabs[i].id === tabId) {
-                this.onRemoved.emit(tabId, { windowId: this.tabs[i].windowId, isWindowClosing: false });
+                this.onRemoved.emit(tabId, { windowId: this.tabs[i].windowId || -1, isWindowClosing: false });
                 this.tabs.splice(i, 1);
                 break;
             }
@@ -186,8 +188,11 @@ class StorageAreaMock {
     public set(items: Storage.StorageAreaSetItemsType) {
         return new Promise<void>((resolve, reject) => {
             const changes: { [s: string]: Storage.StorageChange } = {};
-            for (const key in items)
-                this.setInternal(key, items[key], changes);
+            for (const key in items) {
+                //@ts-ignore
+                const value = items[key];
+                this.setInternal(key, value, changes);
+            }
             browserMock.storage.onChanged.emit(changes, 'local');
             resolve();
         });
@@ -278,6 +283,7 @@ export interface SpyData {
 export function createSpy() {
     const spyData = function () {
         spyData.callCount++;
+        //@ts-ignore
         spyData.thisValues.push(this);
         spyData.args.push(Array.from(arguments));
     } as SpyData;
@@ -300,4 +306,10 @@ export function createSpy() {
         spyData.args.length = 0;
     }
     return spyData;
+}
+
+export function ensureNotNull<T>(value: T | null) : T {
+    assert.isNotNull(value);
+    // @ts-ignore
+    return value;
 }

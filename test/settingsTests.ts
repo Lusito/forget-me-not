@@ -5,20 +5,13 @@
  */
 
 import { assert } from "chai";
-import { createSpy, browserMock, SpyData, clone } from "./BrowserMock";
-import { settings, defaultSettings, SettingsMap, localStorageDefault, Settings } from "../src/lib/settings";
-import { Runtime } from "webextension-polyfill-ts/src/generated/runtime";
-import { SettingsTypeMap, RuleType } from "../src/lib/settingsSignature";
-
-interface CalledWithData {
-    index: number;
-    sender: Runtime.MessageSender;
-    data: any;
-}
+import { clone, ensureNotNull } from "./browserMock";
+import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/settings";
+import { SettingsTypeMap, RuleType, RuleDefinition } from "../src/lib/settingsSignature";
 
 // generate settings map that is unequal to default settings
-const testOverrides = {};
-const invalidOverrides = {};
+const testOverrides:SettingsMap = {};
+const invalidOverrides:SettingsMap = {};
 for (const key in defaultSettings) {
     const type = typeof (defaultSettings[key]);
     if (type === 'boolean')
@@ -38,8 +31,10 @@ for (const key in defaultSettings) {
         invalidOverrides[key] = 'test-override';
     else if (type === 'string')
         invalidOverrides[key] = 42;
-    else if (key === 'rules')
+    else if (key === 'rules') {
+        //@ts-ignore
         invalidOverrides[key] = [{ rule: '@@@', type: RuleType.FORGET }, 'sadasd'];
+    }
 }
 
 describe("Settings", () => {
@@ -102,24 +97,26 @@ describe("Settings", () => {
     });
 
     describe("save", () => {
-        let settings2: Settings;
-        before(() => {
+        let settings2: Settings|null = null;
+        beforeEach(() => {
             if (!settings2)
                 settings2 = new Settings();
         });
-        after(() => {
+        afterEach(() => {
             if (settings2) {
                 settings2.destroy();
                 settings2 = null;
             }
         });
         it("should affect other settings instances", (done) => {
+            settings2 = ensureNotNull(settings2);
             assert.deepEqual(settings.get('version'), settings2.get('version'));
             settings.set('version', 'woot');
             settings.save();
 
             // promise takes at least a frame until it works
             setTimeout(() => {
+                settings2 = ensureNotNull(settings2);
                 assert.equal(settings.get('version'), 'woot');
                 assert.equal(settings2.get('version'), 'woot');
                 done();
@@ -153,7 +150,7 @@ describe("Settings", () => {
         });
         it("should respect the order of matching rules", () => {
             assert.equal(settings.getRuleTypeForDomain('google.com'), RuleType.FORGET);
-            const rules = [];
+            const rules:RuleDefinition[] = [];
             function addAndTest(type: RuleType) {
                 rules.push({ rule: 'google.com', type });
                 settings.set('rules', rules);
@@ -221,7 +218,7 @@ describe("Settings", () => {
         });
         it("should respect the order of matching rules", () => {
             assert.equal(settings.getRuleTypeForCookie('google.com', 'hello'), RuleType.FORGET);
-            const rules = [];
+            const rules:RuleDefinition[] = [];
             function addAndTest(type: RuleType) {
                 rules.push({ rule: 'hello@google.com', type });
                 settings.set('rules', rules);

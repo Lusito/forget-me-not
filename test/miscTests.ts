@@ -21,7 +21,7 @@ describe("Misc functionality", () => {
 			assert.equal(getValidHostname("chrome://www.google.com"), '');
 			assert.equal(getValidHostname("about:preferences"), '');
 			assert.equal(getValidHostname('Bu][$<|-|!7'), '');
-			assert.equal(getValidHostname(null), '');
+			assert.equal(getValidHostname(null as any), '');
 		});
 	});
 

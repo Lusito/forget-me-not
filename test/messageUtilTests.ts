@@ -4,19 +4,12 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { assert } from "chai";
-import { createSpy, browserMock, SpyData } from "./BrowserMock";
+import { createSpy } from "./browserMock";
 import * as messageUtil from "../src/lib/messageUtil";
-import { Runtime } from "webextension-polyfill-ts/src/generated/runtime";
-
-interface CalledWithData {
-    index: number;
-    sender: Runtime.MessageSender;
-    data: any;
-}
+import { ReceiverHandle } from "../src/lib/messageUtil";
 
 describe("Message Utility", () => {
-    const receivers = [];
+    const receivers:ReceiverHandle[] = [];
     afterEach(() => {
         receivers.forEach((r) => r.clear());
         receivers.length = 0;

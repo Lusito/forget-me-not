@@ -5,11 +5,10 @@
  */
 
 import { assert } from "chai";
-import { createSpy, browserMock, SpyData } from "./BrowserMock";
+import { createSpy, ensureNotNull } from "./browserMock";
 import * as messageUtil from "../src/lib/messageUtil";
 import { ReceiverHandle } from "../src/lib/messageUtil";
 import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";
-import { Runtime } from "webextension-polyfill-ts/src/generated/runtime";
 import { settings } from "../src/lib/settings";
 
 describe("Recently Accessed Domains", () => {
@@ -26,7 +25,6 @@ describe("Recently Accessed Domains", () => {
         }
         settings.restoreDefaults();
     });
-    const event = 'onRecentlyAccessedDomains';
 
     describe("add", () => {
         it("should detect settings on creation", () => {
@@ -47,6 +45,7 @@ describe("Recently Accessed Domains", () => {
 
             // settings take a frame to kick in
             setTimeout(() => {
+                recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.isFalse(recentlyAccessedDomains.isEnabled());
                 assert.equal(recentlyAccessedDomains.getLimit(), 42);
                 done();
@@ -99,6 +98,7 @@ describe("Recently Accessed Domains", () => {
             settings.save();
             // settings take a frame to kick in
             setTimeout(() => {
+                recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.deepEqual(recentlyAccessedDomains.get(), [
                     { domain: 'google.jp', badge: 'badge_forget' },
                     { domain: 'google.dk', badge: 'badge_forget' },
@@ -136,16 +136,17 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
 
+            let isDone = false;
             receiver = messageUtil.receive('onRecentlyAccessedDomains', (list)=> {
                 // during tests, some events get send twice (once for send and once for sendSelf)
-                if(done) {
+                if(!isDone) {
                     assert.deepEqual(list, [
                         { domain: 'google.jp', badge: 'badge_forget' },
                         { domain: 'google.dk', badge: 'badge_forget' },
                         { domain: 'google.co.uk', badge: 'badge_forget' }
                     ]);
                     done();
-                    done = null;
+                    isDone = true;
                 }
             });
             settings.set('logRAD.limit', 3);
@@ -159,12 +160,13 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
 
+            let isDone = false;
             receiver = messageUtil.receive('onRecentlyAccessedDomains', (list)=> {
                 // during tests, some events get send twice (once for send and once for sendSelf)
-                if(done) {
+                if(!isDone) {
                     assert.deepEqual(list, []);
                     done();
-                    done = null;
+                    isDone = true;
                 }
             });
             settings.set('logRAD.enabled', false);

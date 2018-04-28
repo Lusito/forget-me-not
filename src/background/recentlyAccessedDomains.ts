@@ -5,7 +5,7 @@
  */
 
 import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
-import { CookieDomainInfo } from "../shared";
+import { CookieDomainInfo, destroyAllAndEmpty } from "../shared";
 import { getBadgeForRuleType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
 
@@ -31,8 +31,7 @@ export class RecentlyAccessedDomains {
     }
 
     public destroy() {
-        this.receivers.forEach((r) => r.clear());
-        this.receivers.length = 0;
+        destroyAllAndEmpty(this.receivers);
     }
 
     public isEnabled() {

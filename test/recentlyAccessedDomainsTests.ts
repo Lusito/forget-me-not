@@ -5,7 +5,8 @@
  */
 
 import { assert } from "chai";
-import { createSpy, ensureNotNull } from "./browserMock";
+import { createSpy, ensureNotNull, browserMock } from "./browserMock";
+import { destroyAndNull } from "../src/shared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";
 import { settings } from "../src/lib/settings";
@@ -13,15 +14,10 @@ import { settings } from "../src/lib/settings";
 describe("Recently Accessed Domains", () => {
     let recentlyAccessedDomains: RecentlyAccessedDomains | null = null;
     let receiver: ReceiverHandle | null = null;
+    beforeEach(() => browserMock.reset());
     afterEach(() => {
-        if (recentlyAccessedDomains) {
-            recentlyAccessedDomains.destroy();
-            recentlyAccessedDomains = null;
-        }
-        if (receiver) {
-            receiver.clear();
-            receiver = null;
-        }
+        recentlyAccessedDomains = destroyAndNull(recentlyAccessedDomains);
+        receiver = destroyAndNull(receiver);
         settings.restoreDefaults();
     });
 

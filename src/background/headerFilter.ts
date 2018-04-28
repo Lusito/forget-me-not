@@ -9,7 +9,7 @@ import { settings } from "../lib/settings";
 import { TabWatcher } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { browser, WebRequest } from "webextension-polyfill-ts";
-import { getValidHostname } from "../shared";
+import { getValidHostname, destroyAndNull } from "../shared";
 import { RuleType } from "../lib/settingsSignature";
 import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 
@@ -34,17 +34,19 @@ export class HeaderFilter {
         };
         this.updateSettings();
         this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+            console.log("error");
             if (changedKeys.indexOf("cleanThirdPartyCookies.beforeCreation") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("fallbackRule") !== -1)
                 this.updateSettings();
         });
     }
 
     public destroy() {
-        if (this.settingsReceiver) {
-            this.settingsReceiver.clear();
-            this.settingsReceiver = null;
-        }
+        this.settingsReceiver = destroyAndNull(this.settingsReceiver);
         browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
+    }
+
+    public isEnabled() {
+        return browser.webRequest.onHeadersReceived.hasListener(this.onHeadersReceived);
     }
 
     private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {

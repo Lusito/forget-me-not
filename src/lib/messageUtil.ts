@@ -17,7 +17,7 @@ type CallbacksMap = { [s: string]: Callback[] };
 let callbacksMap: CallbacksMap | null = null;
 
 export interface ReceiverHandle {
-    clear(): void;
+    destroy(): void;
 }
 
 function getCallbacksList(name: string) {
@@ -56,7 +56,7 @@ export const messageUtil = {
         const callbacks = getCallbacksList(name);
         callbacks.push(callback);
         return {
-            clear() {
+            destroy() {
                 const index = callbacks.indexOf(callback);
                 if (index !== -1)
                     callbacks.splice(index, 1);

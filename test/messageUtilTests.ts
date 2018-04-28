@@ -4,14 +4,15 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { createSpy } from "./browserMock";
+import { createSpy, browserMock } from "./browserMock";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
+import { destroyAllAndEmpty } from "../src/shared";
 
 describe("Message Utility", () => {
     const receivers: ReceiverHandle[] = [];
+    beforeEach(() => browserMock.reset());
     afterEach(() => {
-        receivers.forEach((r) => r.clear());
-        receivers.length = 0;
+        destroyAllAndEmpty(receivers);
     });
     const event1 = "event1";
     const event2 = "event2";
@@ -43,7 +44,7 @@ describe("Message Utility", () => {
         it("should not call the receiver if it has been canceled", () => {
             const spy = createSpy();
             const receiver = messageUtil.receive(event1, spy);
-            receiver.clear();
+            receiver.destroy();
 
             messageUtil.sendSelf(event1, data1);
             spy.assertNoCall();
@@ -76,7 +77,7 @@ describe("Message Utility", () => {
         it("should not call the receiver if it has been canceled", () => {
             const spy = createSpy();
             const receiver = messageUtil.receive(event1, spy);
-            receiver.clear();
+            receiver.destroy();
 
             messageUtil.send(event1, data1);
             spy.assertNoCall();

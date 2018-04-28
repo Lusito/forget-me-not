@@ -19,3 +19,18 @@ export function getValidHostname(url: string) {
         return "";
     }
 }
+
+export interface Destructible {
+    destroy(): void;
+}
+
+export function destroyAndNull(value: Destructible | null) {
+    if (value)
+        value.destroy();
+    return null;
+}
+
+export function destroyAllAndEmpty(values: Destructible[]) {
+    values.forEach((r) => r.destroy());
+    values.length = 0;
+}

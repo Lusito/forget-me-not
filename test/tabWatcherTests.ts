@@ -7,6 +7,7 @@
 import { assert } from "chai";
 import { TabWatcher } from "../src/background/tabWatcher";
 import { createSpy, browserMock, SpyData, ensureNotNull } from "./browserMock";
+import { destroyAndNull } from "../src/shared";
 
 describe("TabWatcher", () => {
     beforeEach(() => browserMock.reset());
@@ -20,14 +21,12 @@ describe("TabWatcher", () => {
             onDomainEnter: createSpy(),
             onDomainLeave: createSpy()
         };
+        // fixme: add tabWatcher and ensure it gets called, also remove the | null part from the constructor parameter
         watcher = new TabWatcher(listener, null);
     }
 
     afterEach(() => {
-        if (watcher) {
-            watcher.destroy();
-            watcher = null;
-        }
+        watcher = destroyAndNull(watcher);
     });
 
     describe("listener", () => {

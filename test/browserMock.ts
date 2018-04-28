@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation, Runtime, Storage } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest } from "webextension-polyfill-ts";
 import { assert } from "chai";
 
 // @ts-ignore
@@ -28,9 +28,11 @@ class ListenerMock<T extends Function> {
     public constructor() {
         // @ts-ignore
         this.emit = (...args) => {
+            const results = [];
             for (const listener of this.listeners) {
-                listener.apply(null, args);
+                results.push(listener.apply(null, args));
             }
+            return results;
         };
     }
 
@@ -149,6 +151,15 @@ class BrowserWebNavigationMock {
     }
 }
 
+class BrowserWebRequestMock {
+    // Fixme: polyfill doesn't set WebRequest.BlockingResponse as return value..
+    public onHeadersReceived = new ListenerMock<(details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse>();
+
+    public headersReceived(details: WebRequest.OnHeadersReceivedDetailsType): WebRequest.BlockingResponse[] {
+        return this.onHeadersReceived.emit(details) as WebRequest.BlockingResponse[];
+    }
+}
+
 class BrowserRuntimeMock {
     public onMessage = new ListenerMock<(message: any | undefined, sender: Runtime.MessageSender, sendResponse: () => void) => void>();
 
@@ -159,8 +170,6 @@ class BrowserRuntimeMock {
         });
     }
 }
-
-export const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 class StorageAreaMock {
     public readonly QUOTA_BYTES: 5242880 = 5242880;
@@ -228,6 +237,7 @@ class StorageAreaMock {
 export const browserMock = {
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
+    webRequest: new BrowserWebRequestMock(),
     runtime: new BrowserRuntimeMock(),
     storage: {
         local: new StorageAreaMock(),
@@ -257,6 +267,11 @@ browser.tabs = {
 browser.webNavigation = {
     onBeforeNavigate: browserMock.webNavigation.onBeforeNavigate.get(),
     onCommitted: browserMock.webNavigation.onCommitted.get()
+};
+
+// @ts-ignore
+browser.webRequest = {
+    onHeadersReceived: browserMock.webRequest.onHeadersReceived.get()
 };
 
 // @ts-ignore
@@ -307,6 +322,8 @@ export function createSpy() {
     };
     return spyData;
 }
+
+export const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 export function ensureNotNull<T>(value: T | null): T {
     assert.isNotNull(value);

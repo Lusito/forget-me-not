@@ -5,7 +5,8 @@
  */
 
 import { assert } from "chai";
-import { clone, ensureNotNull } from "./browserMock";
+import { clone, ensureNotNull, browserMock } from "./browserMock";
+import { destroyAndNull } from "../src/shared";
 import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/settings";
 import { SettingsTypeMap, RuleType, RuleDefinition } from "../src/lib/settingsSignature";
 
@@ -38,6 +39,7 @@ for (const key in defaultSettings) {
 }
 
 describe("Settings", () => {
+    beforeEach(() => browserMock.reset());
     afterEach(() => {
         settings.restoreDefaults();
     });
@@ -103,10 +105,7 @@ describe("Settings", () => {
                 settings2 = new Settings();
         });
         afterEach(() => {
-            if (settings2) {
-                settings2.destroy();
-                settings2 = null;
-            }
+            settings2 = destroyAndNull(settings2);
         });
         it("should affect other settings instances", (done) => {
             settings2 = ensureNotNull(settings2);

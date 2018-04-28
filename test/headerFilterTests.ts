@@ -10,7 +10,7 @@ import { settings } from "../src/lib/settings";
 import { HeaderFilter } from "../src/background/headerFilter";
 import { TabWatcher } from "../src/background/tabWatcher";
 import { destroyAndNull } from "../src/shared";
-import { ensureNotNull, browserMock } from "./browserMock";
+import { ensureNotNull, browserMock, doneHandler } from "./browserMock";
 import { assert } from "chai";
 import { RuleType } from "../src/lib/settingsSignature";
 
@@ -88,11 +88,10 @@ describe("Header Filter", () => {
             settings.save();
 
             // settings take a frame to kick in
-            setTimeout(() => {
+            setTimeout(doneHandler(() => {
                 headerFilter = ensureNotNull(headerFilter);
                 assert.isTrue(headerFilter.isEnabled());
-                done();
-            }, 10);
+            }, done), 10);
         });
         it("should return true if a blocking rule existed on creation", () => {
             tabWatcher = ensureNotNull(tabWatcher);
@@ -109,11 +108,10 @@ describe("Header Filter", () => {
             settings.save();
 
             // settings take a frame to kick in
-            setTimeout(() => {
+            setTimeout(doneHandler(() => {
                 headerFilter = ensureNotNull(headerFilter);
                 assert.isTrue(headerFilter.isEnabled());
-                done();
-            }, 10);
+            }, done), 10);
         });
     });
 

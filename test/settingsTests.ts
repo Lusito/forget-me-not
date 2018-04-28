@@ -5,7 +5,7 @@
  */
 
 import { assert } from "chai";
-import { clone, ensureNotNull, browserMock } from "./browserMock";
+import { clone, ensureNotNull, browserMock, doneHandler } from "./browserMock";
 import { destroyAndNull } from "../src/shared";
 import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/settings";
 import { SettingsTypeMap, RuleType, RuleDefinition } from "../src/lib/settingsSignature";
@@ -114,12 +114,11 @@ describe("Settings", () => {
             settings.save();
 
             // promise takes at least a frame until it works
-            setTimeout(() => {
+            setTimeout(doneHandler(() => {
                 settings2 = ensureNotNull(settings2);
                 assert.equal(settings.get("version"), "woot");
                 assert.equal(settings2.get("version"), "woot");
-                done();
-            }, 10);
+            }, done), 10);
         });
     });
 

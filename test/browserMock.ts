@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies } from "webextension-polyfill-ts";
 import { assert } from "chai";
 
 // @ts-ignore
@@ -58,6 +58,82 @@ class ListenerMock<T extends Function> {
     }
 }
 
+const DOMAIN_PATH_SPLIT = /\/(.*)/;
+
+class BrowserCookiesMock {
+    private readonly cookies: Cookies.Cookie[] = [];
+
+    public reset() {
+        this.cookies.length = 0;
+    }
+
+    private findCookie(name: string, secure: boolean, domain: string, path: string, storeId: string, firstPartyDomain?: string) {
+        let cookies = firstPartyDomain ? this.cookies.filter((c) => c.firstPartyDomain === firstPartyDomain) : this.cookies;
+        cookies = cookies.filter((c) => c.secure === secure && c.path === path && c.storeId === storeId && c.name === name && c.domain === domain);
+        if (cookies.length === 1)
+            return cookies[0];
+        return null;
+    }
+
+    public set(details: Cookies.SetDetailsType) {
+        return new Promise<Cookies.Cookie>((resolve, reject) => {
+            let cookie = this.findCookie(details.name || "", details.secure || false, details.domain || "", details.path || "", details.storeId || "firefox-default", details.firstPartyDomain);
+            if (cookie) {
+                cookie.value = details.value || "";
+            } else {
+                cookie = {
+                    name: details.name || "",
+                    value: details.value || "",
+                    domain: details.domain || "",
+                    hostOnly: false,
+                    path: details.path || "",
+                    secure: details.secure || false,
+                    httpOnly: false,
+                    session: false,
+                    storeId: details.storeId || "firefox-default",
+                    firstPartyDomain: details.firstPartyDomain || ""
+                };
+                this.cookies.push(cookie);
+            }
+            resolve(clone(cookie));
+        });
+    }
+
+    public remove(details: Cookies.RemoveDetailsType) {
+        return new Promise<Cookies.RemoveCallbackDetailsType>((resolve, reject) => {
+            const secure = details.url.startsWith("https://");
+            const withoutProtocol = details.url.substr(secure ? 8 : 7);
+            const parts = withoutProtocol.split(DOMAIN_PATH_SPLIT);
+            const domain = parts[0].toLowerCase();
+            const path = parts[1] || "";
+            const cookie = this.findCookie(details.name || "", secure, domain, path, details.storeId || "firefox-default", details.firstPartyDomain);
+            if (cookie) {
+                const index = this.cookies.indexOf(cookie);
+                this.cookies.splice(index, 1);
+                resolve({
+                    url: details.url,
+                    name: details.name,
+                    storeId: cookie.storeId,
+                    firstPartyDomain: cookie.firstPartyDomain
+                });
+            } else {
+                reject(null);
+            }
+        });
+    }
+
+    public getAll(details: Cookies.GetAllDetailsType) {
+        // Mocking only supports limited functionality right now
+        assert.isNull(details.firstPartyDomain);
+        assert.isNotNull(details.storeId);
+        assert.hasAllKeys(details, ["firstPartyDomain", "storeId"]);
+        return new Promise<Cookies.Cookie[]>((resolve, reject) => {
+            const cookies = this.cookies.filter((c) => c.storeId === details.storeId);
+            resolve(clone(cookies));
+        });
+    }
+}
+
 class BrowserTabsMock {
     private idCount = 0;
     private tabs: Tabs.Tab[] = [];
@@ -69,6 +145,7 @@ class BrowserTabsMock {
         this.onRemoved.reset();
         this.onCreated.reset();
     }
+
     public getTabs(): Tabs.Tab[] {
         return this.tabs;
     }
@@ -176,8 +253,8 @@ class StorageAreaMock {
     private readonly data: any = {};
 
     public get(keys?: null | string | string[] | { [s: string]: any }) {
+        assert.equal(keys, null); // only null supported for now
         return new Promise<{ [s: string]: any }>((resolve, reject) => {
-            assert.equal(keys, null); // only null supported for now
             resolve(clone(this.data));
         });
     }
@@ -235,6 +312,7 @@ class StorageAreaMock {
 }
 
 export const browserMock = {
+    cookies: new BrowserCookiesMock(),
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
     webRequest: new BrowserWebRequestMock(),
@@ -244,10 +322,18 @@ export const browserMock = {
         onChanged: new ListenerMock<(changes: { [s: string]: Storage.StorageChange }, areaName: string) => void>()
     },
     reset: () => {
+        browserMock.cookies.reset();
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
         browser.storage.local.clear();
     }
+};
+
+// @ts-ignore
+browser.cookies = {
+    getAll: browserMock.cookies.getAll.bind(browserMock.cookies),
+    set: browserMock.cookies.set.bind(browserMock.cookies),
+    remove: browserMock.cookies.remove.bind(browserMock.cookies)
 };
 
 // @ts-ignore
@@ -329,4 +415,17 @@ export function ensureNotNull<T>(value: T | null): T {
     assert.isNotNull(value);
     // @ts-ignore
     return value;
+}
+
+// tslint:disable-next-line:ban-types
+export function doneHandler<T extends Function>(handler: T, done: (error?: any) => void, doneCondition?: () => boolean) {
+    return (...args: any[]) => {
+        try {
+            handler.apply(null, args);
+            if (!doneCondition || doneCondition())
+                done();
+        } catch (e) {
+            done(e);
+        }
+    };
 }

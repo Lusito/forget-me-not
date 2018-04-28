@@ -5,8 +5,8 @@
  */
 
 import { assert } from "chai";
-import { createSpy, ensureNotNull, browserMock } from "./browserMock";
-import { destroyAndNull } from "../src/shared";
+import { createSpy, ensureNotNull, browserMock, doneHandler } from "./browserMock";
+import { destroyAndNull, CookieDomainInfo } from "../src/shared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";
 import { settings } from "../src/lib/settings";
@@ -39,12 +39,11 @@ describe("Recently Accessed Domains", () => {
             settings.save();
 
             // settings take a frame to kick in
-            setTimeout(() => {
+            setTimeout(doneHandler(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.isFalse(recentlyAccessedDomains.isEnabled());
                 assert.equal(recentlyAccessedDomains.getLimit(), 42);
-                done();
-            }, 10);
+            }, done), 10);
         });
         it("should not do anything if logRAD.enabled === false", () => {
             settings.set("logRAD.enabled", false);
@@ -92,15 +91,14 @@ describe("Recently Accessed Domains", () => {
             settings.set("logRAD.limit", 3);
             settings.save();
             // settings take a frame to kick in
-            setTimeout(() => {
+            setTimeout(doneHandler(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.deepEqual(recentlyAccessedDomains.get(), [
                     { domain: "google.jp", badge: "badge_forget" },
                     { domain: "google.dk", badge: "badge_forget" },
                     { domain: "google.co.uk", badge: "badge_forget" }
                 ]);
-                done();
-            }, 10);
+            }, done), 10);
         });
         it("should fire an event 'onRecentlyAccessedDomains' with the domain infos when the event 'getRecentlyAccessedDomains' has been fired", () => {
             recentlyAccessedDomains = new RecentlyAccessedDomains();
@@ -131,19 +129,14 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
 
-            let isDone = false;
-            receiver = messageUtil.receive("onRecentlyAccessedDomains", (list) => {
-                // during tests, some events get send twice (once for send and once for sendSelf)
-                if (!isDone) {
-                    assert.deepEqual(list, [
-                        { domain: "google.jp", badge: "badge_forget" },
-                        { domain: "google.dk", badge: "badge_forget" },
-                        { domain: "google.co.uk", badge: "badge_forget" }
-                    ]);
-                    done();
-                    isDone = true;
-                }
-            });
+            let isDone = 0;
+            receiver = messageUtil.receive("onRecentlyAccessedDomains", doneHandler((list: CookieDomainInfo[]) => {
+                assert.deepEqual(list, [
+                    { domain: "google.jp", badge: "badge_forget" },
+                    { domain: "google.dk", badge: "badge_forget" },
+                    { domain: "google.co.uk", badge: "badge_forget" }
+                ]);
+            }, done, () => (++isDone) === 1));
             settings.set("logRAD.limit", 3);
             settings.save();
         });
@@ -155,15 +148,10 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
 
-            let isDone = false;
-            receiver = messageUtil.receive("onRecentlyAccessedDomains", (list) => {
-                // during tests, some events get send twice (once for send and once for sendSelf)
-                if (!isDone) {
-                    assert.deepEqual(list, []);
-                    done();
-                    isDone = true;
-                }
-            });
+            let isDone = 0;
+            receiver = messageUtil.receive("onRecentlyAccessedDomains", doneHandler((list: CookieDomainInfo[]) => {
+                assert.deepEqual(list, []);
+            }, done, () => (++isDone) === 1));
             settings.set("logRAD.enabled", false);
             settings.save();
         });

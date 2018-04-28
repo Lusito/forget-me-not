@@ -5,12 +5,13 @@
  */
 
 import { settings } from "../lib/settings";
-import { removeCookie, cleanLocalStorage } from "./backgroundShared";
+import { cleanLocalStorage } from "./backgroundShared";
 import { TabWatcher } from "./tabWatcher";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
+import { CookieRemover } from "./cookieRemover";
 
 // fixme: make this file unit-testable and add tests
 
@@ -20,11 +21,13 @@ export class CleanStore {
     private domainRemoveTimeouts: { [s: string]: number } = {};
     private snoozing: boolean;
     private readonly snoozedDomainLeaves: { [s: string]: boolean } = {};
+    private cookieRemover: CookieRemover;
 
-    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean) {
+    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean, cookieRemover: CookieRemover) {
         this.id = id;
         this.tabWatcher = tabWatcher;
         this.snoozing = snoozing;
+        this.cookieRemover = cookieRemover;
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
@@ -46,7 +49,7 @@ export class CleanStore {
         browser.cookies.getAll(details).then((cookies) => {
             for (const cookie of cookies) {
                 if (test(cookie))
-                    removeCookie(cookie);
+                    this.cookieRemover.remove(cookie);
             }
         });
     }

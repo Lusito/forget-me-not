@@ -7,7 +7,7 @@
 import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import DelayedExecution from "../lib/delayedExecution";
-import { removeCookie, cleanLocalStorage, removeLocalStorageByHostname } from "./backgroundShared";
+import { cleanLocalStorage, removeLocalStorageByHostname } from "./backgroundShared";
 import { CleanStore } from "./cleanStore";
 import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
@@ -16,6 +16,7 @@ import { getValidHostname } from "../shared";
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { RuleType } from "../lib/settingsSignature";
 import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
+import { CookieRemover } from "./cookieRemover";
 
 // fixme: make this file unit-testable and add tests
 
@@ -26,6 +27,7 @@ export class Background implements TabWatcherListener {
     private readonly tabWatcher = new TabWatcher(this, this.recentlyAccessedDomains);
     private snoozing = false;
     private readonly snoozedThirdpartyCookies: Cookies.Cookie[] = [];
+    private readonly cookieRemover = new CookieRemover();
 
     public constructor() {
         this.updateBadge();
@@ -133,7 +135,7 @@ export class Background implements TabWatcherListener {
                 const allowSubDomains = changeInfo.cookie.domain.startsWith(".");
                 const rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
                 if (settings.getRuleTypeForCookie(rawDomain, changeInfo.cookie.name) === RuleType.BLOCK)
-                    removeCookie(changeInfo.cookie);
+                    this.cookieRemover.remove(changeInfo.cookie);
                 else if (settings.get("cleanThirdPartyCookies.enabled"))
                     this.removeCookieIfThirdparty(changeInfo.cookie);
             });
@@ -155,7 +157,7 @@ export class Background implements TabWatcherListener {
                 if (delta < 1000)
                     exec.restart(500);
                 else if (this.isThirdpartyCookie(cookie))
-                    removeCookie(cookie);
+                    this.cookieRemover.remove(cookie);
             });
             exec.restart(settings.get("cleanThirdPartyCookies.delay") * 60 * 1000);
         }
@@ -180,7 +182,7 @@ export class Background implements TabWatcherListener {
             id = DEFAULT_COOKIE_STORE_ID;
         let store = this.cleanStores[id];
         if (!store)
-            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher, this.snoozing);
+            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher, this.snoozing, this.cookieRemover);
         return store;
     }
 

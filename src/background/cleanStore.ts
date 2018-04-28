@@ -5,29 +5,27 @@
  */
 
 import { settings } from "../lib/settings";
-import { cleanLocalStorage } from "./backgroundShared";
+import { cleanLocalStorage, removeCookie } from "./backgroundShared";
 import { TabWatcher } from "./tabWatcher";
 import { browser, Cookies } from "webextension-polyfill-ts";
-import { isFirefox, browserInfo } from "../lib/browserInfo";
+import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
-import { CookieRemover } from "./cookieRemover";
 
 // fixme: make this file unit-testable and add tests
 
+const supportsFirstPartIsolation = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 59);
 export class CleanStore {
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
     private domainRemoveTimeouts: { [s: string]: number } = {};
     private snoozing: boolean;
     private readonly snoozedDomainLeaves: { [s: string]: boolean } = {};
-    private cookieRemover: CookieRemover;
 
-    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean, cookieRemover: CookieRemover) {
+    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean) {
         this.id = id;
         this.tabWatcher = tabWatcher;
         this.snoozing = snoozing;
-        this.cookieRemover = cookieRemover;
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
@@ -44,12 +42,12 @@ export class CleanStore {
 
     private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
         const details: Cookies.GetAllDetailsType = { storeId: this.id };
-        if (isFirefox && browserInfo.versionAsNumber >= 59)
+        if (supportsFirstPartIsolation)
             details.firstPartyDomain = null;
         browser.cookies.getAll(details).then((cookies) => {
             for (const cookie of cookies) {
                 if (test(cookie))
-                    this.cookieRemover.remove(cookie);
+                    removeCookie(cookie);
             }
         });
     }

@@ -9,8 +9,7 @@ import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { messageUtil } from "../lib/messageUtil";
 
-// fixme: make this file unit-testable and add tests
-export const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
+export const removeLocalStorageByHostname = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 58;
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
 

@@ -58,6 +58,10 @@ class ListenerMock<T extends Function> {
     }
 }
 
+class BrowsingDataMock {
+    public remove = createSpy();
+}
+
 const DOMAIN_PATH_SPLIT = /\/(.*)/;
 
 class BrowserCookiesMock {
@@ -312,6 +316,7 @@ class StorageAreaMock {
 }
 
 export const browserMock = {
+    browsingData: new BrowsingDataMock(),
     cookies: new BrowserCookiesMock(),
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
@@ -327,6 +332,11 @@ export const browserMock = {
         browserMock.webNavigation.reset();
         browser.storage.local.clear();
     }
+};
+
+// @ts-ignore
+browser.browsingData = {
+    remove: browserMock.browsingData.remove.bind(browserMock.browsingData)
 };
 
 // @ts-ignore

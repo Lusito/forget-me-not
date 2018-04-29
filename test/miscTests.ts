@@ -8,9 +8,10 @@ import { assert } from "chai";
 import { getValidHostname, destroyAllAndEmpty } from "../src/shared";
 import { getFirstPartyCookieDomain, parseSetCookieHeader } from "../src/background/backgroundHelpers";
 import { browser, Cookies } from "webextension-polyfill-ts";
-import { removeCookie } from "../src/background/backgroundShared";
+import { removeCookie, cleanLocalStorage } from "../src/background/backgroundShared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { createSpy, browserMock, doneHandler } from "./browserMock";
+import { settings } from "../src/lib/settings";
 
 describe("Misc functionality", () => {
     const receivers: ReceiverHandle[] = [];
@@ -156,6 +157,7 @@ describe("Misc functionality", () => {
         it("should remove cookies from the specified store", (done) => {
             simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
             simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
+            simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
             let doneCount = 0;
             browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
                 assert.equal(cookies.length, 3);
@@ -164,8 +166,38 @@ describe("Misc functionality", () => {
                 assert.notEqual(cookies.findIndex((c) => c.name === "oh_long" && c.domain === "google.com"), -1);
             }, done, () => (++doneCount === 2)));
             browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.equal(cookies.length, 2);
+                assert.equal(cookies.length, 1);
+                assert.notEqual(cookies.findIndex((c) => c.name === "hello" && c.domain === "google.com"), -1);
+                assert.isUndefined(cookies.find((c) => c.name === "foo" && c.domain === "google.com"));
             }, done, () => (++doneCount === 2)));
+        });
+    });
+
+    describe("cleanLocalStorage", () => {
+        it("should call browser.browsingData.remove", () => {
+            const hostnames = [
+                "google.com",
+                "amazon.de"
+            ];
+            cleanLocalStorage(hostnames, "firefox-default");
+            browserMock.browsingData.remove.assertCalls([[{
+                originTypes: { unprotectedWeb: true },
+                hostnames
+            }, { localStorage: true }]]);
+        });
+        it("should remove hostnames from domainsToClean", () => {
+            settings.set("domainsToClean", {
+                "google.com": true,
+                "www.google.com": true,
+                "amazon.de": true,
+                "wikipedia.org": true
+            });
+            settings.save();
+            cleanLocalStorage([
+                "google.com",
+                "amazon.de"
+            ], "firefox-default");
+            assert.deepEqual(settings.get("domainsToClean"), { "wikipedia.org": true, "www.google.com": true });
         });
     });
 });

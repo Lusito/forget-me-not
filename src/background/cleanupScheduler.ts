@@ -7,8 +7,6 @@
 import { settings } from "../lib/settings";
 import { messageUtil } from "../lib/messageUtil";
 
-// fixme: actually use this file
-
 export class CleanupScheduler {
     private delayTime: number = 0;
     private enabled: boolean = false;

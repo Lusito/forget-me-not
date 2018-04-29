@@ -11,21 +11,26 @@ import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
+import { CleanupScheduler } from "./cleanupScheduler";
 
 // fixme: make this file unit-testable and add tests
 
-const supportsFirstPartIsolation = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 59);
+const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
+
 export class CleanStore {
+    private readonly cleanupScheduler: CleanupScheduler;
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
-    private domainRemoveTimeouts: { [s: string]: number } = {};
-    private snoozing: boolean;
-    private readonly snoozedDomainLeaves: { [s: string]: boolean } = {};
 
     public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean) {
         this.id = id;
         this.tabWatcher = tabWatcher;
-        this.snoozing = snoozing;
+        this.cleanupScheduler = new CleanupScheduler(this.cleanByDomainWithRules.bind(this), snoozing);
+        // fixme: listen for settings changed, if enabled or timeouts change, adapt accordingly
+    }
+
+    public destroy() {
+        this.cleanupScheduler.destroy();
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
@@ -36,14 +41,15 @@ export class CleanStore {
         });
     }
 
-    public cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
+    public cleanCookiesWithRules(ignoreGrayList: boolean, protectOpenDomains: boolean) {
         this.removeCookies((cookie) => !this.isCookieAllowed(cookie, ignoreGrayList, protectOpenDomains));
     }
 
     private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
         const details: Cookies.GetAllDetailsType = { storeId: this.id };
-        if (supportsFirstPartIsolation)
+        if (supportsFirstPartyIsolation)
             details.firstPartyDomain = null;
+
         browser.cookies.getAll(details).then((cookies) => {
             for (const cookie of cookies) {
                 if (test(cookie))
@@ -52,7 +58,7 @@ export class CleanStore {
         });
     }
 
-    private cleanByDomainWithRulesNow(domain: string) {
+    public cleanByDomainWithRules(domain: string) {
         if (settings.get("domainLeave.enabled")) {
             if (settings.get("domainLeave.cookies"))
                 this.cleanCookiesByDomain(domain, false);
@@ -69,6 +75,7 @@ export class CleanStore {
         return type === RuleType.WHITE || type === RuleType.GRAY;
     }
 
+    // fixme: private?
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
         const allowSubDomains = cookie.domain.startsWith(".");
         const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
@@ -88,44 +95,11 @@ export class CleanStore {
         this.cleanCookiesByDomain(hostname, true);
     }
 
-    public onDomainLeave(removedDomain: string) {
-        if (this.domainRemoveTimeouts[removedDomain]) {
-            clearTimeout(this.domainRemoveTimeouts[removedDomain]);
-            delete this.domainRemoveTimeouts[removedDomain];
-        }
-        if (this.snoozing) {
-            this.snoozedDomainLeaves[removedDomain] = true;
-            return;
-        }
-        const timeout = settings.get("domainLeave.delay") * 60 * 1000;
-        if (timeout <= 0) {
-            this.cleanByDomainWithRulesNow(removedDomain);
-        } else {
-            this.domainRemoveTimeouts[removedDomain] = setTimeout(() => {
-                if (this.snoozing)
-                    this.snoozedDomainLeaves[removedDomain] = true;
-                else
-                    this.cleanByDomainWithRulesNow(removedDomain);
-                delete this.domainRemoveTimeouts[removedDomain];
-            }, timeout);
-        }
+    public onDomainLeave(domain: string) {
+        this.cleanupScheduler.schedule(domain);
     }
 
     public setSnoozing(snoozing: boolean) {
-        this.snoozing = snoozing;
-        if (snoozing) {
-            // cancel countdowns and remember them for later
-            for (const domain in this.domainRemoveTimeouts) {
-                this.snoozedDomainLeaves[domain] = true;
-                clearTimeout(this.domainRemoveTimeouts[domain]);
-                delete this.domainRemoveTimeouts[domain];
-            }
-        } else {
-            // reschedule
-            for (const domain in this.snoozedDomainLeaves) {
-                this.onDomainLeave(domain);
-                delete this.snoozedDomainLeaves[domain];
-            }
-        }
+        this.cleanupScheduler.setSnoozing(snoozing);
     }
 }

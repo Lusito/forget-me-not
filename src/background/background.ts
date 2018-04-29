@@ -174,7 +174,7 @@ export class Background implements TabWatcherListener {
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
         browser.cookies.getAllCookieStores().then((stores) => {
             for (const store of stores)
-                this.getCleanStore(store.id).cleanCookiesWithRulesNow(ignoreGrayList, protectOpenDomains);
+                this.getCleanStore(store.id).cleanCookiesWithRules(ignoreGrayList, protectOpenDomains);
         });
     }
 

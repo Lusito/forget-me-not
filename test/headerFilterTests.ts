@@ -85,13 +85,10 @@ describe("Header Filter", () => {
             recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
             headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
             settings.set("cleanThirdPartyCookies.beforeCreation", true);
-            settings.save();
-
-            // settings take a frame to kick in
-            setTimeout(doneHandler(() => {
+            settings.save().then(doneHandler(() => {
                 headerFilter = ensureNotNull(headerFilter);
                 assert.isTrue(headerFilter.isEnabled());
-            }, done), 10);
+            }, done));
         });
         it("should return true if a blocking rule existed on creation", () => {
             tabWatcher = ensureNotNull(tabWatcher);
@@ -105,13 +102,10 @@ describe("Header Filter", () => {
             recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
             headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
             settings.set("rules", [{ rule: "google.com", type: RuleType.BLOCK }]);
-            settings.save();
-
-            // settings take a frame to kick in
-            setTimeout(doneHandler(() => {
+            settings.save().then(doneHandler(() => {
                 headerFilter = ensureNotNull(headerFilter);
                 assert.isTrue(headerFilter.isEnabled());
-            }, done), 10);
+            }, done));
         });
     });
 

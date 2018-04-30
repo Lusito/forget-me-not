@@ -111,14 +111,11 @@ describe("Settings", () => {
             settings2 = ensureNotNull(settings2);
             assert.deepEqual(settings.get("version"), settings2.get("version"));
             settings.set("version", "woot");
-            settings.save();
-
-            // promise takes at least a frame until it works
-            setTimeout(doneHandler(() => {
+            settings.save().then(doneHandler(() => {
                 settings2 = ensureNotNull(settings2);
                 assert.equal(settings.get("version"), "woot");
                 assert.equal(settings2.get("version"), "woot");
-            }, done), 10);
+            }, done));
         });
     });
 

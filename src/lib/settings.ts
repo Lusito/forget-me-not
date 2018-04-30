@@ -197,7 +197,7 @@ export class Settings {
     }
 
     public save() {
-        this.storage.set(this.map);
+        return this.storage.set(this.map);
     }
 
     public onReady(callback: Callback) {

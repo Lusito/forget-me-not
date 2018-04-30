@@ -36,14 +36,11 @@ describe("Recently Accessed Domains", () => {
             assert.notEqual(recentlyAccessedDomains.getLimit(), 42);
             settings.set("logRAD.enabled", false);
             settings.set("logRAD.limit", 42);
-            settings.save();
-
-            // settings take a frame to kick in
-            setTimeout(doneHandler(() => {
+            settings.save().then(doneHandler(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.isFalse(recentlyAccessedDomains.isEnabled());
                 assert.equal(recentlyAccessedDomains.getLimit(), 42);
-            }, done), 10);
+            }, done));
         });
         it("should not do anything if logRAD.enabled === false", () => {
             settings.set("logRAD.enabled", false);
@@ -89,16 +86,14 @@ describe("Recently Accessed Domains", () => {
                 { domain: "google.com", badge: "badge_forget" }
             ]);
             settings.set("logRAD.limit", 3);
-            settings.save();
-            // settings take a frame to kick in
-            setTimeout(doneHandler(() => {
+            settings.save().then(doneHandler(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.deepEqual(recentlyAccessedDomains.get(), [
                     { domain: "google.jp", badge: "badge_forget" },
                     { domain: "google.dk", badge: "badge_forget" },
                     { domain: "google.co.uk", badge: "badge_forget" }
                 ]);
-            }, done), 10);
+            }, done));
         });
         it("should fire an event 'onRecentlyAccessedDomains' with the domain infos when the event 'getRecentlyAccessedDomains' has been fired", () => {
             recentlyAccessedDomains = new RecentlyAccessedDomains();

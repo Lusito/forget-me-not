@@ -5,9 +5,10 @@
  */
 
 import { settings } from "../lib/settings";
-import { messageUtil } from "../lib/messageUtil";
+import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
 
 export class CleanupScheduler {
+    private settingsReceiver: ReceiverHandle | null;
     private delayTime: number = 0;
     private enabled: boolean = false;
     private readonly handler: (domain: string) => void;
@@ -20,19 +21,34 @@ export class CleanupScheduler {
         this.handler = handler;
 
         this.updateSettings();
-        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
             if (changedKeys.indexOf("domainLeave.enabled") !== -1 || changedKeys.indexOf("domainLeave.delay") !== -1)
                 this.updateSettings();
         });
     }
 
-    public updateSettings() {
-        this.enabled = settings.get("domainLeave.enabled");
+    private updateSettings() {
+        const enabled = settings.get("domainLeave.enabled");
+        if (enabled !== this.enabled) {
+            this.enabled = enabled;
+            if (!enabled) {
+                this.clearAllTimeouts();
+                for (const domain in this.snoozedDomains)
+                    delete this.snoozedDomains[domain];
+            }
+        }
         this.delayTime = settings.get("domainLeave.delay") * 60 * 1000;
     }
 
     public destroy() {
-        // cancel countdowns
+        if (this.settingsReceiver) {
+            this.settingsReceiver.destroy();
+            this.settingsReceiver = null;
+        }
+        this.clearAllTimeouts();
+    }
+
+    private clearAllTimeouts() {
         for (const domain in this.domainTimeouts) {
             clearTimeout(this.domainTimeouts[domain]);
             delete this.domainTimeouts[domain];

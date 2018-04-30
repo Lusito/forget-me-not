@@ -17,11 +17,13 @@ import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { RuleType } from "../lib/settingsSignature";
 import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
+import { CleanupScheduler } from "./cleanupScheduler";
 
 // fixme: make this file unit-testable and add tests
 
 export class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
+    private readonly cleanupScheduler: { [s: string]: CleanupScheduler } = {};
     private lastDomainChangeRequest = Date.now();
     private readonly recentlyAccessedDomains = new RecentlyAccessedDomains();
     private readonly tabWatcher = new TabWatcher(this, this.recentlyAccessedDomains);
@@ -41,7 +43,7 @@ export class Background implements TabWatcherListener {
     }
 
     public cleanUrlNow(config: CleanUrlNowConfig) {
-        this.getCleanStore(config.cookieStoreId).cleanUrlNow(config.hostname);
+        this.getCleanStore(config.cookieStoreId).cleanDomainNow(config.hostname);
     }
 
     public cleanAllNow() {
@@ -183,8 +185,19 @@ export class Background implements TabWatcherListener {
             id = DEFAULT_COOKIE_STORE_ID;
         let store = this.cleanStores[id];
         if (!store)
-            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher, this.snoozing);
+            store = this.cleanStores[id] = new CleanStore(id, this.tabWatcher);
         return store;
+    }
+
+    private getCleanupScheduler(id?: string): CleanupScheduler {
+        if (!id)
+            id = DEFAULT_COOKIE_STORE_ID;
+        let scheduler = this.cleanupScheduler[id];
+        if (!scheduler) {
+            const store = this.getCleanStore(id);
+            scheduler = this.cleanupScheduler[id] = new CleanupScheduler(store.cleanByDomainWithRules.bind(store), this.snoozing);
+        }
+        return scheduler;
     }
 
     public updateBadge() {
@@ -218,7 +231,7 @@ export class Background implements TabWatcherListener {
     }
 
     public onDomainLeave(cookieStoreId: string, hostname: string): void {
-        this.getCleanStore(cookieStoreId).onDomainLeave(hostname);
+        this.getCleanupScheduler(cookieStoreId).schedule(hostname);
     }
 
     private updateBrowserAction() {
@@ -235,8 +248,8 @@ export class Background implements TabWatcherListener {
 
     public toggleSnoozingState() {
         this.snoozing = !this.snoozing;
-        for (const key in this.cleanStores)
-            this.cleanStores[key].setSnoozing(this.snoozing);
+        for (const key in this.cleanupScheduler)
+            this.cleanupScheduler[key].setSnoozing(this.snoozing);
 
         if (!this.snoozing) {
             for (const cookie of this.snoozedThirdpartyCookies)

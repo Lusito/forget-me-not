@@ -11,26 +11,18 @@ import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
-import { CleanupScheduler } from "./cleanupScheduler";
 
 // fixme: make this file unit-testable and add tests
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
 
 export class CleanStore {
-    private readonly cleanupScheduler: CleanupScheduler;
     private readonly tabWatcher: TabWatcher;
     private readonly id: string;
 
-    public constructor(id: string, tabWatcher: TabWatcher, snoozing: boolean) {
+    public constructor(id: string, tabWatcher: TabWatcher) {
         this.id = id;
         this.tabWatcher = tabWatcher;
-        this.cleanupScheduler = new CleanupScheduler(this.cleanByDomainWithRules.bind(this), snoozing);
-        // fixme: listen for settings changed, if enabled or timeouts change, adapt accordingly
-    }
-
-    public destroy() {
-        this.cleanupScheduler.destroy();
     }
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
@@ -68,14 +60,13 @@ export class CleanStore {
         }
     }
 
-    private isLocalStorageProtected(domain: string): boolean {
+    public isLocalStorageProtected(domain: string): boolean {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
         const type = settings.getRuleTypeForDomain(domain);
         return type === RuleType.WHITE || type === RuleType.GRAY;
     }
 
-    // fixme: private?
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
         const allowSubDomains = cookie.domain.startsWith(".");
         const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
@@ -90,16 +81,8 @@ export class CleanStore {
         return this.tabWatcher.isFirstPartyDomainOnCookieStore(this.id, firstPartyDomain);
     }
 
-    public cleanUrlNow(hostname: string) {
+    public cleanDomainNow(hostname: string) {
         cleanLocalStorage([hostname], this.id);
         this.cleanCookiesByDomain(hostname, true);
-    }
-
-    public onDomainLeave(domain: string) {
-        this.cleanupScheduler.schedule(domain);
-    }
-
-    public setSnoozing(snoozing: boolean) {
-        this.cleanupScheduler.setSnoozing(snoozing);
     }
 }

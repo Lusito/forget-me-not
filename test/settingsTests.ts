@@ -5,7 +5,8 @@
  */
 
 import { assert } from "chai";
-import { clone, ensureNotNull, browserMock, doneHandler } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { ensureNotNull, doneHandler, clone } from "./testHelpers";
 import { destroyAndNull } from "../src/shared";
 import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/settings";
 import { SettingsTypeMap, RuleType, RuleDefinition } from "../src/lib/settingsSignature";

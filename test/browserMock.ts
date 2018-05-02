@@ -6,6 +6,7 @@
 
 import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies } from "webextension-polyfill-ts";
 import { assert } from "chai";
+import { createSpy, clone } from "./testHelpers";
 
 // @ts-ignore
 // tslint:disable-next-line:no-var-requires
@@ -60,15 +61,25 @@ class ListenerMock<T extends Function> {
 
 class BrowsingDataMock {
     public remove = createSpy();
+
+    public reset() {
+        this.remove.reset();
+    }
 }
 
 const DOMAIN_PATH_SPLIT = /\/(.*)/;
 
 class BrowserCookiesMock {
     private readonly cookies: Cookies.Cookie[] = [];
+    public remove = createSpy(this._remove);
+    public set = createSpy(this._set);
+    public getAll = createSpy(this._getAll);
 
     public reset() {
         this.cookies.length = 0;
+        this.remove.reset();
+        this.set.reset();
+        this.getAll.reset();
     }
 
     private findCookie(name: string, secure: boolean, domain: string, path: string, storeId: string, firstPartyDomain?: string) {
@@ -79,7 +90,7 @@ class BrowserCookiesMock {
         return null;
     }
 
-    public set(details: Cookies.SetDetailsType) {
+    private _set(details: Cookies.SetDetailsType) {
         return new Promise<Cookies.Cookie>((resolve, reject) => {
             let cookie = this.findCookie(details.name || "", details.secure || false, details.domain || "", details.path || "", details.storeId || "firefox-default", details.firstPartyDomain);
             if (cookie) {
@@ -103,7 +114,7 @@ class BrowserCookiesMock {
         });
     }
 
-    public remove(details: Cookies.RemoveDetailsType) {
+    private _remove(details: Cookies.RemoveDetailsType) {
         return new Promise<Cookies.RemoveCallbackDetailsType>((resolve, reject) => {
             const secure = details.url.startsWith("https://");
             const withoutProtocol = details.url.substr(secure ? 8 : 7);
@@ -126,7 +137,7 @@ class BrowserCookiesMock {
         });
     }
 
-    public getAll(details: Cookies.GetAllDetailsType) {
+    private _getAll(details: Cookies.GetAllDetailsType) {
         // Mocking only supports limited functionality right now
         assert.isNull(details.firstPartyDomain);
         assert.isNotNull(details.storeId);
@@ -313,6 +324,11 @@ class StorageAreaMock {
     public clear() {
         return this.remove(Object.getOwnPropertyNames(this.data));
     }
+
+    public reset() {
+        for (const key in this.data)
+            delete this.data[key];
+    }
 }
 
 export const browserMock = {
@@ -327,10 +343,11 @@ export const browserMock = {
         onChanged: new ListenerMock<(changes: { [s: string]: Storage.StorageChange }, areaName: string) => void>()
     },
     reset: () => {
+        browserMock.browsingData.reset();
         browserMock.cookies.reset();
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
-        browser.storage.local.clear();
+        browserMock.storage.local.reset();
     }
 };
 
@@ -381,61 +398,3 @@ browser.storage = {
     onChanged: browserMock.storage.onChanged.get(),
     local: browserMock.storage.local
 };
-
-export interface SpyData {
-    (...args: any[]): any;
-    callCount: number;
-    thisValues: any[];
-    args: any[][];
-    assertCalls: (args: any[], thisValues?: any[]) => void;
-    assertNoCall: () => void;
-    reset: () => void;
-}
-export function createSpy() {
-    const spyData = function (...args: any[]) {
-        spyData.callCount++;
-        // @ts-ignore
-        spyData.thisValues.push(this);
-        spyData.args.push(Array.from(args));
-    } as SpyData;
-    spyData.callCount = 0;
-    spyData.thisValues = [];
-    spyData.args = [];
-    spyData.assertCalls = (args, thisValues?) => {
-        assert.deepEqual(spyData.args, args);
-        if (thisValues)
-            assert.deepEqual(spyData.thisValues, thisValues);
-        spyData.reset();
-    };
-    spyData.assertNoCall = () => {
-        assert.equal(spyData.callCount, 0);
-    };
-
-    spyData.reset = () => {
-        spyData.callCount = 0;
-        spyData.thisValues.length = 0;
-        spyData.args.length = 0;
-    };
-    return spyData;
-}
-
-export const clone = (value: any) => JSON.parse(JSON.stringify(value));
-
-export function ensureNotNull<T>(value: T | null): T {
-    assert.isNotNull(value);
-    // @ts-ignore
-    return value;
-}
-
-// tslint:disable-next-line:ban-types
-export function doneHandler<T extends Function>(handler: T, done: (error?: any) => void, doneCondition?: () => boolean) {
-    return (...args: any[]) => {
-        try {
-            handler.apply(null, args);
-            if (!doneCondition || doneCondition())
-                done();
-        } catch (e) {
-            done(e);
-        }
-    };
-}

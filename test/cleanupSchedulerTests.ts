@@ -6,7 +6,8 @@
 
 import { settings } from "../src/lib/settings";
 import { destroyAndNull } from "../src/shared";
-import { ensureNotNull, browserMock, createSpy, SpyData, doneHandler } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { ensureNotNull, createSpy, SpyData, doneHandler } from "./testHelpers";
 import { assert } from "chai";
 import { CleanupScheduler } from "../src/background/cleanupScheduler";
 
@@ -163,9 +164,9 @@ describe("Cleanup Scheduler", () => {
                 assert.sameMembers(cleanupScheduler.getScheduledDomainsToClean(), ["google.de"]);
                 assert.sameMembers(cleanupScheduler.getSnoozedDomainsToClean(), []);
                 setTimeout(doneHandler(() => ensureNotNull(handler).assertNoCall(), done, () => false), 390);
-                setTimeout(doneHandler(() => ensureNotNull(handler).assertCalls([["google.de"]]), done, () => false), 410);
+                setTimeout(doneHandler(() => ensureNotNull(handler).assertCalls([["google.de"]]), done, () => false), 450);
                 setTimeout(doneHandler(() => ensureNotNull(handler).assertNoCall(), done, () => false), 590);
-                setTimeout(doneHandler(() => ensureNotNull(handler).assertCalls([["google.com"]]), done, () => true), 610);
+                setTimeout(doneHandler(() => ensureNotNull(handler).assertCalls([["google.com"]]), done, () => true), 650);
             });
         });
     });

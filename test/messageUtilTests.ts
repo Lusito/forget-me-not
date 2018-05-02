@@ -4,7 +4,8 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { createSpy, browserMock } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { createSpy } from "./testHelpers";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { destroyAllAndEmpty } from "../src/shared";
 

@@ -5,7 +5,8 @@
  */
 
 import { assert } from "chai";
-import { createSpy, ensureNotNull, browserMock, doneHandler } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { ensureNotNull, createSpy, doneHandler } from "./testHelpers";
 import { destroyAndNull, CookieDomainInfo } from "../src/shared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";

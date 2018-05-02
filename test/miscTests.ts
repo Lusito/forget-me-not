@@ -10,7 +10,8 @@ import { getFirstPartyCookieDomain, parseSetCookieHeader } from "../src/backgrou
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { removeCookie, cleanLocalStorage } from "../src/background/backgroundShared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
-import { createSpy, browserMock, doneHandler } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { createSpy, doneHandler } from "./testHelpers";
 import { settings } from "../src/lib/settings";
 
 describe("Misc functionality", () => {

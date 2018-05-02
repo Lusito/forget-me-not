@@ -12,8 +12,6 @@ import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
 
-// fixme: make this file unit-testable and add tests
-
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
 
 export class CleanStore {

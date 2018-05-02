@@ -6,7 +6,8 @@
 
 import { assert } from "chai";
 import { TabWatcher } from "../src/background/tabWatcher";
-import { createSpy, browserMock, SpyData, ensureNotNull } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { ensureNotNull, createSpy, SpyData } from "./testHelpers";
 import { destroyAndNull } from "../src/shared";
 
 describe("TabWatcher", () => {

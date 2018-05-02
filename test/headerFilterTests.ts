@@ -10,7 +10,8 @@ import { settings } from "../src/lib/settings";
 import { HeaderFilter } from "../src/background/headerFilter";
 import { TabWatcher } from "../src/background/tabWatcher";
 import { destroyAndNull } from "../src/shared";
-import { ensureNotNull, browserMock, doneHandler } from "./browserMock";
+import { browserMock } from "./browserMock";
+import { ensureNotNull, doneHandler } from "./testHelpers";
 import { assert } from "chai";
 import { RuleType } from "../src/lib/settingsSignature";
 

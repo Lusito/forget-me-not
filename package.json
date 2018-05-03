@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require source-map-support/register --require ts-node/register test/**/*.ts",
+    "test": "nyc mocha --require source-map-support/register --require ts-node/register test/**/*.ts",
     "release": "run-s build-release scss-release pack",
     "all": "run-s build scss",
     "build": "webpack --mode=development",
@@ -14,6 +14,29 @@
     "pack": "web-ext build -i src test \"!(manifest).json\" \"*.js\" \"dist/*.map\"",
     "lint": "tslint -p ."
   },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "coverage/**/*",
+      "docs/**/*",
+      "test/**/*",
+      "dist/**/*",
+      "src/index.ts",
+      "**/*.d.ts",
+      "./*.js"
+    ],
+    "reporter": [
+      "lcov"
+    ],
+    "all": true,
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ]
+  },  
   "author": "Santo Pfingsten",
   "license": "Zlib",
   "devDependencies": {
@@ -27,6 +50,7 @@
     "mocha": "^4.0.1",
     "node-sass": "^4.6.0",
     "npm-run-all": "^4.1.2",
+    "nyc": "^11.7.1",
     "punycode": "^2.1.0",
     "source-map-loader": "^0.2.2",
     "source-map-support": "^0.5.0",

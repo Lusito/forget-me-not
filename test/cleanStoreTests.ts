@@ -47,6 +47,7 @@ const OPEN_DOMAIN = "open.com";
 const OPEN_DOMAIN2 = "open2.com";
 const UNKNOWN_DOMAIN = "unknown.com";
 const UNKNOWN_DOMAIN2 = "unknown2.com";
+const UNKNOWN_SUBDOMAIN = "sub.unknown.com";
 
 describe("Clean Store", () => {
     const tabWatcherListener = {
@@ -193,6 +194,9 @@ describe("Clean Store", () => {
                 settings.set("domainLeave.cookies", true);
                 settings.set("domainLeave.localStorage", false);
                 settings.save();
+
+                // should clean subdomain cookies as well
+                setCookie(UNKNOWN_SUBDOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
             });
             it("should not clean localstorage, but should clean cookies", (done) => {
                 cleanStore = ensureNotNull(cleanStore);

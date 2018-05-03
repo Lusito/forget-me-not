@@ -11,6 +11,7 @@ import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RuleType } from "../lib/settingsSignature";
+import { getDomain } from "tldjs";
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
 
@@ -25,8 +26,7 @@ export class CleanStore {
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
         this.removeCookies((cookie) => {
-            const allowSubDomains = cookie.domain.startsWith(".");
-            const match = allowSubDomains ? (domain.endsWith(cookie.domain) || cookie.domain.substr(1) === domain) : (cookie.domain === domain);
+            const match = getFirstPartyCookieDomain(cookie.domain) === getDomain(domain);
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
         });
     }

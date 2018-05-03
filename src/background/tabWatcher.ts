@@ -9,6 +9,7 @@ import { browser, Tabs, WebNavigation } from "webextension-polyfill-ts";
 import { isFirefox, isNodeTest } from "../lib/browserInfo";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { getDomain } from "tldjs";
+import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 
 export const DEFAULT_COOKIE_STORE_ID = isFirefox ? "firefox-default" : "0";
 
@@ -166,8 +167,7 @@ export class TabWatcher {
                 console.warn(`No info about tabId ${tabId} available`);
             return false;
         }
-        const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
-        const domainFP = getDomain(rawDomain) || rawDomain;
+        const domainFP = getFirstPartyCookieDomain(domain);
         return tabInfo.hostnameFP !== domainFP && tabInfo.nextHostnameFP !== domainFP;
     }
 

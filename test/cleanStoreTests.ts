@@ -289,21 +289,46 @@ describe("Clean Store", () => {
     });
 
     describe("cleanDomainNow", () => {
-        beforeEach(() => {
-            settings.set("domainLeave.enabled", false);
-            settings.set("domainLeave.cookies", false);
-            settings.set("domainLeave.localStorage", false);
-            settings.save();
-        });
-        it("should clean regardless of rules and settings", (done) => {
-            cleanStore = ensureNotNull(cleanStore);
-            cleanStore.cleanDomainNow(WHITELISTED_DOMAIN);
-            browserMock.browsingData.remove.assertCalls([[{
-                originTypes: { unprotectedWeb: true },
-                hostnames: [WHITELISTED_DOMAIN]
-            }, { localStorage: true }]]);
+        context("Non-first-party-domain cookies", () => {
+            beforeEach(() => {
+                settings.set("domainLeave.enabled", false);
+                settings.set("domainLeave.cookies", false);
+                settings.set("domainLeave.localStorage", false);
+                settings.save();
+            });
+            it("should clean regardless of rules and settings", (done) => {
+                cleanStore = ensureNotNull(cleanStore);
+                cleanStore.cleanDomainNow(WHITELISTED_DOMAIN);
+                browserMock.browsingData.remove.assertCalls([[{
+                    originTypes: { unprotectedWeb: true },
+                    hostnames: [WHITELISTED_DOMAIN]
+                }, { localStorage: true }]]);
 
-            assertRemainingCookieDomains(done, [OPEN_DOMAIN, OPEN_DOMAIN2, UNKNOWN_DOMAIN, UNKNOWN_DOMAIN2, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN]);
+                assertRemainingCookieDomains(done, [OPEN_DOMAIN, OPEN_DOMAIN2, UNKNOWN_DOMAIN, UNKNOWN_DOMAIN2, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN]);
+            });
+        });
+        context("First-party-domain cookies", () => {
+            beforeEach(() => {
+                settings.set("domainLeave.enabled", false);
+                settings.set("domainLeave.cookies", false);
+                settings.set("domainLeave.localStorage", false);
+                settings.save();
+                browserMock.cookies.reset();
+                setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN);
+                setCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, BLACKLISTED_DOMAIN);
+            });
+            it("should not remove cookies which have a first party domain if that first party domain is not the one to be cleaned", (done) => {
+                cleanStore = ensureNotNull(cleanStore);
+                cleanStore.cleanDomainNow(WHITELISTED_DOMAIN);
+
+                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN]);
+            });
+            it("should remove cookies which have a first party domain if that first party domain is the one to be cleaned", (done) => {
+                cleanStore = ensureNotNull(cleanStore);
+                cleanStore.cleanDomainNow(UNKNOWN_DOMAIN);
+
+                assertRemainingCookieDomains(done, [GRAYLISTED_DOMAIN]);
+            });
         });
     });
 });

@@ -26,7 +26,8 @@ export class CleanStore {
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
         this.removeCookies((cookie) => {
-            const match = getFirstPartyCookieDomain(cookie.domain) === getDomain(domain);
+            const domainFP = getDomain(domain) || domain;
+            const match = cookie.firstPartyDomain ? cookie.firstPartyDomain === domainFP : getFirstPartyCookieDomain(cookie.domain) === domainFP;
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
         });
     }

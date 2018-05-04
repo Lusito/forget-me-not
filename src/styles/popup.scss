@@ -651,8 +651,13 @@ html.fullscreen #rules_list {
 .badge_gray,
 .badge_forget,
 .badge_block {
-    display: inline-block;
     color: white;
+}
+span.badge_white,
+span.badge_gray,
+span.badge_forget,
+span.badge_block {
+    display: inline-block;
     margin: 0 5px 0 0;
     font-size: 10px;
     text-align: center;

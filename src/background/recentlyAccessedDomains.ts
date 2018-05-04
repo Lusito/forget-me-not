@@ -24,6 +24,8 @@ export class RecentlyAccessedDomains {
                 if (changedKeys.indexOf("logRAD.enabled") !== -1 || changedKeys.indexOf("logRAD.limit") !== -1) {
                     this.applySettings();
                     messageUtil.send("onRecentlyAccessedDomains", this.get());
+                } else if (changedKeys.indexOf("fallbackRule") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("whitelistNoTLD") !== -1) {
+                    messageUtil.send("onRecentlyAccessedDomains", this.get());
                 }
             })
         ];

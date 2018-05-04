@@ -187,7 +187,7 @@ export class Settings {
                 this.cookieRules.push({
                     definition: rule,
                     regex: getRegExForRule(parts[1]),
-                    cookieName: parts[0]
+                    cookieName: parts[0].toLowerCase()
                 });
             } else {
                 this.rules.push({
@@ -279,7 +279,7 @@ export class Settings {
         const lowerCookieName = cookieName && cookieName.toLowerCase();
         const matchingRules: RuleDefinition[] = [];
         for (const rule of rules) {
-            if (rule.regex.test(domain) && (!rule.cookieName || rule.cookieName.toLowerCase() === lowerCookieName))
+            if (rule.regex.test(domain) && (!rule.cookieName || rule.cookieName === lowerCookieName))
                 matchingRules.push(rule.definition);
         }
         return matchingRules;

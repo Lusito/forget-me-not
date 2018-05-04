@@ -22,10 +22,10 @@ export function classNameForRuleType(ruleType: RuleType) {
 
 export function setupRuleSelect(select: HTMLSelectElement, type: RuleType) {
     select.className = classNameForRuleType(type);
-    createElement(document, select, "option", { className: "badge_white", value: RuleType.WHITE, textContent: browser.i18n.getMessage("setting_type_white") });
-    createElement(document, select, "option", { className: "badge_gray", value: RuleType.GRAY, textContent: browser.i18n.getMessage("setting_type_gray") });
-    createElement(document, select, "option", { className: "badge_forget", value: RuleType.FORGET, textContent: browser.i18n.getMessage("setting_type_forget") });
-    createElement(document, select, "option", { className: "badge_block", value: RuleType.BLOCK, textContent: browser.i18n.getMessage("setting_type_block") });
+    createElement(document, select, "option", { className: "badge_white", value: RuleType.WHITE, textContent: browser.i18n.getMessage("setting_type_white"), title: browser.i18n.getMessage("setting_type_white@title") });
+    createElement(document, select, "option", { className: "badge_gray", value: RuleType.GRAY, textContent: browser.i18n.getMessage("setting_type_gray"), title: browser.i18n.getMessage("setting_type_gray@title") });
+    createElement(document, select, "option", { className: "badge_forget", value: RuleType.FORGET, textContent: browser.i18n.getMessage("setting_type_forget"), title: browser.i18n.getMessage("setting_type_forget@title") });
+    createElement(document, select, "option", { className: "badge_block", value: RuleType.BLOCK, textContent: browser.i18n.getMessage("setting_type_block"), title: browser.i18n.getMessage("setting_type_block@title") });
     on(select, "change", () => select.className = classNameForRuleType(parseInt(select.value)));
     select.value = type.toString();
 }

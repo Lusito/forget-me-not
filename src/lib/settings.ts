@@ -66,6 +66,8 @@ export const defaultSettings: SettingsMap = {
     "startup.serviceWorkers": true,
     "startup.serverBoundCertificates": false,
 
+    "purgeExpiredCookies": false,
+
     "logRAD.enabled": true,
     "logRAD.limit": 20
 };

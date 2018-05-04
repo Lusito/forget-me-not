@@ -26,6 +26,8 @@ export class CleanStore {
 
     private cleanCookiesByDomain(domain: string, ignoreRules: boolean) {
         this.removeCookies((cookie) => {
+            if (this.shouldPurgeExpiredCookie(cookie))
+                return true;
             const domainFP = getDomain(domain) || domain;
             const match = cookie.firstPartyDomain ? cookie.firstPartyDomain === domainFP : getFirstPartyCookieDomain(cookie.domain) === domainFP;
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
@@ -33,7 +35,7 @@ export class CleanStore {
     }
 
     public cleanCookiesWithRules(ignoreGrayList: boolean, protectOpenDomains: boolean) {
-        this.removeCookies((cookie) => !this.isCookieAllowed(cookie, ignoreGrayList, protectOpenDomains));
+        this.removeCookies((cookie) => this.shouldPurgeExpiredCookie(cookie) || !this.isCookieAllowed(cookie, ignoreGrayList, protectOpenDomains));
     }
 
     private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
@@ -64,6 +66,10 @@ export class CleanStore {
             return true;
         const type = settings.getRuleTypeForDomain(domain);
         return type === RuleType.WHITE || type === RuleType.GRAY;
+    }
+
+    private shouldPurgeExpiredCookie(cookie: Cookies.Cookie) {
+        return settings.get("purgeExpiredCookies") && cookie.expirationDate && cookie.expirationDate < Date.now();
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {

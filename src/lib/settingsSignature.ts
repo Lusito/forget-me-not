@@ -64,6 +64,8 @@ export interface SettingsTypeMap {
     "startup.serviceWorkers": boolean;
     "startup.serverBoundCertificates": boolean;
 
+    "purgeExpiredCookies": boolean;
+
     "logRAD.enabled": boolean;
     "logRAD.limit": number;
 }

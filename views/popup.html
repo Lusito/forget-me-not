@@ -7,6 +7,7 @@
         <link href="../dist/popup.css" type="text/css" rel="stylesheet">
     </head>
     <body>
+        <div id="highlight_rect"></div>
         <div id="mainTabContainer">
             <div id="logo_area" data-i18n="logo?title"></div>
             <div class="tabsList tabsList_asIcons">
@@ -35,39 +36,42 @@
                 </div>
                 <div>
                     <h2 class="tab_heading" data-i18n="perform_manual_cleanup"></h2>
-                    <div class="split_30_70">
-                        <label><input type="checkbox" data-settings-key="cleanAll.cookies" data-enables-setting="cleanAll.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
-                    </div>
-                    <div class="split_30_70">
-                        <label><input type="checkbox" data-settings-key="cleanAll.localStorage" data-enables-setting="cleanAll.localStorage.applyRules"><span data-i18n="setting_local_storage"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.localStorage.applyRules"><span data-i18n="setting_apply_rules_ff58"></span></label>
-                    </div>
-                    <div>
-                        <label><input type="checkbox" data-settings-key="cleanAll.protectOpenDomains"><span data-i18n="setting_protect_open_domains"></span></label>
-                    </div>
-                    <div class="split_equal top_border">
-                        <label><input type="checkbox" data-settings-key="cleanAll.history"><span data-i18n="setting_history"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.downloads"><span data-i18n="setting_downloads"></span></label>
-                    </div>
-                    <div class="split_equal">
-                        <label><input type="checkbox" data-settings-key="cleanAll.formData"><span data-i18n="setting_form_data"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.passwords"><span data-i18n="setting_passwords"></span></label>
-                    </div>
-                    <div class="split_equal">
-                        <label><input type="checkbox" data-settings-key="cleanAll.indexedDB"><span data-i18n="setting_indexed_db"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.pluginData"><span data-i18n="setting_plugin_data"></span></label>
-                    </div>
-                    <div class="split_equal">
-                        <label><input type="checkbox" data-settings-key="cleanAll.serviceWorkers"><span data-i18n="setting_service_workers"></span></label>
-                        <label><input type="checkbox" data-settings-key="cleanAll.serverBoundCertificates"><span data-i18n="setting_server_bound_certificates"></span></label>
+                    <div id="manual_types_of_cleanup">
+                        <div class="split_30_70">
+                            <label><input type="checkbox" data-settings-key="cleanAll.cookies" data-enables-setting="cleanAll.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
+                            <label><input type="checkbox" data-settings-key="cleanAll.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
+                        </div>
+                        <div class="split_30_70">
+                            <label><input type="checkbox" data-settings-key="cleanAll.localStorage" data-enables-setting="cleanAll.localStorage.applyRules"><span data-i18n="setting_local_storage"></span></label>
+                            <label><input type="checkbox" data-settings-key="cleanAll.localStorage.applyRules"><span data-i18n="setting_apply_rules_ff58"></span></label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" data-settings-key="cleanAll.protectOpenDomains"><span data-i18n="setting_protect_open_domains"></span></label>
+                        </div>
+                        <div class="split_equal top_border">
+                            <label><input type="checkbox" data-settings-key="cleanAll.history"><span data-i18n="setting_history"></span></label>
+                            <label><input type="checkbox" data-settings-key="cleanAll.downloads"><span data-i18n="setting_downloads"></span></label>
+                        </div>
+                        <div class="split_equal">
+                            <label><input type="checkbox" data-settings-key="cleanAll.formData"><span data-i18n="setting_form_data"></span></label>
+                            <label><input type="checkbox" data-settings-key="cleanAll.passwords"><span data-i18n="setting_passwords"></span></label>
+                        </div>
+                        <div class="split_equal">
+                            <label><input type="checkbox" data-settings-key="cleanAll.indexedDB"><span data-i18n="setting_indexed_db"></span></label>
+                            <label><input type="checkbox" data-settings-key="cleanAll.pluginData"><span data-i18n="setting_plugin_data"></span></label>
+                        </div>
+                        <div class="split_equal">
+                            <label><input type="checkbox" data-settings-key="cleanAll.serviceWorkers"><span data-i18n="setting_service_workers"></span></label>
+                            <label><input type="checkbox" data-settings-key="cleanAll.serverBoundCertificates"><span data-i18n="setting_server_bound_certificates"></span></label>
+                        </div>
+                        <a href="readme.html#tutorial" target="_blank" class="open_as_tab help_link" data-i18n="types_of_cleanup?title?text" data-highlight="#manual_types_of_cleanup"></a>
                     </div>
                     <div class="top_margin"><button data-i18n="button_clean_now" id="clean_all_now"></button></div>
                 </div>
                 <div id="rules_tab_page">
                     <h2 class="tab_heading">
                         <span data-i18n="define_rules"></span>
-                        <a href="readme.html#tutorial" target="_blank" class="open_as_tab" data-i18n="help_button?title">?</a>
+                        <a href="readme.html#tutorial" target="_blank" class="open_as_tab help_link" data-i18n="help_button?title">?</a>
                     </h2>
                     <div class="rules_input_wrapper">
                         <input id="rules_input" data-i18n="rules_input?placeholder">
@@ -94,39 +98,41 @@
                     <div><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.enabled"><span data-i18n="setting_remove_thirdparty"></span></label></div>
                     <div class="indented">
                         <label><span data-i18n="setting_delay_in_minutes"></span><input type="number" data-settings-key="cleanThirdPartyCookies.delay"></label>
-                        <div><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.beforeCreation"><span data-i18n="setting_thirdparty_before_creation"></span></label>
-                            <a href="readme.html#experimental" target="_blank" class="open_as_tab" data-i18n="experimental_link?title">?</a>
+                        <div id="thirdparty_experimental_wrapper"><label><input type="checkbox" data-settings-key="cleanThirdPartyCookies.beforeCreation"><span data-i18n="setting_thirdparty_before_creation"></span></label>
+                            <a href="readme.html#experimental" target="_blank" class="open_as_tab help_link" data-i18n="experimental_link?title" data-highlight="#thirdparty_experimental_wrapper">?</a>
                         </div>
                     </div>
                     <div><label><input type="checkbox" data-settings-key="startup.enabled"><span data-i18n="setting_startup_enabled"></span></label></div>
-                    
-                    <div class="indented split_30_70">
-                        <label><input type="checkbox" data-settings-key="startup.cookies" data-enables-setting="startup.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
+                    <div id="startup_types_of_cleanup" class="indented">
+                        <div class="split_30_70">
+                            <label><input type="checkbox" data-settings-key="startup.cookies" data-enables-setting="startup.cookies.applyRules"><span data-i18n="setting_cookies"></span></label>
+                            <label><input type="checkbox" data-settings-key="startup.cookies.applyRules"><span data-i18n="setting_apply_rules"></span></label>
+                        </div>
+                        <div class="split_30_70">
+                            <label><input type="checkbox" data-settings-key="startup.localStorage" data-enables-setting="startup.localStorage.applyRules"><span data-i18n="setting_local_storage"></span></label>
+                            <label><input type="checkbox" data-settings-key="startup.localStorage.applyRules"><span data-i18n="setting_apply_rules"></span></label>
+                        </div>
+                        <div class="split_equal top_border">
+                            <label><input type="checkbox" data-settings-key="startup.history"><span data-i18n="setting_history"></span></label>
+                            <label><input type="checkbox" data-settings-key="startup.downloads"><span data-i18n="setting_downloads"></span></label>
+                        </div>
+                        <div class="split_equal">
+                            <label><input type="checkbox" data-settings-key="startup.formData"><span data-i18n="setting_form_data"></span></label>
+                            <label><input type="checkbox" data-settings-key="startup.passwords"><span data-i18n="setting_passwords"></span></label>
+                        </div>
+                        <div class="split_equal">
+                            <label><input type="checkbox" data-settings-key="startup.indexedDB"><span data-i18n="setting_indexed_db"></span></label>
+                            <label><input type="checkbox" data-settings-key="startup.pluginData"><span data-i18n="setting_plugin_data"></span></label>
+                        </div>
+                        <div class="split_equal">
+                            <label><input type="checkbox" data-settings-key="startup.serviceWorkers"><span data-i18n="setting_service_workers"></span></label>
+                            <label><input type="checkbox" data-settings-key="startup.serverBoundCertificates"><span data-i18n="setting_server_bound_certificates"></span></label>
+                        </div>
+                        <a href="readme.html#tutorial" target="_blank" class="open_as_tab help_link" data-i18n="types_of_cleanup?title?text" data-highlight="#startup_types_of_cleanup"></a>
                     </div>
-                    <div class="indented split_30_70">
-                        <label><input type="checkbox" data-settings-key="startup.localStorage" data-enables-setting="startup.localStorage.applyRules"><span data-i18n="setting_local_storage"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.localStorage.applyRules"><span data-i18n="setting_apply_rules"></span></label>
-                    </div>
-                    <div class="indented split_equal top_border">
-                        <label><input type="checkbox" data-settings-key="startup.history"><span data-i18n="setting_history"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.downloads"><span data-i18n="setting_downloads"></span></label>
-                    </div>
-                    <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="startup.formData"><span data-i18n="setting_form_data"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.passwords"><span data-i18n="setting_passwords"></span></label>
-                    </div>
-                    <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="startup.indexedDB"><span data-i18n="setting_indexed_db"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.pluginData"><span data-i18n="setting_plugin_data"></span></label>
-                    </div>
-                    <div class="indented split_equal">
-                        <label><input type="checkbox" data-settings-key="startup.serviceWorkers"><span data-i18n="setting_service_workers"></span></label>
-                        <label><input type="checkbox" data-settings-key="startup.serverBoundCertificates"><span data-i18n="setting_server_bound_certificates"></span></label>
-                    </div>
-                    <div>
+                    <div id="purge_expired_experimental_wrapper">
                         <label><input type="checkbox" data-settings-key="purgeExpiredCookies"><span data-i18n="setting_purge_expired_cookies"></span></label>
-                        <a href="readme.html#experimental" target="_blank" class="open_as_tab" data-i18n="experimental_link?title">?</a>
+                        <a href="readme.html#experimental" target="_blank" class="open_as_tab help_link" data-i18n="experimental_link?title" data-highlight="#purge_expired_experimental_wrapper">?</a>
                     </div>
                     <div><label><input type="checkbox" data-settings-key="showUpdateNotification"><span data-i18n="setting_show_update_notification"></span></label></div>
                     <div><label><input type="checkbox" data-settings-key="showCookieRemovalNotification"><span data-i18n="setting_show_cookie_removal_notification"></span></label></div>

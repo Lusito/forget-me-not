@@ -5,7 +5,7 @@
  */
 
 import { settings } from "./lib/settings";
-import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab } from "./lib/htmlUtils";
+import { on, byId, createElement, removeAllChildren, translateChildren, makeLinkOpenAsTab, connectHighlighters } from "./lib/htmlUtils";
 import { isFirefox, browserInfo } from "./lib/browserInfo";
 import { connectSettings, permanentDisableSettings, updateFromSettings } from "./lib/htmlSettings";
 import { messageUtil } from "./lib/messageUtil";
@@ -89,6 +89,7 @@ class Popup {
         });
 
         messageUtil.send("getRecentlyAccessedDomains");
+        connectHighlighters();
     }
 
     private appendPunycode(domain: string) {

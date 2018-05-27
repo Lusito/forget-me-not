@@ -71,6 +71,7 @@ label>input[type=radio] {
     vertical-align: middle;
 }
 
+.help_link,
 label>input[type=checkbox]+span,
 label>input[type=radio]+span {
     vertical-align: middle;
@@ -683,4 +684,13 @@ span.badge_block {
     border: 1px solid white;
     box-sizing: border-box;
     box-shadow: 0px 0px 0px 2px #214398;
+}
+
+#highlight_rect {
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0px 0px 0px 999px rgba(0,0,0,.2);
+    border-radius: 5px;
 }

@@ -85,6 +85,36 @@ export function translateChildren(parent: NodeSelector) {
         translateElement(element as HTMLElement);
 }
 
+function setHighlightElement(element: HTMLElement | null) {
+    const highlighter = document.querySelector("#highlight_rect") as HTMLElement;
+    if (element) {
+        highlighter.style.display = "block";
+        const rect = element.getBoundingClientRect();
+        const padding = 5;
+        highlighter.style.left = (rect.left - padding) + "px";
+        highlighter.style.width = (rect.width + 2 * padding) + "px";
+        highlighter.style.top = (rect.top - padding) + "px";
+        highlighter.style.height = (rect.height + 2 * padding) + "px";
+    } else {
+        highlighter.style.display = "";
+    }
+}
+
+export function connectHighlighter(element: HTMLElement) {
+    const selector = element.getAttribute("data-highlight");
+    const highlight = selector && document.querySelector(selector);
+    if (highlight) {
+        on(element, "mouseover", () => setHighlightElement(highlight as HTMLElement));
+        on(element, "mouseout", () => setHighlightElement(null));
+    }
+}
+
+export function connectHighlighters() {
+    const elements = document.querySelectorAll("[data-highlight]");
+    for (const element of elements)
+        connectHighlighter(element as HTMLElement);
+}
+
 export function removeAllChildren(node: HTMLElement) {
     if (node.hasChildNodes()) {
         while (node.firstChild)

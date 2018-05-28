@@ -99,6 +99,7 @@ label>input[type=radio]+span {
     >div {
         padding: 0;
         overflow: auto;
+        max-width: 960px;
         >div:not(:last-child) {
             margin-bottom: 5px;
         }

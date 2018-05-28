@@ -1,5 +1,5 @@
 {
-	"extensionName": { "message": "Njezabywaj mje", "description": "Name of the extension." },
+	"extensionName": { "message": "Njezabywaj mje - Forget cookies & other data", "description": "Name of the extension." },
 	"extensionDescription": { "message": "Dajće wobhladowakej daty websydłow zabyć, nimo datow, kotrež chceće wobchować.", "description": "Description of the extension." },
 	"actionTitle": { "message": "Njezabywaj mje", "description": "Action button title" },
 	"actionTitleSnooze": { "message": "Njezabywaj mje (temporarily disabled)" },

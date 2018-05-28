@@ -69,7 +69,7 @@ export class CleanStore {
     }
 
     private shouldPurgeExpiredCookie(cookie: Cookies.Cookie) {
-        return settings.get("purgeExpiredCookies") && cookie.expirationDate && cookie.expirationDate < Date.now();
+        return settings.get("purgeExpiredCookies") && cookie.expirationDate && cookie.expirationDate < Date.now() / 1000;
     }
 
     public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {

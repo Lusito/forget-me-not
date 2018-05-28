@@ -4,33 +4,49 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as messageUtil from "../lib/messageUtil";
-import { CookieDomainInfo } from '../shared';
-import { getBadgeForDomain } from './backgroundShared';
+import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
+import { CookieDomainInfo, destroyAllAndEmpty } from "../shared";
+import { getBadgeForRuleType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
 
 export class RecentlyAccessedDomains {
+    private receivers: ReceiverHandle[];
     private enabled = false;
     private limit = 0;
     private domains: string[] = [];
 
     public constructor() {
-        messageUtil.receive('getRecentlyAccessedDomains', (params: any, sender: any) => {
-            messageUtil.send('onRecentlyAccessedDomains', this.get());
-        });
-
-        messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf('logRAD.enabled') !== -1 || changedKeys.indexOf('logRAD.limit') !== -1) {
-                this.applySettings();
-                messageUtil.send('onRecentlyAccessedDomains', this.get());
-            }
-        });
+        this.receivers = [
+            messageUtil.receive("getRecentlyAccessedDomains", (params: any, sender: any) => {
+                messageUtil.send("onRecentlyAccessedDomains", this.get());
+            }),
+            messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+                if (changedKeys.indexOf("logRAD.enabled") !== -1 || changedKeys.indexOf("logRAD.limit") !== -1) {
+                    this.applySettings();
+                    messageUtil.send("onRecentlyAccessedDomains", this.get());
+                } else if (changedKeys.indexOf("fallbackRule") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("whitelistNoTLD") !== -1) {
+                    messageUtil.send("onRecentlyAccessedDomains", this.get());
+                }
+            })
+        ];
         settings.onReady(this.applySettings.bind(this));
     }
 
+    public destroy() {
+        destroyAllAndEmpty(this.receivers);
+    }
+
+    public isEnabled() {
+        return this.enabled;
+    }
+
+    public getLimit() {
+        return this.limit;
+    }
+
     private applySettings() {
-        this.enabled = settings.get('logRAD.enabled');
-        this.limit = settings.get('logRAD.limit');
+        this.enabled = settings.get("logRAD.enabled");
+        this.limit = settings.get("logRAD.limit");
         this.applyLimit();
     }
 
@@ -40,15 +56,12 @@ export class RecentlyAccessedDomains {
             this.domains.length = limit;
     }
 
-    private get(): CookieDomainInfo[] {
-        let result: CookieDomainInfo[] = [];
+    public get(): CookieDomainInfo[] {
+        const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
-            let badgeKey = getBadgeForDomain(domain).i18nKey;
-            if (badgeKey) {
-                result.push({
-                    domain: domain,
-                    badge: badgeKey
-                });
+            const badge = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;
+            if (badge) {
+                result.push({ domain, badge });
             }
         }
         return result;
@@ -56,9 +69,9 @@ export class RecentlyAccessedDomains {
 
     public add(domain: string) {
         if (this.enabled && domain) {
-            if (domain.startsWith('.'))
+            if (domain.startsWith("."))
                 domain = domain.substr(1);
-            let index = this.domains.indexOf(domain);
+            const index = this.domains.indexOf(domain);
             if (index !== 0) {
                 if (index !== -1)
                     this.domains.splice(index, 1);

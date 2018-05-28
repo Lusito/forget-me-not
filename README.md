@@ -2,6 +2,12 @@
 
 [Install on Firefox](https://addons.mozilla.org/firefox/addon/forget_me_not/)
 
+## Privacy Statement
+
+Your privacy is of the utmost importance.
+This extension does not analyze or collect anything beyond what it needs to fulfill its duty.
+It does not send any data anywhere not even anonymously. PERIOD.
+
 ## About the add-on
 
 This web-extension deletes data websites store in the browser in the following situations:
@@ -16,7 +22,7 @@ This web-extension deletes data websites store in the browser in the following s
 - When the browser starts:
     - Cookies (optionally only when not whitelisted)
     - Local Storage (optionally only when not whitelisted on Firefox 58+)
-	- History
+    - History
     - Downloads
     - Form Data
     - Passwords

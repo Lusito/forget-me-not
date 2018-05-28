@@ -5,7 +5,6 @@
  */
 
 @import "shared";
-
 $badgeColorWhite: rgb(38, 69, 151);
 $badgeColorGray: rgb(116, 116, 116);
 $badgeColorForget: rgb(190, 23, 38);
@@ -16,42 +15,39 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Open Sans", sans-serif;
-    width: 100%;
+    width: 500px;
     font-size: 13px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    background: white;
+    position: relative;
+    color: black
 }
+
 html {
     padding-top: 4px;
 }
 
-body {
-    width: 500px;
-    padding: 0;
-    box-sizing: border-box;
-    background: white;
-    position: relative;
-}
 html.fullscreen,
-html.fullscreen > body,
-html.fullscreen #wrapper {
+html.fullscreen>body,
+html.fullscreen #mainTabContainer {
     width: 100%;
     height: 100%;
 }
 
-html.fullscreen #wrapper {
+html.fullscreen #mainTabContainer {
     display: flex;
     flex-direction: column;
-    > #tabs {
+    >.tabsList {
         flex-shrink: 0;
         flex-grow: 0;
     }
-    > #pages {
+    >.tabsPages {
         flex-shrink: 1;
         flex-grow: 1;
         overflow: auto;
-        > div {
+        >div {
             overflow: hidden;
         }
     }
@@ -75,6 +71,7 @@ label>input[type=radio] {
     vertical-align: middle;
 }
 
+.help_link,
 label>input[type=checkbox]+span,
 label>input[type=radio]+span {
     vertical-align: middle;
@@ -93,7 +90,7 @@ label>input[type=radio]+span {
     border-top: 1px dashed lightgray;
 }
 
-#pages {
+.tabsPages {
     clear: both;
     border-top: 1px solid #A7A7A7;
     padding: 10px;
@@ -102,6 +99,7 @@ label>input[type=radio]+span {
     >div {
         padding: 0;
         overflow: auto;
+        max-width: 960px;
         >div:not(:last-child) {
             margin-bottom: 5px;
         }
@@ -126,6 +124,7 @@ label>input[type=radio]+span {
     font-weight: bold;
     font-size: 16px;
 }
+
 #current_tab_punyfied {
     font-style: italic;
     font-size: 13px;
@@ -299,16 +298,13 @@ table {
     background-position: calc(100% + 22px) -2px;
 }
 
-#tabs {
+.tabsList {
     background: white;
-    height: 38px;
     padding: 0 0 0 0;
     overflow: visible;
     display: flex;
     flex-direction: row;
     >div {
-        height: 39px;
-        width: 50px;
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -321,18 +317,34 @@ table {
         background-repeat: no-repeat;
         border: 1px solid #A7A7A7;
         outline: 1px solid transparent;
-        padding: 7px 12px;
+        padding: 2px 12px;
         z-index: 40;
     }
     >div.active {
         background-color: #FBFBFB;
         border-bottom: none;
     }
-    >div:first-child {
-        border-left: 0;
-    }
     >div:not(:last-of-type) {
         border-right: 0;
+    }
+}
+
+.tabsList>div:first-child {
+    border-left: 0;
+}
+
+.tabsList_asIcons {
+    height: 38px;
+    >div {
+        height: 39px;
+        width: 50px;
+    }
+}
+
+.tabsList_asLabels {
+    height: 22px;
+    >div {
+        height: 23px;
     }
 }
 
@@ -435,69 +447,78 @@ input[type=checkbox]:disabled:checked+span:before {
 input[type=checkbox]:checked+span:before {
     color: #5095ea;
 }
+
 #rules_hint {
     color: #0d8000;
     height: 18px;
 }
+
 #rules_hint.error {
     color: #800000;
 }
-#rules_input_wrapper {
+
+.rules_input_wrapper {
     display: flex;
     flex-direction: row;
-    > input {
+    >input {
         flex-grow: 1;
     }
-    > button {
+    >button {
         flex-shrink: 0;
         margin: 0 0 0 4px;
     }
 }
+
 .rules_head {
     margin-top: 5px;
     margin-right: 19px;
     font-weight: bold;
 }
+
 .rules_list {
     list-style: none;
     padding: 0 2px 0 0;
     margin: 0;
-    > li {
+    >li {
         margin: 0 0 2px 0;
-        > div {
+        >div {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
     }
 }
+
 .rules_head,
-.rules_list > li {
+.rules_list>li {
     display: flex;
     flex-direction: row;
-    > * {
+    >* {
         flex-grow: 1;
         width: 100%;
     }
 }
+
 .rules_head .type_column,
 .rules_head .delete_column,
 .rules_list .type_column,
 .rules_list .delete_column {
     text-align: center;
 }
+
 .rules_head .type_column,
 .rules_list .type_column {
     min-width: 105px;
     width: 105px;
 }
+
 .rules_head .delete_column,
 .rules_list .delete_column {
     min-width: 60px;
     width: 60px;
 }
 
-.rules_list > li > button {
+.rules_list>li>button {
     margin: 0;
     height: 20px;
     padding: 0;
@@ -513,15 +534,13 @@ input[type=checkbox]:checked+span:before {
     width: 100%;
 }
 
-#rules_tab_page {
+#rules_tab_page.active {
     display: flex;
     flex-direction: column;
     height: 100%;
     min-height: 110px;
-    >#rules_list {
-        height: 100%;
-    }
 }
+
 html.fullscreen #rules_list {
     max-height: none;
 }
@@ -553,12 +572,10 @@ html.fullscreen #rules_list {
         cursor: pointer;
         padding: 0 24px 0 3px;
         text-align: left;
-
-        > option {
+        >option {
             font-size: 13px;
         }
     }
-
     .badge_white:hover {
         background-color: $badgeColorWhite;
     }
@@ -594,7 +611,7 @@ html.fullscreen #rules_list {
 #recently_accessed_domains {
     padding-left: 10px;
     list-style-type: none;
-    > li {
+    >li {
         display: flex;
         flex-direction: row;
         margin: 5px 0px;
@@ -615,21 +632,30 @@ html.fullscreen #rules_list {
 .badge_white {
     background-color: $badgeColorWhite;
 }
+
 .badge_gray {
     background-color: $badgeColorGray;
 }
-.badge_forget{
+
+.badge_forget {
     background-color: $badgeColorForget;
 }
-.badge_block{
+
+.badge_block {
     background-color: $badgeColorBlock;
 }
+
 .badge_white,
 .badge_gray,
 .badge_forget,
 .badge_block {
-    display: inline-block;
     color: white;
+}
+span.badge_white,
+span.badge_gray,
+span.badge_forget,
+span.badge_block {
+    display: inline-block;
     margin: 0 5px 0 0;
     font-size: 10px;
     text-align: center;
@@ -646,6 +672,7 @@ html.fullscreen #rules_list {
         margin: 0 0 10px 0;
     }
 }
+
 #help_link {
     background: #214398;
     color: white;
@@ -658,4 +685,13 @@ html.fullscreen #rules_list {
     border: 1px solid white;
     box-sizing: border-box;
     box-shadow: 0px 0px 0px 2px #214398;
+}
+
+#highlight_rect {
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0px 0px 0px 999px rgba(0,0,0,.2);
+    border-radius: 5px;
 }

@@ -3,18 +3,30 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
-import { RuleDefinition } from "./settings";
+
+export enum RuleType {
+    WHITE,
+    GRAY,
+    FORGET,
+    BLOCK
+}
+
+export interface RuleDefinition {
+    rule: string;
+    type: RuleType;
+}
 
 export interface SettingsTypeMap {
     "version": string;
     "showUpdateNotification": boolean;
-    "showCookieRemovalNotification": boolean,
-    "rules": RuleDefinition[],
+    "showCookieRemovalNotification": boolean;
+    "rules": RuleDefinition[];
     "whitelistNoTLD": boolean;
-    "domainsToClean": { [s: string]: boolean },
-    "showBadge": boolean,
-    "initialTab": string,
-    "lastTab": string,
+    "fallbackRule": RuleType;
+    "domainsToClean": { [s: string]: boolean };
+    "showBadge": boolean;
+    "initialTab": string;
+    "lastTab": string;
     "cleanAll.cookies": boolean;
     "cleanAll.cookies.applyRules": boolean;
     "cleanAll.localStorage": boolean;
@@ -29,9 +41,9 @@ export interface SettingsTypeMap {
     "cleanAll.serviceWorkers": boolean;
     "cleanAll.serverBoundCertificates": boolean;
 
-    "cleanThirdPartyCookies.enabled": boolean,
-    "cleanThirdPartyCookies.delay": number,
-    "cleanThirdPartyCookies.beforeCreation": boolean,
+    "cleanThirdPartyCookies.enabled": boolean;
+    "cleanThirdPartyCookies.delay": number;
+    "cleanThirdPartyCookies.beforeCreation": boolean;
 
     "domainLeave.enabled": boolean;
     "domainLeave.delay": number;
@@ -52,8 +64,10 @@ export interface SettingsTypeMap {
     "startup.serviceWorkers": boolean;
     "startup.serverBoundCertificates": boolean;
 
+    "purgeExpiredCookies": boolean;
+
     "logRAD.enabled": boolean;
     "logRAD.limit": number;
 }
 
-export type SettingsSignature = {[K in keyof SettingsTypeMap]: SettingsTypeMap[K]};
+export type SettingsSignature = { [K in keyof SettingsTypeMap]: SettingsTypeMap[K] };

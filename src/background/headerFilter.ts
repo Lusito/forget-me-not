@@ -4,22 +4,18 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as messageUtil from "../lib/messageUtil";
+import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
-import { badges, getBadgeForDomain } from './backgroundShared';
-import { TabWatcher } from './tabWatcher';
-import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
+import { TabWatcher } from "./tabWatcher";
+import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { browser, WebRequest } from "webextension-polyfill-ts";
-
-const cookieDomainRegexp = /domain=([\.a-z0-9\-]+);/i;
-function getCookieDomainFromCookieHeader(header: string) {
-    var match = cookieDomainRegexp.exec(header);
-    if (match)
-        return match[1];
-    return false;
-}
+import { getValidHostname, destroyAndNull } from "../shared";
+import { RuleType } from "../lib/settingsSignature";
+import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 
 export class HeaderFilter {
+    private settingsReceiver: ReceiverHandle | null = null;
+    private blockThirdpartyCookies = false;
     private readonly tabWatcher: TabWatcher;
     private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
     private readonly onHeadersReceived: (details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse;
@@ -30,32 +26,41 @@ export class HeaderFilter {
         this.onHeadersReceived = (details) => {
             if (details.responseHeaders) {
                 return {
-                    responseHeaders: this.filterResponseHeaders(details.responseHeaders, details.tabId)
-                }
+                    responseHeaders: this.filterResponseHeaders(details.responseHeaders, getValidHostname(details.url), details.tabId)
+                };
             }
             return {};
-        }
+        };
         this.updateSettings();
-        messageUtil.receive('settingsChanged', (changedKeys: string[]) => {
-            if (changedKeys.indexOf('cleanThirdPartyCookies.beforeCreation') !== -1 || changedKeys.indexOf('rules') !== -1)
+        this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+            if (changedKeys.indexOf("cleanThirdPartyCookies.beforeCreation") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("fallbackRule") !== -1)
                 this.updateSettings();
         });
     }
 
-    private shouldCookieBeBlocked(tabId: number, domain: string) {
-        const badge = getBadgeForDomain(domain.startsWith('.') ? domain.substr(1) : domain);
-        if (badge === badges.white || badge === badges.gray)
-            return false;
-        return badge === badges.block || this.tabWatcher.isThirdPartyCookie(tabId, domain);
+    public destroy() {
+        this.settingsReceiver = destroyAndNull(this.settingsReceiver);
+        browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
     }
 
-    private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, tabId: number): WebRequest.HttpHeaders | undefined {
+    public isEnabled() {
+        return browser.webRequest.onHeadersReceived.hasListener(this.onHeadersReceived);
+    }
+
+    private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {
+        const type = settings.getRuleTypeForCookie(cookieInfo.domain.startsWith(".") ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
+        if (type === RuleType.WHITE || type === RuleType.GRAY)
+            return false;
+        return type === RuleType.BLOCK || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
+    }
+
+    private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, fallbackDomain: string, tabId: number): WebRequest.HttpHeaders | undefined {
         return responseHeaders.filter((x) => {
-            if (x.name.toLowerCase() === 'set-cookie') {
+            if (x.name.toLowerCase() === "set-cookie") {
                 if (x.value) {
-                    const domain = getCookieDomainFromCookieHeader(x.value);
-                    if (domain && this.shouldCookieBeBlocked(tabId, domain)) {
-                        this.recentlyAccessedDomains.add(domain);
+                    const cookieInfo = parseSetCookieHeader(x.value, fallbackDomain);
+                    if (cookieInfo && this.shouldCookieBeBlocked(tabId, cookieInfo)) {
+                        this.recentlyAccessedDomains.add(cookieInfo.domain);
                         return false;
                     }
                 }
@@ -65,7 +70,8 @@ export class HeaderFilter {
     }
 
     private updateSettings() {
-        if (settings.get('cleanThirdPartyCookies.beforeCreation') || settings.hasBlockingRule())
+        this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
+        if (this.blockThirdpartyCookies || settings.hasBlockingRule())
             browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, { urls: ["<all_urls>"] }, ["responseHeaders", "blocking"]);
         else
             browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);

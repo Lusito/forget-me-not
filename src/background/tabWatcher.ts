@@ -4,18 +4,21 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { getValidHostname } from '../shared';
-import { browser, Tabs } from 'webextension-polyfill-ts';
-import { isFirefox } from '../lib/browserInfo';
-import { RecentlyAccessedDomains } from './recentlyAccessedDomains';
+import { getValidHostname } from "../shared";
+import { browser, Tabs, WebNavigation } from "webextension-polyfill-ts";
+import { isFirefox, isNodeTest } from "../lib/browserInfo";
+import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
+import { getDomain } from "tldjs";
+import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 
-export const DEFAULT_COOKIE_STORE_ID = isFirefox ? 'firefox-default' : '0';
-
+export const DEFAULT_COOKIE_STORE_ID = isFirefox ? "firefox-default" : "0";
 
 interface TabInfo {
     tabId: number;
     hostname: string;
+    hostnameFP: string;
     nextHostname: string;
+    nextHostnameFP: string;
     cookieStoreId: string;
 }
 
@@ -25,6 +28,7 @@ export interface TabWatcherListener {
 }
 
 export class TabWatcher {
+    public destroy: () => void;
     private readonly listener: TabWatcherListener;
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
@@ -34,19 +38,33 @@ export class TabWatcher {
         this.listener = listener;
         this.recentlyAccessedDomains = recentlyAccessedDomains;
         browser.tabs.query({}).then((tabs) => {
-            for (let tab of tabs)
+            for (const tab of tabs)
                 this.onTabCreated(tab);
         });
-        browser.webNavigation.onBeforeNavigate.addListener((details) => details.frameId === 0 && this.onBeforeNavigate(details.tabId, details.url));
-        browser.webNavigation.onCommitted.addListener((details) => details.frameId === 0 && this.onCommitted(details.tabId, details.url));
-        browser.tabs.onRemoved.addListener((tabId) => this.onTabRemoved(tabId));
-        browser.tabs.onCreated.addListener((tab) => this.onTabCreated(tab));
+
+        const onBeforeNavigate: (details: WebNavigation.OnBeforeNavigateDetailsType) => void = (details) => details.frameId === 0 && this.onBeforeNavigate(details.tabId, details.url);
+        const onCommitted: (details: WebNavigation.OnCommittedDetailsType) => void = (details) => details.frameId === 0 && this.onCommitted(details.tabId, details.url);
+        const onRemoved: (tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => void = (tabId) => this.onTabRemoved(tabId);
+        const onCreated: (tab: Tabs.Tab) => void = (tab) => this.onTabCreated(tab);
+        browser.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate);
+        browser.webNavigation.onCommitted.addListener(onCommitted);
+        browser.tabs.onRemoved.addListener(onRemoved);
+        browser.tabs.onCreated.addListener(onCreated);
+
+        this.destroy = () => {
+            browser.webNavigation.onBeforeNavigate.removeListener(onBeforeNavigate);
+            browser.webNavigation.onCommitted.removeListener(onCommitted);
+            browser.tabs.onRemoved.removeListener(onRemoved);
+            browser.tabs.onCreated.removeListener(onCreated);
+            this.destroy = () => undefined;
+        };
     }
 
     private onBeforeNavigate(tabId: number, url: string) {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
             tabInfo.nextHostname = getValidHostname(url);
+            tabInfo.nextHostnameFP = (tabInfo.nextHostname && getDomain(tabInfo.nextHostname)) || tabInfo.nextHostname;
         } else {
             this.getTab(tabId);
         }
@@ -59,7 +77,8 @@ export class TabWatcher {
             this.checkDomainEnter(tabInfo.cookieStoreId, hostname);
             const previousHostname = tabInfo.hostname;
             tabInfo.hostname = hostname;
-            tabInfo.nextHostname = '';
+            tabInfo.hostnameFP = getDomain(hostname) || hostname;
+            tabInfo.nextHostname = tabInfo.nextHostnameFP = "";
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
@@ -81,7 +100,7 @@ export class TabWatcher {
     private getTab(tabId: number) {
         browser.tabs.get(tabId).then((tab) => {
             if (!tab.incognito && !this.tabInfos[tabId]) {
-                const hostname = tab.url ? getValidHostname(tab.url) : '';
+                const hostname = tab.url ? getValidHostname(tab.url) : "";
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
                 if (hostname && this.recentlyAccessedDomains)
                     this.recentlyAccessedDomains.add(hostname);
@@ -92,7 +111,7 @@ export class TabWatcher {
     private setTabInfo(tabId: number, hostname: string, cookieStoreId?: string) {
         cookieStoreId = cookieStoreId || DEFAULT_COOKIE_STORE_ID;
         this.checkDomainEnter(cookieStoreId, hostname);
-        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, nextHostname: '', cookieStoreId };
+        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, hostnameFP: getDomain(hostname) || hostname, nextHostname: "", nextHostnameFP: "", cookieStoreId };
         let list = this.tabInfosByCookieStore[cookieStoreId];
         if (!list)
             list = this.tabInfosByCookieStore[cookieStoreId] = [tabInfo];
@@ -106,16 +125,9 @@ export class TabWatcher {
     }
 
     public cookieStoreContainsDomain(cookieStoreId: string, domain: string, ignoreNext?: boolean) {
-        let list = this.tabInfosByCookieStore[cookieStoreId];
+        const list = this.tabInfosByCookieStore[cookieStoreId];
         if (list)
             return list.findIndex((ti) => ti.hostname === domain || !ignoreNext && ti.nextHostname === domain) !== -1;
-        return false;
-    }
-
-    public cookieStoreContainsSubDomain(cookieStoreId: string, suffix: string, ignoreNext?: boolean) {
-        let list = this.tabInfosByCookieStore[cookieStoreId];
-        if (list)
-            return list.findIndex((ti) => ti.hostname.endsWith(suffix) || !ignoreNext && ti.nextHostname.endsWith(suffix)) !== -1;
         return false;
     }
 
@@ -123,7 +135,7 @@ export class TabWatcher {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
             delete this.tabInfos[tabId];
-            let list = this.tabInfosByCookieStore[tabInfo.cookieStoreId];
+            const list = this.tabInfosByCookieStore[tabInfo.cookieStoreId];
             if (list) {
                 const index = list.findIndex((ti) => ti.tabId === tabId);
                 if (index !== -1)
@@ -135,33 +147,39 @@ export class TabWatcher {
 
     private onTabCreated(tab: Tabs.Tab) {
         if (tab.id && !tab.incognito) {
-            const hostname = tab.url ? getValidHostname(tab.url) : '';
+            const hostname = tab.url ? getValidHostname(tab.url) : "";
             const tabInfo = this.tabInfos[tab.id];
-            if (tabInfo)
+            if (tabInfo) {
                 tabInfo.hostname = hostname;
-            else
+                tabInfo.hostnameFP = getDomain(hostname) || hostname;
+            } else {
                 this.setTabInfo(tab.id, hostname, tab.cookieStoreId);
+            }
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
         }
     }
 
-    public isThirdPartyCookie(tabId: number, domain: string) {
+    public isThirdPartyCookieOnTab(tabId: number, domain: string) {
         const tabInfo = this.tabInfos[tabId];
         if (!tabInfo) {
-            console.warn(`No info about tabId ${tabId} available`);
+            if (!isNodeTest)
+                console.warn(`No info about tabId ${tabId} available`);
             return false;
         }
-        const allowSubDomains = domain.startsWith('.');
-        const rawDomain = allowSubDomains ? domain.substr(1) : domain;
-        if (tabInfo.hostname === rawDomain || tabInfo.nextHostname === rawDomain)
+        const domainFP = getFirstPartyCookieDomain(domain);
+        return tabInfo.hostnameFP !== domainFP && tabInfo.nextHostnameFP !== domainFP;
+    }
+
+    public isFirstPartyDomainOnCookieStore(storeId: string, domainFP: string) {
+        const tabInfos = this.tabInfosByCookieStore[storeId];
+        if (!tabInfos) {
+            if (!isNodeTest)
+                console.warn(`No info about storeId ${storeId} available`);
             return false;
-        if (allowSubDomains) {
-            if (tabInfo.hostname && tabInfo.hostname.endsWith(domain))
-                return false;
-            if (tabInfo.nextHostname && tabInfo.nextHostname.endsWith(domain))
-                return false;
         }
-        return true;
+        if (!tabInfos.length)
+            return false;
+        return tabInfos.findIndex((tabInfo) => tabInfo.hostnameFP === domainFP || tabInfo.nextHostnameFP === domainFP) >= 0;
     }
 }

@@ -3,7 +3,7 @@
     "target": "es2015",
     "module": "commonjs",
     "lib": [
-      "es2015", "dom"
+      "es2015", "dom", "dom.iterable"
     ],
     "sourceMap": true,
     "outDir": "./dist",
@@ -16,9 +16,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
   },
   "exclude": [
-    "test"
   ]
 }

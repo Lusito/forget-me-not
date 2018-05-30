@@ -190,7 +190,9 @@ class Popup {
     }
 
     private onExport() {
-        saveJSONFile(settings.getAll(), "forget-me-not-settings.json");
+        const exported = settings.getAll();
+        delete exported.domainsToClean;
+        saveJSONFile(exported, "forget-me-not-settings.json");
     }
 
     private onReset() {

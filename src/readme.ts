@@ -11,7 +11,7 @@ class Readme {
     private tabSupport = new TabSupport(byId("mainTabContainer") as HTMLElement);
     public constructor() {
         this.tabSupport; // shut up typescript
-        translateChildren(document.body);
+        translateChildren(document);
     }
 }
 

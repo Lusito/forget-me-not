@@ -55,6 +55,7 @@
     "source-map-loader": "^0.2.2",
     "source-map-support": "^0.5.0",
     "tldjs": "^2.3.1",
+    "ts-keycode-enum": "^1.0.4",
     "ts-node": "^4.0.2",
     "tslint": "^5.9.1",
     "typescript": "^2.5.3",

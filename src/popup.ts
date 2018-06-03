@@ -65,7 +65,8 @@ class Popup {
         for (const link of links)
             makeLinkOpenAsTab(link as HTMLAnchorElement);
 
-        translateChildren(document.body);
+        translateChildren(document);
+        [...document.body.querySelectorAll("input[placeholder]")].forEach((e) => e.setAttribute("aria-label", e.getAttribute("placeholder") || ""));
         messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
             if (changedKeys.length > 1 || changedKeys.indexOf("domainsToClean") === -1)
                 updateFromSettings();
@@ -83,7 +84,10 @@ class Popup {
                 createElement(document, li, "span", { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
                 const punified = this.appendPunycode(info.domain);
                 createElement(document, li, "span", { textContent: punified, title: punified });
-                const addRule = createElement(document, li, "span", { textContent: browser.i18n.getMessage("button_log_add_rule"), className: "log_add_rule" });
+                const addRuleMessage = browser.i18n.getMessage("button_log_add_rule");
+                const addRule = createElement(document, li, "button", { textContent: addRuleMessage, className: "log_add_rule" });
+                addRule.setAttribute("tabindex", "0");
+                addRule.setAttribute("aria-label", `${addRuleMessage} (${punified})`);
                 on(addRule, "click", () => this.prepareAddRule(info.domain));
             }
         });
@@ -103,8 +107,8 @@ class Popup {
     }
 
     private prepareAddRule(domain: string) {
-        this.ruleList.setInput("*." + domain.trim().toLowerCase());
         this.mainTabSupport.setTab("rules");
+        this.ruleList.setInput("*." + domain.trim().toLowerCase());
     }
 
     private setCurrentTabLabel(domain: string | false) {
@@ -148,8 +152,10 @@ class Popup {
                         });
                     }
                     const addRule = byId("current_tab_add_rule");
-                    if (addRule)
+                    if (addRule) {
                         on(addRule, "click", () => this.prepareAddRule(hostname));
+                        addRule.setAttribute("aria-label", `${addRule.textContent} (${hostname})`);
+                    }
                     this.rebuildMatchingRulesList();
                 }
             } else {
@@ -190,7 +196,9 @@ class Popup {
     }
 
     private onExport() {
-        saveJSONFile(settings.getAll(), "forget-me-not-settings.json");
+        const exported = settings.getAll();
+        delete exported.domainsToClean;
+        saveJSONFile(exported, "forget-me-not-settings.json");
     }
 
     private onReset() {

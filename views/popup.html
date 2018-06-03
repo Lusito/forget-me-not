@@ -23,8 +23,8 @@
             <div class="tabsPages">
                 <div class="active">
                     <div>
+                        <span id="current_tab">?</span><button data-i18n="button_log_add_rule" class="log_add_rule" id="current_tab_add_rule" tabindex="0"></button>
                         <button id="clean_current_tab" data-i18n="button_clean_now"></button>
-                        <span id="current_tab">?</span><span data-i18n="button_log_add_rule" class="log_add_rule" id="current_tab_add_rule"></span>
                         <div id="current_tab_punyfied"></div>
                     </div>
                     <div class="rules_head">
@@ -83,7 +83,7 @@
                         <div class="type_column" data-i18n="rules_column_type"></div>
                         <div class="delete_column" data-i18n="rules_column_remove"></div>
                     </div>
-                    <ul id="rules_list" class="rules_list"></ul>
+                    <ul id="rules_list" class="rules_list" aria-live="polite"></ul>
                     <div><label><input type="checkbox" data-settings-key="whitelistNoTLD"><span data-i18n="setting_whitelist_no_tld?text?title"></span></label></div>
                     <div><span data-i18n="settings_fallback_rule"></span><label class="type_column" style="float: right; margin-right: 0;"><select id="fallbackRule" style="margin-right: 0;"></select></label>
                     </div>

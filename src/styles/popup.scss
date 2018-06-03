@@ -327,6 +327,14 @@ table {
     >div:not(:last-of-type) {
         border-right: 0;
     }
+    >*:focus {
+        border-color: #5095ea;
+        border-style: dashed;
+    }
+    >*:focus + div {
+        border-left-color: #5095ea;
+        border-left-style: dashed;
+    }
 }
 
 .tabsList>div:first-child {
@@ -350,7 +358,10 @@ table {
 
 input[type=radio],
 input[type=checkbox] {
-    display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
 }
 
 input[type=number] {
@@ -411,6 +422,9 @@ input[type=checkbox]:disabled+span:before {
     background: gray;
 }
 
+input[type=number]:focus,
+input[type=checkbox]:focus+span:before,
+input[type=radio]:focus+span:before,
 input[type=number]:hover,
 input[type=checkbox]:hover+span:before,
 input[type=radio]:hover+span:before {
@@ -598,6 +612,8 @@ html.fullscreen #rules_list {
 }
 
 .log_add_rule {
+    height: auto;
+    text-shadow: none;
     padding: 1px 7px;
     display: inline-block;
     color: white;

@@ -60,6 +60,7 @@ export class RuleList {
                 this.rebuildRulesList();
         });
         on(byId(addId) as HTMLElement, "click", () => this.addRule(RuleType.WHITE));
+        this.updateRulesHint(true, true);
     }
 
     public setInput(value: string) {
@@ -111,6 +112,11 @@ export class RuleList {
     private updateRulesHint(validExpression: boolean, empty: boolean) {
         this.hint.textContent = empty ? "" : browser.i18n.getMessage(validExpression ? "rules_hint_add" : "rules_hint_invalid");
         this.hint.className = validExpression ? "" : "error";
+        this.input.setAttribute("aria-invalid", (!validExpression).toString());
+        if (validExpression)
+            this.hint.removeAttribute("role");
+        else
+            this.hint.setAttribute("role", "alert");
     }
 
     private rebuildRulesList() {

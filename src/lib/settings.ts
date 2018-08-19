@@ -114,10 +114,11 @@ function getRegExForRule(rule: string) {
             reParts.push(".*");
         else
             reParts.push(part);
-        reParts.push(".");
+        reParts.push("\\.");
     }
     if (reParts[reParts.length - 1] === ".")
         reParts.pop();
+    reParts.push("$");
     return new RegExp(reParts.join(""));
 }
 

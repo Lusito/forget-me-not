@@ -10,6 +10,7 @@ import { messageUtil } from "../lib/messageUtil";
 import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature, RuleDefinition, RuleType } from "./settingsSignature";
 import { browser, Storage } from "webextension-polyfill-ts";
+import { getRegExForRule } from "./regexp";
 
 type Callback = () => void;
 
@@ -98,27 +99,6 @@ export function isValidExpression(exp: string) {
 
 function isValidRuleType(ruleType: RuleType) {
     return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET || ruleType === RuleType.BLOCK;
-}
-
-function getRegExForRule(rule: string) {
-    const parts = rule.split(".");
-    const reParts = [];
-    if (parts[0] === "*") {
-        reParts.push("(^|\.)");
-        parts.shift();
-    } else {
-        reParts.push("^");
-    }
-    for (const part of parts) {
-        if (part === "*")
-            reParts.push(".*");
-        else
-            reParts.push(part);
-        reParts.push(".");
-    }
-    if (reParts[reParts.length - 1] === ".")
-        reParts.pop();
-    return new RegExp(reParts.join(""));
 }
 
 function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {

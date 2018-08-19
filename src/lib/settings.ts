@@ -111,10 +111,9 @@ function getRegExForRule(rule: string) {
     }
     for (const part of parts) {
         if (part === "*")
-            reParts.push(".*");
+            reParts.push(".*\\.?");
         else
-            reParts.push(part);
-        reParts.push("\\.");
+            reParts.push(part+"\\.");
     }
     if (reParts[reParts.length - 1] === ".")
         reParts.pop();

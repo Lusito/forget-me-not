@@ -1,12 +1,12 @@
 {
     "__WET_GROUP__": { "message": "Branding" },
     "extensionName": {
-        "message": "Forget Me Not - Esquecer cookies e outros dados",
+        "message": "Forget Me Not - Apagar cookies & mais",
         "description": "Name of the extension.",
         "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
     },
     "extensionDescription": {
-        "message": "Faça o seu navegador esquecer dados de websites, exceto os dados que pretende manter.",
+        "message": "Faça o navegador apagar dados de sites, exceto o que quiser manter.",
         "description": "Description of the extension.",
         "hash": "8138b17e7f1daceffca0d19015bb86e7"
     },
@@ -16,7 +16,7 @@
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
     "actionTitleSnooze": {
-        "message": "Forget Me Not (desativado temporariamente)",
+        "message": "Forget Me Not (temporariamente desativado)",
         "description": "Action button title during snooze",
         "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
     },
@@ -43,19 +43,19 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
     "reset_dialog_title": {
-        "message": "Repor definições",
+        "message": "Redefinir Configurações",
         "hash": "f5545c85577b03ed93d451abf748ce8d"
     },
     "reset_dialog_content": {
-        "message": "Isto não pode ser desfeito.",
+        "message": "Esta ação não pode ser desfeita.",
         "hash": "db630835e0fd63a96fcb2feed83facc3"
     },
     "confirm_settings_and_rules": {
-        "message": "Definições e regras",
+        "message": "Configurações & Filtros",
         "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
     },
     "confirm_settings_only": {
-        "message": "Apenas regras",
+        "message": "Configurações Apenas",
         "hash": "47dbae6cf11a5b79c1abae7b56485c18"
     },
     "confirm_cancel": {
@@ -65,7 +65,7 @@
 
     "__WET_GROUP__": { "message": "Badges" },
     "badge_white": {
-        "message": "B",
+        "message": "P",
         "hash": "bb699961fc5a751108afdcb88ef696aa"
     },
     "badge_gray": {
@@ -83,59 +83,59 @@
 
     "__WET_GROUP__": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Realizar limpeza manual:",
+        "message": "Executar limpeza manual:",
         "hash": "db16149642eab7b99485906fb084002d"
     },
     "define_rules": {
-        "message": "Definir regras:",
+        "message": "Definir filtros:",
         "hash": "958b9c121084b503102f5f7e566a833e"
     },
     "recently_accessed_domains": {
-        "message": "Domínios acedidos recentemente:",
+        "message": "Domínios acessados recentemente:",
         "hash": "53d2a0edc88172044b6b6db0c1996820"
     },
     "tabs_this_tab@title": {
-        "message": "Separador atual",
+        "message": "Aba Atual",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
     "tabs_clean_all@title": {
-        "message": "Realizar limpeza",
+        "message": "Executar Limpeza",
         "hash": "7141bfe69b29cdc954a0f353385213fe"
     },
     "tabs_rules@title": {
-        "message": "Definir regras",
+        "message": "Definir Filtros",
         "hash": "21d4563d916a5e113022379778156fff"
     },
     "tabs_settings@title": {
-        "message": "Definições",
+        "message": "Configurações",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
     "tabs_snooze@title": {
-        "message": "Desativar limpeza temporariamente ao sair de domínio",
+        "message": "Temporariamente desabilitar limpeza ao sair de domínio",
         "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
-        "message": "Registo de domínios",
+        "message": "Log de Domínio",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
     "tabs_about@title": {
-        "message": "Acerca do Forget Me Not",
+        "message": "Sobre o Forget Me Not",
         "hash": "c7f0b61c0416534e0a666f03327552b3"
     },
     "tabs_tutorial@title": {
-        "message": "Tutorial de introdução",
+        "message": "Tutorial de Introdução",
         "hash": "890626624db50efe177837d959c3a8f4"
     },
     "tabs_experimental@title": {
-        "message": "Funcionalidades experimentais",
+        "message": "Funções Experimentais",
         "hash": "f349bbd753db24b2c15a159a227bd115"
     },
     "tabs_changelog@title": {
-        "message": "Registo de alterações",
+        "message": "Log de Mudanças",
         "hash": "d1f539e046abe83e76dcf2163f9a143c"
     },
     "button_clean_now": {
-        "message": "Limpar agora!",
+        "message": "Limpar Agora!",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
     "button_import": {
@@ -147,35 +147,35 @@
         "hash": "46a378d64766cc2c8491cd13b018657f"
     },
     "button_reset": {
-        "message": "Repor predefinições",
+        "message": "Voltar ao padrão",
         "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
     },
     "button_log_add_rule": {
-        "message": "+ Adicionar regra",
+        "message": "+ Adicionar Filtro",
         "hash": "28421d68b672702c44a611f9e741e4d2"
     },
     "button_toggle_snooze_true": {
-        "message": "Parar suspensão",
+        "message": "Desativar modo Soneca",
         "hash": "71669281f5e594169489a032087e7b3f"
     },
     "button_toggle_snooze_false": {
-        "message": "Iniciar suspensão",
+        "message": "Ativar modo Soneca",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza de cookies e armazenamento local ao sair de domínio\n- Limpeza de cookies de terceiros\n\nTodas as limpezas em falta serão remarcadas assim que parar o modo suspensão.\n\nCookies bloqueados não são afetados por isto. Ou seja, se colocar um domínio na lista negra, os cookies irão ainda ser bloqueados no modo suspensão.",
+        "message": "No modo soneca, essas limpezas não vão ocorrer:\n- Limpeza de cookies e armazenamento local ao sair de um domínio\n- Limpeza de cookies de terceiros\n\nTodas as limpezas que não ocorrerem serão remarcadas quando sair do modo soneca.\n\nCookies bloqueados não são afetados por isto. Ex. se você bloquear um domínio, os cookies ainda vão ser bloqueados no modo soneca.",
         "hash": "783a3b899cfee49c995867e6102cc225"
     },
     "invalid_tab": {
-        "message": "Separador inválido",
+        "message": "Aba Inválida",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
     "rules_column_rule": {
-        "message": "Regra",
+        "message": "Filtro",
         "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
     },
     "rules_column_matching_rule": {
-        "message": "Regra correspondente",
+        "message": "Filtro Encontrado",
         "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
     },
     "rules_column_type": {
@@ -187,11 +187,11 @@
         "hash": "3908a268c854fe64242e38845dbb7c81"
     },
     "rules_input@placeholder": {
-        "message": "Pesquisar ou adicionar..",
+        "message": "Procurar ou adicionar..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
     },
     "rules_hint_add": {
-        "message": "Pressione enter para adicionar como regra branca, shift+enter para adicionar como regra cinza",
+        "message": "Pressione enter para adicionar um filtro branco, shift+enter para adicionar um filtro cinza",
         "hash": "a4bf383cbddf44323b6b53b164fc5016"
     },
     "rules_hint_invalid": {
@@ -203,19 +203,19 @@
         "hash": "c30738ff9271a856100751bbca5e5794"
     },
     "help_button@title": {
-        "message": "Leia acerca de como as regras funcionam, que expressões pode utilizar, funcionalidades experimentais, e alterações recentes nesta extensão.",
+        "message": "Ler sobre como filtros funcionam, que expressões você pode usar, funções experimentais e mudanças recentes nesta extensão.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
     "types_of_cleanup": {
-        "message": "O que é que estas caixas de verificação incluem?",
+        "message": "O que essas caixas de seleção incluem?",
         "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
     },
     "types_of_cleanup@title": {
-        "message": "Leia mais acerca do que estas caixas de verificação limpam exatamente.",
+        "message": "Leia mais sobre o que essas caixas de seleção fazem, exatamente.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Experimental: Eliminar cookies expirados quando uma limpeza acontece.",
+        "message": "Experimental: Apagar cookies expirados sempre que uma limpeza ocorrer.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
@@ -223,15 +223,15 @@
         "hash": "b09faefa5c53650a8e8d549be96e09a6"
     },
     "setting_show_cookie_removal_notification": {
-        "message": "Mostrar uma notificação quando cookies forem removidos.",
+        "message": "Mostrar uma notificação quando cookies forem removidos. ",
         "hash": "5d31d92f2c4eb88af04bf02b9078d058"
     },
     "setting_show_badge": {
-        "message": "Mostrar regra correspondente como um emblema no botão da barra de ferramentas",
+        "message": "Mostrar regras como um item no botão da barra de ferramentas.",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
     "setting_type_white": {
-        "message": "Branca",
+        "message": "Branco",
         "hash": "333377f0d431ac6506374ecec7db4a5f"
     },
     "setting_type_white@title": {
@@ -243,7 +243,7 @@
         "hash": "99120a99c4fd2db689b08297d7b255c4"
     },
     "setting_type_gray@title": {
-        "message": "Limpeza no reinício do navegador",
+        "message": "Limpeza ao reiniciar o navegador",
         "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
     "setting_type_forget": {
@@ -251,7 +251,7 @@
         "hash": "0c0704fcdb8556f6843385cac84cf6b6"
     },
     "setting_type_forget@title": {
-        "message": "Limpeza na saída de domínio",
+        "message": "Limpeza ao sair do domínio",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
     "setting_type_block": {
@@ -259,7 +259,7 @@
         "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
     },
     "setting_type_block@title": {
-        "message": "Os cookies irão ser impedidos de serem definidos",
+        "message": "Cookies serão bloqueados",
         "hash": "7ea4b7e384bc7c6c94f916a543f186be"
     },
     "setting_cookies": {
@@ -267,19 +267,19 @@
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
     "setting_apply_rules": {
-        "message": "Aplicar regras",
+        "message": "Aplicar Regras",
         "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_local_storage": {
-        "message": "Armazenamento local",
+        "message": "Armazenamento Local",
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
     "setting_apply_rules_ff58": {
-        "message": "Aplicar regras (Firefox 58+)",
+        "message": "Aplicar Regras (Firefox 58+)",
         "hash": "85e4a052235986fbbbdd74a36732ed1a"
     },
     "setting_protect_open_domains": {
-        "message": "Proteger domínios abertos atualmente se \"Aplicar regras\" estiver marcado",
+        "message": "Proteger domínios abertos se \"Aplicar Regras\" estiver marcado.",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
     },
     "setting_history": {
@@ -287,23 +287,23 @@
         "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
     },
     "setting_downloads": {
-        "message": "Transferências",
+        "message": "Downloads",
         "hash": "12caefee10c407a13df4027c244d1118"
     },
     "setting_form_data": {
-        "message": "Dados de formulários",
+        "message": "Dados de Formulário",
         "hash": "b5418babb2bbffd7d4e8275b83770564"
     },
     "setting_passwords": {
-        "message": "Palavras-passe",
+        "message": "Senhas",
         "hash": "a40f3ee19854cd8645e750f118af3dcd"
     },
     "setting_indexed_db": {
-        "message": "Indexed DB",
+        "message": "Bancos de Dados",
         "hash": "335f3924c55823b7be5b261a240883bf"
     },
     "setting_plugin_data": {
-        "message": "Dados de plugins",
+        "message": "Dados de Plugin",
         "hash": "436905ccbdfaaacb1aec25f512584e36"
     },
     "setting_service_workers": {
@@ -311,11 +311,11 @@
         "hash": "584545acfce5580c7967bc8c366df556"
     },
     "setting_server_bound_certificates": {
-        "message": "Certificados vinculados ao servidor",
+        "message": "Certificados",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
     "setting_local_storage_ff58": {
-        "message": "Armazenamento local (Firefox 58+)",
+        "message": "Armazenamento Local (Firefox 58+)",
         "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
     },
     "setting_delay_in_minutes": {
@@ -327,35 +327,35 @@
         "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
     },
     "setting_domain_leave_enabled@title": {
-        "message": "As regras serão aplicadas",
+        "message": "Regras serão aplicadas",
         "hash": "b349aa92b42d990a4a59dadcead1c09d"
     },
     "setting_remove_thirdparty": {
-        "message": "Remover cookies de terceiros na criação:",
+        "message": "Remover Cookies de Terceitos ao criar:",
         "hash": "10e201194069b4bc86e31630c772eb88"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimental: Negar cookies de terceiros",
+        "message": "Experimental: Bloquear Cookies de Terceiros",
         "hash": "c96674945ffdf9f8da181b05c249d29b"
     },
     "setting_startup_enabled": {
-        "message": "Limpar no arranque do navegador:",
+        "message": "Limpeza ao iniciar o navegador:",
         "hash": "60eb224ee962894d10c6fb67328a69f1"
     },
     "setting_whitelist_no_tld": {
-        "message": "Adicionar domínios sem um domínio de topo à lista branca",
+        "message": "Adicionar domínios sem um domínio raiz, para a lista de permissão",
         "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
     },
     "setting_whitelist_no_tld@title": {
-        "message": "Domínios como localhost, intranet, etc. (sem .com, .net, etc.)",
+        "message": "Domínios como localgost, intranet, etc. (sem .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "settings_fallback_rule": {
-        "message": "Comportamento se nenhuma regra corresponder (predefinição: esquecer):",
+        "message": "Comportamente ao não encontrar regras (padrão: Limpar)",
         "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
-        "message": "Registar domínios acedidos recentemente:",
+        "message": "Logar domínios acessados recentemente.",
         "hash": "3b8f9710163140ee92e5924c8f7bdbca"
     },
     "setting_log_rad_limit": {
@@ -363,19 +363,19 @@
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
     },
     "experimental_link@title": {
-        "message": "Esta é uma funcionalidade experimental. Clique nesta ligação para descobrir mais.",
+        "message": "Esta é uma função experimental. Clique neste link para saber mais.",
         "hash": "e924b30645472d8e56f61b2492dc1bfb"
     },
     "setting_initialTab": {
-        "message": "Separador selecionado inicialmente neste popup:",
+        "message": "Aba selecionada inicialmente nesta popup:",
         "hash": "4f7c8a9bcef6c6476565d540dde62998"
     },
     "initial_tab_last_active": {
-        "message": "<Memorizar>",
+        "message": "<Lembrar>",
         "hash": "aa5aecbdb436117318ba27e868fe98c8"
     },
     "initial_tab_this_tab": {
-        "message": "Separador atual",
+        "message": "Aba Atual",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
     "initial_tab_clean_all": {
@@ -383,33 +383,33 @@
         "hash": "338c238d02c3001ea6d21739b8678ec5"
     },
     "initial_tab_rules": {
-        "message": "Regras",
+        "message": "Filtros",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
     },
     "initial_tab_settings": {
-        "message": "Definições",
+        "message": "Configurações",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
     "initial_tab_snooze": {
-        "message": "Suspender",
+        "message": "Soneca",
         "hash": "0777d03b979676427cadc44e5b133315"
     },
     "initial_tab_log": {
-        "message": "Registo de domínios",
+        "message": "Log de Domínio",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
     "initial_tab_about": {
-        "message": "Acerca",
+        "message": "Sobre",
         "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__": { "message": "Notifications" },
     "update_notification_title": {
-        "message": "O Forget Me Not foi atualizado!",
+        "message": "Forget Me Not foi atualizado!",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
     },
     "update_notification_message": {
-        "message": "Clique aqui para ver as novidades.",
+        "message": "Clique aqui para saber o que há de novo.",
         "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
     },
     "cookie_cleanup_notification_title": {
@@ -430,32 +430,35 @@
 
     "__WET_GROUP__": { "message": "Import Dialog" },
     "import_by_drop_or_click": {
-        "message": "Importe definições ao largar um ficheiro exportado anteriormente nesta área ou clicar em qualquer lugar para selecionar tal ficheiro.",
+        "message": "Importe configurações utilizando um arquivo exportado anteriormente nesta área ou clicando em qualquer lugar para selecionar um arquivo.",
         "hash": "addde02e14af8336c24777c9b03dc5eb"
     },
     "import_success_close_now": {
-        "message": "Definições importadas com sucesso. Pode fechar esta janela agora.",
+        "message": "Configurações importadas com sucesso. Você já pode fechar esta janela.",
         "hash": "cd1b4a7131754d680d4a662e29b2516b"
     },
     "import_failure": {
-        "message": "Não foi possível importar o ficheiro. Verifique se o ficheiro é um ficheiro de definições válido.",
+        "message": "Não foi possível importar arquivo. Verifique se é um arquivo de configurações válido.",
         "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
     },
 
     "__WET_GROUP__": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Autor\nFeito por Santo Pfingsten, © 2017\n\n## Problemas, perguntas e outro feedback\nPor favor reporte problemas e solicitações de funcionalidades no GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Declaração de privacidade\n\nA sua privacidade é da maior importância.\nEsta extensão não analisa ou recolhe nada além do que necessita para cumprir o seu dever. Esta não envia quaisquer dados para qualquer lugar nem mesmo anonimamente. PONTO FINAL.\n\n## Créditos\n* Portuguese translation written by SW1FT\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Design por Vexels.com\n* Ícones feitos pela [Google](https://www.flaticon.com/authors/google \"Google\")  a partir de [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") é licenciado por [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "message": "## Autor\nCriado por Santo Pfingsten, © 2017\n\n## Problemas, perguntas e feedback\nPor favor reporte problemas e pedidos por novas funções em nosso GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Política de Privacidade\n\nSua privacidade é de extrema importância para nós. Essa extensão não analisa ou coleta nada além do necessário para executar sua função. Ela não envia nenhum dado, nem mesmo anônimamente. PONTO.\n\n## Créditos\n* Portuguese(Brazil) translation written by Victor Bambino\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "7f15f35d707c7070acc80fa38044b135"
     },
     "tutorial_page": {
-        "message": ""
+        "message": "# Tutorial de Introdução\n\n## Configurações do Firefox\nEsta extensão não tem acesso ás confirgurações do Firefox, então qualquer configuração que você fizer no Firefox em si vão ser combinados com esta extensão.\n\nEntão se você configurar o Firefox para recusar todos os cookies, eles serão todos bloqueados independentemente da configuração dessa extensão.\n\n## Listas Brancas, Cinzas e Vermelhas\nNomes de Domínio (os nomes de host de um site, como *google.com*) podem ser adicionados à listas coloridas (como listas brancas)\n- **Branca**: Cookies e armazenamento local nunca serão removidos.\n- **Cinza**: Cookies e armazenamento local serão removidos ao reiniciar o navegador (deve ser ativado nas configurações)\n- **Vermelha**: Regras brancas e cinzas podem ser sobrepostas por uma regra vermelha.\n  - Exemplo: Uma lista de permissão permite todos os domínios (expressão \"\\*\") e algumas regras vermelhas definem exceções a esta regra.\n- **Negra**: Bloqueia cookies completamente.\n  - Todas as regras são sobrepostas por uma regra negra.\n  - Infelizmente, cookies baixados por JavaScript não podem ser bloqueados, mas serão removidos instantaneamente após sua criação.\n\n## Expressões válidas\n- Todos os nomes de host (ex. www.google.com) são uma expressão válida.\n- Utilize um asterisco (*) como coringa para um segmento (ex. *.google.com ou www.\\*.com)\n- Listas brancas sobrepõem listas cinzas.. não tenho certeza se isto permanecerá definitivo.\n\n### Expressões específicas para cookies\nVocê pode criar filtros para combinações de nomes de cookie e domínio.\n- Exemplo: `nomedocookie@*.google.com`\n- `nomedocookie` pode ser qualquer nome válido de cookie.\n- Os mesmos filtros acima se aplicam para a parte de domínio, à direita do sinal de `@`.\n- Filtros específicas de cookie sempre se sobrepõem aos filtros normais.\n\n## Cookies de terceiros\n- Quando um cookie baixado não pertence ao mesmo domínio que está aberto na aba, ele é considerado um cookie de terceiros.\n- Pesquisas estão sendo conduzidas para melhorar este método.\n\n## Modo Soneca\n\nNa aba \"Modo Soneca\", você pode desabilitar temporáriamente a limpeza automática. Veja a aba para instruções.\n\n## Tipos de Limpeza\n\nVocê pode escolher que tipo de informações limpar:\n- **Cookies**: Cookies normais de HTTP. Cookies de Flash são cobertos pela caixa \"Dados de Plugins\"\n- **Armazenamento Local** e **Bancos de Dados**: Sites podem armazenar informações no seu navegador para permitir que certos recursos funcionem ou lembrar de algo na sua próxima visita. Algumas vezes o Firefox se refere a \"Bancos de Dados\" como \"Armazenamento\", então se o Firefox informa que youtube.com está utilizando alguns MB de Armazenamento, se trata provavelmente de \"Bancos de Dados\"\n- **Histórico**: Isto inclui seu histórico de visitas a sites.\n- **Downloads**: Isto contém seu histórico de downloads. Limpar o histórico de downloads não apaga os arquivos baixados.\n- **Dados de Formulário**: Dependendo das suas configurações, dados que você digitar em formulários como informações de pagamento ou e-mails podem ser salvos, para que na próxima vez que precise digitar este dado, ele já esteja salvo.\n- **Senhas**: Você pode ter dito ao Firefox para que salve algumas senhas. Selecione isto para removê-las novamente.\n- **Dados de Plugins**: Plugins (não confundir com add-ons e extensões) como Adobe Flash ou Acrobat Reader podem armazenar informação como cookies ou outras configurações & informações.\n- **Service Workers**: Service Workers são uma forma de permitir que sites possam ser usados offline, e uma maneira de agilizar o carregamento de web-apps que utilizam este recurso.\n- **Certificados**: Se você adicionou certificados para permitir conexções à um servidor, esta opção os remove.",
+        "hash": "e3da06a89c4e4c3e8607211f3522da45"
     },
     "experimental_page": {
-        "message": ""
+        "message": "## Funções Experimentais\n\n- De vez em quando haverão novas funções que serão marcadas com experimentais.\n- Eles estarão desativadas por padrão e poderão ser manualmente ativadas.\n- Essas funções serão usadas para avaliar novas formas de melhorar a extensão.\n- Elas podem ser instáveis ou causar lentidão.\n- Se você tiver problemas, tente desligar essas funções.\n- Por favor conte-nos seu feedback e reporte bugs em nossa página do [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experimentos ativos no momento:\n- **Deletar Cookies Expirados**:\nSempre que uma limpeza ocorrer, cookies que tiverem uma data de validade vencida serão removidos independentemente das regras configuradas. Normalmente o Forefox deleta cookies expirados quando um certo limite é atingido. Estes cookies não seriam enviados para o site, mas eles ainda estariam ali. Esta opção deleta estes cookies-fantasma.\n- **Bloquear Cookies de Terceitos**:  \nSe ativado, todas as transferencias de dados vão ser interceptadas para remover cookies de domínios que não pertencem ao mesmo aberto na aba, e não estão protegidos por alguma regra. Então estes cookies nunca serão baixados.\n\nPor favor me dê feedback com a sua experiência ao utilizar estes experimentos, para que eu possa decidir se adiciono eles permanentemente.",
+        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
     },
     "changelog_page": {
-        "message": ""
+        "message": "",
+        "hash": "eb9136418e946fe5a695cc1163778b93"
     },
 
-    "__WET_LOCALE__": { "message": "pt-pt" }
+    "__WET_LOCALE__": { "message": "pt-BR" }
 }

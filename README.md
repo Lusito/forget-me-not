@@ -2,6 +2,8 @@
 
 [Install on Firefox](https://addons.mozilla.org/firefox/addon/forget_me_not/)
 
+Please help by creating or updating translations in this easy to use [online editor](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).
+
 ## Privacy Statement
 
 Your privacy is of the utmost importance.

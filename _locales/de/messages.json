@@ -1,5 +1,5 @@
 {
-    "__WET_GROUP__": { "message": "Branding" },
+    "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
         "message": "Vergiss Mein Nicht - Vergiss Cookies und andere Daten",
         "description": "Name of the extension.",
@@ -25,7 +25,7 @@
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
 
-    "__WET_GROUP__": { "message": "Dialogs" },
+    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -63,7 +63,7 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
 
-    "__WET_GROUP__": { "message": "Badges" },
+    "__WET_GROUP__2": { "message": "Badges" },
     "badge_white": {
         "message": "W",
         "hash": "bb699961fc5a751108afdcb88ef696aa"
@@ -81,7 +81,7 @@
         "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
     },
 
-    "__WET_GROUP__": { "message": "Settings" },
+    "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
         "message": "Manuelle Säuberung durchführen:",
         "hash": "db16149642eab7b99485906fb084002d"
@@ -403,7 +403,7 @@
         "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
-    "__WET_GROUP__": { "message": "Notifications" },
+    "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
         "message": "Vergiss Mein Nicht wurde aktualisiert.",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
@@ -428,7 +428,7 @@
         "hash": "194b196ae9df5827b482babe5caebd69"
     },
 
-    "__WET_GROUP__": { "message": "Import Dialog" },
+    "__WET_GROUP__5": { "message": "Import Dialog" },
     "import_by_drop_or_click": {
         "message": "Zum Importieren, eine vorher exportierte Datei in diesen Bereich ziehen, oder durch Klick auf diesen Bereich eine Datei auswählen.",
         "hash": "addde02e14af8336c24777c9b03dc5eb"
@@ -442,7 +442,7 @@
         "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
     },
 
-    "__WET_GROUP__": { "message": "Info Pages" },
+    "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
         "message": "## Autor\nErstellt von Santo Pfingsten, © 2017\n\n## Probleme, Fragen und andere Anregungen\nBitte Probleme und Featurewünsche auf GitHub posten:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Datenschutzerklärung\n\nDeine Privatsphäre hat höchste Priorität. Weder analysisert, noch sammelt diese Erweiterung mehr als notwendig um die Funktion zu gewährleisten. In keinem Fall werden Daten irgendwohin geschickt, nicht einmal anonymisiert. PUNKT.\n\n## Credits\n* Deutsche Übersetzung von Santo Pfingsten\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "7f15f35d707c7070acc80fa38044b135"
@@ -456,8 +456,8 @@
         "hash": "b2158f0e30401d015933ecc25c8c6fb6"
     },
     "changelog_page": {
-        "message": "## Änderungshistorie\n\n### Version 1.0.2 (03.06.2018)\n- Unterstützung für Keyboardnavigation und Screen Reader\n\n### Version 1.0.1 (28.05.2018)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (27.05.2018)\n- Anderes Icon und tooltip im Snooze Modus.\n- Übersetzungen ins Ober- und Untersorbische durch @milupo\n- Nutzer können nun wählen, welcher Regel-Typ angewandt wird, wenn keine passende Regel gefunden wurde.\n- Regeln können nun spezifisch für benannte cookies erstellt werden.\n- Cookies Dritter werden nun besser erkannt.\n- Bugs beim Entfernen von Subdomänencookies behoben.\n- Bessere Unterstützung für First Party Isolation\n- Neues experimentelles Feature: Automatisches entfernen von abgelaufenen Cookies wann immer eine Säuberung stattfindet.\n- Einige visuelle Probleme wurden behoben.\n- Viele Verbesserungen im Code für bessere Stabilität und Leistung!\n- Über 100 Unit Tests um hohe Qualität zu gewährleisten!\n- Bessere Hilfe und mehr Beschreibungen.\n- Datenschutzerklärung hinzugefügt.\n\n### Version 0.9.1 (06.04.2018)\n- Bug der verhinderte, dass die Einstellung -nicht über updates informieren- ignoriert wurde\n\n### Version 0.9.0 (24.03.2018)\n- Einstellung zum Limitieren oder Abschalten des Domänen-Logs\n- Punycode Domänen können nun korrekt dargestellt werden\n- Fix: Cookies wurden in einigen Fällen nicht korrekt entfernt\n- In den Popup Tabs werden nun Bilder statt Text verwendet\n- Manuelles Löschen kann nun optional auch die derzeit aktiven Domänen löschen.\n- Automatische Säuberung kann nun temporär abgeschaltet werden. Die Bereinigungen werden erneut geplant sobald der \"Snooze\" gestoppt wurde.\n- Technologieupgrade\n\n### Version 0.8.8 (24.01.2018)\n- Neuer, Regeltyp \"Schwarz\" zum blockieren von cookies hinzugefügt.\n- First Party Isolation verhindert nicht mehr, dass cookies entfernt werden (funktioniert erst ab Firefox 59). Verbesserte Unterstützung wird demnächst über eine Betaversion zur Verfügung gestellt.\n- Bugfix: Nach Verlassen einer Domain, diese wieder besuchen und verlassen bevor der erste Säuberungstimeout verstrichen war, wurden Cookies zu früh gelöscht.\n- Bugfix: Notifikationen konnten durch neuere ersetzt werden, bevor der Nutzer diese sehen konnte.\n\n### Version 0.8.7 (20.12.2017)\n- Übergangslösung für nicht funktionierende Einstellungsimporte aus dem Firefox browserAction Popup.\n- Partielle Unterstützung für Umgebungstabs: Cookies funktionieren, lokaler Speicher jedoch nicht (Mozilla muss hier erst noch etwas beheben)\n- Neue \"Vergiss\" Regel (rot) hinzugefügt um andere Regeln zu überschreiben (siehe Tutorials).\n- Problem bei der Browsertartbereinigung behoben\n- Unit Tests eingeführt\n- Option zum Verstecken der Badge (Markierung der Regel) hinzugefügt\n- Option zum Auswählen des initial selektierten Reiters hinzugefügt\n- Option zum Anzeigen einer Notifikation Bei Cookieentfernung.\n- Problem mit dem Export behoben\n\n### Version 0.8.6 (06.12.2017)\n- Anpassungen an der Übersetzung. Einsatz von [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Einführung von in-extension Readme, Tutorial, Änderungshistorie.\n  - Diese können über den Fragezeichen Button erreicht werden.\n- Anzeige einer Notifikation wenn die Erweiterung aktualisiert wurde (kann abgeschaltet werden).\n- Domänen ohne Top Level Domäne (wie z.B. localhost, intranet, etc.) können nun mit einer Checkbox zur weißen Liste hinzugefügt werden.\n- Experimentelle Funktionalität zum Blockieren von Cookies Dritter.\n\n### Version 0.8.5 (25.11.2017)\n- Tippfehler behoben\n- Wechsel des Regeltyps weicher gestaltet\n- Button zum Hinzufügen neuer Regeln (vorher konnten neue Regeln nur über Enter hinzugefügt werden)\n- Button für weitere Informationen zu gültigen Regeln\n\n### Version 0.8.4 (25.11.2017)\n- Bessere Mobilkompatibilität\n- Inkognitocookies werden nicht mehr gelogged und entfernt\n\n### Version 0.8.3 (24.11.2017)\n- Abschaltung in Inkognitofenstern\n- Eine liste der Domänen, auf denen kürzlich Cookieänderungen durchgeführt wurden\n- Ein Button zum einfacheren Hinzufügen neuer Regeln mit Domänen der oben beschriebenen Liste, als auch der Domäne des aktuellen tabs\n\n### Version 0.8.2 (19.11.2017)\n- Einige Bugfixes und Säuberungen\n\n### Version 0.8.0 (19.11.2017)\n- Erste Version",
-        "hash": "eb9136418e946fe5a695cc1163778b93"
+        "message": "## Änderungshistorie\n\n### Version 1.0.3 (23.08.2018)\n- Fix a bug in the rule expression parser\n- Spanische (Argentinien) Übersetzungen von [Fabián Pérez](https://www.github.com/thepante)\n- Schwedishe Übersetzung von Jo3yA\n- Portugisische Übersetzung von SW1FT\n- Portugisische(Brasilien) Übersetzungen von Victor Bambino\n- Aktualisierung der ober- und untersorbischen Übersetzung von Michael Wolf\n\n### Version 1.0.2 (03.06.2018)\n- Unterstützung für Keyboardnavigation und Screen Reader\n\n### Version 1.0.1 (28.05.2018)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (27.05.2018)\n- Anderes Icon und tooltip im Snooze Modus.\n- Übersetzungen ins Ober- und Untersorbische durch @milupo\n- Nutzer können nun wählen, welcher Regel-Typ angewandt wird, wenn keine passende Regel gefunden wurde.\n- Regeln können nun spezifisch für benannte cookies erstellt werden.\n- Cookies Dritter werden nun besser erkannt.\n- Bugs beim Entfernen von Subdomänencookies behoben.\n- Bessere Unterstützung für First Party Isolation\n- Neues experimentelles Feature: Automatisches entfernen von abgelaufenen Cookies wann immer eine Säuberung stattfindet.\n- Einige visuelle Probleme wurden behoben.\n- Viele Verbesserungen im Code für bessere Stabilität und Leistung!\n- Über 100 Unit Tests um hohe Qualität zu gewährleisten!\n- Bessere Hilfe und mehr Beschreibungen.\n- Datenschutzerklärung hinzugefügt.\n\n### Version 0.9.1 (06.04.2018)\n- Bug der verhinderte, dass die Einstellung -nicht über updates informieren- ignoriert wurde\n\n### Version 0.9.0 (24.03.2018)\n- Einstellung zum Limitieren oder Abschalten des Domänen-Logs\n- Punycode Domänen können nun korrekt dargestellt werden\n- Fix: Cookies wurden in einigen Fällen nicht korrekt entfernt\n- In den Popup Tabs werden nun Bilder statt Text verwendet\n- Manuelles Löschen kann nun optional auch die derzeit aktiven Domänen löschen.\n- Automatische Säuberung kann nun temporär abgeschaltet werden. Die Bereinigungen werden erneut geplant sobald der \"Snooze\" gestoppt wurde.\n- Technologieupgrade\n\n### Version 0.8.8 (24.01.2018)\n- Neuer, Regeltyp \"Schwarz\" zum blockieren von cookies hinzugefügt.\n- First Party Isolation verhindert nicht mehr, dass cookies entfernt werden (funktioniert erst ab Firefox 59). Verbesserte Unterstützung wird demnächst über eine Betaversion zur Verfügung gestellt.\n- Bugfix: Nach Verlassen einer Domain, diese wieder besuchen und verlassen bevor der erste Säuberungstimeout verstrichen war, wurden Cookies zu früh gelöscht.\n- Bugfix: Notifikationen konnten durch neuere ersetzt werden, bevor der Nutzer diese sehen konnte.\n\n### Version 0.8.7 (20.12.2017)\n- Übergangslösung für nicht funktionierende Einstellungsimporte aus dem Firefox browserAction Popup.\n- Partielle Unterstützung für Umgebungstabs: Cookies funktionieren, lokaler Speicher jedoch nicht (Mozilla muss hier erst noch etwas beheben)\n- Neue \"Vergiss\" Regel (rot) hinzugefügt um andere Regeln zu überschreiben (siehe Tutorials).\n- Problem bei der Browsertartbereinigung behoben\n- Unit Tests eingeführt\n- Option zum Verstecken der Badge (Markierung der Regel) hinzugefügt\n- Option zum Auswählen des initial selektierten Reiters hinzugefügt\n- Option zum Anzeigen einer Notifikation Bei Cookieentfernung.\n- Problem mit dem Export behoben\n\n### Version 0.8.6 (06.12.2017)\n- Anpassungen an der Übersetzung. Einsatz von [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Einführung von in-extension Readme, Tutorial, Änderungshistorie.\n  - Diese können über den Fragezeichen Button erreicht werden.\n- Anzeige einer Notifikation wenn die Erweiterung aktualisiert wurde (kann abgeschaltet werden).\n- Domänen ohne Top Level Domäne (wie z.B. localhost, intranet, etc.) können nun mit einer Checkbox zur weißen Liste hinzugefügt werden.\n- Experimentelle Funktionalität zum Blockieren von Cookies Dritter.\n\n### Version 0.8.5 (25.11.2017)\n- Tippfehler behoben\n- Wechsel des Regeltyps weicher gestaltet\n- Button zum Hinzufügen neuer Regeln (vorher konnten neue Regeln nur über Enter hinzugefügt werden)\n- Button für weitere Informationen zu gültigen Regeln\n\n### Version 0.8.4 (25.11.2017)\n- Bessere Mobilkompatibilität\n- Inkognitocookies werden nicht mehr gelogged und entfernt\n\n### Version 0.8.3 (24.11.2017)\n- Abschaltung in Inkognitofenstern\n- Eine liste der Domänen, auf denen kürzlich Cookieänderungen durchgeführt wurden\n- Ein Button zum einfacheren Hinzufügen neuer Regeln mit Domänen der oben beschriebenen Liste, als auch der Domäne des aktuellen tabs\n\n### Version 0.8.2 (19.11.2017)\n- Einige Bugfixes und Säuberungen\n\n### Version 0.8.0 (19.11.2017)\n- Erste Version",
+        "hash": "a037815bbcc7b6c4bdaa52e50f4cbd13"
     },
 
     "__WET_LOCALE__": { "message": "de" }

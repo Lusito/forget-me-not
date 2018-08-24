@@ -1,5 +1,5 @@
 {
-    "__WET_GROUP__": { "message": "Branding" },
+    "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
         "message": "Forget Me Not - Apagar cookies & mais",
         "description": "Name of the extension.",
@@ -25,7 +25,7 @@
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
 
-    "__WET_GROUP__": { "message": "Dialogs" },
+    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -63,7 +63,7 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
 
-    "__WET_GROUP__": { "message": "Badges" },
+    "__WET_GROUP__2": { "message": "Badges" },
     "badge_white": {
         "message": "P",
         "hash": "bb699961fc5a751108afdcb88ef696aa"
@@ -81,7 +81,7 @@
         "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
     },
 
-    "__WET_GROUP__": { "message": "Settings" },
+    "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
         "message": "Executar limpeza manual:",
         "hash": "db16149642eab7b99485906fb084002d"
@@ -403,7 +403,7 @@
         "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
-    "__WET_GROUP__": { "message": "Notifications" },
+    "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
         "message": "Forget Me Not foi atualizado!",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
@@ -428,7 +428,7 @@
         "hash": "194b196ae9df5827b482babe5caebd69"
     },
 
-    "__WET_GROUP__": { "message": "Import Dialog" },
+    "__WET_GROUP__5": { "message": "Import Dialog" },
     "import_by_drop_or_click": {
         "message": "Importe configurações utilizando um arquivo exportado anteriormente nesta área ou clicando em qualquer lugar para selecionar um arquivo.",
         "hash": "addde02e14af8336c24777c9b03dc5eb"
@@ -442,7 +442,7 @@
         "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
     },
 
-    "__WET_GROUP__": { "message": "Info Pages" },
+    "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
         "message": "## Autor\nCriado por Santo Pfingsten, © 2017\n\n## Problemas, perguntas e feedback\nPor favor reporte problemas e pedidos por novas funções em nosso GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Política de Privacidade\n\nSua privacidade é de extrema importância para nós. Essa extensão não analisa ou coleta nada além do necessário para executar sua função. Ela não envia nenhum dado, nem mesmo anônimamente. PONTO.\n\n## Créditos\n* Portuguese(Brazil) translation written by Victor Bambino\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "7f15f35d707c7070acc80fa38044b135"
@@ -456,7 +456,7 @@
         "hash": "b2158f0e30401d015933ecc25c8c6fb6"
     },
     "changelog_page": {
-        "message": "",
+        "message": "## Changelog\n\n### Version 1.0.3 (2018/08/23)\n- Fix a bug in the rule expression parser\n- Spanish (Argentina) translation written by [Fabián Pérez](https://www.github.com/thepante)\n- Swedish translation written by Jo3yA\n- Portuguese translation written by SW1FT\n- Portuguese(Brazil) translation written by Victor Bambino\n- Updated upper and lower sorbian translation written by Michael Wolf\n\n### Version 1.0.2 (2018/06/03)\n- Support for keyboard navigation and screen readers\n\n### Version 1.0.1 (2018/05/28)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (2018/05/27)\n- Added a different icon and tooltip in snooze mode.\n- Upper and Lower Sorbian locales thanks to @milupo.\n- Users can now change what rule-type is applied if no matching rule was found.\n- Support for creating rules specific to a named cookie\n- Improved detection of third-party cookies.\n- Fixed bugs with subdomain cookie removal.\n- Improved support for First Party Isolation\n- New experimental feature: Purging expired cookies whenever a cleanup happens.\n- Fixed some visual issues.\n- Lots of code improvements for better stability and improved performance!\n- Over 100 unit tests to ensure good quality!\n- Better help and more descriptions.\n- Added privacy statement.\n\n### Version 0.9.1 (2018/04/06)\n- Bug that ignored the -do not notify about updates- setting\n\n### Version 0.9.0 (2018/03/24)\n- Added settings to disable or limit the domain log\n- Support for displaying punycode domain names\n- Fixed cookies not being removed properly in some cases\n- Using icons instead of titles in the tabs of the popup\n- Allow the manual cleanup to ignore the \"protect open domains\" rule.\n- Added a snooze feature to temporarily disable automatic cleanup. The cleanups will be rescheduled once the snooze has been stopped.\n- Technology upgrade\n\n### Version 0.8.8 (2018/01/24)\n- Added new black rule type to block cookies completely.\n- First Party Isolation no longer prevents the extension from removing cookies (starts working with Firefox 59). Improved support will be made available in a beta version soon.\n- Bugfix: When leaving a domain, re-entering and leaving it again before the original cleanup timeout passed, cookies would be deleted too early.\n- Bugfix: Notifications could get replaced too quickly for the user to see.\n\n### Version 0.8.7 (2017/12/20)\n- Workaround for settings  import not working correctly in the Firefox browserAction popup.\n- Partial support for container tabs: Cookies work, local storage does not (Mozilla needs to fix something first)\n- Added new rule \"Forget\" (red) to allow overriding other rules (read the tutorial for details).\n- Fixed an issue with startup cleanup\n- Added unit tests\n- Added option to hide badges\n- Added option to chose the initially selected tab\n- Added option to show cookie removal notifications\n- Fixed issue on export\n\n### Version 0.8.6 (2017/12/06)\n- Translation changes, using [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Introduction of an in-extension readme, tutorial and changelog.\n  - This can be accessed through the questionmark button.\n- Showing a notification when the extension has been updated (can be disabled).\n- Domains without a Top Level Domain (like localhost, intranet, etc.) can now be whitelisted with a checkbox.\n- Experimental feature for blocking thirdparty cookies\n\n### Version 0.8.5 (2017/11/25)\n- Typo fixed\n- Made toggle of rule type smoother\n- Button for adding new rules (before you could only add a new rule by pressing enter)\n- Button for getting information on valid expressions \n\n### Version 0.8.4 (2017/11/25)\n- Better mobile compatibility\n- Fix for incognito cookies being logged and removed \n\n### Version 0.8.3 (2017/11/24)\n- Disabled on incognito tabs/windows\n- Added a log to see the domains of recent cookie changes\n- Added buttons to prefill the filter input field with domains of the above and the current tab\n\n### Version 0.8.2 (2017/11/19)\n- Some bugfixes, cleanups \n\n### Version 0.8.0 (2017/11/19)\n- First Version",
         "hash": "eb9136418e946fe5a695cc1163778b93"
     },
 

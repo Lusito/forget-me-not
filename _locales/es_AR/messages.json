@@ -1,5 +1,5 @@
 {
-    "__WET_GROUP__": { "message": "Branding" },
+    "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
         "message": "Forget Me Not - Olvida cookies y otros datos",
         "description": "Name of the extension.",
@@ -25,7 +25,7 @@
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
 
-    "__WET_GROUP__": { "message": "Dialogs" },
+    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -63,7 +63,7 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
 
-    "__WET_GROUP__": { "message": "Badges" },
+    "__WET_GROUP__2": { "message": "Badges" },
     "badge_white": {
         "message": "W",
         "hash": "bb699961fc5a751108afdcb88ef696aa"
@@ -81,7 +81,7 @@
         "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
     },
 
-    "__WET_GROUP__": { "message": "Settings" },
+    "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
         "message": "Hacer limpieza manual:",
         "hash": "db16149642eab7b99485906fb084002d"
@@ -403,7 +403,7 @@
         "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
-    "__WET_GROUP__": { "message": "Notifications" },
+    "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
         "message": "Forget Me Not se actualizó!",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
@@ -428,7 +428,7 @@
         "hash": "194b196ae9df5827b482babe5caebd69"
     },
 
-    "__WET_GROUP__": { "message": "Import Dialog" },
+    "__WET_GROUP__5": { "message": "Import Dialog" },
     "import_by_drop_or_click": {
         "message": "Importar preferencias arrastrando un archivo previamente exportado en esta zona, o clickeando para seleccionar el archivo.",
         "hash": "addde02e14af8336c24777c9b03dc5eb"
@@ -442,7 +442,7 @@
         "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
     },
 
-    "__WET_GROUP__": { "message": "Info Pages" },
+    "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
         "message": "## Autor\nHecho por Santo Pfingsten, © 2017\n\n## Problemas, preguntas y demás feedback\nPor favor reportar problemas o pedidos de características en GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Declaración de Privacidad\n\nTu privacidad es de la mayor importancia.\nEsta extensión no analiza o recolecta nada más de lo necesitado para lograr su tarea. No envía datos a ningún lado, ni de manera anónima. Punto.\n\n## Créditos\n* Español (Argentina) traducción escrita por [Fabián Pérez](https://www.github.com/thepante)\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Diseñado por Vexels.com\n* Iconos por [Google](https://www.flaticon.com/authors/google \"Google\")  desde [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") bajo licencia [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "7f15f35d707c7070acc80fa38044b135"

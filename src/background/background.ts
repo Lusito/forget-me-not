@@ -64,6 +64,17 @@ export class Background implements TabWatcherListener {
         const options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
+
+        if (typeSet.downloads && !typeSet.history) {
+            // Need to manually clear downloads from history before cleaning downloads, as otherwise the history entries will remain on firefox.
+            // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1380445
+            typeSet.downloads = false;
+            browser.downloads.search({}).then((downloads) => {
+                downloads.forEach((download) => browser.history.deleteUrl({ url: download.url }));
+                browser.browsingData.remove(options, { downloads: true });
+            });
+        }
+
         const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
         if (settings.get(startup ? "startup.cookies" : "cleanAll.cookies")) {
             if (settings.get(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules"))

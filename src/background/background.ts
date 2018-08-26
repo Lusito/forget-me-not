@@ -21,6 +21,24 @@ import { CleanupScheduler } from "./cleanupScheduler";
 
 // fixme: make this file unit-testable and add tests
 
+// Workaround for getAllCookieStores returning only active cookie stores.
+// See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
+function getAllCookieStoreIds() {
+    const ids: {[s: string]: boolean} = {
+        "firefox-default": true,
+        "firefox-private": true
+    };
+    return browser.cookies.getAllCookieStores().then((cookieStores) => {
+        for (const store of cookieStores)
+            ids[store.id] = true;
+        return browser.contextualIdentities.query({});
+    }).then((contextualIdentities) => {
+        for (const ci of contextualIdentities)
+            ids[ci.cookieStoreId] = true;
+        return Object.getOwnPropertyNames(ids);
+    });
+}
+
 export class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
     private readonly cleanupScheduler: { [s: string]: CleanupScheduler } = {};
@@ -84,10 +102,10 @@ export class Background implements TabWatcherListener {
         }
         if (settings.get(startup ? "startup.localStorage" : "cleanAll.localStorage")) {
             if (settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
-                browser.cookies.getAllCookieStores().then((cookieStores) => {
+                getAllCookieStoreIds().then((ids) => {
                     const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
-                    for (const store of cookieStores)
-                        cleanLocalStorage(hostnames, store.id);
+                    for (const id of ids)
+                        cleanLocalStorage(hostnames, id);
                 });
             } else {
                 typeSet.localStorage = true;
@@ -185,9 +203,9 @@ export class Background implements TabWatcherListener {
     }
 
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
-        browser.cookies.getAllCookieStores().then((stores) => {
-            for (const store of stores)
-                this.getCleanStore(store.id).cleanCookiesWithRules(ignoreGrayList, protectOpenDomains);
+        getAllCookieStoreIds().then((ids) => {
+            for (const id of ids)
+                this.getCleanStore(id).cleanCookiesWithRules(ignoreGrayList, protectOpenDomains);
         });
     }
 

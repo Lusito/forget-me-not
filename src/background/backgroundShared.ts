@@ -13,19 +13,33 @@ export const removeLocalStorageByHostname = isNodeTest || isFirefox && browserIn
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
 
-export function removeCookie(cookie: Cookies.Cookie) {
+function getCookieRemovalInfo(cookie: Cookies.Cookie) {
+    if (cookie.domain.length === 0) {
+        return {
+            url: `file://${cookie.path}`,
+            removedFrom: cookie.path
+        };
+    }
     const allowSubDomains = cookie.domain.startsWith(".");
     const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+    return {
+        url: (cookie.secure ? "https://" : "http://") + rawDomain + cookie.path,
+        removedFrom: rawDomain
+    };
+}
+
+export function removeCookie(cookie: Cookies.Cookie) {
+    const removalInfo = getCookieRemovalInfo(cookie);
     const details: Cookies.RemoveDetailsType = {
         name: cookie.name,
-        url: (cookie.secure ? "https://" : "http://") + rawDomain + cookie.path,
+        url: removalInfo.url,
         storeId: cookie.storeId
     };
     if (supportsFirstPartyIsolation)
         details.firstPartyDomain = cookie.firstPartyDomain;
 
     const promise = browser.cookies.remove(details);
-    messageUtil.sendSelf("cookieRemoved", rawDomain);
+    messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
     return promise;
 }
 

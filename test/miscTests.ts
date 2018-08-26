@@ -117,7 +117,8 @@ describe("Misc functionality", () => {
                 hostOnly: false,
                 secure,
                 httpOnly: false,
-                session: false
+                session: false,
+                sameSite: "no_restriction"
             });
         }
         beforeEach((done) => {

@@ -10,7 +10,7 @@ import { browser, Runtime } from "webextension-polyfill-ts";
 
 // fixme: types
 export type Callback = (params: any, sender: Runtime.MessageSender) => any;
-// export type Callback = (params: any, sender?: browser.runtime.MessageSender, sendResponse?: (response:any)=>void) => any;
+// export type Callback = (params: any, sender?: browser.runtime.MessageSender) => any;
 
 type CallbacksMap = { [s: string]: Callback[] };
 
@@ -23,7 +23,7 @@ export interface ReceiverHandle {
 function getCallbacksList(name: string) {
     if (callbacksMap === null) {
         callbacksMap = {};
-        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        browser.runtime.onMessage.addListener((request, sender) => {
             if (callbacksMap) {
                 const callbacks = callbacksMap[request.action];
                 callbacks && callbacks.forEach((cb) => cb(request.params, sender));

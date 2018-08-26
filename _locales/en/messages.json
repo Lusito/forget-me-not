@@ -265,6 +265,9 @@
     "setting_whitelist_no_tld@title": {
         "message": "Domains like localhost, intranet, etc. (without .com, .net, etc.)"
     },
+    "setting_whitelist_file_system": {
+        "message": "Add files from your computer to whitelist"
+    },
     "settings_fallback_rule": {
         "message": "Behavior if no rule matches (default: Forget):"
     },

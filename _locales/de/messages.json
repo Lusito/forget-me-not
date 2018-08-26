@@ -350,6 +350,10 @@
         "message": "Domänen, wie z.B. localhost, intranet, etc. (ohne .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
+    "setting_whitelist_file_system": {
+        "message": "Dateien vom Computer zur weißen Liste hinzufügen",
+        "hash": "31f66347f86bb36b6a5292691882838b"
+    },
     "settings_fallback_rule": {
         "message": "Verhalten falls keine Regel greift (default: Vergessen):",
         "hash": "631eb1b5a61db49d86fe06ce2a681756"

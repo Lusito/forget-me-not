@@ -9,8 +9,10 @@ import { settings } from "../lib/settings";
 import { loadJSONFile } from "../lib/fileHelper";
 import { browser } from "webextension-polyfill-ts";
 import { Background, CleanUrlNowConfig } from "./background";
+import { someItemsMatch } from "./backgroundShared";
 
 const UPDATE_NOTIFICATION_ID = "UpdateNotification";
+const BADGE_SETTINGS_KEYS = ["rules", "fallbackRule", "whitelistNoTLD", "whitelistFileSystem", "showBadge"];
 
 settings.onReady(() => {
     const background = new Background();
@@ -25,8 +27,7 @@ settings.onReady(() => {
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-        if (changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("fallbackRule") !== -1 || changedKeys.indexOf("whitelistNoTLD") !== -1
-            || changedKeys.indexOf("showBadge") !== -1)
+        if (someItemsMatch(changedKeys, BADGE_SETTINGS_KEYS))
             background.updateBadge();
     });
 

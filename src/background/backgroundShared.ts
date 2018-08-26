@@ -59,3 +59,7 @@ export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
     }
     return false;
 }
+
+export function someItemsMatch<T>(changedKeys: T[], acceptedKeys: T[]) {
+    return acceptedKeys.some((s) => changedKeys.indexOf(s) !== -1);
+}

@@ -215,7 +215,8 @@ class Popup {
                     domainsToClean: settings.get("domainsToClean"),
                     rules: settings.get("rules"),
                     fallbackRule: settings.get("fallbackRule"),
-                    whitelistNoTLD: settings.get("whitelistNoTLD")
+                    whitelistNoTLD: settings.get("whitelistNoTLD"),
+                    whitelistFileSystem: settings.get("whitelistFileSystem")
                 });
             },
             confirm_cancel: () => {

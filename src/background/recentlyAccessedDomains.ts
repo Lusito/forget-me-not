@@ -8,6 +8,10 @@ import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
 import { CookieDomainInfo, destroyAllAndEmpty } from "../shared";
 import { getBadgeForRuleType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
+import { someItemsMatch } from "./backgroundShared";
+
+const APPLY_SETTINGS_KEYS = ["logRAD.enabled", "logRAD.limit"];
+const UPDATE_SETTINGS_KEYS = ["fallbackRule", "rules", "whitelistNoTLD", "whitelistFileSystem"];
 
 export class RecentlyAccessedDomains {
     private receivers: ReceiverHandle[];
@@ -21,10 +25,10 @@ export class RecentlyAccessedDomains {
                 messageUtil.send("onRecentlyAccessedDomains", this.get());
             }),
             messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-                if (changedKeys.indexOf("logRAD.enabled") !== -1 || changedKeys.indexOf("logRAD.limit") !== -1) {
+                if (someItemsMatch(changedKeys, APPLY_SETTINGS_KEYS)) {
                     this.applySettings();
                     messageUtil.send("onRecentlyAccessedDomains", this.get());
-                } else if (changedKeys.indexOf("fallbackRule") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("whitelistNoTLD") !== -1) {
+                } else if (someItemsMatch(changedKeys, UPDATE_SETTINGS_KEYS)) {
                     messageUtil.send("onRecentlyAccessedDomains", this.get());
                 }
             })

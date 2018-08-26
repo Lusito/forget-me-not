@@ -12,6 +12,9 @@ import { browser, WebRequest } from "webextension-polyfill-ts";
 import { getValidHostname, destroyAndNull } from "../shared";
 import { RuleType } from "../lib/settingsSignature";
 import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
+import { someItemsMatch } from "./backgroundShared";
+
+const HEADER_FILTER_SETTINGS_KEYS = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule"];
 
 export class HeaderFilter {
     private settingsReceiver: ReceiverHandle | null = null;
@@ -33,7 +36,7 @@ export class HeaderFilter {
         };
         this.updateSettings();
         this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-            if (changedKeys.indexOf("cleanThirdPartyCookies.beforeCreation") !== -1 || changedKeys.indexOf("rules") !== -1 || changedKeys.indexOf("fallbackRule") !== -1)
+            if (someItemsMatch(changedKeys, HEADER_FILTER_SETTINGS_KEYS))
                 this.updateSettings();
         });
     }

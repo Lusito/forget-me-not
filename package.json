@@ -11,7 +11,7 @@
     "build-release": "webpack --mode=production",
     "scss-release": "node-sass --source-map true --output-style compressed src/styles/ -o dist",
     "scss": "node-sass --source-map true src/styles/ -o dist",
-    "pack": "web-ext build -i src test coverage  \"!(manifest).json\" \"*.js\" \"dist/*.map\"",
+    "pack": "web-ext build -i src test coverage  tslint.json tsconfig.json package-lock.json package.json \"*.js\" \"dist/*.map\"",
     "lint": "tslint -p ."
   },
   "nyc": {

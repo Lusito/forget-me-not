@@ -106,7 +106,8 @@ class BrowserCookiesMock {
                     httpOnly: false,
                     session: false,
                     storeId: details.storeId || "firefox-default",
-                    firstPartyDomain: details.firstPartyDomain || ""
+                    firstPartyDomain: details.firstPartyDomain || "",
+                    sameSite: "no_restriction"
                 };
                 this.cookies.push(cookie);
             }
@@ -365,7 +366,8 @@ browser.cookies = {
 
 // @ts-ignore
 browser.tabs = {
-    query: () => {
+    // @ts-ignore
+    query: (queryInfo) => {
         return {
             then(resolve: (tabs: Tabs.Tab[]) => void) {
                 resolve(browserMock.tabs.getTabs());

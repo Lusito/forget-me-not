@@ -9,6 +9,7 @@ import { settings } from "../lib/settings";
 import DelayedExecution from "../lib/delayedExecution";
 import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
 import { destroyAllAndEmpty } from "../shared";
+import { wetLayer } from "wet-layer";
 
 const COOKIE_CLEANUP_NOTIFICATION_ID = "CookieCleanupNotification";
 
@@ -64,7 +65,7 @@ export class NotificationHandler {
         let totalCount = 0;
         for (const domain in this.removalCountsByDomain) {
             const count = this.removalCountsByDomain[domain];
-            lines.push(browser.i18n.getMessage("cookie_cleanup_notification_line", [domain, count]));
+            lines.push(wetLayer.getMessage("cookie_cleanup_notification_line", [domain, count.toString()]));
             totalCount += count;
         }
         this.starting = true;
@@ -73,7 +74,7 @@ export class NotificationHandler {
             priority: -2,
             type: "basic",
             iconUrl: browser.extension.getURL("icons/icon96.png"),
-            title: browser.i18n.getMessage("cookie_cleanup_notification_title", totalCount),
+            title: wetLayer.getMessage("cookie_cleanup_notification_title", totalCount.toString()),
             message: lines.join("\n")
         }).then((s) => {
             this.starting = false;

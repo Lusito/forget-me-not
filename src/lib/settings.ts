@@ -25,6 +25,7 @@ export const defaultSettings: SettingsMap = {
     "showCookieRemovalNotification": false,
     "rules": [],
     "whitelistNoTLD": false,
+    "whitelistFileSystem": true,
     "fallbackRule": RuleType.FORGET,
     "domainsToClean": {},
     "showBadge": true,
@@ -280,6 +281,8 @@ export class Settings {
     }
 
     public getRuleTypeForCookie(domain: string, name: string) {
+        if (this.get("whitelistFileSystem") && domain.length === 0)
+            return RuleType.WHITE;
         if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
             return RuleType.WHITE;
         const matchingRules = this.getMatchingRules(domain, name);
@@ -289,6 +292,8 @@ export class Settings {
     }
 
     public getRuleTypeForDomain(domain: string) {
+        if (this.get("whitelistFileSystem") && domain.length === 0)
+            return RuleType.WHITE;
         if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
             return RuleType.WHITE;
         const matchingRules = this.getMatchingRules(domain);

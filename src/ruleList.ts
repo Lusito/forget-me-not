@@ -8,8 +8,8 @@ import { settings, isValidExpression } from "./lib/settings";
 import { on, byId, removeAllChildren } from "./lib/htmlUtils";
 import { messageUtil } from "./lib/messageUtil";
 import { RuleListItem } from "./ruleListItem";
-import { browser } from "webextension-polyfill-ts";
 import { RuleDefinition, RuleType } from "./lib/settingsSignature";
+import { wetLayer } from "wet-layer";
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     if (a.rule < b.rule)
@@ -59,6 +59,7 @@ export class RuleList {
             if (changedKeys.indexOf("rules") !== -1)
                 this.rebuildRulesList();
         });
+        wetLayer.addListener(() => this.rebuildRulesList());
         on(byId(addId) as HTMLElement, "click", () => this.addRule(RuleType.WHITE));
         this.updateRulesHint(true, true);
     }
@@ -110,7 +111,7 @@ export class RuleList {
     }
 
     private updateRulesHint(validExpression: boolean, empty: boolean) {
-        this.hint.textContent = empty ? "" : browser.i18n.getMessage(validExpression ? "rules_hint_add" : "rules_hint_invalid");
+        this.hint.textContent = empty ? "" : wetLayer.getMessage(validExpression ? "rules_hint_add" : "rules_hint_invalid");
         this.hint.className = validExpression ? "" : "error";
         this.input.setAttribute("aria-invalid", (!validExpression).toString());
         if (validExpression)

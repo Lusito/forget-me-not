@@ -6,6 +6,9 @@
 
 import { settings } from "../lib/settings";
 import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
+import { someItemsMatch } from "./backgroundShared";
+
+const DOMAIN_LEAVE_SETTINGS_KEYS = ["domainLeave.enabled", "domainLeave.delay"];
 
 export class CleanupScheduler {
     private settingsReceiver: ReceiverHandle | null;
@@ -22,7 +25,7 @@ export class CleanupScheduler {
 
         this.updateSettings();
         this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-            if (changedKeys.indexOf("domainLeave.enabled") !== -1 || changedKeys.indexOf("domainLeave.delay") !== -1)
+            if (someItemsMatch(changedKeys, DOMAIN_LEAVE_SETTINGS_KEYS))
                 this.updateSettings();
         });
     }

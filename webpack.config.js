@@ -1,9 +1,12 @@
+var path = require("path");
+
 module.exports = {
     entry: {
         background: "./src/background/backgroundMain.ts",
         popup: "./src/popup.ts",
         import: "./src/import.ts",
-        readme: "./src/readme.ts"
+        readme: "./src/readme.ts",
+        wetLayerContent: "./src/wetLayerContent.ts"
     },
     output: {
         filename: "[name].js",
@@ -25,7 +28,10 @@ module.exports = {
     ],
     devtool: "source-map",
     resolve: {
-        extensions: [".ts", ".js", ".json"]
+        extensions: [".ts", ".js", ".json"],
+        alias: {
+            "webextension-polyfill-ts": path.resolve(path.join(__dirname, "node_modules", "webextension-polyfill-ts"))
+        },
     },
     node: {
         fs: 'empty'

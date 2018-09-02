@@ -161,13 +161,13 @@ describe("Settings", () => {
             assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.FORGET);
             settings.set("whitelistNoTLD", true);
             assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.WHITE);
-        });
-        it("should return WHITE for TLD-less domains if whitelistNoTLD is set", () => {
-            assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.FORGET);
-            settings.set("whitelistNoTLD", true);
-            assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.WHITE);
             settings.set("rules", [{ rule: "hello@localmachine", type: RuleType.BLOCK }]);
             assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.WHITE);
+        });
+        it("should return WHITE for empty domains if whitelistFileSystem is set", () => {
+            assert.equal(settings.getRuleTypeForDomain(""), RuleType.WHITE);
+            settings.set("whitelistFileSystem", false);
+            assert.equal(settings.getRuleTypeForDomain(""), RuleType.FORGET);
         });
     });
 
@@ -231,6 +231,11 @@ describe("Settings", () => {
             assert.equal(settings.getRuleTypeForCookie("localmachine", "hello"), RuleType.WHITE);
             settings.set("rules", [{ rule: "hello@localmachine", type: RuleType.BLOCK }]);
             assert.equal(settings.getRuleTypeForCookie("localmachine", "hello"), RuleType.WHITE);
+        });
+        it("should return WHITE for empty domains if whitelistFileSystem is set", () => {
+            assert.equal(settings.getRuleTypeForCookie("", "hello"), RuleType.WHITE);
+            settings.set("whitelistFileSystem", false);
+            assert.equal(settings.getRuleTypeForCookie("", "hello"), RuleType.FORGET);
         });
     });
 

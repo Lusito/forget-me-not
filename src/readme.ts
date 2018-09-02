@@ -6,11 +6,13 @@
 
 import { translateChildren, byId } from "./lib/htmlUtils";
 import { TabSupport } from "./lib/tabSupport";
+import { wetLayer } from "wet-layer";
 
 class Readme {
     private tabSupport = new TabSupport(byId("mainTabContainer") as HTMLElement);
     public constructor() {
         this.tabSupport; // shut up typescript
+        wetLayer.addListener(() => translateChildren(document));
         translateChildren(document);
     }
 }

@@ -7,15 +7,15 @@
 import { settings } from "./lib/settings";
 import { on, byId } from "./lib/htmlUtils";
 import { loadJSONFile, readJSONFile } from "./lib/fileHelper";
-import { browser } from "webextension-polyfill-ts";
+import { wetLayer } from "wet-layer";
 
 settings.onReady(() => {
     const dropzone = byId("dropzone") as HTMLElement;
     function onFileLoaded(json: any) {
         if (json && settings.setAll(json))
-            dropzone.textContent = browser.i18n.getMessage("import_success_close_now");
+            dropzone.textContent = wetLayer.getMessage("import_success_close_now");
         else
-            dropzone.textContent = browser.i18n.getMessage("import_failure") + " " + browser.i18n.getMessage("import_by_drop_or_click");
+            dropzone.textContent = wetLayer.getMessage("import_failure") + " " + wetLayer.getMessage("import_by_drop_or_click");
     }
     on(dropzone, "dragover", (evt) => {
         evt.stopPropagation();
@@ -34,5 +34,5 @@ settings.onReady(() => {
         evt.preventDefault();
         loadJSONFile(onFileLoaded);
     });
-    dropzone.textContent = browser.i18n.getMessage("import_by_drop_or_click");
+    dropzone.textContent = wetLayer.getMessage("import_by_drop_or_click");
 });

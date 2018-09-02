@@ -22,6 +22,7 @@ export interface SettingsTypeMap {
     "showCookieRemovalNotification": boolean;
     "rules": RuleDefinition[];
     "whitelistNoTLD": boolean;
+    "whitelistFileSystem": boolean;
     "fallbackRule": RuleType;
     "domainsToClean": { [s: string]: boolean };
     "showBadge": boolean;

@@ -18,8 +18,27 @@ import { RuleType } from "../lib/settingsSignature";
 import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
 import { CleanupScheduler } from "./cleanupScheduler";
+import { wetLayer } from "wet-layer";
 
 // fixme: make this file unit-testable and add tests
+
+// Workaround for getAllCookieStores returning only active cookie stores.
+// See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
+function getAllCookieStoreIds() {
+    const ids: {[s: string]: boolean} = {
+        "firefox-default": true,
+        "firefox-private": true
+    };
+    return browser.cookies.getAllCookieStores().then((cookieStores) => {
+        for (const store of cookieStores)
+            ids[store.id] = true;
+        return browser.contextualIdentities.query({});
+    }).then((contextualIdentities) => {
+        for (const ci of contextualIdentities)
+            ids[ci.cookieStoreId] = true;
+        return Object.getOwnPropertyNames(ids);
+    });
+}
 
 export class Background implements TabWatcherListener {
     private readonly cleanStores: { [s: string]: CleanStore } = {};
@@ -35,6 +54,10 @@ export class Background implements TabWatcherListener {
     public constructor() {
         this.updateBadge();
         new HeaderFilter(this.tabWatcher, this.recentlyAccessedDomains);
+        wetLayer.addListener(() => {
+            this.updateBadge();
+            this.updateBrowserAction();
+        });
     }
 
     public onStartup() {
@@ -64,6 +87,17 @@ export class Background implements TabWatcherListener {
         const options: BrowsingData.RemovalOptions = {
             originTypes: { unprotectedWeb: true }
         };
+
+        if (typeSet.downloads && !typeSet.history) {
+            // Need to manually clear downloads from history before cleaning downloads, as otherwise the history entries will remain on firefox.
+            // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1380445
+            typeSet.downloads = false;
+            browser.downloads.search({}).then((downloads) => {
+                downloads.forEach((download) => browser.history.deleteUrl({ url: download.url }));
+                browser.browsingData.remove(options, { downloads: true });
+            });
+        }
+
         const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
         if (settings.get(startup ? "startup.cookies" : "cleanAll.cookies")) {
             if (settings.get(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules"))
@@ -73,10 +107,10 @@ export class Background implements TabWatcherListener {
         }
         if (settings.get(startup ? "startup.localStorage" : "cleanAll.localStorage")) {
             if (settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
-                browser.cookies.getAllCookieStores().then((cookieStores) => {
+                getAllCookieStoreIds().then((ids) => {
                     const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
-                    for (const store of cookieStores)
-                        cleanLocalStorage(hostnames, store.id);
+                    for (const id of ids)
+                        cleanLocalStorage(hostnames, id);
                 });
             } else {
                 typeSet.localStorage = true;
@@ -174,9 +208,9 @@ export class Background implements TabWatcherListener {
     }
 
     private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
-        browser.cookies.getAllCookieStores().then((stores) => {
-            for (const store of stores)
-                this.getCleanStore(store.id).cleanCookiesWithRules(ignoreGrayList, protectOpenDomains);
+        getAllCookieStoreIds().then((ids) => {
+            for (const id of ids)
+                this.getCleanStore(id).cleanCookiesWithRules(ignoreGrayList, protectOpenDomains);
         });
     }
 
@@ -208,7 +242,7 @@ export class Background implements TabWatcherListener {
                     const hostname = getValidHostname(tab.url);
                     if (hostname)
                         badge = getBadgeForRuleType(settings.getRuleTypeForDomain(hostname));
-                    let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
+                    let text = badge.i18nKey ? wetLayer.getMessage(badge.i18nKey) : "";
                     if (!settings.get("showBadge"))
                         text = "";
                     browser.browserAction.setBadgeText({ text, tabId: tab.id });
@@ -242,7 +276,7 @@ export class Background implements TabWatcherListener {
 
         browser.browserAction.setIcon({ path });
         browser.browserAction.setTitle({
-            title: browser.i18n.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle")
+            title: wetLayer.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle")
         });
     }
 

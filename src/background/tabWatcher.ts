@@ -17,6 +17,7 @@ interface TabInfo {
     tabId: number;
     hostname: string;
     hostnameFP: string;
+    navigating: boolean;
     nextHostname: string;
     nextHostnameFP: string;
     cookieStoreId: string;
@@ -65,6 +66,7 @@ export class TabWatcher {
         if (tabInfo) {
             tabInfo.nextHostname = getValidHostname(url);
             tabInfo.nextHostnameFP = (tabInfo.nextHostname && getDomain(tabInfo.nextHostname)) || tabInfo.nextHostname;
+            tabInfo.navigating = true;
         } else {
             this.getTab(tabId);
         }
@@ -79,6 +81,7 @@ export class TabWatcher {
             tabInfo.hostname = hostname;
             tabInfo.hostnameFP = getDomain(hostname) || hostname;
             tabInfo.nextHostname = tabInfo.nextHostnameFP = "";
+            tabInfo.navigating = false;
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
@@ -111,7 +114,7 @@ export class TabWatcher {
     private setTabInfo(tabId: number, hostname: string, cookieStoreId?: string) {
         cookieStoreId = cookieStoreId || DEFAULT_COOKIE_STORE_ID;
         this.checkDomainEnter(cookieStoreId, hostname);
-        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, hostnameFP: getDomain(hostname) || hostname, nextHostname: "", nextHostnameFP: "", cookieStoreId };
+        const tabInfo = this.tabInfos[tabId] = { tabId, hostname, hostnameFP: getDomain(hostname) || hostname, navigating: false, nextHostname: "", nextHostnameFP: "", cookieStoreId };
         let list = this.tabInfosByCookieStore[cookieStoreId];
         if (!list)
             list = this.tabInfosByCookieStore[cookieStoreId] = [tabInfo];
@@ -127,7 +130,7 @@ export class TabWatcher {
     public cookieStoreContainsDomain(cookieStoreId: string, domain: string, ignoreNext?: boolean) {
         const list = this.tabInfosByCookieStore[cookieStoreId];
         if (list)
-            return list.findIndex((ti) => ti.hostname === domain || !ignoreNext && ti.nextHostname === domain) !== -1;
+            return list.findIndex((ti) => ti.hostname === domain || !ignoreNext && ti.navigating && ti.nextHostname === domain) !== -1;
         return false;
     }
 
@@ -168,7 +171,7 @@ export class TabWatcher {
             return false;
         }
         const domainFP = getFirstPartyCookieDomain(domain);
-        return tabInfo.hostnameFP !== domainFP && tabInfo.nextHostnameFP !== domainFP;
+        return tabInfo.hostnameFP !== domainFP && (!tabInfo.navigating || tabInfo.nextHostnameFP !== domainFP);
     }
 
     public isFirstPartyDomainOnCookieStore(storeId: string, domainFP: string) {
@@ -180,6 +183,6 @@ export class TabWatcher {
         }
         if (!tabInfos.length)
             return false;
-        return tabInfos.findIndex((tabInfo) => tabInfo.hostnameFP === domainFP || tabInfo.nextHostnameFP === domainFP) >= 0;
+        return tabInfos.findIndex((ti) => ti.hostnameFP === domainFP || ti.navigating && ti.nextHostnameFP === domainFP) >= 0;
     }
 }

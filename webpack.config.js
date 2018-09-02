@@ -5,7 +5,8 @@ module.exports = {
         background: "./src/background/backgroundMain.ts",
         popup: "./src/popup.ts",
         import: "./src/import.ts",
-        readme: "./src/readme.ts"
+        readme: "./src/readme.ts",
+        wetLayerContent: "./src/wetLayerContent.ts"
     },
     output: {
         filename: "[name].js",

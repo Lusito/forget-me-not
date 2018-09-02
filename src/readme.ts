@@ -13,6 +13,7 @@ class Readme {
     public constructor() {
         this.tabSupport; // shut up typescript
         wetLayer.addListener(() => translateChildren(document));
+        wetLayer.loadFromStorage();
         translateChildren(document);
     }
 }

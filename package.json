@@ -62,7 +62,7 @@
     "webextension-polyfill-ts": "^0.8.8",
     "webpack": "^4.5.0",
     "webpack-cli": "^2.0.14",
-    "wet-layer": "^1.0.0"
+    "wet-layer": "^1.0.1"
   },
   "dependencies": {}
 }

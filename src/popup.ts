@@ -30,6 +30,8 @@ class Popup {
     public constructor() {
         if (browserInfo.mobile)
             (document.querySelector("html") as HTMLHtmlElement).className = "fullscreen";
+        else if (window.innerWidth <= 350)
+            (document.querySelector("html") as HTMLHtmlElement).className = "smallSize";
 
         const fallbackRuleSelect = document.querySelector("#fallbackRule") as HTMLSelectElement;
         setupRuleSelect(fallbackRuleSelect, settings.get("fallbackRule"));

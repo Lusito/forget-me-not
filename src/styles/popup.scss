@@ -361,12 +361,14 @@ table {
     }
 }
 
-@media only screen and (max-width: 351px) {
+html.smallSize {
+    width: auto;
+    body {
+        background: red;
+        width: auto;
+    }
     .tabsList_asIcons > div {
         width: 35px;
-    }
-    html, body {
-        width: auto;
     }
 }
 

@@ -36,6 +36,11 @@
             "dist/background.js"
         ]
     },
+    "content_scripts": [{
+        "matches": [ "https://lusito.github.io/web-ext-translator/*" ],
+        "js": [ "src/lib/wetLayerContent.js" ],
+        "run_at": "document_idle"
+    }],
     "permissions": [
         "storage",
         "tabs",

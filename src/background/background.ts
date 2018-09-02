@@ -18,6 +18,7 @@ import { RuleType } from "../lib/settingsSignature";
 import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
 import { CleanupScheduler } from "./cleanupScheduler";
+import { wetLayer } from "wet-layer";
 
 // fixme: make this file unit-testable and add tests
 
@@ -53,6 +54,10 @@ export class Background implements TabWatcherListener {
     public constructor() {
         this.updateBadge();
         new HeaderFilter(this.tabWatcher, this.recentlyAccessedDomains);
+        wetLayer.addListener(() => {
+            this.updateBadge();
+            this.updateBrowserAction();
+        });
     }
 
     public onStartup() {
@@ -237,7 +242,7 @@ export class Background implements TabWatcherListener {
                     const hostname = getValidHostname(tab.url);
                     if (hostname)
                         badge = getBadgeForRuleType(settings.getRuleTypeForDomain(hostname));
-                    let text = badge.i18nKey ? browser.i18n.getMessage(badge.i18nKey) : "";
+                    let text = badge.i18nKey ? wetLayer.getMessage(badge.i18nKey) : "";
                     if (!settings.get("showBadge"))
                         text = "";
                     browser.browserAction.setBadgeText({ text, tabId: tab.id });
@@ -271,7 +276,7 @@ export class Background implements TabWatcherListener {
 
         browser.browserAction.setIcon({ path });
         browser.browserAction.setTitle({
-            title: browser.i18n.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle")
+            title: wetLayer.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle")
         });
     }
 

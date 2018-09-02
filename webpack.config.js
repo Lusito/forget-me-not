@@ -1,3 +1,5 @@
+var path = require("path");
+
 module.exports = {
     entry: {
         background: "./src/background/backgroundMain.ts",
@@ -25,7 +27,10 @@ module.exports = {
     ],
     devtool: "source-map",
     resolve: {
-        extensions: [".ts", ".js", ".json"]
+        extensions: [".ts", ".js", ".json"],
+        alias: {
+            "webextension-polyfill-ts": path.resolve(path.join(__dirname, "node_modules", "webextension-polyfill-ts"))
+        },
     },
     node: {
         fs: 'empty'

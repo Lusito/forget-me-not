@@ -17,6 +17,7 @@ import { browser } from "webextension-polyfill-ts";
 import { TabSupport } from "./lib/tabSupport";
 import * as punycode from "punycode";
 import { RuleList, recreateRuleListItems } from "./ruleList";
+import { wetLayer } from "wet-layer";
 
 const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
@@ -81,10 +82,10 @@ class Popup {
             removeAllChildren(recentlyAccessedDomainsList);
             for (const info of domains) {
                 const li = createElement(document, recentlyAccessedDomainsList, "li");
-                createElement(document, li, "span", { textContent: browser.i18n.getMessage(info.badge), className: info.badge });
+                createElement(document, li, "span", { textContent: wetLayer.getMessage(info.badge), className: info.badge });
                 const punified = this.appendPunycode(info.domain);
                 createElement(document, li, "span", { textContent: punified, title: punified });
-                const addRuleMessage = browser.i18n.getMessage("button_log_add_rule");
+                const addRuleMessage = wetLayer.getMessage("button_log_add_rule");
                 const addRule = createElement(document, li, "button", { textContent: addRuleMessage, className: "log_add_rule" });
                 addRule.setAttribute("tabindex", "0");
                 addRule.setAttribute("aria-label", `${addRuleMessage} (${punified})`);
@@ -94,6 +95,13 @@ class Popup {
 
         messageUtil.send("getRecentlyAccessedDomains");
         connectHighlighters();
+
+        wetLayer.addListener(() => {
+            translateChildren(document);
+            messageUtil.send("getRecentlyAccessedDomains");
+            this.setCurrentTabLabel(this.hostname || false);
+            messageUtil.send("getSnoozingState");
+        });
     }
 
     private appendPunycode(domain: string) {
@@ -114,7 +122,7 @@ class Popup {
     private setCurrentTabLabel(domain: string | false) {
         const label = byId("current_tab");
         if (label)
-            label.textContent = domain ? domain : browser.i18n.getMessage("invalid_tab");
+            label.textContent = domain ? domain : wetLayer.getMessage("invalid_tab");
         const labelPunnified = byId("current_tab_punyfied");
         if (labelPunnified) {
             let punnified = "";
@@ -173,7 +181,7 @@ class Popup {
         });
         messageUtil.receive("onSnoozingState", (snoozing: boolean) => {
             toggleSnooze.disabled = false;
-            toggleSnooze.textContent = browser.i18n.getMessage("button_toggle_snooze_" + snoozing);
+            toggleSnooze.textContent = wetLayer.getMessage("button_toggle_snooze_" + snoozing);
         });
         messageUtil.send("getSnoozingState");
     }

@@ -5,8 +5,7 @@
  */
 
 import { settings } from "./lib/settings";
-import { on, createElement } from "./lib/htmlUtils";
-import { browser } from "webextension-polyfill-ts";
+import { on, createElement, translateChildren } from "./lib/htmlUtils";
 import * as punycode from "punycode";
 import { RuleType, RuleDefinition } from "./lib/settingsSignature";
 
@@ -22,10 +21,11 @@ export function classNameForRuleType(ruleType: RuleType) {
 
 export function setupRuleSelect(select: HTMLSelectElement, type: RuleType) {
     select.className = classNameForRuleType(type);
-    createElement(document, select, "option", { className: "badge_white", value: RuleType.WHITE, textContent: browser.i18n.getMessage("setting_type_white"), title: browser.i18n.getMessage("setting_type_white@title") });
-    createElement(document, select, "option", { className: "badge_gray", value: RuleType.GRAY, textContent: browser.i18n.getMessage("setting_type_gray"), title: browser.i18n.getMessage("setting_type_gray@title") });
-    createElement(document, select, "option", { className: "badge_forget", value: RuleType.FORGET, textContent: browser.i18n.getMessage("setting_type_forget"), title: browser.i18n.getMessage("setting_type_forget@title") });
-    createElement(document, select, "option", { className: "badge_block", value: RuleType.BLOCK, textContent: browser.i18n.getMessage("setting_type_block"), title: browser.i18n.getMessage("setting_type_block@title") });
+    createElement(document, select, "option", { className: "badge_white", value: RuleType.WHITE }).setAttribute("data-i18n", "setting_type_white?text?title");
+    createElement(document, select, "option", { className: "badge_gray", value: RuleType.GRAY }).setAttribute("data-i18n", "setting_type_gray?text?title");
+    createElement(document, select, "option", { className: "badge_forget", value: RuleType.FORGET }).setAttribute("data-i18n", "setting_type_forget?text?title");
+    createElement(document, select, "option", { className: "badge_block", value: RuleType.BLOCK }).setAttribute("data-i18n", "setting_type_block?text?title");
+    translateChildren(select);
     on(select, "change", () => select.className = classNameForRuleType(parseInt(select.value)));
     select.value = type.toString();
 }

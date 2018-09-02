@@ -6,6 +6,7 @@
 
 import * as MarkdownIt from "markdown-it";
 import { browser } from "webextension-polyfill-ts";
+import { wetLayer } from "wet-layer";
 
 const md = new MarkdownIt();
 const domParser = new DOMParser();
@@ -70,11 +71,11 @@ export function translateElement(element: HTMLElement) {
             parts = ["text"];
         for (const attribute of parts) {
             if (attribute === "text")
-                element.textContent = browser.i18n.getMessage(id);
+                element.textContent = wetLayer.getMessage(id);
             else if (attribute === "markdown")
-                setMarkdown(element, browser.i18n.getMessage(id));
+                setMarkdown(element, wetLayer.getMessage(id));
             else
-                (element as any)[attribute] = browser.i18n.getMessage(id + "@" + attribute);
+                (element as any)[attribute] = wetLayer.getMessage(id + "@" + attribute);
         }
     }
 }

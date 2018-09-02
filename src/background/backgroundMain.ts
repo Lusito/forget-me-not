@@ -10,9 +10,12 @@ import { loadJSONFile } from "../lib/fileHelper";
 import { browser } from "webextension-polyfill-ts";
 import { Background, CleanUrlNowConfig } from "./background";
 import { someItemsMatch } from "./backgroundShared";
+import { wetLayer } from "wet-layer";
 
 const UPDATE_NOTIFICATION_ID = "UpdateNotification";
 const BADGE_SETTINGS_KEYS = ["rules", "fallbackRule", "whitelistNoTLD", "whitelistFileSystem", "showBadge"];
+
+wetLayer.reset();
 
 settings.onReady(() => {
     const background = new Background();
@@ -49,6 +52,16 @@ settings.onReady(() => {
         }
     });
 
+    function showUpdateNotification() {
+        browser.notifications.create(UPDATE_NOTIFICATION_ID, {
+            type: "basic",
+            iconUrl: browser.extension.getURL("icons/icon96.png"),
+            title: wetLayer.getMessage("update_notification_title"),
+            message: wetLayer.getMessage("update_notification_message")
+        });
+    }
+    wetLayer.addListener(showUpdateNotification);
+
     setTimeout(() => {
         background.onStartup();
 
@@ -57,14 +70,8 @@ settings.onReady(() => {
             settings.set("version", manifestVersion);
             settings.save();
 
-            if (settings.get("showUpdateNotification")) {
-                browser.notifications.create(UPDATE_NOTIFICATION_ID, {
-                    type: "basic",
-                    iconUrl: browser.extension.getURL("icons/icon96.png"),
-                    title: browser.i18n.getMessage("update_notification_title"),
-                    message: browser.i18n.getMessage("update_notification_message")
-                });
-            }
+            if (settings.get("showUpdateNotification"))
+                showUpdateNotification();
         }
     }, 1000);
 });

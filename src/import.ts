@@ -9,6 +9,8 @@ import { on, byId } from "./lib/htmlUtils";
 import { loadJSONFile, readJSONFile } from "./lib/fileHelper";
 import { wetLayer } from "wet-layer";
 
+wetLayer.loadFromStorage();
+
 settings.onReady(() => {
     const dropzone = byId("dropzone") as HTMLElement;
     function onFileLoaded(json: any) {

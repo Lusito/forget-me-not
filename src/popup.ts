@@ -104,6 +104,7 @@ class Popup {
             this.setCurrentTabLabel(this.hostname || false);
             messageUtil.send("getSnoozingState");
         });
+        wetLayer.loadFromStorage();
     }
 
     private appendPunycode(domain: string) {

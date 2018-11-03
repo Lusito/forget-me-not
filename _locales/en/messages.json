@@ -200,7 +200,7 @@
         "message": "*N*ever"
     },
     "setting_type_white@title": {
-        "message": "No *C*leanup"
+        "message": "No Cleanup"
     },
     "setting_type_gray": {
         "message": "On *S*tartup"

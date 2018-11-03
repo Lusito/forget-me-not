@@ -51,8 +51,8 @@
         "hash": "8b92b69da821db80656274e044e68643"
     },
     "rule_dialog_content": {
-        "message": "- **Niemals**: Keine Reinigung.\n- **Beim Start**: Säuberung bei Browserstart.\n- **Beim Verlassen**: Säuberung beim Verlassen einer Domäne, als auch beim Browserstart.\n- **Instant**: Verhindere das setzen von Daten, sofern möglich. Ansonsten wie `Beim Verlassen` verhalten.\n\n**\\*** Damit `Beim Verlassen` und `Beim Start` funktionieren, müssen die entsprechenden Säuberungsoptionen eingeschaltet sein. Einige Limitierungen können aufgrund von Einschränkungen in der Web-Extension API auftreten. [Mehr lesen](readme.html#tutorial)",
-        "hash": "b8625c217b217e4394d725dfc90a504a"
+        "message": "- **N**iemals: Keine Reinigung.\n- Beim **S**tart: Säuberung bei Browserstart.\n- Beim **V**erlassen: Säuberung beim Verlassen einer Domäne, als auch beim Browserstart.\n- **I**nstant: Verhindere das setzen von Daten, sofern möglich. Ansonsten wie `Beim Verlassen` verhalten.\n\n**\\*** Damit `Beim Verlassen` und `Beim Start` funktionieren, müssen die entsprechenden Säuberungsoptionen eingeschaltet sein. Einige Limitierungen können aufgrund von Einschränkungen in der Web-Extension API auftreten. [Mehr lesen](readme.html#tutorial)",
+        "hash": "bb88166ccd6ce8e41eb96328204fb401"
     },
     "rule_dialog_expression": {
         "message": "Ausdruck:",
@@ -259,32 +259,32 @@
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
     "setting_type_white": {
-        "message": "Niemals",
-        "hash": "64d9c11ac3ad48d0836f64bdeb2be1b9"
+        "message": "*N*iemals",
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
     },
     "setting_type_white@title": {
         "message": "Keine Säuberung",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
     },
     "setting_type_gray": {
-        "message": "Beim Start",
-        "hash": "6a512b1b95dd68268b9a12fd0daf7b3d"
+        "message": "Beim *S*tart",
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
     },
     "setting_type_gray@title": {
         "message": "Säuberung beim Neustart des Browsers",
         "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
     "setting_type_forget": {
-        "message": "Beim Verlassen",
-        "hash": "9d7bb0246af13701633c6b9db2f95a12"
+        "message": "Beim *V*erlassen",
+        "hash": "474d0269f9757e726e5d91f684c33033"
     },
     "setting_type_forget@title": {
         "message": "Säuberung beim Verlassen einer Domäne",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
     "setting_type_block": {
-        "message": "Instant",
-        "hash": "908c94207283ec7360bd04416f689260"
+        "message": "*I*nstant",
+        "hash": "62610f955f62f7701a06a80ff04e1e1b"
     },
     "setting_type_block@title": {
         "message": "Cookies werden am gesetzt werden gehindert.",

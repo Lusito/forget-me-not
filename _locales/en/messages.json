@@ -24,9 +24,6 @@
     "alert_ok": {
         "message": "OK"
     },
-    "alert_title_error": {
-        "message": "Error"
-    },
     "prompt_ok": {
         "message": "OK"
     },
@@ -39,33 +36,54 @@
     "reset_dialog_content": {
         "message": "This can not be undone."
     },
+    "rule_dialog_title": {
+        "message": "Select a cleanup rule"
+    },
+    "rule_dialog_content": {
+        "message": "- **N**ever: No cleaning.\n- On **S**tartup: Clean only on browser start.\n- On **L**eave: Clean on domain leave and on browser start.\n- **I**nstantly: Prevent data from being set, if possible. Otherwise behave like `On Leave`.\n\n**\\*** For `On Leave` and `On Startup` to work, the respective cleanup options must be enabled. Some limitations might apply due to restrictions in the Web-Extension API. [Read more](readme.html#tutorial)"
+    },
+    "rule_dialog_expression": {
+        "message": "Expression:"
+    },
     "confirm_settings_and_rules": {
         "message": "Settings & Rules"
     },
     "confirm_settings_only": {
         "message": "Settings Only"
     },
+    "confirm_ok": {
+        "message": "OK"
+    },
     "confirm_cancel": {
         "message": "Cancel"
+    },
+    "confirm_rule_replace_dialog_title": {
+        "message": "Rule expression already exists"
+    },
+    "confirm_rule_replace_dialog_content": {
+        "message": "The specified rule expression already exists.. do you want to replace it?"
     },
 
     "__WET_GROUP__2": { "message": "Badges" },
     "badge_white": {
-        "message": "W"
+        "message": "N"
     },
     "badge_gray": {
-        "message": "G"
+        "message": "S"
     },
     "badge_forget": {
-        "message": "F"
+        "message": "L"
     },
     "badge_block": {
-        "message": "B"
+        "message": "I"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Perform manual cleanup:"
+        "message": "Perform manual cleanup"
+    },
+    "manual_cleanup_description": {
+        "message": "With this you can run a manual clean up. You will be able to select what to clean."
     },
     "define_rules": {
         "message": "Define rules:"
@@ -73,20 +91,23 @@
     "recently_accessed_domains": {
         "message": "Recently accessed domains:"
     },
+    "tabs_settings_general": {
+        "message": "General"
+    },
+    "tabs_settings_cleanup": {
+        "message": "Cleanup"
+    },
+    "tabs_settings_experimental": {
+        "message": "Experimental"
+    },
     "tabs_this_tab@title": {
         "message": "Current Tab"
-    },
-    "tabs_clean_all@title": {
-        "message": "Perform Cleanup"
     },
     "tabs_rules@title": {
         "message": "Define Rules"
     },
     "tabs_settings@title": {
         "message": "Settings"
-    },
-    "tabs_snooze@title": {
-        "message": "Temporarily disable cleanup on domain leave"
     },
     "tabs_log@title": {
         "message": "Domain Log"
@@ -105,6 +126,9 @@
     },
     "button_clean_now": {
         "message": "Clean Now!"
+    },
+    "button_clean_domain": {
+        "message": "Clean this domain!"
     },
     "button_import": {
         "message": "Import.."
@@ -125,46 +149,43 @@
         "message": "Start Snooze"
     },
     "toggle_snooze_description": {
-        "message": "In snooze mode, these cleanups will be prevented:\n- Cleanup of cookies and local storage on domain leave\n- Cleanup of thirdparty cookies\n\nAll missed cleanups will be rescheduled once you stop snooze mode.\n\nBlocked cookies are not affected by this. I.e. if you blacklist a domain, the cookies will still be blocked in snooze mode."
+        "message": "In snooze mode, these cleanups will be prevented:\n- Cleanup of cookies and local storage on domain leave\n- Cleanup of third-party cookies\n\nAll missed cleanups will be rescheduled once you stop snooze mode.\n\nBlocked cookies are not affected by this. I.e. if you blacklist a domain, the cookies will still be blocked in snooze mode."
     },
     "invalid_tab": {
         "message": "Invalid Tab"
     },
-    "rules_column_rule": {
-        "message": "Rule"
+    "rules_column_expression": {
+        "message": "Expression"
     },
-    "rules_column_matching_rule": {
-        "message": "Matching Rule"
+    "rules_column_matching_expression": {
+        "message": "Matching Expression"
     },
     "rules_column_type": {
-        "message": "Type"
-    },
-    "rules_column_remove": {
-        "message": "Remove"
+        "message": "Cleanup"
     },
     "rules_input@placeholder": {
         "message": "Search or add.."
     },
-    "rules_hint_add": {
-        "message": "Press enter to add as white rule, shift+enter to add as gray rule"
+    "expression_hint_invalid": {
+        "message": "Invalid expression!"
     },
-    "rules_hint_invalid": {
-        "message": "Invalid expression"
+    "expression_hint_exists": {
+        "message": "Expression already exists!"
     },
     "rules_add": {
         "message": "Add"
     },
+    "rules_no_entries": {
+        "message": "No entries"
+    },
     "help_button@title": {
         "message": "Read about how rules work, what expressions you can use, experimental features, and recent changes in this extension."
-    },
-    "types_of_cleanup": {
-        "message": "What do these checkboxes include?"
     },
     "types_of_cleanup@title": {
         "message": "Read more about what exactly these checkboxes clean."
     },
     "setting_purge_expired_cookies": {
-        "message": "Experimental: Purge expired cookies whenever a cleanup happens."
+        "message": "Purge expired cookies whenever a cleanup happens."
     },
     "setting_show_update_notification": {
         "message": "Show a notification when the extension has been updated."
@@ -176,28 +197,37 @@
         "message": "Show matching rule as a badge on the toolbar button"
     },
     "setting_type_white": {
-        "message": "White"
+        "message": "*N*ever"
     },
     "setting_type_white@title": {
-        "message": "No cleanup"
+        "message": "No *C*leanup"
     },
     "setting_type_gray": {
-        "message": "Gray"
+        "message": "On *S*tartup"
     },
     "setting_type_gray@title": {
         "message": "Cleanup on browser restart"
     },
     "setting_type_forget": {
-        "message": "Forget"
+        "message": "On *L*eave"
     },
     "setting_type_forget@title": {
         "message": "Cleanup on domain leave"
     },
     "setting_type_block": {
-        "message": "Block"
+        "message": "*I*nstantly"
     },
     "setting_type_block@title": {
         "message": "Cookies will be prevented from ever being set"
+    },
+    "setting_type_create": {
+        "message": "Create Rule"
+    },
+    "setting_type_create@title": {
+        "message": "Choose the rule-type to apply"
+    },
+    "setting_type_apply_rules@title": {
+        "message": "Apply Rules"
     },
     "setting_cookies": {
         "message": "Cookies"
@@ -207,9 +237,6 @@
     },
     "setting_local_storage": {
         "message": "Local Storage"
-    },
-    "setting_apply_rules_ff58": {
-        "message": "Apply Rules (Firefox 58+)"
     },
     "setting_protect_open_domains": {
         "message": "Protect currently open domains if \"Apply Rules\" is checked"
@@ -238,26 +265,17 @@
     "setting_server_bound_certificates": {
         "message": "Server Bound Certificates"
     },
-    "setting_local_storage_ff58": {
-        "message": "Local Storage (Firefox 58+)"
+    "setting_delay_domain_leave_cleanup_in_minutes": {
+        "message": "Delay for domain leave cleanup in minutes:"
     },
     "setting_delay_in_minutes": {
         "message": "Delay in minutes:"
     },
-    "setting_domain_leave_enabled": {
-        "message": "Clean when leaving all instances of a domain:"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Rules will be applied"
-    },
     "setting_remove_thirdparty": {
-        "message": "Remove Thirdparty Cookies on creation:"
+        "message": "Remove Third-Party Cookies on creation:"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimental: Deny Thirdparty Cookies"
-    },
-    "setting_startup_enabled": {
-        "message": "Clean on browser start:"
+        "message": "Deny Third-Party Cookies"
     },
     "setting_whitelist_no_tld": {
         "message": "Add domains without a Top Level Domain to whitelist"
@@ -269,7 +287,7 @@
         "message": "Add files from your computer to whitelist"
     },
     "settings_fallback_rule": {
-        "message": "Behavior if no rule matches (default: Forget):"
+        "message": "Cleanup if no expression matches (default: On Leave):"
     },
     "setting_log_rad_enabled": {
         "message": "Log recently accessed domains."
@@ -277,8 +295,8 @@
     "setting_log_rad_limit": {
         "message": "Limit to:"
     },
-    "experimental_link@title": {
-        "message": "This is an experimental feature. Click on this link to find out more."
+    "setting_experimental_info": {
+        "message": "These are experimental features. Read more about them [here](readme.html#experimental)."
     },
     "setting_initialTab": {
         "message": "Initially selected tab on this popup:"
@@ -289,23 +307,14 @@
     "initial_tab_this_tab": {
         "message": "Current Tab"
     },
-    "initial_tab_clean_all": {
-        "message": "Cleanup"
-    },
     "initial_tab_rules": {
         "message": "Rules"
     },
     "initial_tab_settings": {
         "message": "Settings"
     },
-    "initial_tab_snooze": {
-        "message": "Snooze"
-    },
     "initial_tab_log": {
         "message": "Domain Log"
-    },
-    "initial_tab_about": {
-        "message": "About"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },
@@ -345,13 +354,13 @@
         "message": "## Author\nMade by Santo Pfingsten, © 2017-2018\n\n## Translators Needed\n\nIf you know another language well enough, you can help by creating a translation with [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n\n## Problems, questions and other feedback\nPlease report issues and feature requests on GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Privacy Statement\n\nYour privacy is of the utmost importance.\nThis extension does not analyze or collect anything beyond what it needs to fulfill its duty. It does not send any data anywhere not even anonymously. PERIOD.\n\n## Credits\n* English translation written by Santo Pfingsten\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")"
     },
     "tutorial_page": {
-        "message": "# Introduction Tutorial\n\n## Firefox settings\nPlease note, that this extension has no access to your Firefox settings, so any cookie settings you make in Firefox itself will be combined with this extension.\n\nSo if you configure Firefox to deny all cookies, this extension will have no cookies to work with.\n\n## White, gray and red lists\nDomain names (host names of a website, like *google.com*) can be added to color-coded lists (like whitelists)\n- **White**: Cookies and local storage will never be removed.\n- **Gray**: Cookies and local storage will be removed upon browser restart (must be enabled in the settings).\n- **Red**: Gray and white rules can be overridden by a red rule.\n  - Example: A white rule allows all domains (\"\\*\" as expression) and a couple of red rules define exceptions to that rule.\n- **Black**: Prevent cookies from ever being set\n  - Any rule will be overriden by a black rule.\n  - Sadly, cookies set from JavaScript can't be blocked, but will be removed almost instantly after creation.\n\n## Valid expressions\n- Every hostname (e.g. www.google.com) is a valid expression.\n- An asterisk (*) can be used as placeholder for a segment (e.g. *.google.com or www.\\*.com).\n- Whitelists currently overrule graylists.. not sure if this is final.\n\n### Cookie specific expressions\nYou can create rules for cookiename and domain combinations.\n- Example: `cookiename@*.google.com`\n- `cookiename` can be any valid cookie name.\n- The same rules, as seen above, apply for the domain specific part to the right of the `@` sign.\n- Cookie specific rules are always preferred over normal rules.\n\n## Third party cookies\n- When a cookie is set without belonging to a domain which is open in a tab, it is considered a thirdparty cookie.\n- Research is being done to improve this method.\n\n## Snooze Mode\n\nOn the popup-tab \"Snooze Mode\", you can temporarily disable automatic cleanup. See The tab for instructions.\n\n## Types of Cleanup\n\nYou can choose which data to cleanup:\n- **Cookies**: Normal HTTP cookies. Flash cookies are covered by \"Plugin Data\".\n- **Local Storage** and **Indexed DB**: Websites can store data on your browser to allow certain features or to remember something for the next visit.\nSometimes Firefox refers to *Indexed DB* as \"Storage\", so if Firefox tells you, that youtube.com uses some MB of Storage, it is probably *Indexed DB*.\n- **History**: This contains all your website visits.\n- **Downloads**: This contains the history of downloads. Cleaning downloads does not remove the files on your disk.\n- **Form Data**: At some point you might have entered information in for example a contact or billing form. Depending on your settings, this might have been saved, so it's easier for you to re-enter these values.\n- **Passwords**: You might have told Firefox to remember certain passwords. Choose this to remove them again.\n- **Plugin Data**: Plugins (not add-ons/web-extensions) like Adobe Flash or Acrobat Reader might store data like Flash cookies or other information & settings.\n- **Service Workers**: Service Workers are a way to allow Websites to be used offline and also help to speed up loading web-apps that make use of this.\n- **Server Bound Certificates**: If you added certificates to allow connections to a server, then this is the option to clear it with."
+        "message": "# Introduction Tutorial\n\n## Firefox settings\nPlease note, that this extension has no access to your Firefox settings, so any cookie settings you make in Firefox itself will be combined with this extension.\n\nSo if you configure Firefox to deny all cookies, this extension will have no cookies to work with.\n\n## Cleanup Types\nDomain names (host names of a website, like *google.com*) can be added to color-coded lists (like whitelists)\n- **Never**: Cookies and local storage will never be removed.\n- **On Startup**: Cookies and local storage will be removed upon browser restart (must be enabled in the settings).\n- **On Leave**: `On Startup` and `Never` rules can be overridden by a `On Leave` rule.\n  - Example: A `Never` rule allows all domains (\"\\*\" as expression) and a couple of `On Leave` rules define exceptions to that rule.\n- **Instantly**: Prevent cookies from ever being set\n  - Any rule will be overriden by an `Instantly` rule.\n  - Sadly, cookies set from JavaScript can't be blocked, but will be removed almost instantly after creation.\n\n## Valid expressions\n- Every hostname (e.g. www.google.com) is a valid expression.\n- An asterisk (*) can be used as placeholder for a segment (e.g. *.google.com or www.\\*.com).\n- Whitelists currently overrule graylists.. not sure if this is final.\n\n### Cookie specific expressions\nYou can create rules for cookiename and domain combinations.\n- Example: `cookiename@*.google.com`\n- `cookiename` can be any valid cookie name.\n- The same rules, as seen above, apply for the domain specific part to the right of the `@` sign.\n- Cookie specific rules are always preferred over normal rules.\n\n## Third party cookies\n- When a cookie is set without belonging to a domain which is open in a tab, it is considered a third-party cookie.\n- Research is being done to improve this method.\n\n## Snooze Mode\n\nOn the popup-tab \"Snooze Mode\", you can temporarily disable automatic cleanup. See The tab for instructions.\n\n## Types of Cleanup\n\nYou can choose which data to cleanup:\n- **Cookies**: Normal HTTP cookies. Flash cookies are covered by \"Plugin Data\".\n- **Local Storage** and **Indexed DB**: Websites can store data on your browser to allow certain features or to remember something for the next visit.\nSometimes Firefox refers to *Indexed DB* as \"Storage\", so if Firefox tells you, that youtube.com uses some MB of Storage, it is probably *Indexed DB*.\n- **History**: This contains all your website visits.\n- **Downloads**: This contains the history of downloads. Cleaning downloads does not remove the files on your disk.\n- **Form Data**: At some point you might have entered information in for example a contact or billing form. Depending on your settings, this might have been saved, so it's easier for you to re-enter these values.\n- **Passwords**: You might have told Firefox to remember certain passwords. Choose this to remove them again.\n- **Plugin Data**: Plugins (not add-ons/web-extensions) like Adobe Flash or Acrobat Reader might store data like Flash cookies or other information & settings.\n- **Service Workers**: Service Workers are a way to allow Websites to be used offline and also help to speed up loading web-apps that make use of this.\n- **Server Bound Certificates**: If you added certificates to allow connections to a server, then this is the option to clear it with."
     },
     "experimental_page": {
-        "message": "## Experimental Features\n\n- From time to time there will be new features which are marked as experimental.\n- They will be disabled by default and need to be manually enabled.\n- These features are used to evaluate new ways to improve the extension.\n- They might be instable or have bad performance.\n- If you experience issues, try turning these features off.\n- Please submit feedback and bug reports on [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Currently active experiments:\n- **Purge Expired Cookies**:\nWhenever a cleanup happens, cookies that have an expiration date set in the past will be removed regardless of the configured rules. Normally Firefox only deletes expired cookies when a certain limit is hit. Those cookies would not get send to the website, but they would still be there. This option will help removing these ghosting cookies.\n- **Deny Thirdparty Cookies**:  \nIf enabled, every web request will be intercepted to remove cookies from domains which don't belong to the tabs URL and are not protected by a rule. So these cookies will never be set.\n\nPlease give me feedback on your experience with these experiments, so I can decide whether or not to add them permanently."
+        "message": "## Experimental Features\n\n- From time to time there will be new features which are marked as experimental.\n- They will be disabled by default and need to be manually enabled.\n- These features are used to evaluate new ways to improve the extension.\n- They might be instable or have bad performance.\n- If you experience issues, try turning these features off.\n- Please submit feedback and bug reports on [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Currently active experiments:\n- **Purge Expired Cookies**:\nWhenever a cleanup happens, cookies that have an expiration date set in the past will be removed regardless of the configured rules. Normally Firefox only deletes expired cookies when a certain limit is hit. Those cookies would not get send to the website, but they would still be there. This option will help removing these ghosting cookies.\n- **Deny Third-Party Cookies**:  \nIf enabled, every web request will be intercepted to remove cookies from domains which don't belong to the tabs URL and are not protected by a rule. So these cookies will never be set.\n\nPlease give me feedback on your experience with these experiments, so I can decide whether or not to add them permanently."
     },
     "changelog_page": {
-        "message": "## Changelog\n\n### Version 1.0.5 (2018/09/02)\n- Fixed a bug causing the update notification to appear on every start.\n\n### Version 1.0.4 (2018/09/02)\n- Workaround for Firefox bug, which doesn't clear download history.\n- Workaround for Firefox bug preventing container cookies to be cleaned correctly\n- Local cookies (from websites stored on your computer) can now be cleared as well.\n- Italian translation written by temptemptmp.\n- Support for the live apply button of the web-extension-translator.\n- Better support for Firefox overflow menu\n\n### Version 1.0.3 (2018/08/23)\n- Fix a bug in the rule expression parser\n- Spanish (Argentina) translation written by [Fabián Pérez](https://www.github.com/thepante)\n- Swedish translation written by Jo3yA\n- Portuguese translation written by SW1FT\n- Portuguese(Brazil) translation written by Victor Bambino\n- Updated upper and lower sorbian translation written by Michael Wolf\n\n### Version 1.0.2 (2018/06/03)\n- Support for keyboard navigation and screen readers\n\n### Version 1.0.1 (2018/05/28)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (2018/05/27)\n- Added a different icon and tooltip in snooze mode.\n- Upper and Lower Sorbian locales thanks to @milupo.\n- Users can now change what rule-type is applied if no matching rule was found.\n- Support for creating rules specific to a named cookie\n- Improved detection of third-party cookies.\n- Fixed bugs with subdomain cookie removal.\n- Improved support for First Party Isolation\n- New experimental feature: Purging expired cookies whenever a cleanup happens.\n- Fixed some visual issues.\n- Lots of code improvements for better stability and improved performance!\n- Over 100 unit tests to ensure good quality!\n- Better help and more descriptions.\n- Added privacy statement.\n\n### Version 0.9.1 (2018/04/06)\n- Bug that ignored the -do not notify about updates- setting\n\n### Version 0.9.0 (2018/03/24)\n- Added settings to disable or limit the domain log\n- Support for displaying punycode domain names\n- Fixed cookies not being removed properly in some cases\n- Using icons instead of titles in the tabs of the popup\n- Allow the manual cleanup to ignore the \"protect open domains\" rule.\n- Added a snooze feature to temporarily disable automatic cleanup. The cleanups will be rescheduled once the snooze has been stopped.\n- Technology upgrade\n\n### Version 0.8.8 (2018/01/24)\n- Added new black rule type to block cookies completely.\n- First Party Isolation no longer prevents the extension from removing cookies (starts working with Firefox 59). Improved support will be made available in a beta version soon.\n- Bugfix: When leaving a domain, re-entering and leaving it again before the original cleanup timeout passed, cookies would be deleted too early.\n- Bugfix: Notifications could get replaced too quickly for the user to see.\n\n### Version 0.8.7 (2017/12/20)\n- Workaround for settings  import not working correctly in the Firefox browserAction popup.\n- Partial support for container tabs: Cookies work, local storage does not (Mozilla needs to fix something first)\n- Added new rule \"Forget\" (red) to allow overriding other rules (read the tutorial for details).\n- Fixed an issue with startup cleanup\n- Added unit tests\n- Added option to hide badges\n- Added option to chose the initially selected tab\n- Added option to show cookie removal notifications\n- Fixed issue on export\n\n### Version 0.8.6 (2017/12/06)\n- Translation changes, using [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Introduction of an in-extension readme, tutorial and changelog.\n  - This can be accessed through the questionmark button.\n- Showing a notification when the extension has been updated (can be disabled).\n- Domains without a Top Level Domain (like localhost, intranet, etc.) can now be whitelisted with a checkbox.\n- Experimental feature for blocking thirdparty cookies\n\n### Version 0.8.5 (2017/11/25)\n- Typo fixed\n- Made toggle of rule type smoother\n- Button for adding new rules (before you could only add a new rule by pressing enter)\n- Button for getting information on valid expressions \n\n### Version 0.8.4 (2017/11/25)\n- Better mobile compatibility\n- Fix for incognito cookies being logged and removed \n\n### Version 0.8.3 (2017/11/24)\n- Disabled on incognito tabs/windows\n- Added a log to see the domains of recent cookie changes\n- Added buttons to prefill the filter input field with domains of the above and the current tab\n\n### Version 0.8.2 (2017/11/19)\n- Some bugfixes, cleanups \n\n### Version 0.8.0 (2017/11/19)\n- First Version"
+        "message": "## Changelog\n\n### Version 1.0.5 (2018/09/02)\n- Fixed a bug causing the update notification to appear on every start.\n\n### Version 1.0.4 (2018/09/02)\n- Workaround for Firefox bug, which doesn't clear download history.\n- Workaround for Firefox bug preventing container cookies to be cleaned correctly\n- Local cookies (from websites stored on your computer) can now be cleared as well.\n- Italian translation written by temptemptmp.\n- Support for the live apply button of the web-extension-translator.\n- Better support for Firefox overflow menu\n\n### Version 1.0.3 (2018/08/23)\n- Fix a bug in the rule expression parser\n- Spanish (Argentina) translation written by [Fabián Pérez](https://www.github.com/thepante)\n- Swedish translation written by Jo3yA\n- Portuguese translation written by SW1FT\n- Portuguese(Brazil) translation written by Victor Bambino\n- Updated upper and lower sorbian translation written by Michael Wolf\n\n### Version 1.0.2 (2018/06/03)\n- Support for keyboard navigation and screen readers\n\n### Version 1.0.1 (2018/05/28)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (2018/05/27)\n- Added a different icon and tooltip in snooze mode.\n- Upper and Lower Sorbian locales thanks to @milupo.\n- Users can now change what rule-type is applied if no matching rule was found.\n- Support for creating rules specific to a named cookie\n- Improved detection of third-party cookies.\n- Fixed bugs with subdomain cookie removal.\n- Improved support for First Party Isolation\n- New experimental feature: Purging expired cookies whenever a cleanup happens.\n- Fixed some visual issues.\n- Lots of code improvements for better stability and improved performance!\n- Over 100 unit tests to ensure good quality!\n- Better help and more descriptions.\n- Added privacy statement.\n\n### Version 0.9.1 (2018/04/06)\n- Bug that ignored the -do not notify about updates- setting\n\n### Version 0.9.0 (2018/03/24)\n- Added settings to disable or limit the domain log\n- Support for displaying punycode domain names\n- Fixed cookies not being removed properly in some cases\n- Using icons instead of titles in the tabs of the popup\n- Allow the manual cleanup to ignore the \"protect open domains\" rule.\n- Added a snooze feature to temporarily disable automatic cleanup. The cleanups will be rescheduled once the snooze has been stopped.\n- Technology upgrade\n\n### Version 0.8.8 (2018/01/24)\n- Added new black rule type to block cookies completely.\n- First Party Isolation no longer prevents the extension from removing cookies (starts working with Firefox 59). Improved support will be made available in a beta version soon.\n- Bugfix: When leaving a domain, re-entering and leaving it again before the original cleanup timeout passed, cookies would be deleted too early.\n- Bugfix: Notifications could get replaced too quickly for the user to see.\n\n### Version 0.8.7 (2017/12/20)\n- Workaround for settings  import not working correctly in the Firefox browserAction popup.\n- Partial support for container tabs: Cookies work, local storage does not (Mozilla needs to fix something first)\n- Added new rule \"Forget\" (red) to allow overriding other rules (read the tutorial for details).\n- Fixed an issue with startup cleanup\n- Added unit tests\n- Added option to hide badges\n- Added option to chose the initially selected tab\n- Added option to show cookie removal notifications\n- Fixed issue on export\n\n### Version 0.8.6 (2017/12/06)\n- Translation changes, using [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Introduction of an in-extension readme, tutorial and changelog.\n  - This can be accessed through the questionmark button.\n- Showing a notification when the extension has been updated (can be disabled).\n- Domains without a Top Level Domain (like localhost, intranet, etc.) can now be whitelisted with a checkbox.\n- Experimental feature for blocking third-party cookies\n\n### Version 0.8.5 (2017/11/25)\n- Typo fixed\n- Made toggle of rule type smoother\n- Button for adding new rules (before you could only add a new rule by pressing enter)\n- Button for getting information on valid expressions \n\n### Version 0.8.4 (2017/11/25)\n- Better mobile compatibility\n- Fix for incognito cookies being logged and removed \n\n### Version 0.8.3 (2017/11/24)\n- Disabled on incognito tabs/windows\n- Added a log to see the domains of recent cookie changes\n- Added buttons to prefill the filter input field with domains of the above and the current tab\n\n### Version 0.8.2 (2017/11/19)\n- Some bugfixes, cleanups \n\n### Version 0.8.0 (2017/11/19)\n- First Version"
     },
 
     "__WET_LOCALE__": { "message": "en" }

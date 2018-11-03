@@ -30,10 +30,6 @@
         "message": "Ok",
         "hash": "d2702da8185dd5d533913d767bddc05d"
     },
-    "alert_title_error": {
-        "message": "Erreur",
-        "hash": "28f8a082ad9a4452d343d532dbc76750"
-    },
     "prompt_ok": {
         "message": "Ok",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -98,10 +94,6 @@
         "message": "Onglet courant",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "tabs_clean_all@title": {
-        "message": "Effectuer un nettoyage",
-        "hash": "7141bfe69b29cdc954a0f353385213fe"
-    },
     "tabs_rules@title": {
         "message": "Définir les règles",
         "hash": "21d4563d916a5e113022379778156fff"
@@ -109,10 +101,6 @@
     "tabs_settings@title": {
         "message": "Paramètres",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_snooze@title": {
-        "message": "Désactiver temporairement le nettoyage en quittant un domaine",
-        "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
         "message": "Log de domaine",
@@ -170,11 +158,11 @@
         "message": "Onglet invalide",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
-    "rules_column_rule": {
+    "rules_column_expression": {
         "message": "Règle",
         "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
     },
-    "rules_column_matching_rule": {
+    "rules_column_matching_expression": {
         "message": "Règle correspondante",
         "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
     },
@@ -182,21 +170,9 @@
         "message": "Type",
         "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
     },
-    "rules_column_remove": {
-        "message": "Supprimer",
-        "hash": "3908a268c854fe64242e38845dbb7c81"
-    },
     "rules_input@placeholder": {
         "message": "Rechercher ou ajouter..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_hint_add": {
-        "message": "Presser Entrer pour ajouter dans la liste blanche, shift+Entrer pour ajouter à la liste grise",
-        "hash": "a4bf383cbddf44323b6b53b164fc5016"
-    },
-    "rules_hint_invalid": {
-        "message": "Expression invalide",
-        "hash": "c3be6cd37388a5b0133fb430741b7eb3"
     },
     "rules_add": {
         "message": "Ajouter",
@@ -206,16 +182,12 @@
         "message": "Lire comment les règles fonctionnent, quelles expressions vous pouvez utiliser, les règles expérimentales, et les récents changements de cette extension.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
-    "types_of_cleanup": {
-        "message": "Qu'est-ce que ces cases à cocher incluent",
-        "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
-    },
     "types_of_cleanup@title": {
         "message": "Lire plus à-propos de ce que ces cases à cocher incluent exactement.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Expérimental: Purger les cookies expirés à chaque fois qu'un nettoyage se produit.",
+        "message": "Purger les cookies expirés à chaque fois qu'un nettoyage se produit.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
@@ -274,10 +246,6 @@
         "message": "Stockage local",
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
-    "setting_apply_rules_ff58": {
-        "message": "Appliquer les règles (Firefox 58+)",
-        "hash": "85e4a052235986fbbbdd74a36732ed1a"
-    },
     "setting_protect_open_domains": {
         "message": "Protéger les domaines actuellement ouvert si \"Appliquer les règles\" est coché",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
@@ -314,33 +282,17 @@
         "message": "Certificats liés au serveur",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_local_storage_ff58": {
-        "message": "Stockage local (Firefox 58+)",
-        "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
-    },
     "setting_delay_in_minutes": {
         "message": "Délai en minutes:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_domain_leave_enabled": {
-        "message": "Nettoyer en quittant toutes les instances d'un domaine:",
-        "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Les règles seront appliquées",
-        "hash": "b349aa92b42d990a4a59dadcead1c09d"
     },
     "setting_remove_thirdparty": {
         "message": "Supprimer les cookies tiers à leur création",
         "hash": "10e201194069b4bc86e31630c772eb88"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Expérimental: Refuser les cookies tiers",
+        "message": "Refuser les cookies tiers",
         "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_startup_enabled": {
-        "message": "Nettoyer au démarrage du navigateur:",
-        "hash": "60eb224ee962894d10c6fb67328a69f1"
     },
     "setting_whitelist_no_tld": {
         "message": "Ajouter un domaine sans domaine de haut niveau à la liste blanche",
@@ -366,10 +318,6 @@
         "message": "Limiter à:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
     },
-    "experimental_link@title": {
-        "message": "Ceci est une fonctionnalité expérimentale. Cliquer sur ce lien pour en apprendre plus.",
-        "hash": "e924b30645472d8e56f61b2492dc1bfb"
-    },
     "setting_initialTab": {
         "message": "Onglet initialement sélectionné sur ce popup:",
         "hash": "4f7c8a9bcef6c6476565d540dde62998"
@@ -382,10 +330,6 @@
         "message": "Onglet courant",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "initial_tab_clean_all": {
-        "message": "Nettoyage",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
     "initial_tab_rules": {
         "message": "Règles",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
@@ -394,17 +338,9 @@
         "message": "Paramètres",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
-    "initial_tab_snooze": {
-        "message": "Silencieux",
-        "hash": "0777d03b979676427cadc44e5b133315"
-    },
     "initial_tab_log": {
         "message": "Log de domaine",
         "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "initial_tab_about": {
-        "message": "À-propos",
-        "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },

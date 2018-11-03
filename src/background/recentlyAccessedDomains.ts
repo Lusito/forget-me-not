@@ -64,9 +64,8 @@ export class RecentlyAccessedDomains {
         const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
             const badge = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;
-            if (badge) {
+            if (badge)
                 result.push({ domain, badge });
-            }
         }
         return result;
     }

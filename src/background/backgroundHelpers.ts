@@ -39,28 +39,35 @@ export function parseSetCookieHeader(header: string, fallbackDomain: string): Se
 }
 
 export interface BadgeInfo {
-    i18nKey?: string;
+    i18nKey: string;
+    i18nKeyLong: string;
     color: string | [number, number, number, number];
 }
 
 export const badges: { [s: string]: BadgeInfo } = {
     white: {
         i18nKey: "badge_white",
+        i18nKeyLong: "setting_type_white",
         color: [38, 69, 151, 255]
     },
     gray: {
         i18nKey: "badge_gray",
+        i18nKeyLong: "setting_type_gray",
         color: [116, 116, 116, 255]
     },
     forget: {
         i18nKey: "badge_forget",
+        i18nKeyLong: "setting_type_forget",
         color: [190, 23, 38, 255]
     },
     block: {
         i18nKey: "badge_block",
+        i18nKeyLong: "setting_type_block",
         color: [0, 0, 0, 255]
     },
     none: {
+        i18nKey: "",
+        i18nKeyLong: "",
         color: [0, 0, 0, 255]
     }
 };

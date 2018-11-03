@@ -30,10 +30,6 @@
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
     },
-    "alert_title_error": {
-        "message": "Fel",
-        "hash": "28f8a082ad9a4452d343d532dbc76750"
-    },
     "prompt_ok": {
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -98,10 +94,6 @@
         "message": "Aktiv Flik",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "tabs_clean_all@title": {
-        "message": "Genomför Upprensning",
-        "hash": "7141bfe69b29cdc954a0f353385213fe"
-    },
     "tabs_rules@title": {
         "message": "Definiera Regler",
         "hash": "21d4563d916a5e113022379778156fff"
@@ -109,10 +101,6 @@
     "tabs_settings@title": {
         "message": "Inställningar",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_snooze@title": {
-        "message": "Stäng tillfälligt av upprensning vid lämnande av domän.",
-        "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
         "message": "Domän Log",
@@ -170,11 +158,11 @@
         "message": "Ogiltig flik",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
-    "rules_column_rule": {
+    "rules_column_expression": {
         "message": "Regel",
         "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
     },
-    "rules_column_matching_rule": {
+    "rules_column_matching_expression": {
         "message": "Matchande regel",
         "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
     },
@@ -182,21 +170,9 @@
         "message": "Typ",
         "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
     },
-    "rules_column_remove": {
-        "message": "Ta bort",
-        "hash": "3908a268c854fe64242e38845dbb7c81"
-    },
     "rules_input@placeholder": {
         "message": "Sök och lägg till..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_hint_add": {
-        "message": "Tryck enter för att lägga till som vit regel, shift+enter för att lägga till som grå regel",
-        "hash": "a4bf383cbddf44323b6b53b164fc5016"
-    },
-    "rules_hint_invalid": {
-        "message": "Ogiltigt uttryck",
-        "hash": "c3be6cd37388a5b0133fb430741b7eb3"
     },
     "rules_add": {
         "message": "Lägg till",
@@ -206,16 +182,12 @@
         "message": "Läs om hur regler fungerar, vilka uttryck du kan använda, experimentella funktioner, och nya ändringar i detta tillägg.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
-    "types_of_cleanup": {
-        "message": "Vad inkluderas i dessa val?",
-        "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
-    },
     "types_of_cleanup@title": {
         "message": "Läs mer om exakt vad dessa val städar upp.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Experimentell: Rensa utgångna kakor när en upprensning genomförs.",
+        "message": "Rensa utgångna kakor när en upprensning genomförs.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
@@ -274,10 +246,6 @@
         "message": "Lokal lagring",
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
-    "setting_apply_rules_ff58": {
-        "message": "Genomför Regler (Firefox 58+)",
-        "hash": "85e4a052235986fbbbdd74a36732ed1a"
-    },
     "setting_protect_open_domains": {
         "message": "Skydda nuvarande öppna domäner om \"Genomför Regler\" är markerad",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
@@ -314,33 +282,17 @@
         "message": "Serverbundna certifikat",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_local_storage_ff58": {
-        "message": "Lokal Lagring (Firefox 58+)",
-        "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
-    },
     "setting_delay_in_minutes": {
         "message": "Fördröjning i minuter:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_domain_leave_enabled": {
-        "message": "Rensa vid lämnande av alla instanser av en domän:",
-        "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Regler kommer att genomföras",
-        "hash": "b349aa92b42d990a4a59dadcead1c09d"
     },
     "setting_remove_thirdparty": {
         "message": "Ta bort Tredjeparts Kakor vid skapande:",
         "hash": "10e201194069b4bc86e31630c772eb88"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimentell: Neka Tredjeparts Kakor",
+        "message": "Neka Tredjeparts Kakor",
         "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_startup_enabled": {
-        "message": "Rensa vid webläsar start:",
-        "hash": "60eb224ee962894d10c6fb67328a69f1"
     },
     "setting_whitelist_no_tld": {
         "message": "Lägg till domäner utan en Toppdomän att vitlista",
@@ -362,10 +314,6 @@
         "message": "Begränsa till:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
     },
-    "experimental_link@title": {
-        "message": "Detta är en experimentell funktion. Klicka på denna länk för att få veta mer.",
-        "hash": "e924b30645472d8e56f61b2492dc1bfb"
-    },
     "setting_initialTab": {
         "message": "Ursprungligt vald flik i denna popup:",
         "hash": "4f7c8a9bcef6c6476565d540dde62998"
@@ -378,10 +326,6 @@
         "message": "Aktiv Flik",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "initial_tab_clean_all": {
-        "message": "Rensa",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
     "initial_tab_rules": {
         "message": "Regler",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
@@ -390,17 +334,9 @@
         "message": "Inställningar",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
-    "initial_tab_snooze": {
-        "message": "Snooze",
-        "hash": "0777d03b979676427cadc44e5b133315"
-    },
     "initial_tab_log": {
         "message": "Domän Log",
         "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "initial_tab_about": {
-        "message": "Om",
-        "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },

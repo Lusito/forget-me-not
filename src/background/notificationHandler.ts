@@ -71,7 +71,6 @@ export class NotificationHandler {
         this.starting = true;
         this.updateOnStart = false;
         browser.notifications.create(COOKIE_CLEANUP_NOTIFICATION_ID, {
-            priority: -2,
             type: "basic",
             iconUrl: browser.extension.getURL("icons/icon96.png"),
             title: wetLayer.getMessage("cookie_cleanup_notification_title", totalCount.toString()),

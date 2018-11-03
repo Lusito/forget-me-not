@@ -1,0 +1,91 @@
+
+.log_add_rule {
+    height: auto;
+    padding: 1px 7px;
+    display: inline-block;
+    color: white;
+    margin: 0 0 0 5px;
+    font-size: 10px;
+    text-align: center;
+    background: #264597;
+    cursor: pointer;
+    
+    &:hover {
+        color: black;
+    }
+}
+
+.rules_input_wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    > b {
+        margin-right: 5px;
+    }
+
+    > div {
+        flex-grow: 1;
+        position: relative;
+    }
+    input {
+        width: 100%;
+        &.error {
+            border-color: #800000 !important;
+        }
+    }
+    >button {
+        flex-shrink: 0;
+        margin: 0 0 0 4px;
+    }
+}
+
+.tab_heading {
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+#current_tab {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#current_tab_punyfied {
+    font-style: italic;
+    font-size: 13px;
+    clear: both;
+}
+
+#clean_current_tab {
+    float: right;
+    margin-right: 0;
+}
+
+#rules_tab_page.active {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 110px;
+}
+
+#recently_accessed_domains {
+    padding-left: 10px;
+    list-style-type: none;
+    >li {
+        display: flex;
+        flex-direction: row;
+        margin: 5px 0px;
+        max-width: 100%;
+        line-height: 14px;
+        >:nth-child(2) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        >:first-child,
+        >:last-child {
+            flex-shrink: 0;
+        }
+    }
+}

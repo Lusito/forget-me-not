@@ -4,15 +4,17 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings } from "./lib/settings";
-import { on, byId } from "./lib/htmlUtils";
-import { loadJSONFile, readJSONFile } from "./lib/fileHelper";
+import { h } from "tsx-dom";
+import { settings } from "../../lib/settings";
+import { on } from "../../lib/htmlUtils";
+import { loadJSONFile, readJSONFile } from "../../lib/fileHelper";
 import { wetLayer } from "wet-layer";
+import "./style.scss";
 
 wetLayer.loadFromStorage();
 
 settings.onReady(() => {
-    const dropzone = byId("dropzone") as HTMLElement;
+    const dropzone = <div id="dropzone" />;
     function onFileLoaded(json: any) {
         if (json && settings.setAll(json))
             dropzone.textContent = wetLayer.getMessage("import_success_close_now");
@@ -22,13 +24,14 @@ settings.onReady(() => {
     on(dropzone, "dragover", (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
-        evt.dataTransfer.dropEffect = "copy";
+        if (evt.dataTransfer)
+            evt.dataTransfer.dropEffect = "copy";
     });
     on(dropzone, "drop", (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
-        if (evt.dataTransfer.files.length)
-            readJSONFile(evt.dataTransfer.files[0], onFileLoaded);
+        const file = evt.dataTransfer && evt.dataTransfer.files[0];
+        file && readJSONFile(file, onFileLoaded);
     });
 
     on(dropzone, "click", (evt) => {
@@ -37,4 +40,6 @@ settings.onReady(() => {
         loadJSONFile(onFileLoaded);
     });
     dropzone.textContent = wetLayer.getMessage("import_by_drop_or_click");
+    document.title = wetLayer.getMessage("extensionName");
+    document.body.appendChild(dropzone);
 });

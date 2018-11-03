@@ -1,0 +1,30 @@
+
+.hover_bubble {
+    position: fixed;
+    top: 48px;
+    right: 5px;
+    left: 5px;
+    background: white;
+    padding: 10px;
+    border: 1px solid #a7a7a7;
+    z-index: 100;
+
+    h3 {
+        margin-top: 0;
+    }
+    .hover_bubble_arrow {
+        position: absolute;
+        top: -6px;
+        margin-left: -11px;
+        width: 10px;
+        height: 10px;
+        border: 1px solid #a7a7a7;
+        border-right: none;
+        border-bottom: none;
+        background: white;
+        transform: rotate(45deg);
+    }
+    &:not(.is-active) {
+        display: none;
+    }
+}

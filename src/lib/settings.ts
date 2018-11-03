@@ -98,6 +98,28 @@ export function isValidExpression(exp: string) {
     return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
 }
 
+export function classNameForRuleType(ruleType: RuleType) {
+    if (ruleType === RuleType.WHITE)
+        return "badge_white";
+    if (ruleType === RuleType.GRAY)
+        return "badge_gray";
+    if (ruleType === RuleType.BLOCK)
+        return "badge_block";
+    return "badge_forget";
+}
+
+export function ruleTypeForElement(element: HTMLElement) {
+    if (element.classList.contains("badge_white"))
+        return RuleType.WHITE;
+    if (element.classList.contains("badge_gray"))
+        return RuleType.GRAY;
+    if (element.classList.contains("badge_block"))
+        return RuleType.BLOCK;
+    if (element.classList.contains("badge_forget"))
+        return RuleType.FORGET;
+    return null;
+}
+
 function isValidRuleType(ruleType: RuleType) {
     return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET || ruleType === RuleType.BLOCK;
 }
@@ -142,9 +164,8 @@ export class Settings {
         this.storage.get(null).then((map) => {
             this.map = map;
             const changedKeys = Object.getOwnPropertyNames(changes || map);
-            if (changedKeys.indexOf("rules")) {
+            if (changedKeys.indexOf("rules") >= 0)
                 this.rebuildRules();
-            }
             if (this.readyCallbacks) {
                 for (const callback of this.readyCallbacks)
                     callback();
@@ -255,6 +276,14 @@ export class Settings {
     }
 
     // Convenience methods
+    public getExactRuleType(rule: string) {
+        for (const crd of this.rules) {
+            if (crd.definition.rule === rule)
+                return crd.definition.type;
+        }
+        return null;
+    }
+
     public getMatchingRules(domain: string, cookieName: string | false = false) {
         const rules = cookieName !== false ? this.cookieRules : this.rules;
         const lowerCookieName = cookieName && cookieName.toLowerCase();
@@ -300,6 +329,40 @@ export class Settings {
         if (matchingRules.length)
             return this.getRuleTypeFromMatchingRules(matchingRules);
         return this.get("fallbackRule");
+    }
+
+    public getChosenRulesForDomain(domain: string) {
+        if (this.get("whitelistFileSystem") && domain.length === 0)
+            return [];
+        if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
+            return [];
+        const matchingRules = this.getMatchingRules(domain);
+        if (matchingRules.length) {
+            const types = [RuleType.BLOCK, RuleType.FORGET, RuleType.WHITE, RuleType.GRAY];
+            for (const type of types) {
+                const rules = matchingRules.filter((r) => r.type === type);
+                if (rules.length)
+                    return rules;
+            }
+        }
+        return [];
+    }
+
+    public setRule(expression: string, type: RuleType) {
+        const rules = this.get("rules").slice();
+        const ruleDef = rules.find((r) => r.rule === expression);
+        if (ruleDef)
+            ruleDef.type = type;
+        else
+            rules.push({ rule: expression, type });
+        this.set("rules", rules);
+        this.save();
+    }
+
+    public removeRule(expression: string) {
+        const rules = this.get("rules").filter((r) => r.rule !== expression);
+        this.set("rules", rules);
+        this.save();
     }
 }
 export const settings = new Settings();

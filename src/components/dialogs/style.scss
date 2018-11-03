@@ -1,0 +1,36 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
+.dialog {
+    > h2 {
+        margin: 0;
+        padding: 0 40px 0 10px;
+        border-bottom: 1px solid #A7A7A7;
+        line-height: 38px;
+    }
+
+    > div {
+        margin: 10px;
+    }
+
+    ul:not(.settings_legend) {
+        padding-left: 25px;
+    }
+}
+
+.dialog ~ * {
+    display: none !important;
+}
+
+.dialog.prompt>div>input {
+    width: 100%;
+}
+
+.rule_dialog {
+    p, ul {
+        margin: 10px 0;
+    }
+}

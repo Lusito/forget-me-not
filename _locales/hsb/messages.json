@@ -30,10 +30,6 @@
         "message": "W porjadku",
         "hash": "d2702da8185dd5d533913d767bddc05d"
     },
-    "alert_title_error": {
-        "message": "Zmylk",
-        "hash": "28f8a082ad9a4452d343d532dbc76750"
-    },
     "prompt_ok": {
         "message": "W porjadku",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -98,10 +94,6 @@
         "message": "Aktualny rajtark",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "tabs_clean_all@title": {
-        "message": "Wučisćenje přewjesć",
-        "hash": "7141bfe69b29cdc954a0f353385213fe"
-    },
     "tabs_rules@title": {
         "message": "Prawidła definować",
         "hash": "21d4563d916a5e113022379778156fff"
@@ -109,10 +101,6 @@
     "tabs_settings@title": {
         "message": "Nastajenja",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_snooze@title": {
-        "message": "Wučisćenje při wopušćenju domeny nachwilu znjemóžnić",
-        "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
         "message": "Domenowy protokol",
@@ -170,11 +158,11 @@
         "message": "Njepłaćiwy rajtark",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
-    "rules_column_rule": {
+    "rules_column_expression": {
         "message": "Prawidło",
         "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
     },
-    "rules_column_matching_rule": {
+    "rules_column_matching_expression": {
         "message": "Přihódne prawidło",
         "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
     },
@@ -182,21 +170,9 @@
         "message": "Typ",
         "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
     },
-    "rules_column_remove": {
-        "message": "Wotstronić",
-        "hash": "3908a268c854fe64242e38845dbb7c81"
-    },
     "rules_input@placeholder": {
         "message": "Pytać abo přidać..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_hint_add": {
-        "message": "Tłóčće zapodawansku tastu, zo byšće běłe prawidło přidał, Umsch+zapodawansku tastu, zo byšće šěre prawidło přidał",
-        "hash": "a4bf383cbddf44323b6b53b164fc5016"
-    },
-    "rules_hint_invalid": {
-        "message": "Njepłaćiwy wuraz",
-        "hash": "c3be6cd37388a5b0133fb430741b7eb3"
     },
     "rules_add": {
         "message": "Přidać",
@@ -206,16 +182,12 @@
         "message": "Čitajće, kak prawidła funguja, kotre wurazy móžeće wužiwać, kotre eksperimentelne funkcije a najnowše změny su w tutym rozšěrjenju.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
-    "types_of_cleanup": {
-        "message": "Što tute kontrolne kašćiki wobsahuja?",
-        "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
-    },
     "types_of_cleanup@title": {
         "message": "Čitajće wjace wo tym, štož tute kontrolne kašćiki čisća.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Eksperimentelny: Spadnjene placki zhašeć, hdyžkuli so čisćenje wotměwa.",
+        "message": "Spadnjene placki zhašeć, hdyžkuli so čisćenje wotměwa.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
@@ -274,10 +246,6 @@
         "message": "Lokalny składowak",
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
-    "setting_apply_rules_ff58": {
-        "message": "Prawidła nałožić (Firefox 58+)",
-        "hash": "85e4a052235986fbbbdd74a36732ed1a"
-    },
     "setting_protect_open_domains": {
         "message": "Tuchwilu wočinjene domeny škitać, jeli \"Prawidła nałožić\" je zmóžnjene",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
@@ -314,33 +282,17 @@
         "message": "Certifikaty zwjazane ze serwerom",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_local_storage_ff58": {
-        "message": "Lokalny składowak (Firefox 58+)",
-        "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
-    },
     "setting_delay_in_minutes": {
         "message": "Komdźenje w mjeńšinach:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_domain_leave_enabled": {
-        "message": "Zhašeć, hdyž so wšě instancy domeny wopušćeja:",
-        "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Prawidła so nałožuja",
-        "hash": "b349aa92b42d990a4a59dadcead1c09d"
     },
     "setting_remove_thirdparty": {
         "message": "Placki třećich poskićowarjow při wutworjenju wotstronić:",
         "hash": "10e201194069b4bc86e31630c772eb88"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimentelny: Placki třećich poskićowarjow wotpokazać",
+        "message": "Placki třećich poskićowarjow wotpokazać",
         "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_startup_enabled": {
-        "message": "Při startowanju wobhladowaka zhašeć:",
-        "hash": "60eb224ee962894d10c6fb67328a69f1"
     },
     "setting_whitelist_no_tld": {
         "message": "Domeny bjez domeny najwyšeje runiny běłej lisćinje přidać",
@@ -366,10 +318,6 @@
         "message": "Wobmjezować na:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
     },
-    "experimental_link@title": {
-        "message": "To je eksperimentelna funkcija. Klikńće na wotkaz, zo byšće wjace zhonił.",
-        "hash": "e924b30645472d8e56f61b2492dc1bfb"
-    },
     "setting_initialTab": {
         "message": "Najprjedy wubrany rajtark we wočinjenym woknje:",
         "hash": "4f7c8a9bcef6c6476565d540dde62998"
@@ -382,10 +330,6 @@
         "message": "Aktualny rajtark",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "initial_tab_clean_all": {
-        "message": "Wučisćić",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
     "initial_tab_rules": {
         "message": "Prawidła",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
@@ -394,17 +338,9 @@
         "message": "Nastajenja",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
-    "initial_tab_snooze": {
-        "message": "Drěmać",
-        "hash": "0777d03b979676427cadc44e5b133315"
-    },
     "initial_tab_log": {
         "message": "Domenowy protokol",
         "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "initial_tab_about": {
-        "message": "Wo",
-        "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },

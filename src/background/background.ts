@@ -32,7 +32,9 @@ function getAllCookieStoreIds() {
     return browser.cookies.getAllCookieStores().then((cookieStores) => {
         for (const store of cookieStores)
             ids[store.id] = true;
-        return browser.contextualIdentities.query({});
+        if (browser.contextualIdentities)
+            return browser.contextualIdentities.query({});
+        return [];
     }).then((contextualIdentities) => {
         for (const ci of contextualIdentities)
             ids[ci.cookieStoreId] = true;

@@ -4,13 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { createElement } from "./htmlUtils";
+import { h } from "tsx-dom";
 
 export function readJSONFile(file: File, callback: (json: any) => void) {
     const reader = new FileReader();
     reader.onload = () => {
         try {
-            callback(JSON.parse(reader.result));
+            callback(JSON.parse(reader.result as string));
         }
         catch (e) {
             callback(null);
@@ -21,7 +21,7 @@ export function readJSONFile(file: File, callback: (json: any) => void) {
 }
 
 export function loadJSONFile(callback: (json: any) => void) {
-    const input = createElement(document, document.body, "input", { type: "file", style: "display:none" });
+    const input = document.body.appendChild(<input type="file" style="display: none" />) as HTMLInputElement;
     input.onchange = () => {
         if (!input.files)
             return;
@@ -33,7 +33,7 @@ export function loadJSONFile(callback: (json: any) => void) {
 
 export function saveJSONFile(json: any, filename: string) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
-    const a = createElement(document, document.body, "a", { href: dataStr, download: filename, style: "display:none" });
+    const a = document.body.appendChild(<a href={dataStr} download={filename} style= "display:none" />);
     a.click();
     document.body.removeChild(a);
 }

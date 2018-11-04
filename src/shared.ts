@@ -6,7 +6,9 @@
 
 export interface CookieDomainInfo {
     domain: string;
-    badge: string;
+    className: string;
+    i18nBadge: string;
+    i18nButton: string;
 }
 
 export const allowedProtocols = /^https?:$/;

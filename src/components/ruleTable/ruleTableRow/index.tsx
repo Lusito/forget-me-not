@@ -1,12 +1,12 @@
 import { h } from "tsx-dom";
-import { RuleType } from "../../../lib/settingsSignature";
+import { CleanupType } from "../../../lib/settingsSignature";
 import { RuleButton } from "../../ruleButton";
 import * as punycode from "punycode";
 import { settings } from "../../../lib/settings";
 
 interface RuleTableRowProps {
     rule: string;
-    type: RuleType | null;
+    type: CleanupType | null;
     isChosen?: boolean;
 }
 

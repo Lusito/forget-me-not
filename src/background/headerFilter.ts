@@ -10,7 +10,7 @@ import { TabWatcher } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { browser, WebRequest } from "webextension-polyfill-ts";
 import { getValidHostname, destroyAndNull } from "../shared";
-import { RuleType } from "../lib/settingsSignature";
+import { CleanupType } from "../lib/settingsSignature";
 import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";
 
@@ -51,10 +51,10 @@ export class HeaderFilter {
     }
 
     private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {
-        const type = settings.getRuleTypeForCookie(cookieInfo.domain.startsWith(".") ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
-        if (type === RuleType.WHITE || type === RuleType.GRAY)
+        const type = settings.getCleanupTypeForCookie(cookieInfo.domain.startsWith(".") ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
+        if (type === CleanupType.NEVER || type === CleanupType.STARTUP)
             return false;
-        return type === RuleType.BLOCK || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
+        return type === CleanupType.INSTANTLY || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
     }
 
     private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, fallbackDomain: string, tabId: number): WebRequest.HttpHeaders | undefined {

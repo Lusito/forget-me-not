@@ -70,3 +70,13 @@ export function doneHandler<T extends Function>(handler: T, done: MochaDone, don
         }
     };
 }
+
+export function createCookieDomainInfo(domain: string, type: "never" | "startup" | "leave" | "instantly") {
+    const className = `cleanup_type_${type}`;
+    return {
+        domain,
+        className,
+        i18nBadge: `${className}_badge`,
+        i18nButton: `${className}_button`
+    };
+}

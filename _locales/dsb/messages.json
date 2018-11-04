@@ -59,22 +59,54 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
 
-    "__WET_GROUP__2": { "message": "Badges" },
-    "badge_white": {
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_badge": {
         "message": "B",
         "hash": "bb699961fc5a751108afdcb88ef696aa"
     },
-    "badge_gray": {
+    "cleanup_type_never_button": {
+        "message": "Běły",
+        "hash": "333377f0d431ac6506374ecec7db4a5f"
+    },
+    "cleanup_type_never_button@title": {
+        "message": "Žedno wucysćenje",
+        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
+    },
+    "cleanup_type_startup_badge": {
         "message": "Š",
         "hash": "08208f1cca81892a4707dec4283aa489"
     },
-    "badge_forget": {
+    "cleanup_type_startup_button": {
+        "message": "Šěry",
+        "hash": "99120a99c4fd2db689b08297d7b255c4"
+    },
+    "cleanup_type_startup_button@title": {
+        "message": "Cysćenje pśi startowanju wobglědowaka",
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
+    },
+    "cleanup_type_leave_badge": {
         "message": "Z",
         "hash": "324f549df0b05cab9ad26e634c312802"
     },
-    "badge_block": {
+    "cleanup_type_leave_button": {
+        "message": "Zabyś",
+        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
+    },
+    "cleanup_type_leave_button@title": {
+        "message": "Cysćenje pśi spušćanju domeny",
+        "hash": "a69a2b082be9de0589a0f807f6be2179"
+    },
+    "cleanup_type_instantly_badge": {
         "message": "L",
         "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
+    },
+    "cleanup_type_instantly_button": {
+        "message": "Blokěrowaś",
+        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
+    },
+    "cleanup_type_instantly_button@title": {
+        "message": "Cookiejam se stajenje zawoborujo",
+        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
@@ -202,45 +234,13 @@
         "message": "Góźece pšawidło ako marku na tłocašku w symbolowej rědce pokazaś",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
-    "setting_type_white": {
-        "message": "Běły",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
-    "setting_type_white@title": {
-        "message": "Žedno wucysćenje",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "setting_type_gray": {
-        "message": "Šěry",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
-    },
-    "setting_type_gray@title": {
-        "message": "Cysćenje pśi startowanju wobglědowaka",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "setting_type_forget": {
-        "message": "Zabyś",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
-    "setting_type_forget@title": {
-        "message": "Cysćenje pśi spušćanju domeny",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "setting_type_block": {
-        "message": "Blokěrowaś",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
-    "setting_type_block@title": {
-        "message": "Cookiejam se stajenje zawoborujo",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
+    "setting_apply_rules@title": {
+        "message": "Pšawidła nałožyś",
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_cookies": {
         "message": "Cookieje",
         "hash": "4aef64b30489430071825bcb3db557b6"
-    },
-    "setting_apply_rules": {
-        "message": "Pšawidła nałožyś",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_local_storage": {
         "message": "Lokalny składowak",

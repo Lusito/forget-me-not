@@ -35,7 +35,7 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
             domains.push("*." + forDomain);
         domains.forEach((rule) => {
             const isChosen = chosenRulesForDomain.some((r) => r.rule === rule);
-            tbody.appendChild(<RuleTableRow rule={rule} isChosen={isChosen} type={settings.getExactRuleType(rule)} />);
+            tbody.appendChild(<RuleTableRow rule={rule} isChosen={isChosen} type={settings.getExactCleanupType(rule)} />);
         });
 
         rules = settings.getMatchingRules(forDomain).filter((rule) => domains.indexOf(rule.rule) === -1);

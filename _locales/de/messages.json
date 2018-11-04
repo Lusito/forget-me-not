@@ -83,22 +83,54 @@
         "hash": "74219b377804324016c6fbca36518b25"
     },
 
-    "__WET_GROUP__2": { "message": "Badges" },
-    "badge_white": {
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_badge": {
         "message": "N",
         "hash": "365345324a710f7b5f2824f1da013f2d"
     },
-    "badge_gray": {
+    "cleanup_type_never_button": {
+        "message": "*N*iemals",
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
+    },
+    "cleanup_type_never_button@title": {
+        "message": "Keine Säuberung",
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
+    },
+    "cleanup_type_startup_badge": {
         "message": "S",
         "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
     },
-    "badge_forget": {
+    "cleanup_type_startup_button": {
+        "message": "Beim *S*tart",
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
+    },
+    "cleanup_type_startup_button@title": {
+        "message": "Säuberung beim Neustart des Browsers",
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
+    },
+    "cleanup_type_leave_badge": {
         "message": "V",
         "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
     },
-    "badge_block": {
+    "cleanup_type_leave_button": {
+        "message": "Beim *V*erlassen",
+        "hash": "474d0269f9757e726e5d91f684c33033"
+    },
+    "cleanup_type_leave_button@title": {
+        "message": "Säuberung beim Verlassen einer Domäne",
+        "hash": "a69a2b082be9de0589a0f807f6be2179"
+    },
+    "cleanup_type_instantly_badge": {
         "message": "I",
         "hash": "43165bb2fb785fea90fb86352ea3ea8c"
+    },
+    "cleanup_type_instantly_button": {
+        "message": "*I*nstant",
+        "hash": "62610f955f62f7701a06a80ff04e1e1b"
+    },
+    "cleanup_type_instantly_button@title": {
+        "message": "Cookies werden am gesetzt werden gehindert.",
+        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
@@ -258,57 +290,13 @@
         "message": "Zeige die greifende Regel als Markierung auf dem Toolbarbutton",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
-    "setting_type_white": {
-        "message": "*N*iemals",
-        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
-    },
-    "setting_type_white@title": {
-        "message": "Keine Säuberung",
-        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
-    },
-    "setting_type_gray": {
-        "message": "Beim *S*tart",
-        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
-    },
-    "setting_type_gray@title": {
-        "message": "Säuberung beim Neustart des Browsers",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "setting_type_forget": {
-        "message": "Beim *V*erlassen",
-        "hash": "474d0269f9757e726e5d91f684c33033"
-    },
-    "setting_type_forget@title": {
-        "message": "Säuberung beim Verlassen einer Domäne",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "setting_type_block": {
-        "message": "*I*nstant",
-        "hash": "62610f955f62f7701a06a80ff04e1e1b"
-    },
-    "setting_type_block@title": {
-        "message": "Cookies werden am gesetzt werden gehindert.",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
-    },
-    "setting_type_create": {
-        "message": "Regel erstellen",
-        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
-    },
-    "setting_type_create@title": {
-        "message": "Wähle den Regeltyp für diesen Ausdruck",
-        "hash": "ceda95692664b9d0587c74757b9d9992"
-    },
-    "setting_type_apply_rules@title": {
+    "setting_apply_rules@title": {
         "message": "Regeln anwenden",
         "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_cookies": {
         "message": "Cookies",
         "hash": "4aef64b30489430071825bcb3db557b6"
-    },
-    "setting_apply_rules": {
-        "message": "Regeln anwenden",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_local_storage": {
         "message": "Lokaler Speicher",

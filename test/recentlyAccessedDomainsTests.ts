@@ -6,7 +6,7 @@
 
 import { assert } from "chai";
 import { browserMock } from "./browserMock";
-import { ensureNotNull, createSpy, doneHandler } from "./testHelpers";
+import { ensureNotNull, createSpy, doneHandler, createCookieDomainInfo } from "./testHelpers";
 import { destroyAndNull, CookieDomainInfo } from "../src/shared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";
@@ -67,9 +67,9 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
             assert.deepEqual(recentlyAccessedDomains.get(), [
-                { domain: "google.jp", badge: "badge_forget" },
-                { domain: "google.dk", badge: "badge_forget" },
-                { domain: "google.co.uk", badge: "badge_forget" }
+                createCookieDomainInfo("google.jp", "leave"),
+                createCookieDomainInfo("google.dk", "leave"),
+                createCookieDomainInfo("google.co.uk", "leave")
             ]);
         });
         it("should drop all domains above the limit when the limit has been changed", (done) => {
@@ -80,19 +80,19 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
             assert.deepEqual(recentlyAccessedDomains.get(), [
-                { domain: "google.jp", badge: "badge_forget" },
-                { domain: "google.dk", badge: "badge_forget" },
-                { domain: "google.co.uk", badge: "badge_forget" },
-                { domain: "google.de", badge: "badge_forget" },
-                { domain: "google.com", badge: "badge_forget" }
+                createCookieDomainInfo("google.jp", "leave"),
+                createCookieDomainInfo("google.dk", "leave"),
+                createCookieDomainInfo("google.co.uk", "leave"),
+                createCookieDomainInfo("google.de", "leave"),
+                createCookieDomainInfo("google.com", "leave")
             ]);
             settings.set("logRAD.limit", 3);
             settings.save().then(doneHandler(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "google.jp", badge: "badge_forget" },
-                    { domain: "google.dk", badge: "badge_forget" },
-                    { domain: "google.co.uk", badge: "badge_forget" }
+                    createCookieDomainInfo("google.jp", "leave"),
+                    createCookieDomainInfo("google.dk", "leave"),
+                    createCookieDomainInfo("google.co.uk", "leave")
                 ]);
             }, done));
         });
@@ -104,11 +104,11 @@ describe("Recently Accessed Domains", () => {
             recentlyAccessedDomains.add("google.dk");
             recentlyAccessedDomains.add("google.jp");
             const expected = [
-                { domain: "google.jp", badge: "badge_forget" },
-                { domain: "google.dk", badge: "badge_forget" },
-                { domain: "google.co.uk", badge: "badge_forget" },
-                { domain: "google.de", badge: "badge_forget" },
-                { domain: "google.com", badge: "badge_forget" }
+                createCookieDomainInfo("google.jp", "leave"),
+                createCookieDomainInfo("google.dk", "leave"),
+                createCookieDomainInfo("google.co.uk", "leave"),
+                createCookieDomainInfo("google.de", "leave"),
+                createCookieDomainInfo("google.com", "leave")
             ];
             assert.deepEqual(recentlyAccessedDomains.get(), expected);
 
@@ -128,9 +128,9 @@ describe("Recently Accessed Domains", () => {
             let isDone = 0;
             receiver = messageUtil.receive("onRecentlyAccessedDomains", doneHandler((list: CookieDomainInfo[]) => {
                 assert.deepEqual(list, [
-                    { domain: "google.jp", badge: "badge_forget" },
-                    { domain: "google.dk", badge: "badge_forget" },
-                    { domain: "google.co.uk", badge: "badge_forget" }
+                    createCookieDomainInfo("google.jp", "leave"),
+                    createCookieDomainInfo("google.dk", "leave"),
+                    createCookieDomainInfo("google.co.uk", "leave")
                 ]);
             }, done, () => (++isDone) === 1));
             settings.set("logRAD.limit", 3);

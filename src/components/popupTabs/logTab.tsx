@@ -8,7 +8,7 @@ import { wetLayer } from "wet-layer";
 import * as punycode from "punycode";
 import "./style.scss";
 import { isValidExpression, settings } from "../../lib/settings";
-import { RuleType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/settingsSignature";
 import { RuleDialog } from "../dialogs/ruleDialog";
 import { getDomain } from "tldjs";
 
@@ -23,21 +23,21 @@ export function LogTab() {
         function addRule() {
             const expression = "*." + (getDomain(info.domain) || info.domain);
             if (isValidExpression(expression)) {
-                function onConfirm(type: RuleType | false, expression?: string) {
+                function onConfirm(type: CleanupType | false, expression?: string) {
                     if (expression && type !== false)
                         settings.setRule(expression, type);
                 }
-                let focusRule = settings.getExactRuleType(expression);
-                if (focusRule === null)
-                    focusRule = RuleType.WHITE;
-                <RuleDialog expression={expression} editable={true} focusRule={focusRule} onConfirm={onConfirm} />;
+                let focusType = settings.getExactCleanupType(expression);
+                if (focusType === null)
+                    focusType = CleanupType.NEVER;
+                <RuleDialog expression={expression} editable={true} focusType={focusType} onConfirm={onConfirm} />;
             }
         }
         const punified = appendPunycode(info.domain);
         const addRuleMessage = wetLayer.getMessage("button_log_add_rule");
-        const title = wetLayer.getMessage(info.badge.replace("badge_", "setting_type_") + "@title");
+        const title = wetLayer.getMessage(info.i18nButton + "@title");
         return <li>
-            <span class={info.badge} title={title}>{wetLayer.getMessage(info.badge)}</span>
+            <span class={info.className} title={title}>{wetLayer.getMessage(info.i18nBadge)}</span>
             <span title={punified}>{punified}</span>
             <button class="log_add_rule" tabIndex={0} aria-label={`${addRuleMessage} (${punified})`} onClick={addRule}>{addRuleMessage}</button>
         </li>;

@@ -12,7 +12,7 @@ import { browserMock } from "./browserMock";
 import { CleanStore } from "../src/background/cleanStore";
 import { assert } from "chai";
 import { ensureNotNull, doneHandler } from "./testHelpers";
-import { RuleType } from "../src/lib/settingsSignature";
+import { CleanupType } from "../src/lib/settingsSignature";
 import { browser, Cookies } from "webextension-polyfill-ts";
 
 function setCookie(domain: string, name: string, value: string, path: string, storeId: string, firstPartyDomain: string) {
@@ -40,9 +40,9 @@ function assertRemainingCookieDomains(done: MochaDone, domainList: string[]) {
     }, 10);
 }
 
-const WHITELISTED_DOMAIN = "white.com";
-const GRAYLISTED_DOMAIN = "gray.com";
-const BLACKLISTED_DOMAIN = "black.com";
+const WHITELISTED_DOMAIN = "never.com";
+const GRAYLISTED_DOMAIN = "startup.com";
+const BLACKLISTED_DOMAIN = "instantly.com";
 const OPEN_DOMAIN = "open.com";
 const OPEN_DOMAIN2 = "open2.com";
 const UNKNOWN_DOMAIN = "unknown.com";
@@ -81,36 +81,36 @@ describe("Clean Store", () => {
         setCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
         setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
         settings.set("rules", [
-            { rule: WHITELISTED_DOMAIN, type: RuleType.WHITE },
-            { rule: GRAYLISTED_DOMAIN, type: RuleType.GRAY },
-            { rule: BLACKLISTED_DOMAIN, type: RuleType.BLOCK }
+            { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
+            { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
+            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY }
         ]);
         settings.save();
     });
 
     describe("cleanCookiesWithRules", () => {
-        context("ignoreGrayList = true, protectOpenDomains = false", () => {
+        context("ignoreStartupType = true, protectOpenDomains = false", () => {
             it("should neither protect graylisted cookies nor open domains", (done) => {
                 cleanStore = ensureNotNull(cleanStore);
                 cleanStore.cleanCookiesWithRules(true, false);
                 assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
             });
         });
-        context("ignoreGrayList = false, protectOpenDomains = false", () => {
+        context("ignoreStartupType = false, protectOpenDomains = false", () => {
             it("should protect graylisted cookies, but not open domains", (done) => {
                 cleanStore = ensureNotNull(cleanStore);
                 cleanStore.cleanCookiesWithRules(false, false);
                 assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN]);
             });
         });
-        context("ignoreGrayList = true, protectOpenDomains = true", () => {
+        context("ignoreStartupType = true, protectOpenDomains = true", () => {
             it("should protect graylisted cookies, but not open domains", (done) => {
                 cleanStore = ensureNotNull(cleanStore);
                 cleanStore.cleanCookiesWithRules(true, true);
                 assertRemainingCookieDomains(done, [OPEN_DOMAIN, OPEN_DOMAIN2, WHITELISTED_DOMAIN]);
             });
         });
-        context("ignoreGrayList = false, protectOpenDomains = true", () => {
+        context("ignoreStartupType = false, protectOpenDomains = true", () => {
             it("should protect graylisted cookies, but not open domains", (done) => {
                 cleanStore = ensureNotNull(cleanStore);
                 cleanStore.cleanCookiesWithRules(false, true);
@@ -218,7 +218,7 @@ describe("Clean Store", () => {
     });
 
     describe("isCookieAllowed", () => {
-        function testCookieAllowed(domain: string, ignoreGrayList: boolean, protectOpenDomains: boolean, expected: boolean, done: MochaDone, doneCondition?: () => boolean) {
+        function testCookieAllowed(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean, expected: boolean, done: MochaDone, doneCondition?: () => boolean) {
             browser.cookies.getAll({
                 firstPartyDomain: null,
                 storeId: COOKIE_STORE_ID
@@ -227,11 +227,11 @@ describe("Clean Store", () => {
                 assert.isDefined(cookie);
                 if (cookie) {
                     cleanStore = ensureNotNull(cleanStore);
-                    assert.equal(cleanStore.isCookieAllowed(cookie, ignoreGrayList, protectOpenDomains), expected);
+                    assert.equal(cleanStore.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains), expected);
                 }
             }, done, doneCondition));
         }
-        it("should return true if the matching rule is white", (done) => {
+        it("should return true if the matching rule is never", (done) => {
             let count = 0;
             const doneCondition = () => ++count === 4;
             testCookieAllowed(WHITELISTED_DOMAIN, true, true, true, done, doneCondition);
@@ -239,19 +239,19 @@ describe("Clean Store", () => {
             testCookieAllowed(WHITELISTED_DOMAIN, false, false, true, done, doneCondition);
             testCookieAllowed(WHITELISTED_DOMAIN, true, false, true, done, doneCondition);
         });
-        it("should return true if the matching rule is gray and ignoreGraylist=false", (done) => {
+        it("should return true if the matching rule is startup and ignoreStartupType=false", (done) => {
             let count = 0;
             const doneCondition = () => ++count === 2;
             testCookieAllowed(GRAYLISTED_DOMAIN, false, false, true, done, doneCondition);
             testCookieAllowed(GRAYLISTED_DOMAIN, false, true, true, done, doneCondition);
         });
-        it("should return true if the matching rule is gray and ignoreGraylist=false", (done) => {
+        it("should return true if the matching rule is startup and ignoreStartupType=false", (done) => {
             let count = 0;
             const doneCondition = () => ++count === 2;
             testCookieAllowed(GRAYLISTED_DOMAIN, false, false, true, done, doneCondition);
             testCookieAllowed(GRAYLISTED_DOMAIN, false, true, true, done, doneCondition);
         });
-        it("should return false if the matching rule is black", (done) => {
+        it("should return false if the matching rule is instantly", (done) => {
             let count = 0;
             const doneCondition = () => ++count === 4;
             testCookieAllowed(BLACKLISTED_DOMAIN, true, true, false, done, doneCondition);
@@ -259,13 +259,13 @@ describe("Clean Store", () => {
             testCookieAllowed(BLACKLISTED_DOMAIN, false, false, false, done, doneCondition);
             testCookieAllowed(BLACKLISTED_DOMAIN, true, false, false, done, doneCondition);
         });
-        it("should return false if the matching rule is red and protectOpenDomains = false", (done) => {
+        it("should return false if the matching rule is leave and protectOpenDomains = false", (done) => {
             let count = 0;
             const doneCondition = () => ++count === 2;
             testCookieAllowed(UNKNOWN_DOMAIN, false, false, false, done, doneCondition);
             testCookieAllowed(UNKNOWN_DOMAIN, true, false, false, done, doneCondition);
         });
-        it("should return false if the matching rule is gray, ignoreGraylist = true and protectOpenDomains = false", (done) => {
+        it("should return false if the matching rule is startup, ignoreStartupType = true and protectOpenDomains = false", (done) => {
             testCookieAllowed(GRAYLISTED_DOMAIN, true, false, false, done);
         });
         it("should return true if protectOpenDomains = true and cookie has firstpartydomain, which is on watcher", (done) => {

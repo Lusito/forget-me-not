@@ -1,6 +1,6 @@
 import { h } from "tsx-dom";
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { RuleType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/settingsSignature";
 import { ExpressionHint } from "../expressionHint";
 import { isValidExpression, settings } from "../../lib/settings";
 import { ConfirmDialog } from "./confirmDialog";
@@ -8,23 +8,23 @@ import { ConfirmDialog } from "./confirmDialog";
 export interface RuleDialogProps {
     expression?: string;
     editable?: boolean;
-    focusRule: RuleType | null;
-    onConfirm: (type: RuleType | false, expression?: string) => void;
+    focusType: CleanupType | null;
+    onConfirm: (type: CleanupType | false, expression?: string) => void;
 }
 
-export function RuleDialog({ expression, editable, focusRule, onConfirm }: RuleDialogProps) {
+export function RuleDialog({ expression, editable, focusType, onConfirm }: RuleDialogProps) {
     function onCancel() {
         hideDialog(dialog);
         onConfirm(false);
     }
 
-    function confirmAndHide(type: RuleType, expression?: string) {
+    function confirmAndHide(type: CleanupType, expression?: string) {
         hideDialog(dialog);
         onConfirm(type, expression);
     }
 
-    function confirmAndHideChecked(type: RuleType, expression?: string) {
-        if (editable && expression && settings.getExactRuleType(expression) !== null) {
+    function confirmAndHideChecked(type: CleanupType, expression?: string) {
+        if (editable && expression && settings.getExactCleanupType(expression) !== null) {
             function onConfirmClose(value: boolean) {
                 if (value) {
                     hideDialog(dialog);
@@ -41,7 +41,7 @@ export function RuleDialog({ expression, editable, focusRule, onConfirm }: RuleD
         }
     }
 
-    function selectRule(type: RuleType) {
+    function selectRule(type: CleanupType) {
         if (!expression)
             confirmAndHideChecked(type);
         else if (!editable)
@@ -52,11 +52,11 @@ export function RuleDialog({ expression, editable, focusRule, onConfirm }: RuleD
                 confirmAndHideChecked(type, changedExpression);
         }
     }
-    const ruleButtons = [
-        <button data-i18n="setting_type_white?markdown" class="badge_white" onClick={() => selectRule(RuleType.WHITE)} />,
-        <button data-i18n="setting_type_gray?markdown" class="badge_gray" onClick={() => selectRule(RuleType.GRAY)} />,
-        <button data-i18n="setting_type_forget?markdown" class="badge_forget" onClick={() => selectRule(RuleType.FORGET)} />,
-        <button data-i18n="setting_type_block?markdown" class="badge_block" onClick={() => selectRule(RuleType.BLOCK)} />
+    const cleanupTypeButtons = [
+        <button data-i18n="cleanup_type_never_button?markdown" class="cleanup_type_never" onClick={() => selectRule(CleanupType.NEVER)} />,
+        <button data-i18n="cleanup_type_startup_button?markdown" class="cleanup_type_startup" onClick={() => selectRule(CleanupType.STARTUP)} />,
+        <button data-i18n="cleanup_type_leave_button?markdown" class="cleanup_type_leave" onClick={() => selectRule(CleanupType.LEAVE)} />,
+        <button data-i18n="cleanup_type_instantly_button?markdown" class="cleanup_type_instantly" onClick={() => selectRule(CleanupType.INSTANTLY)} />
     ];
     const expressionElement = editable ? <input value={expression} /> : <span>{expression}</span>;
     const expressionContainer = expression ? <div class="rules_input_wrapper">
@@ -70,14 +70,14 @@ export function RuleDialog({ expression, editable, focusRule, onConfirm }: RuleD
     const dialog = <Dialog className="rule_dialog" titleI18nKey="rule_dialog_title">
         {expressionContainer}
         <div data-i18n="rule_dialog_content?markdown"></div>
-        <div class="split_equal split_wrap">{ruleButtons}</div>
+        <div class="split_equal split_wrap">{cleanupTypeButtons}</div>
         <div class="split_equal split_wrap">
             <button data-i18n="confirm_cancel" onClick={onCancel} />
         </div>
     </Dialog>;
 
-    let focusElement = focusRule === null ? ruleButtons[RuleType.WHITE] : ruleButtons[focusRule];
-    if (editable && expression && settings.getExactRuleType(expression) !== null)
+    let focusElement = focusType === null ? cleanupTypeButtons[CleanupType.NEVER] : cleanupTypeButtons[focusType];
+    if (editable && expression && settings.getExactCleanupType(expression) !== null)
         focusElement = expressionElement;
     return showDialog(dialog, focusElement);
 }

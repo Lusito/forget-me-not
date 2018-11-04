@@ -8,7 +8,7 @@
 
 import { messageUtil } from "../lib/messageUtil";
 import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
-import { SettingsTypeMap, SettingsSignature, RuleDefinition, RuleType } from "./settingsSignature";
+import { SettingsTypeMap, SettingsSignature, RuleDefinition, CleanupType } from "./settingsSignature";
 import { browser, Storage } from "webextension-polyfill-ts";
 import { getRegExForRule } from "./regexp";
 
@@ -26,7 +26,7 @@ export const defaultSettings: SettingsMap = {
     "rules": [],
     "whitelistNoTLD": false,
     "whitelistFileSystem": true,
-    "fallbackRule": RuleType.FORGET,
+    "fallbackRule": CleanupType.LEAVE,
     "domainsToClean": {},
     "showBadge": true,
     "initialTab": "this_tab",
@@ -98,36 +98,36 @@ export function isValidExpression(exp: string) {
     return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
 }
 
-export function classNameForRuleType(ruleType: RuleType) {
-    if (ruleType === RuleType.WHITE)
-        return "badge_white";
-    if (ruleType === RuleType.GRAY)
-        return "badge_gray";
-    if (ruleType === RuleType.BLOCK)
-        return "badge_block";
-    return "badge_forget";
+export function classNameForCleanupType(type: CleanupType) {
+    if (type === CleanupType.NEVER)
+        return "cleanup_type_never";
+    if (type === CleanupType.STARTUP)
+        return "cleanup_type_startup";
+    if (type === CleanupType.INSTANTLY)
+        return "cleanup_type_instantly";
+    return "cleanup_type_leave";
 }
 
-export function ruleTypeForElement(element: HTMLElement) {
-    if (element.classList.contains("badge_white"))
-        return RuleType.WHITE;
-    if (element.classList.contains("badge_gray"))
-        return RuleType.GRAY;
-    if (element.classList.contains("badge_block"))
-        return RuleType.BLOCK;
-    if (element.classList.contains("badge_forget"))
-        return RuleType.FORGET;
+export function cleanupTypeForElement(element: HTMLElement) {
+    if (element.classList.contains("cleanup_type_never"))
+        return CleanupType.NEVER;
+    if (element.classList.contains("cleanup_type_startup"))
+        return CleanupType.STARTUP;
+    if (element.classList.contains("cleanup_type_leave"))
+        return CleanupType.LEAVE;
+    if (element.classList.contains("cleanup_type_instantly"))
+        return CleanupType.INSTANTLY;
     return null;
 }
 
-function isValidRuleType(ruleType: RuleType) {
-    return ruleType === RuleType.WHITE || ruleType === RuleType.GRAY || ruleType === RuleType.FORGET || ruleType === RuleType.BLOCK;
+function isValidCleanupType(type: CleanupType) {
+    return type === CleanupType.NEVER || type === CleanupType.STARTUP || type === CleanupType.LEAVE || type === CleanupType.INSTANTLY;
 }
 
 function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
     const validRules: RuleDefinition[] = [];
     for (const ruleDef of rules) {
-        if (typeof (ruleDef.rule) === "string" && expressionValidator(ruleDef.rule) && isValidRuleType(ruleDef.type)) {
+        if (typeof (ruleDef.rule) === "string" && expressionValidator(ruleDef.rule) && isValidCleanupType(ruleDef.type)) {
             validRules.push({
                 rule: ruleDef.rule,
                 type: ruleDef.type
@@ -276,7 +276,7 @@ export class Settings {
     }
 
     // Convenience methods
-    public getExactRuleType(rule: string) {
+    public getExactCleanupType(rule: string) {
         for (const crd of this.rules) {
             if (crd.definition.rule === rule)
                 return crd.definition.type;
@@ -296,38 +296,38 @@ export class Settings {
     }
 
     public hasBlockingRule() {
-        return this.get("fallbackRule") === RuleType.BLOCK || !!this.get("rules").find((r) => r.type === RuleType.BLOCK);
+        return this.get("fallbackRule") === CleanupType.INSTANTLY || !!this.get("rules").find((r) => r.type === CleanupType.INSTANTLY);
     }
 
-    private getRuleTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
-        if (matchingRules.find((r) => r.type === RuleType.BLOCK))
-            return RuleType.BLOCK;
-        if (matchingRules.find((r) => r.type === RuleType.FORGET))
-            return RuleType.FORGET;
-        if (matchingRules.find((r) => r.type === RuleType.WHITE))
-            return RuleType.WHITE;
-        return RuleType.GRAY;
+    private getCleanupTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
+        if (matchingRules.find((r) => r.type === CleanupType.INSTANTLY))
+            return CleanupType.INSTANTLY;
+        if (matchingRules.find((r) => r.type === CleanupType.LEAVE))
+            return CleanupType.LEAVE;
+        if (matchingRules.find((r) => r.type === CleanupType.NEVER))
+            return CleanupType.NEVER;
+        return CleanupType.STARTUP;
     }
 
-    public getRuleTypeForCookie(domain: string, name: string) {
+    public getCleanupTypeForCookie(domain: string, name: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
-            return RuleType.WHITE;
+            return CleanupType.NEVER;
         if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
-            return RuleType.WHITE;
+            return CleanupType.NEVER;
         const matchingRules = this.getMatchingRules(domain, name);
         if (matchingRules.length)
-            return this.getRuleTypeFromMatchingRules(matchingRules);
-        return this.getRuleTypeForDomain(domain);
+            return this.getCleanupTypeFromMatchingRules(matchingRules);
+        return this.getCleanupTypeForDomain(domain);
     }
 
-    public getRuleTypeForDomain(domain: string) {
+    public getCleanupTypeForDomain(domain: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
-            return RuleType.WHITE;
+            return CleanupType.NEVER;
         if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
-            return RuleType.WHITE;
+            return CleanupType.NEVER;
         const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length)
-            return this.getRuleTypeFromMatchingRules(matchingRules);
+            return this.getCleanupTypeFromMatchingRules(matchingRules);
         return this.get("fallbackRule");
     }
 
@@ -338,7 +338,7 @@ export class Settings {
             return [];
         const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length) {
-            const types = [RuleType.BLOCK, RuleType.FORGET, RuleType.WHITE, RuleType.GRAY];
+            const types = [CleanupType.INSTANTLY, CleanupType.LEAVE, CleanupType.NEVER, CleanupType.STARTUP];
             for (const type of types) {
                 const rules = matchingRules.filter((r) => r.type === type);
                 if (rules.length)
@@ -348,7 +348,7 @@ export class Settings {
         return [];
     }
 
-    public setRule(expression: string, type: RuleType) {
+    public setRule(expression: string, type: CleanupType) {
         const rules = this.get("rules").slice();
         const ruleDef = rules.find((r) => r.rule === expression);
         if (ruleDef)

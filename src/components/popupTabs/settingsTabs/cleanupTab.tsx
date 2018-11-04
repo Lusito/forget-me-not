@@ -22,16 +22,16 @@ export function CleanupTab() {
     const rows = CLEANUP_SETTINGS.map(([i18n, startup, startupRules, domainLeave, manualCleanup, manualCleanupRules]) => {
         return <tr>
             <td data-i18n={i18n} />
-            <td>{startup && <SettingsCheckbox key={startup} enabledBy="startup.enabled" i18n="setting_type_gray?title" />}</td>
-            <td>{startupRules && <SettingsCheckbox key={startupRules} enabledBy={`startup.enabled ${startup}`} i18n="setting_type_apply_rules?title" />}</td>
-            <td>{domainLeave && <SettingsCheckbox key={domainLeave} enabledBy="domainLeave.enabled" i18n="setting_type_forget?title" />}</td>
+            <td>{startup && <SettingsCheckbox key={startup} enabledBy="startup.enabled" i18n="cleanup_type_startup?title" />}</td>
+            <td>{startupRules && <SettingsCheckbox key={startupRules} enabledBy={`startup.enabled ${startup}`} i18n="setting_apply_rules?title" />}</td>
+            <td>{domainLeave && <SettingsCheckbox key={domainLeave} enabledBy="domainLeave.enabled" i18n="cleanup_type_leave?title" />}</td>
         </tr>;
     });
 
     const legend = browserInfo.mobile && <ul class="settings_legend">
-        <li><img src="../icons/tabs/power.svg" /> <span data-i18n="setting_type_gray@title" /></li>
-        <li><img src="../icons/tabs/shield.svg" /> <span data-i18n="setting_apply_rules" /></li>
-        <li><img src="../icons/tabs/exit.svg" /> <span data-i18n="setting_type_forget@title" /></li>
+        <li><img src="../icons/tabs/power.svg" /> <span data-i18n="cleanup_type_startup@title" /></li>
+        <li><img src="../icons/tabs/shield.svg" /> <span data-i18n="setting_apply_rules@title" /></li>
+        <li><img src="../icons/tabs/exit.svg" /> <span data-i18n="cleanup_type_leave@title" /></li>
     </ul>;
 
     return <div class="active">
@@ -40,15 +40,15 @@ export function CleanupTab() {
             <thead>
                 <tr>
                     <th><span>Cleanable Data</span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
-                    <th><img src="../icons/tabs/power.svg" data-i18n="setting_type_gray?title" /></th>
+                    <th><img src="../icons/tabs/power.svg" data-i18n="cleanup_type_startup?title" /></th>
                     <th><img src="../icons/tabs/shield.svg" data-i18n="setting_type_apply_rules?title" /></th>
-                    <th><img src="../icons/tabs/exit.svg" data-i18n="setting_type_forget?title" /></th>
+                    <th><img src="../icons/tabs/exit.svg" data-i18n="cleanup_type_leave?title" /></th>
                 </tr>
                 <tr>
                     <th>Enable</th>
-                    <th><SettingsCheckbox key="startup.enabled" i18n="setting_type_gray?title" /></th>
+                    <th><SettingsCheckbox key="startup.enabled" i18n="cleanup_type_startup?title" /></th>
                     <th />
-                    <th><SettingsCheckbox key="domainLeave.enabled" i18n="setting_type_forget?title" /></th>
+                    <th><SettingsCheckbox key="domainLeave.enabled" i18n="cleanup_type_leave?title" /></th>
                 </tr>
             </thead>
             <tbody>{rows}</tbody>

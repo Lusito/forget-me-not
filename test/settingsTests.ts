@@ -9,7 +9,7 @@ import { browserMock } from "./browserMock";
 import { ensureNotNull, doneHandler, clone } from "./testHelpers";
 import { destroyAndNull } from "../src/shared";
 import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/settings";
-import { SettingsTypeMap, RuleType, RuleDefinition } from "../src/lib/settingsSignature";
+import { SettingsTypeMap, CleanupType, RuleDefinition } from "../src/lib/settingsSignature";
 
 // generate settings map that is unequal to default settings
 const testOverrides: SettingsMap = {};
@@ -23,7 +23,7 @@ for (const key in defaultSettings) {
     else if (type === "string")
         testOverrides[key] = "test-override";
     else if (key === "rules")
-        testOverrides[key] = [{ rule: "*.test-override.com", type: RuleType.FORGET }];
+        testOverrides[key] = [{ rule: "*.test-override.com", type: CleanupType.LEAVE }];
     else if (type === "object")
         testOverrides[key] = { "test-override.com": true };
     else
@@ -35,7 +35,7 @@ for (const key in defaultSettings) {
         invalidOverrides[key] = 42;
     else if (key === "rules") {
         // @ts-ignore
-        invalidOverrides[key] = [{ rule: "@@@", type: RuleType.FORGET }, "sadasd"];
+        invalidOverrides[key] = [{ rule: "@@@", type: CleanupType.LEAVE }, "sadasd"];
     }
 }
 
@@ -120,152 +120,152 @@ describe("Settings", () => {
         });
     });
 
-    describe("getRuleTypeForDomain", () => {
+    describe("getCleanupTypeForDomain", () => {
         it("should return the default rule if no rule matches", () => {
             settings.set("rules", [
-                { rule: "google.com", type: RuleType.WHITE },
-                { rule: "google.de", type: RuleType.WHITE },
-                { rule: "google.co.uk", type: RuleType.WHITE },
-                { rule: "google.jp", type: RuleType.WHITE }
+                { rule: "google.com", type: CleanupType.NEVER },
+                { rule: "google.de", type: CleanupType.NEVER },
+                { rule: "google.co.uk", type: CleanupType.NEVER },
+                { rule: "google.jp", type: CleanupType.NEVER }
             ]);
             settings.save();
-            assert.equal(settings.getRuleTypeForDomain("google.ca"), RuleType.FORGET);
+            assert.equal(settings.getCleanupTypeForDomain("google.ca"), CleanupType.LEAVE);
         });
         it("should return the correct rule if a rule matches", () => {
             settings.set("rules", [
-                { rule: "google.com", type: RuleType.WHITE },
-                { rule: "google.de", type: RuleType.GRAY },
-                { rule: "google.co.uk", type: RuleType.FORGET },
-                { rule: "google.jp", type: RuleType.BLOCK }
+                { rule: "google.com", type: CleanupType.NEVER },
+                { rule: "google.de", type: CleanupType.STARTUP },
+                { rule: "google.co.uk", type: CleanupType.LEAVE },
+                { rule: "google.jp", type: CleanupType.INSTANTLY }
             ]);
             settings.save();
-            assert.equal(settings.getRuleTypeForDomain("google.com"), RuleType.WHITE);
-            assert.equal(settings.getRuleTypeForDomain("google.de"), RuleType.GRAY);
-            assert.equal(settings.getRuleTypeForDomain("google.co.uk"), RuleType.FORGET);
-            assert.equal(settings.getRuleTypeForDomain("google.jp"), RuleType.BLOCK);
+            assert.equal(settings.getCleanupTypeForDomain("google.com"), CleanupType.NEVER);
+            assert.equal(settings.getCleanupTypeForDomain("google.de"), CleanupType.STARTUP);
+            assert.equal(settings.getCleanupTypeForDomain("google.co.uk"), CleanupType.LEAVE);
+            assert.equal(settings.getCleanupTypeForDomain("google.jp"), CleanupType.INSTANTLY);
         });
         it("should respect the order of matching rules", () => {
-            assert.equal(settings.getRuleTypeForDomain("google.com"), RuleType.FORGET);
+            assert.equal(settings.getCleanupTypeForDomain("google.com"), CleanupType.LEAVE);
             const rules: RuleDefinition[] = [];
-            function addAndTest(type: RuleType) {
+            function addAndTest(type: CleanupType) {
                 rules.push({ rule: "google.com", type });
                 settings.set("rules", rules);
-                assert.equal(settings.getRuleTypeForDomain("google.com"), type);
+                assert.equal(settings.getCleanupTypeForDomain("google.com"), type);
             }
-            addAndTest(RuleType.GRAY);
-            addAndTest(RuleType.WHITE);
-            addAndTest(RuleType.FORGET);
-            addAndTest(RuleType.BLOCK);
+            addAndTest(CleanupType.STARTUP);
+            addAndTest(CleanupType.NEVER);
+            addAndTest(CleanupType.LEAVE);
+            addAndTest(CleanupType.INSTANTLY);
         });
-        it("should return WHITE for TLD-less domains if whitelistNoTLD is set", () => {
-            assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.FORGET);
+        it("should return NEVER for TLD-less domains if whitelistNoTLD is set", () => {
+            assert.equal(settings.getCleanupTypeForDomain("localmachine"), CleanupType.LEAVE);
             settings.set("whitelistNoTLD", true);
-            assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.WHITE);
-            settings.set("rules", [{ rule: "hello@localmachine", type: RuleType.BLOCK }]);
-            assert.equal(settings.getRuleTypeForDomain("localmachine"), RuleType.WHITE);
+            assert.equal(settings.getCleanupTypeForDomain("localmachine"), CleanupType.NEVER);
+            settings.set("rules", [{ rule: "hello@localmachine", type: CleanupType.INSTANTLY }]);
+            assert.equal(settings.getCleanupTypeForDomain("localmachine"), CleanupType.NEVER);
         });
-        it("should return WHITE for empty domains if whitelistFileSystem is set", () => {
-            assert.equal(settings.getRuleTypeForDomain(""), RuleType.WHITE);
+        it("should return NEVER for empty domains if whitelistFileSystem is set", () => {
+            assert.equal(settings.getCleanupTypeForDomain(""), CleanupType.NEVER);
             settings.set("whitelistFileSystem", false);
-            assert.equal(settings.getRuleTypeForDomain(""), RuleType.FORGET);
+            assert.equal(settings.getCleanupTypeForDomain(""), CleanupType.LEAVE);
         });
     });
 
-    describe("getRuleTypeForCookie", () => {
+    describe("getCleanupTypeForCookie", () => {
         it("should return the default rule if no rule matches", () => {
             settings.set("rules", [
-                { rule: "hello@google.com", type: RuleType.WHITE },
-                { rule: "hello@google.de", type: RuleType.WHITE },
-                { rule: "hello@google.co.uk", type: RuleType.WHITE },
-                { rule: "hello@google.jp", type: RuleType.WHITE }
+                { rule: "hello@google.com", type: CleanupType.NEVER },
+                { rule: "hello@google.de", type: CleanupType.NEVER },
+                { rule: "hello@google.co.uk", type: CleanupType.NEVER },
+                { rule: "hello@google.jp", type: CleanupType.NEVER }
             ]);
             settings.save();
-            assert.equal(settings.getRuleTypeForCookie("google.ca", "hello"), RuleType.FORGET);
-            assert.equal(settings.getRuleTypeForCookie("google.com", "world"), RuleType.FORGET);
+            assert.equal(settings.getCleanupTypeForCookie("google.ca", "hello"), CleanupType.LEAVE);
+            assert.equal(settings.getCleanupTypeForCookie("google.com", "world"), CleanupType.LEAVE);
         });
         it("should return the matching domain rule if no cookie rule matches", () => {
             settings.set("rules", [
-                { rule: "hello@google.com", type: RuleType.WHITE },
-                { rule: "google.com", type: RuleType.BLOCK }
+                { rule: "hello@google.com", type: CleanupType.NEVER },
+                { rule: "google.com", type: CleanupType.INSTANTLY }
             ]);
             settings.save();
-            assert.equal(settings.getRuleTypeForCookie("google.com", "world"), RuleType.BLOCK);
+            assert.equal(settings.getCleanupTypeForCookie("google.com", "world"), CleanupType.INSTANTLY);
         });
         it("should return the matching cookie rule even if a domain rule matches", () => {
             settings.set("rules", [
-                { rule: "hello@google.com", type: RuleType.WHITE },
-                { rule: "google.com", type: RuleType.BLOCK }
+                { rule: "hello@google.com", type: CleanupType.NEVER },
+                { rule: "google.com", type: CleanupType.INSTANTLY }
             ]);
             settings.save();
-            assert.equal(settings.getRuleTypeForCookie("google.com", "hello"), RuleType.WHITE);
+            assert.equal(settings.getCleanupTypeForCookie("google.com", "hello"), CleanupType.NEVER);
         });
         it("should return the correct rule if a rule matches", () => {
             settings.set("rules", [
-                { rule: "hello@google.com", type: RuleType.WHITE },
-                { rule: "hello@google.de", type: RuleType.GRAY },
-                { rule: "hello@google.co.uk", type: RuleType.FORGET },
-                { rule: "hello@google.jp", type: RuleType.BLOCK }
+                { rule: "hello@google.com", type: CleanupType.NEVER },
+                { rule: "hello@google.de", type: CleanupType.STARTUP },
+                { rule: "hello@google.co.uk", type: CleanupType.LEAVE },
+                { rule: "hello@google.jp", type: CleanupType.INSTANTLY }
             ]);
             settings.save();
-            assert.equal(settings.getRuleTypeForCookie("google.com", "hello"), RuleType.WHITE);
-            assert.equal(settings.getRuleTypeForCookie("google.de", "hello"), RuleType.GRAY);
-            assert.equal(settings.getRuleTypeForCookie("google.co.uk", "hello"), RuleType.FORGET);
-            assert.equal(settings.getRuleTypeForCookie("google.jp", "hello"), RuleType.BLOCK);
+            assert.equal(settings.getCleanupTypeForCookie("google.com", "hello"), CleanupType.NEVER);
+            assert.equal(settings.getCleanupTypeForCookie("google.de", "hello"), CleanupType.STARTUP);
+            assert.equal(settings.getCleanupTypeForCookie("google.co.uk", "hello"), CleanupType.LEAVE);
+            assert.equal(settings.getCleanupTypeForCookie("google.jp", "hello"), CleanupType.INSTANTLY);
         });
         it("should respect the order of matching rules", () => {
-            assert.equal(settings.getRuleTypeForCookie("google.com", "hello"), RuleType.FORGET);
+            assert.equal(settings.getCleanupTypeForCookie("google.com", "hello"), CleanupType.LEAVE);
             const rules: RuleDefinition[] = [];
-            function addAndTest(type: RuleType) {
+            function addAndTest(type: CleanupType) {
                 rules.push({ rule: "hello@google.com", type });
                 settings.set("rules", rules);
-                assert.equal(settings.getRuleTypeForCookie("google.com", "hello"), type);
+                assert.equal(settings.getCleanupTypeForCookie("google.com", "hello"), type);
             }
-            addAndTest(RuleType.GRAY);
-            addAndTest(RuleType.WHITE);
-            addAndTest(RuleType.FORGET);
-            addAndTest(RuleType.BLOCK);
+            addAndTest(CleanupType.STARTUP);
+            addAndTest(CleanupType.NEVER);
+            addAndTest(CleanupType.LEAVE);
+            addAndTest(CleanupType.INSTANTLY);
         });
-        it("should return WHITE for TLD-less domains if whitelistNoTLD is set", () => {
-            assert.equal(settings.getRuleTypeForCookie("localmachine", "hello"), RuleType.FORGET);
+        it("should return NEVER for TLD-less domains if whitelistNoTLD is set", () => {
+            assert.equal(settings.getCleanupTypeForCookie("localmachine", "hello"), CleanupType.LEAVE);
             settings.set("whitelistNoTLD", true);
-            assert.equal(settings.getRuleTypeForCookie("localmachine", "hello"), RuleType.WHITE);
-            settings.set("rules", [{ rule: "hello@localmachine", type: RuleType.BLOCK }]);
-            assert.equal(settings.getRuleTypeForCookie("localmachine", "hello"), RuleType.WHITE);
+            assert.equal(settings.getCleanupTypeForCookie("localmachine", "hello"), CleanupType.NEVER);
+            settings.set("rules", [{ rule: "hello@localmachine", type: CleanupType.INSTANTLY }]);
+            assert.equal(settings.getCleanupTypeForCookie("localmachine", "hello"), CleanupType.NEVER);
         });
-        it("should return WHITE for empty domains if whitelistFileSystem is set", () => {
-            assert.equal(settings.getRuleTypeForCookie("", "hello"), RuleType.WHITE);
+        it("should return NEVER for empty domains if whitelistFileSystem is set", () => {
+            assert.equal(settings.getCleanupTypeForCookie("", "hello"), CleanupType.NEVER);
             settings.set("whitelistFileSystem", false);
-            assert.equal(settings.getRuleTypeForCookie("", "hello"), RuleType.FORGET);
+            assert.equal(settings.getCleanupTypeForCookie("", "hello"), CleanupType.LEAVE);
         });
     });
 
     describe("hasBlockingRule", () => {
         it("should return true if at least one blocking rule exists", () => {
             settings.set("rules", [
-                { rule: "google.com", type: RuleType.WHITE },
-                { rule: "google.de", type: RuleType.GRAY },
-                { rule: "google.co.uk", type: RuleType.FORGET },
-                { rule: "google.jp", type: RuleType.BLOCK }
+                { rule: "google.com", type: CleanupType.NEVER },
+                { rule: "google.de", type: CleanupType.STARTUP },
+                { rule: "google.co.uk", type: CleanupType.LEAVE },
+                { rule: "google.jp", type: CleanupType.INSTANTLY }
             ]);
             settings.save();
             assert.isTrue(settings.hasBlockingRule());
         });
         it("should return true if the fallback rule is blocking", () => {
-            settings.set("fallbackRule", RuleType.BLOCK);
+            settings.set("fallbackRule", CleanupType.INSTANTLY);
             settings.save();
             assert.isTrue(settings.hasBlockingRule());
         });
         it("should return false if neither the fallback rule nor any other rule is blocking", () => {
-            settings.set("fallbackRule", RuleType.FORGET);
+            settings.set("fallbackRule", CleanupType.LEAVE);
             settings.set("rules", [
-                { rule: "google.com", type: RuleType.WHITE },
-                { rule: "google.de", type: RuleType.GRAY },
-                { rule: "google.co.uk", type: RuleType.FORGET }
+                { rule: "google.com", type: CleanupType.NEVER },
+                { rule: "google.de", type: CleanupType.STARTUP },
+                { rule: "google.co.uk", type: CleanupType.LEAVE }
             ]);
             settings.save();
             assert.isFalse(settings.hasBlockingRule());
         });
-        it("should return false for default settings (fallback rule = forget, no rules)", () => {
+        it("should return false for default settings (fallback rule = leave, no rules)", () => {
             assert.isFalse(settings.hasBlockingRule());
         });
     });
@@ -273,22 +273,22 @@ describe("Settings", () => {
     describe("getMatchingRules", () => {
         context("without cookie name", () => {
             it("should return empty list if no rule matches", () => {
-                settings.set("rules", [{ rule: "google.com", type: RuleType.WHITE }]);
+                settings.set("rules", [{ rule: "google.com", type: CleanupType.NEVER }]);
                 assert.deepEqual(settings.getMatchingRules("google.de"), []);
             });
             it("should return matching rules for plain domains", () => {
-                const domainRule = { rule: "google.com", type: RuleType.WHITE };
+                const domainRule = { rule: "google.com", type: CleanupType.NEVER };
                 settings.set("rules", [domainRule]);
                 assert.deepEqual(settings.getMatchingRules("google.com"), [domainRule]);
             });
             it("should not return rules for plain domains if a subdomain was given", () => {
-                const domainRule = { rule: "google.com", type: RuleType.WHITE };
+                const domainRule = { rule: "google.com", type: CleanupType.NEVER };
                 settings.set("rules", [domainRule]);
                 assert.deepEqual(settings.getMatchingRules("www.google.com"), []);
             });
             it("should return rules for wildcard domains", () => {
-                const domainRule1 = { rule: "*.google.com", type: RuleType.WHITE };
-                const domainRule2 = { rule: "*.amazon.*", type: RuleType.WHITE };
+                const domainRule1 = { rule: "*.google.com", type: CleanupType.NEVER };
+                const domainRule2 = { rule: "*.amazon.*", type: CleanupType.NEVER };
                 settings.set("rules", [domainRule1, domainRule2]);
                 assert.deepEqual(settings.getMatchingRules("google.com"), [domainRule1]);
                 assert.deepEqual(settings.getMatchingRules("www.google.com"), [domainRule1]);
@@ -300,23 +300,23 @@ describe("Settings", () => {
         });
         context("with cookie name", () => {
             it("should return empty list if no rule matches", () => {
-                settings.set("rules", [{ rule: "hello@google.com", type: RuleType.WHITE }]);
+                settings.set("rules", [{ rule: "hello@google.com", type: CleanupType.NEVER }]);
                 assert.deepEqual(settings.getMatchingRules("google.de", "hello"), []);
                 assert.deepEqual(settings.getMatchingRules("google.com", "world"), []);
             });
             it("should return matching rules for plain domains", () => {
-                const domainRule = { rule: "hello@google.com", type: RuleType.WHITE };
+                const domainRule = { rule: "hello@google.com", type: CleanupType.NEVER };
                 settings.set("rules", [domainRule]);
                 assert.deepEqual(settings.getMatchingRules("google.com", "hello"), [domainRule]);
             });
             it("should not return rules for plain domains if a subdomain was given", () => {
-                const domainRule = { rule: "hello@google.com", type: RuleType.WHITE };
+                const domainRule = { rule: "hello@google.com", type: CleanupType.NEVER };
                 settings.set("rules", [domainRule]);
                 assert.deepEqual(settings.getMatchingRules("www.google.com", "hello"), []);
             });
             it("should return rules for wildcard domains", () => {
-                const domainRule1 = { rule: "hello@*.google.com", type: RuleType.WHITE };
-                const domainRule2 = { rule: "hello@*.amazon.*", type: RuleType.WHITE };
+                const domainRule1 = { rule: "hello@*.google.com", type: CleanupType.NEVER };
+                const domainRule2 = { rule: "hello@*.amazon.*", type: CleanupType.NEVER };
                 settings.set("rules", [domainRule1, domainRule2]);
                 assert.deepEqual(settings.getMatchingRules("google.com", "hello"), [domainRule1]);
                 assert.deepEqual(settings.getMatchingRules("www.google.com", "hello"), [domainRule1]);

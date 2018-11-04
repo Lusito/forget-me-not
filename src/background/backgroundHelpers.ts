@@ -5,7 +5,7 @@
  */
 
 import { getDomain } from "tldjs";
-import { RuleType } from "../lib/settingsSignature";
+import { CleanupType } from "../lib/settingsSignature";
 
 export function getFirstPartyCookieDomain(domain: string) {
     const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
@@ -39,49 +39,45 @@ export function parseSetCookieHeader(header: string, fallbackDomain: string): Se
 }
 
 export interface BadgeInfo {
-    i18nKey: string;
-    i18nKeyLong: string;
+    className: string;
+    i18nBadge: string;
+    i18nButton: string;
     color: string | [number, number, number, number];
 }
 
-export const badges: { [s: string]: BadgeInfo } = {
-    white: {
-        i18nKey: "badge_white",
-        i18nKeyLong: "setting_type_white",
-        color: [38, 69, 151, 255]
-    },
-    gray: {
-        i18nKey: "badge_gray",
-        i18nKeyLong: "setting_type_gray",
-        color: [116, 116, 116, 255]
-    },
-    forget: {
-        i18nKey: "badge_forget",
-        i18nKeyLong: "setting_type_forget",
-        color: [190, 23, 38, 255]
-    },
-    block: {
-        i18nKey: "badge_block",
-        i18nKeyLong: "setting_type_block",
-        color: [0, 0, 0, 255]
-    },
+function createBadge(name: string, color: [number, number, number, number]) {
+    const className = `cleanup_type_${name}`;
+    return {
+        className,
+        i18nBadge: `${className}_badge`,
+        i18nButton: `${className}_button`,
+        color
+    };
+}
+
+export const badges = {
+    never: createBadge("never", [38, 69, 151, 255]),
+    startup: createBadge("startup", [116, 116, 116, 255]),
+    leave: createBadge("leave", [190, 23, 38, 255]),
+    instantly: createBadge("instantly", [0, 0, 0, 255]),
     none: {
-        i18nKey: "",
-        i18nKeyLong: "",
-        color: [0, 0, 0, 255]
+        className: "",
+        i18nBadge: "",
+        i18nButton: "",
+        color: [0, 0, 0, 255] as [number, number, number, number]
     }
 };
 
-export function getBadgeForRuleType(type: RuleType) {
+export function getBadgeForCleanupType(type: CleanupType) {
     switch (type) {
-        case RuleType.WHITE:
-            return badges.white;
-        case RuleType.GRAY:
-            return badges.gray;
+        case CleanupType.NEVER:
+            return badges.never;
+        case CleanupType.STARTUP:
+            return badges.startup;
         default:
-        case RuleType.FORGET:
-            return badges.forget;
-        case RuleType.BLOCK:
-            return badges.block;
+        case CleanupType.LEAVE:
+            return badges.leave;
+        case CleanupType.INSTANTLY:
+            return badges.instantly;
     }
 }

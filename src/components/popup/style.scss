@@ -36,42 +36,42 @@ input[type=checkbox]:checked+span:before {
     color: #5095ea;
 }
 
-.badge_white {
-    background-color: $badgeColorWhite;
+.cleanup_type_never {
+    background-color: $badgeColorNever;
 }
 
-.badge_gray {
-    background-color: $badgeColorGray;
+.cleanup_type_startup {
+    background-color: $badgeColorStartup;
 }
 
-.badge_forget {
-    background-color: $badgeColorForget;
+.cleanup_type_leave {
+    background-color: $badgeColorLeave;
 }
 
-.badge_block {
-    background-color: $badgeColorBlock;
+.cleanup_type_instantly {
+    background-color: $badgeColorInstantly;
 }
 
-.badge_white,
-.badge_gray,
-.badge_forget,
-.badge_block {
+.cleanup_type_never,
+.cleanup_type_startup,
+.cleanup_type_leave,
+.cleanup_type_instantly {
     color: white;
 }
 
 button:hover {
-    &.badge_white,
-    &.badge_gray,
-    &.badge_forget,
-    &.badge_block {
+    &.cleanup_type_never,
+    &.cleanup_type_startup,
+    &.cleanup_type_leave,
+    &.cleanup_type_instantly {
         color: black;
     }
 }
 
-span.badge_white,
-span.badge_gray,
-span.badge_forget,
-span.badge_block {
+span.cleanup_type_never,
+span.cleanup_type_startup,
+span.cleanup_type_leave,
+span.cleanup_type_instantly {
     display: inline-block;
     margin: 0 5px 0 0;
     font-size: 10px;

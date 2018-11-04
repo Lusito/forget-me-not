@@ -4,16 +4,16 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-export enum RuleType {
-    WHITE,
-    GRAY,
-    FORGET,
-    BLOCK
+export enum CleanupType {
+    NEVER,
+    STARTUP,
+    LEAVE,
+    INSTANTLY
 }
 
 export interface RuleDefinition {
     rule: string;
-    type: RuleType;
+    type: CleanupType;
 }
 
 export interface SettingsTypeMap {
@@ -23,7 +23,7 @@ export interface SettingsTypeMap {
     "rules": RuleDefinition[];
     "whitelistNoTLD": boolean;
     "whitelistFileSystem": boolean;
-    "fallbackRule": RuleType;
+    "fallbackRule": CleanupType;
     "domainsToClean": { [s: string]: boolean };
     "showBadge": boolean;
     "initialTab": string;

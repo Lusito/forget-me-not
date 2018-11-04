@@ -4,13 +4,13 @@ import { on } from "../../lib/htmlUtils";
 import { RuleButton } from "../ruleButton";
 import { settings, isValidExpression } from "../../lib/settings";
 import { RuleTable } from "../ruleTable";
-import { RuleType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/settingsSignature";
 import { Key } from "ts-keycode-enum";
 import { HelpLink } from "../helpLink";
 import { RuleDialog } from "../dialogs/ruleDialog";
 import { ExpressionHint } from "../expressionHint";
 
-function setFallbackRule(type: RuleType) {
+function setFallbackRule(type: CleanupType) {
     settings.set("fallbackRule", type);
     settings.save();
 }
@@ -20,8 +20,8 @@ export function RulesTab() {
 
     function addRule() {
         const expression = filterInput.value.trim().toLowerCase();
-        if (expression && isValidExpression(expression) && settings.getExactRuleType(expression) === null) {
-            function onConfirm(type: RuleType | false) {
+        if (expression && isValidExpression(expression) && settings.getExactCleanupType(expression) === null) {
+            function onConfirm(type: CleanupType | false) {
                 if (type !== false) {
                     settings.setRule(expression, type);
                     filterInput.value = "";
@@ -29,10 +29,10 @@ export function RulesTab() {
                 }
                 filterInput.focus();
             }
-            let focusRule = settings.getExactRuleType(expression);
-            if (focusRule === null)
-                focusRule = RuleType.WHITE;
-            <RuleDialog expression={expression} focusRule={focusRule} onConfirm={onConfirm} />;
+            let focusType = settings.getExactCleanupType(expression);
+            if (focusType === null)
+                focusType = CleanupType.NEVER;
+            <RuleDialog expression={expression} focusType={focusType} onConfirm={onConfirm} />;
         }
     }
 

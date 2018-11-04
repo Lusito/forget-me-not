@@ -6,7 +6,7 @@
 
 import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
 import { CookieDomainInfo, destroyAllAndEmpty } from "../shared";
-import { getBadgeForRuleType } from "./backgroundHelpers";
+import { getBadgeForCleanupType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
 import { someItemsMatch } from "./backgroundShared";
 
@@ -63,9 +63,15 @@ export class RecentlyAccessedDomains {
     public get(): CookieDomainInfo[] {
         const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
-            const badge = getBadgeForRuleType(settings.getRuleTypeForDomain(domain)).i18nKey;
-            if (badge)
-                result.push({ domain, badge });
+            const badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(domain));
+            if (badge) {
+                result.push({
+                    domain,
+                    className: badge.className,
+                    i18nBadge: badge.i18nBadge,
+                    i18nButton: badge.i18nButton
+                });
+            }
         }
         return result;
     }

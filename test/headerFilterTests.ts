@@ -1,7 +1,7 @@
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
+ * @see https://github.com/Lusito/leave-me-not
  */
 
 import { WebRequest } from "webextension-polyfill-ts";
@@ -11,9 +11,9 @@ import { HeaderFilter } from "../src/background/headerFilter";
 import { TabWatcher } from "../src/background/tabWatcher";
 import { destroyAndNull } from "../src/shared";
 import { browserMock } from "./browserMock";
-import { ensureNotNull, doneHandler } from "./testHelpers";
+import { ensureNotNull, doneHandler, createCookieDomainInfo } from "./testHelpers";
 import { assert } from "chai";
-import { RuleType } from "../src/lib/settingsSignature";
+import { CleanupType } from "../src/lib/settingsSignature";
 
 function createHeadersReceivedDetails(url: string, tabId: number, responseHeaders?: WebRequest.HttpHeaders): WebRequest.OnHeadersReceivedDetailsType {
     return {
@@ -39,10 +39,10 @@ function createHttpHeader(name: string, value?: string) {
 }
 
 const baseRules = [
-    { rule: "*.white.com", type: RuleType.WHITE },
-    { rule: "*.gray.com", type: RuleType.GRAY },
-    { rule: "*.forget.com", type: RuleType.FORGET },
-    { rule: "*.block.com", type: RuleType.BLOCK }
+    { rule: "*.never.com", type: CleanupType.NEVER },
+    { rule: "*.startup.com", type: CleanupType.STARTUP },
+    { rule: "*.leave.com", type: CleanupType.LEAVE },
+    { rule: "*.instantly.com", type: CleanupType.INSTANTLY }
 ];
 
 describe("Header Filter", () => {
@@ -91,18 +91,18 @@ describe("Header Filter", () => {
                 assert.isTrue(headerFilter.isEnabled());
             }, done));
         });
-        it("should return true if a blocking rule existed on creation", () => {
+        it("should return true if a instantlying rule existed on creation", () => {
             tabWatcher = ensureNotNull(tabWatcher);
             recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
-            settings.set("rules", [{ rule: "google.com", type: RuleType.BLOCK }]);
+            settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
             headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
             assert.isTrue(headerFilter.isEnabled());
         });
-        it("should return true if a blocking rule was added after creation", (done) => {
+        it("should return true if a instantlying rule was added after creation", (done) => {
             tabWatcher = ensureNotNull(tabWatcher);
             recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
             headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
-            settings.set("rules", [{ rule: "google.com", type: RuleType.BLOCK }]);
+            settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
             settings.save().then(doneHandler(() => {
                 headerFilter = ensureNotNull(headerFilter);
                 assert.isTrue(headerFilter.isEnabled());
@@ -129,7 +129,7 @@ describe("Header Filter", () => {
                 assert.deepEqual(result, []);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
         });
@@ -172,9 +172,9 @@ describe("Header Filter", () => {
                 assert.deepEqual(result2, [{ responseHeaders: [] }]);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.google.jp", badge: "badge_forget" },
-                    { domain: "www.google.com", badge: "badge_forget" },
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.google.jp", "leave"),
+                    createCookieDomainInfo("www.google.com", "leave"),
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
             it("should not filter firstparty cookies", () => {
@@ -192,7 +192,7 @@ describe("Header Filter", () => {
                 assert.deepEqual(result, [{ responseHeaders: headers }]);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
             it("should not filter thirdparty cookies with an unknown tab id", () => {
@@ -210,7 +210,7 @@ describe("Header Filter", () => {
                 assert.deepEqual(result, [{ responseHeaders: headers }]);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
             it("should only filter set-cookie headers", () => {
@@ -230,12 +230,12 @@ describe("Header Filter", () => {
                 assert.deepEqual(result, [{ responseHeaders: headers.slice(1) }]);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.google.com", badge: "badge_forget" },
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.google.com", "leave"),
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
 
-            it("should filter no whitelisted cookies", () => {
+            it("should filter no neverlisted cookies", () => {
                 tabWatcher = ensureNotNull(tabWatcher);
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
                 settings.set("rules", baseRules);
@@ -247,22 +247,22 @@ describe("Header Filter", () => {
                     createHttpHeader("set-cookie", "foo=bar")
                 ];
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.white.com", tabId, headers
+                    "http://www.never.com", tabId, headers
                 )), [{ responseHeaders: headers }]);
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.gray.com", tabId, headers
+                    "http://www.startup.com", tabId, headers
                 )), [{ responseHeaders: headers }]);
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.forget.com", tabId, headers
+                    "http://www.leave.com", tabId, headers
                 )), [{ responseHeaders: [] }]);
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.block.com", tabId, headers
+                    "http://www.instantly.com", tabId, headers
                 )), [{ responseHeaders: [] }]);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.block.com", badge: "badge_block" },
-                    { domain: "www.forget.com", badge: "badge_forget" },
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.instantly.com", "instantly"),
+                    createCookieDomainInfo("www.leave.com", "leave"),
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
         });
@@ -288,11 +288,11 @@ describe("Header Filter", () => {
                 assert.deepEqual(result, [{ responseHeaders: headers }]);
 
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.google.de", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.google.de", "leave") // because of the tab
                 ]);
             });
 
-            it("should filter only cookies that have a block rule", () => {
+            it("should filter only cookies that have an instantly rule", () => {
                 tabWatcher = ensureNotNull(tabWatcher);
                 const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
@@ -302,21 +302,20 @@ describe("Header Filter", () => {
                     createHttpHeader("set-cookie", "foo=bar")
                 ];
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.block.com", tabId, headers
+                    "http://www.instantly.com", tabId, headers
                 )), [{ responseHeaders: [] }]);
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.forget.com", tabId, headers
+                    "http://www.leave.com", tabId, headers
                 )), [{ responseHeaders: headers }]);
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.gray.com", tabId, headers
+                    "http://www.startup.com", tabId, headers
                 )), [{ responseHeaders: headers }]);
                 assert.deepEqual(browserMock.webRequest.headersReceived(createHeadersReceivedDetails(
-                    "http://www.white.com", tabId, headers
+                    "http://www.never.com", tabId, headers
                 )), [{ responseHeaders: headers }]);
-
                 assert.deepEqual(recentlyAccessedDomains.get(), [
-                    { domain: "www.block.com", badge: "badge_block" },
-                    { domain: "www.google.com", badge: "badge_forget" } // because of the tab
+                    createCookieDomainInfo("www.instantly.com", "instantly"),
+                    createCookieDomainInfo("www.google.com", "leave") // because of the tab
                 ]);
             });
         });

@@ -64,18 +64,48 @@
         "message": "The specified rule expression already exists.. do you want to replace it?"
     },
 
-    "__WET_GROUP__2": { "message": "Badges" },
-    "badge_white": {
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_badge": {
         "message": "N"
     },
-    "badge_gray": {
+    "cleanup_type_never_button": {
+        "message": "*N*ever"
+    },
+    "cleanup_type_never_button@title": {
+        "message": "No Cleanup"
+    },
+    "cleanup_type_startup_badge": {
         "message": "S"
     },
-    "badge_forget": {
+    "cleanup_type_startup_button": {
+        "message": "On *S*tartup"
+    },
+    "cleanup_type_startup_button@title": {
+        "message": "Cleanup on browser restart"
+    },
+    "cleanup_type_leave_badge": {
         "message": "L"
     },
-    "badge_block": {
+    "cleanup_type_leave_button": {
+        "message": "On *L*eave"
+    },
+    "cleanup_type_leave_button@title": {
+        "message": "Cleanup on domain leave"
+    },
+    "cleanup_type_instantly_badge": {
         "message": "I"
+    },
+    "cleanup_type_instantly_button": {
+        "message": "*I*nstantly"
+    },
+    "cleanup_type_instantly_button@title": {
+        "message": "Cookies will be prevented from ever being set"
+    },
+    "cleanup_type_create_button": {
+        "message": "Create Rule"
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Choose the rule-type to apply"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
@@ -196,44 +226,11 @@
     "setting_show_badge": {
         "message": "Show matching rule as a badge on the toolbar button"
     },
-    "setting_type_white": {
-        "message": "*N*ever"
-    },
-    "setting_type_white@title": {
-        "message": "No Cleanup"
-    },
-    "setting_type_gray": {
-        "message": "On *S*tartup"
-    },
-    "setting_type_gray@title": {
-        "message": "Cleanup on browser restart"
-    },
-    "setting_type_forget": {
-        "message": "On *L*eave"
-    },
-    "setting_type_forget@title": {
-        "message": "Cleanup on domain leave"
-    },
-    "setting_type_block": {
-        "message": "*I*nstantly"
-    },
-    "setting_type_block@title": {
-        "message": "Cookies will be prevented from ever being set"
-    },
-    "setting_type_create": {
-        "message": "Create Rule"
-    },
-    "setting_type_create@title": {
-        "message": "Choose the rule-type to apply"
-    },
-    "setting_type_apply_rules@title": {
+    "setting_apply_rules@title": {
         "message": "Apply Rules"
     },
     "setting_cookies": {
         "message": "Cookies"
-    },
-    "setting_apply_rules": {
-        "message": "Apply Rules"
     },
     "setting_local_storage": {
         "message": "Local Storage"

@@ -10,7 +10,7 @@ import { TabWatcher } from "./tabWatcher";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
-import { RuleType } from "../lib/settingsSignature";
+import { CleanupType } from "../lib/settingsSignature";
 import { getDomain } from "tldjs";
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
@@ -34,8 +34,8 @@ export class CleanStore {
         });
     }
 
-    public cleanCookiesWithRules(ignoreGrayList: boolean, protectOpenDomains: boolean) {
-        this.removeCookies((cookie) => this.shouldPurgeExpiredCookie(cookie) || !this.isCookieAllowed(cookie, ignoreGrayList, protectOpenDomains));
+    public cleanCookiesWithRules(ignoreStartupType: boolean, protectOpenDomains: boolean) {
+        this.removeCookies((cookie) => this.shouldPurgeExpiredCookie(cookie) || !this.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains));
     }
 
     private removeCookies(test: (cookie: Cookies.Cookie) => boolean) {
@@ -64,21 +64,21 @@ export class CleanStore {
     public isLocalStorageProtected(domain: string): boolean {
         if (this.tabWatcher.cookieStoreContainsDomain(this.id, domain))
             return true;
-        const type = settings.getRuleTypeForDomain(domain);
-        return type === RuleType.WHITE || type === RuleType.GRAY;
+        const type = settings.getCleanupTypeForDomain(domain);
+        return type === CleanupType.NEVER || type === CleanupType.STARTUP;
     }
 
     private shouldPurgeExpiredCookie(cookie: Cookies.Cookie) {
         return settings.get("purgeExpiredCookies") && cookie.expirationDate && cookie.expirationDate < Date.now() / 1000;
     }
 
-    public isCookieAllowed(cookie: Cookies.Cookie, ignoreGrayList: boolean, protectOpenDomains: boolean) {
+    public isCookieAllowed(cookie: Cookies.Cookie, ignoreStartupType: boolean, protectOpenDomains: boolean) {
         const allowSubDomains = cookie.domain.startsWith(".");
         const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
-        const type = settings.getRuleTypeForCookie(rawDomain, cookie.name);
-        if (type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList))
+        const type = settings.getCleanupTypeForCookie(rawDomain, cookie.name);
+        if (type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType))
             return true;
-        if (type === RuleType.BLOCK || !protectOpenDomains)
+        if (type === CleanupType.INSTANTLY || !protectOpenDomains)
             return false;
         if (cookie.firstPartyDomain)
             return this.tabWatcher.isFirstPartyDomainOnCookieStore(this.id, cookie.firstPartyDomain);

@@ -14,8 +14,8 @@ import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { HeaderFilter } from "./headerFilter";
 import { getValidHostname } from "../shared";
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
-import { RuleType } from "../lib/settingsSignature";
-import { getFirstPartyCookieDomain, getBadgeForRuleType, badges } from "./backgroundHelpers";
+import { CleanupType } from "../lib/settingsSignature";
+import { getFirstPartyCookieDomain, getBadgeForCleanupType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
 import { CleanupScheduler } from "./cleanupScheduler";
 import { wetLayer } from "wet-layer";
@@ -123,25 +123,25 @@ export class Background implements TabWatcherListener {
         browser.browsingData.remove(options, typeSet);
     }
 
-    private getDomainsToClean(ignoreGrayList: boolean, protectOpenDomains: boolean): string[] {
+    private getDomainsToClean(ignoreStartupType: boolean, protectOpenDomains: boolean): string[] {
         const domainsToClean = settings.get("domainsToClean");
         const result = [];
         for (const domain in domainsToClean) {
-            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreGrayList, protectOpenDomains))
+            if (domainsToClean.hasOwnProperty(domain) && !this.isDomainProtected(domain, ignoreStartupType, protectOpenDomains))
                 result.push(domain);
         }
         return result;
     }
 
-    private isDomainProtected(domain: string, ignoreGrayList: boolean, protectOpenDomains: boolean): boolean {
+    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean): boolean {
         if (protectOpenDomains) {
             for (const key in this.cleanStores) {
                 if (this.tabWatcher.cookieStoreContainsDomain(key, domain))
                     return true;
             }
         }
-        const type = settings.getRuleTypeForDomain(domain);
-        return type === RuleType.WHITE || (type === RuleType.GRAY && !ignoreGrayList);
+        const type = settings.getCleanupTypeForDomain(domain);
+        return type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType);
     }
 
     private runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
@@ -173,7 +173,7 @@ export class Background implements TabWatcherListener {
                 // Cookies set by javascript can't be denied, but can be removed instantly.
                 const allowSubDomains = changeInfo.cookie.domain.startsWith(".");
                 const rawDomain = allowSubDomains ? changeInfo.cookie.domain.substr(1) : changeInfo.cookie.domain;
-                if (settings.getRuleTypeForCookie(rawDomain, changeInfo.cookie.name) === RuleType.BLOCK)
+                if (settings.getCleanupTypeForCookie(rawDomain, changeInfo.cookie.name) === CleanupType.INSTANTLY)
                     removeCookie(changeInfo.cookie);
                 else if (settings.get("cleanThirdPartyCookies.enabled"))
                     this.removeCookieIfThirdparty(changeInfo.cookie);
@@ -209,10 +209,10 @@ export class Background implements TabWatcherListener {
         return !this.tabWatcher.isFirstPartyDomainOnCookieStore(cookie.storeId, firstPartyDomain);
     }
 
-    private cleanCookiesWithRulesNow(ignoreGrayList: boolean, protectOpenDomains: boolean) {
+    private cleanCookiesWithRulesNow(ignoreStartupType: boolean, protectOpenDomains: boolean) {
         getAllCookieStoreIds().then((ids) => {
             for (const id of ids)
-                this.getCleanStore(id).cleanCookiesWithRules(ignoreGrayList, protectOpenDomains);
+                this.getCleanStore(id).cleanCookiesWithRules(ignoreStartupType, protectOpenDomains);
         });
     }
 
@@ -243,8 +243,8 @@ export class Background implements TabWatcherListener {
                     let badge = badges.none;
                     const hostname = getValidHostname(tab.url);
                     if (hostname)
-                        badge = getBadgeForRuleType(settings.getRuleTypeForDomain(hostname));
-                    let text = badge.i18nKey ? wetLayer.getMessage(badge.i18nKey) : "";
+                        badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(hostname));
+                    let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
                     if (!settings.get("showBadge"))
                         text = "";
                     browser.browserAction.setBadgeText({ text, tabId: tab.id });

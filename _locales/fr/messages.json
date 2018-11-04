@@ -1,12 +1,12 @@
 {
     "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
-        "message": "Forget me not - Oubliez les cookies et autre données",
+        "message": "Forget me not - Nettoyez les cookies et autres données de navigation",
         "description": "Name of the extension.",
         "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
     },
     "extensionDescription": {
-        "message": "Faites oublier au navigateur les données de sites web, exceptées les données que vous voulez conserver",
+        "message": "Nettoyez les données des sites, conservez celles qui vous intéressent",
         "description": "Description of the extension.",
         "hash": "8138b17e7f1daceffca0d19015bb86e7"
     },
@@ -16,7 +16,7 @@
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
     "actionTitleSnooze": {
-        "message": "Forget me not (temporairement désactivé)",
+        "message": "Forget me not (désactivé temporairement)",
         "description": "Action button title during snooze",
         "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
     },
@@ -43,7 +43,7 @@
         "hash": "f5545c85577b03ed93d451abf748ce8d"
     },
     "reset_dialog_content": {
-        "message": "Ceci ne pas être défait",
+        "message": "Cette action n'est pas possible",
         "hash": "db630835e0fd63a96fcb2feed83facc3"
     },
     "confirm_settings_and_rules": {
@@ -103,11 +103,11 @@
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
     "tabs_log@title": {
-        "message": "Log de domaine",
+        "message": "Réglages de domaines",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
     "tabs_about@title": {
-        "message": "À-propos de Forget me not",
+        "message": "À propos de Forget me not",
         "hash": "c7f0b61c0416534e0a666f03327552b3"
     },
     "tabs_tutorial@title": {
@@ -119,11 +119,11 @@
         "hash": "f349bbd753db24b2c15a159a227bd115"
     },
     "tabs_changelog@title": {
-        "message": "Log des changements",
+        "message": "Quoi de neuf ?",
         "hash": "d1f539e046abe83e76dcf2163f9a143c"
     },
     "button_clean_now": {
-        "message": "Nettoyer maintenant!",
+        "message": "Nettoyer maintenant !",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
     "button_import": {
@@ -135,7 +135,7 @@
         "hash": "46a378d64766cc2c8491cd13b018657f"
     },
     "button_reset": {
-        "message": "Réinitialiser au paramètres par défaut",
+        "message": "Réinitialiser les paramètres par défaut",
         "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
     },
     "button_log_add_rule": {
@@ -151,7 +151,7 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "En mode silencieux, ces nettoyages seront empêchés:\n- Nettoyage des cookies et du stockage local en quittant un domaine\n- Nettoyage des cookies tiers\n\nTous les nettoyages manqués seront reprogrammés une fois le mode silencieux désactivé.\n\nLes cookies bloqués ne sont pas affectés. C'est à dire que si vous placez un domaine en liste noire, les cookies seront bloqués en mode silencieux.",
+        "message": "En mode silencieux, ces nettoyages ne seront pas éffectués:\n- Nettoyage des cookies et du stockage local en quittant un domaine\n- Nettoyage des cookies tiers\n\nLes nettoyages annulés seront restaurés une fois le mode silencieux désactivé.\n\nLes cookies bloqués ne sont pas affectés. Si vous placez un domaine en liste noire, ses cookies seront bloqués en mode silencieux.",
         "hash": "783a3b899cfee49c995867e6102cc225"
     },
     "invalid_tab": {
@@ -179,27 +179,27 @@
         "hash": "c30738ff9271a856100751bbca5e5794"
     },
     "help_button@title": {
-        "message": "Lire comment les règles fonctionnent, quelles expressions vous pouvez utiliser, les règles expérimentales, et les récents changements de cette extension.",
+        "message": "Lire le fonctionnement des règles, quelles expressions vous pouvez utiliser, les règles expérimentales, et les changements récents de cette extension.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
     "types_of_cleanup@title": {
-        "message": "Lire plus à-propos de ce que ces cases à cocher incluent exactement.",
+        "message": "Lire plus à propos de ce que les cases à cocher incluent.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Purger les cookies expirés à chaque fois qu'un nettoyage se produit.",
+        "message": "Purger les cookies expirés à chaque nettoyage.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
-        "message": "Afficher une notification quand l'extension est mise à jour.",
+        "message": "Afficher une notification lorsque l'extension est mise à jour.",
         "hash": "b09faefa5c53650a8e8d549be96e09a6"
     },
     "setting_show_cookie_removal_notification": {
-        "message": "Afficher une notification quand des cookies sont supprimés.",
+        "message": "Afficher une notification lorsque des cookies sont supprimés.",
         "hash": "5d31d92f2c4eb88af04bf02b9078d058"
     },
     "setting_show_badge": {
-        "message": "Afficher la règle correspondante avec un badge sur le bouton de la barre d'outil",
+        "message": "Afficher la règle correspondante en badge sur le bouton de la barre d'outil",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
     "setting_type_white": {
@@ -231,7 +231,7 @@
         "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
     },
     "setting_type_block@title": {
-        "message": "Les cookies seront pas créés",
+        "message": "Les cookies ne pourront pas être modifiés",
         "hash": "7ea4b7e384bc7c6c94f916a543f186be"
     },
     "setting_cookies": {
@@ -247,7 +247,7 @@
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
     "setting_protect_open_domains": {
-        "message": "Protéger les domaines actuellement ouvert si \"Appliquer les règles\" est coché",
+        "message": "Protéger les domaines actuellement ouvert lorsque \"Appliquer les règles\" est coché",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
     },
     "setting_history": {
@@ -295,23 +295,23 @@
         "hash": "c96674945ffdf9f8da181b05c249d29b"
     },
     "setting_whitelist_no_tld": {
-        "message": "Ajouter un domaine sans domaine de haut niveau à la liste blanche",
+        "message": "Ajouter des domaines sans domaine de premier niveau à la liste blanche",
         "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
     },
     "setting_whitelist_no_tld@title": {
-        "message": "Les domaines tels localhost, intranet, etc (sans .com, .net, etc.)",
+        "message": "Domaines tels que localhost, intranet, etc (sans .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "setting_whitelist_file_system": {
-        "message": "Ajouter des fichiers de votre ordinateur à la liste blanche",
+        "message": "Ajouter des fichiers à la liste blanche",
         "hash": "31f66347f86bb36b6a5292691882838b"
     },
     "settings_fallback_rule": {
-        "message": "Comportement si aucune règle ne correspond (défaut: oublier):",
+        "message": "Comportement lorsqu'aucune règle ne correspond (défaut: oublier):",
         "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
-        "message": "Logger les domaines récemment accédés",
+        "message": "Domaines récemment accédés",
         "hash": "3b8f9710163140ee92e5924c8f7bdbca"
     },
     "setting_log_rad_limit": {
@@ -339,21 +339,21 @@
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
     "initial_tab_log": {
-        "message": "Log de domaine",
+        "message": "Réglage domaine",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
-        "message": "Forget me not a été mis à jour",
+        "message": "Forget me not a été mis à jour !",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
     },
     "update_notification_message": {
-        "message": "Cliquer ici pour voir ce qui est nouveau.",
+        "message": "Cliquer ici pour voir les nouveautés.",
         "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
     },
     "cookie_cleanup_notification_title": {
-        "message": "$COUNTS\" cookies ont été supprimés",
+        "message": "$COUNTS\" les cookies ont été supprimés",
         "placeholders": {
             "count": { "content": "$1", "example": "4" }
         },
@@ -370,34 +370,30 @@
 
     "__WET_GROUP__5": { "message": "Import Dialog" },
     "import_by_drop_or_click": {
-        "message": "Importer les réglages en déposant un fichier précédemment exporté dans cette zone, ou en cliquant pour sélectionner un tel fichier.",
+        "message": "Importer un fichier de configuration par glisser-déposer, ou cliquez pour sélectionner le fichier.",
         "hash": "addde02e14af8336c24777c9b03dc5eb"
     },
     "import_success_close_now": {
-        "message": "Réglages importés avec succès. Vous pouvez désormais fermer cette fenêtre.",
+        "message": "Fichier importé avec succès. Vous pouvez maintenant fermer cette fenêtre.",
         "hash": "cd1b4a7131754d680d4a662e29b2516b"
     },
     "import_failure": {
-        "message": "Impossible d'importer le fichier. Vérifiez si ce fichier est un fichier de réglage valide.",
+        "message": "Impossible d'importer le fichier. Vérifiez que le fichier soit valide.",
         "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
     },
 
     "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Auteur\nFait par Santo Pfingsten, © 2017-2018\n\n## Traducteurs requis\n\nSi vous connaissez suffisamment une autre langue, vous pouvez m'aider en créant une traduction avec  [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n\n## Problèmes, questions et autres feedback\nVeuillez rapporter les problèmes et les requêtes de nouvelles fonctionnalités sur GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Déclaration de confidentialité\n\nVotre confidentialité est de la plus haute importance.\nCette extension n'analyse ou ne collecte aucune données autre que celles nécessaires à l'accomplissement de sa tache. Elle n'envoie aucune données nulle part, même anonymement. PERIOD.\n\n## Credits\n* Traduction français réalisée par Benny Hill\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "message": "## Auteur\nCréé par Santo Pfingsten, © 2017-2018\n\n## Traductions\n\nSi vous avez des connaissances dans une autre langue, aidez-moi en créant une traduction avec  [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n\n## Problèmes, questions, retours\nMerci de poster dysfonctionnements et suggestions sur GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Déclaration de confidentialité\n\nVotre confidentialité tient de la plus haute importance.\nCette extension n'analyse ou ne collecte aucune données autre que celles nécessaires à l'exécution de sa tache. Elle n'envoie aucune données par le réseau, même anonymement. PERIOD.\n\n## Credits\n* Traduction française réalisée par Benny Hill. Correction: Jules Balarate\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "6377f0eb7328080d3949b9b855218cfc"
     },
     "tutorial_page": {
-        "message": "# Tutoriel d'introduction\n\n## Réglages de Firefox \nVeuillez noter que cette extension n'a aucun accès à vos réglages de Firefox, donc n'importe quel réglage de cookie que vous effectuez dans Firefox seront combinés à ceux de cette extension.\n\nDonc si vous configurez Firefox pour refusez tous les cookies, cette extension n'aura aucun cookie à gérer.\n\n## Listes blanches, grises et rouges\nDes noms de domaines (nom d'hôte d'un site web, tel *google.com*) peuvent être ajoutés aux listes codées (comme la liste blanche)\n- **Blanche**: Les cookies et le stockage local ne seront jamais effacés.\n- **Grise**: Les cookies et le stockage local seront effacés au redémarrage du navigateur (doit être activé dan les réglages).\n- **Rouge**: Les règles grises et blanches peuvent être outrepassées.\n  - Exemple: Une règle blanche autorise tous les domaines (expression \"\\*\" ) et un couple de règles rouges définie les exceptions à cette règle.\n- **Noire**: Empêche tous les cookies d'être créer\n  - Une règle sera toujours outrepassée par une règle noire.\n  - Malheureusement, les cookies créés par JavaScript ne peuvent pas être bloqués, mais seront supprimés presque instantanément après leur création.\n\n## Expressions valides\n- Chaque noms d'hôte (e.g. www.google.com) est une expression valide.\n- Une astérisque (*) peut être utilisé comment remplacement (e.g. *.google.com or www.\\*.com).\n- Les listes blanches écrasent actuellement les listes grises.. cela peut encore changer.\n\n### Expressions spécifiques pour les cookies\nVous pouvez créer des règles pour des noms de cookies et des combinaisons de domaine.\n- Exemple: `nom_de_cookie@*.google.com`\n- `nom_de_cookie` peut être n'importe quel nom de cookie valide.\n- La même règle, vue ci-dessus, s'applique pour la partie spécifique du domaine à droite du signe`@`.\n- Les règles spécifiques de cookies sont toujours privilégiées par rapport aux règles normales.\n\n## Cookies tiers\n- Quand un cookie est créé sans appartenir à un domaine ouvert dans un onglet, il est considéré comme un cookie tiers.\n- Des recherches sont actuellement faites pour améliorer cette méthode.\n\n## Mode silencieux\n\nAu niveau du pop-up \"Mode Silencieux\", vous pouvez temporairement désactiver le nettoyage automatique. Voir l'onglet pour des instructions.\n\n## Types de nettoyages\n\nVous pouvez choisir quelles données nettoyer:\n- **Cookies**: Les cookies http réguliers. Les cookies Flash sont couverts dans les \"Données de Plugin\".\n- **Stockage local** et **Base de données indexés**: les sites web peuvent stocker des données sur votre navigateur pour autoriser certaines fonctionnalités ou pour se souvenir de quelque chose jusqu'à votre prochaine visite.\nParfois Firefox réfère les *Base de données indexés* comme du \"Stockage\", donc si Firefox vous dit que youtube.com utilise quelques MO de stockage, c'est probablement une *Base de données indexée*.\n- **Historique**: Ceci contient toutes vos visites de site web.\n- **Téléchargements**:Ceci contient votre historique de téléchargements. Nettoyer les téléchargements ne supprime pas les fichiers sur votre disque.\n- **Données de formulaire**: Il est possible que vous ayez à entrer des informations dans un formulaire de contact ou de facturation. dépendamment de vos réglages, ceci peut avoir été sauvegardé, pour qu'il soit plus facile pour vous de ré-entrer ces données.\n- **Mots de passe**: Vous pouvez avoir dit à Firefox de se souvenir de certains mots de passe. Choisissez ceci pour les supprimer.\n- **Données de plugin**: Les Plugins (pas les add-ons/web-extensions) tels Adobe Flash ou Acrobat Reader peuvent stocker des données tels que des cookies Flash ou d'autres informations & réglages.\n- **Service Workers**: Les Service Workers sont une manière de permettre à certain site d'être accédés hors-ligne mais aussi d'aider à accélérer le chargement des applications web qui peuvent les utiliser.\n- **Certificats liés au serveur**: Si vous ajoutez des certificats pour autoriser la connexion à un serveur, ceci est l'option pour les effacer.",
+        "message": "# Fonctionnement général\n\n## Réglages de Firefox \nCette extension ne modifie en aucun les réglages de votre Firefox. Ceux concernant les cookies seront donc prioritaires à ceux de cette extension.\n\nSi vous avez par exemple configuré Firefox pour qu'il refuse les cookies, cette extension n'aura aucun cookie à gérer.\n\n## Listes blanches, grises, rouges\nDes noms de domaines (nom d'hôte d'un site web tel que *google.com*) peuvent être ajoutés aux listes (comme la liste blanche)\n- **Blanche**: Les cookies et le stockage local seront conservés.\n- **Grise**: Les cookies et le stockage local seront effacés au redémarrage du navigateur (doit être activé dans les réglages).\n- **Rouge**: a priorité sur les règles grises et blanches.\n  - Exemple: Une règle blanche autorise tous les domaines (expression \"\\*\" ) des règles rouges définissent les exceptions à cette règle.\n- **Noire**: Empêche tous les cookies d'être créés\n  - Une règle noire est prioritaire sur toute autre règle.\n  - Les cookies JavaScript, qui ne peuvent pas être bloqués, sont supprimés dès leur création.\n\n## Expressions valides\n- Chaque noms d'hôte (e.g. www.google.com) est une expression valide.\n- Le jocker (*) peut être utilisé (e.g. *.google.com or www.\\*.com).\n- Les listes blanches ont priorité sur les listes grises. Pas sûr que cela reste ainsi.\n\n### Expressions spécifiques aux cookies\nVous pouvez créer des règles pour des noms de cookies et des combinaisons de domaines.\n- Exemple: `nom_de_cookie@*.google.com`\n- `nom_de_cookie` peut être n'importe quel nom de cookie valide.\n- La règle ci-dessus s'applique à la partie du domaine située à droite de l'`@`.\n- Les règles spécifiques de cookies ont priorité sur les autres règles.\n\n## Cookies tiers\n- Quand un cookie n'appartient pas à un domaine ouvert dans un onglet il est considéré comme un cookie tiers.\n- définition en cours d'amélioration\n\n## Mode silencieux\n\nLe \"Mode Silencieux\" désactive temporairement le nettoyage automatique. Voir dans l'onglet pour le fonctionnement.\n\n## Types de nettoyages\n\nVous pouvez choisir quelles données nettoyer:\n- **Cookies**: Les cookies http réguliers. Les cookies Flash font partie des \"Données de Plugin\".\n- **Stockage local** et **Base de données indexés**: les sites web peuvent stocker des données dans votre navigateur afin d'autoriser certaines fonctionnalités ou pour mémoriser quelque chose jusqu'à votre prochaine visite.\nParfois Firefox considère les *Base de données indexés* comme du \"Stockage\". Si Firefox vous dit que youtube.com utilise quelques Mo de stockage c'est probablement une *Base de données indexée*.\n- **Historique**: Contient toutes vos visites de site web.\n- **Téléchargements**:Contient votre historique de téléchargements. Nettoyer les téléchargements ne supprime pas les fichiers de votre disque dur.\n- **Données de formulaire**: En fonction de vos réglages, vos saisies dans les formulaires peuvent être conservées.\n- **Mots de passe**: Vous pouvez avoir paramétré Firefox pour qu'il se souvienne des mots de passe. Cette option permet de les supprimer.\n- **Données de plugin**: Les Plugins (pas les add-ons/web-extensions) tels Adobe Flash ou Acrobat Reader peuvent stocker des données comme des cookies Flash ou d'autres informations et réglages.\n- **Service Workers**: Les Services Workers sont une manière d'accéder à certains sites hors-ligne, mais aussi d’accélérer le chargement des applications web qui peuvent les utiliser.\n- **Certificats serveurs**: Si vous avez des certificats de connexion à des serveurs, ceci est l'option pour les effacer.",
         "hash": "e3da06a89c4e4c3e8607211f3522da45"
     },
     "experimental_page": {
-        "message": "## Fonctionnalités Expérimentales \n\n- De temps en temps il y aura de nouvelles fonctionnalités marquées comme expérimentales.\n- Elles seront désactivées par défaut devront être manuellement activées.\n- Ces fonctionnalités sont utilisées pour évaluer de nouvelles manières d'améliorer cette extension.\n- Elles pourraient être instables ou avoir de mauvaises performances.\n- Si vous expérimentez des problèmes, essayez de désactiver ces fonctionnalités.\n- S'il vous plait, veuillez soumettre un feedback et un rapport de bug sur [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Expérimentation actuellement actives:\n- **Purger les cookies expirés**:\nChaque fois qu'un nettoyage se produit, les cookies qui ont une date d'expiration dans le passé seront supprimés quelles que soient les règles configurées. Normalement Firefox ne supprime les cookies expirés qu'après une certaine limite atteinte. Ces cookies ne seraient pas envoyées aux sites web, mais ils seraient toujours là. Cette option aidera à supprimer ces cookies fantômes.\n- **Refuser les Cookies tiers**:  \nSi activé, chaque requête web sera interceptée pour supprimer les cookies de domaines qui n’appartiennent pas aux URL présentes dans les onglets et qui ne sont pas protégées par une règle. Ces cookies ne seront jamais créés.\n\nS'il vous plait, donnez moi un feedback sur votre expérience avec ces expérimentations, pour que je décide ou non de les ajouter de manière permanente.",
+        "message": "## Fonctionnalités Expérimentales \n\n- De temps à autres de nouvelles fonctionnalités marquées comme expérimentales apparaitront.\n- Elles seront désactivées par défaut et devront être activées manuellement.\n- Ces fonctionnalités seront utilisées pour évaluer de nouvelles manières d'améliorer cette extension.\n- Elles pourraient être instables ou avoir de mauvaises performances.\n- En cas de dysfonctionnement, essayez de désactiver ces fonctionnalités.\n- Veuillez'il vous plait poster vos retours et rapports de bug sur [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Expérimentations actuelles:\n- **Purger les cookies expirés**:\nÀ chaque nettoyage, les cookies périmés seront supprimés, quelles que soient les règles configurées. Firefox ne supprime les cookies périmés qu'après un certain temps. Ces cookies ne sont plus envoyées aux sites, mais ils restent présents. Cette option pourrait supprimer ces cookies fantômes.\n- **Refuser les Cookies tiers**:  \nLorsque l'option sera activée, chaque requête web sera interceptée, les cookies de domaines qui n’appartiennent pas aux URL présentes dans les onglets et qui ne sont pas protégées par une règle ne seront jamais créés.\n\nMerci de m'envoyer vos retours sur ces expérimentations afin je décide ou non de les ajouter de manière permanente.",
         "hash": "b2158f0e30401d015933ecc25c8c6fb6"
-    },
-    "changelog_page": {
-        "message": "",
-        "hash": "0dd61bf62909481c3442be3c736a5687"
     },
 
     "__WET_LOCALE__": { "message": "fr" }

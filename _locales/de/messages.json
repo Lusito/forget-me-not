@@ -132,6 +132,14 @@
         "message": "Cookies werden am gesetzt werden gehindert.",
         "hash": "7ea4b7e384bc7c6c94f916a543f186be"
     },
+    "cleanup_type_create_button": {
+        "message": "Neue Regel",
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Wähle den anzuwendenden Säuberungstyp",
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
+    },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {

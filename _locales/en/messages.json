@@ -105,7 +105,7 @@
         "message": "Create Rule"
     },
     "cleanup_type_create_button@title": {
-        "message": "Choose the rule-type to apply"
+        "message": "Choose the cleanup-type to apply"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },

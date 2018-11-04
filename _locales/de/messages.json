@@ -235,8 +235,8 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "Im Snooze Modus werden folgende Säuberungen verhindert:\n- Säuberung beim Verlassen einer Domäne\n- Säuberungen von Cookies von Dritten.\n\nAlle verpassten Säuberungen werden erneut geplant sobald du den Snooze Modus stoppst.\n\nBlockierte Cookies sind hiervon nicht betroffen. D.h. wenn du eine Domäne Blacklistest, werden die Cookies weiterhin im Snooze Modus blockiert.",
-        "hash": "4dd028eca6cd1ba342bb4df200381ec1"
+        "message": "Im Snooze Modus werden folgende Säuberungen verhindert:\n- Säuberung beim Verlassen einer Domäne\n- Säuberungen von Cookies von Dritten.\n\nAlle verpassten Säuberungen werden erneut geplant sobald du den Snooze Modus stoppst.\n\nSchwarze Regeln (\"Instant\") sind vom Snooze-Mode nicht betroffen.",
+        "hash": "dfd24dc7f97580281d58971501628622"
     },
     "invalid_tab": {
         "message": "Invalid Tab",
@@ -363,16 +363,16 @@
         "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld": {
-        "message": "Domänen ohne Top Level Domäne zur weißen Liste hinzufügen",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
+        "message": "Niemals Domänen ohne Top Level Domäne säubern",
+        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Domänen, wie z.B. localhost, intranet, etc. (ohne .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "setting_whitelist_file_system": {
-        "message": "Dateien vom Computer zur weißen Liste hinzufügen",
-        "hash": "31f66347f86bb36b6a5292691882838b"
+        "message": "Niemals Dateien vom Computer säubern",
+        "hash": "511a3b5151d821503759721ca9d7b1c1"
     },
     "settings_fallback_rule": {
         "message": "Säuberung falls keine Regel greift (default: Beim Verlassen):",

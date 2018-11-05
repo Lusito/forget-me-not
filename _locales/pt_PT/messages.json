@@ -46,73 +46,109 @@
         "message": "Isto não pode ser desfeito.",
         "hash": "db630835e0fd63a96fcb2feed83facc3"
     },
+    "rule_dialog_title": {
+        "message": "Selecione uma regra de limpeza",
+        "hash": "8b92b69da821db80656274e044e68643"
+    },
+    "rule_dialog_content": {
+        "message": "- **N**unca: Sem limpeza.\n- No **A**rranque: Limpar apenas no início do navegador.\n- Na **S**aída: Limpar na saída do domínio e no início do navegador.\n- **I**nstantaneamente: Impedir dados de serem definidos, se possível. Caso contrário comportar-se como `Na saída`.\n\n**\\*** Para `No arranque` e `Na saída` funcionarem, as opções de limpeza respetivas devem estar ativadas. Algumas limitações podem ainda aplicar-se devido a resitrições na Web-Extension API. [Ler mais](readme.html#tutorial)",
+        "hash": "bb88166ccd6ce8e41eb96328204fb401"
+    },
+    "rule_dialog_expression": {
+        "message": "Expressão:",
+        "hash": "4342463f910507a3f4f1f81716912f1c"
+    },
     "confirm_settings_and_rules": {
         "message": "Definições e regras",
         "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
     },
     "confirm_settings_only": {
-        "message": "Apenas regras",
+        "message": "Apenas definições",
         "hash": "47dbae6cf11a5b79c1abae7b56485c18"
+    },
+    "confirm_ok": {
+        "message": "OK",
+        "hash": "d2702da8185dd5d533913d767bddc05d"
     },
     "confirm_cancel": {
         "message": "Cancelar",
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
+    "confirm_rule_replace_dialog_title": {
+        "message": "Expressão de regra já existe",
+        "hash": "c75edd105dd87f7b72216c1e32dcf101"
+    },
+    "confirm_rule_replace_dialog_content": {
+        "message": "A expressão de regra especificada já existe.. pretende substituí-la?",
+        "hash": "74219b377804324016c6fbca36518b25"
+    },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
     "cleanup_type_never_badge": {
-        "message": "B",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
+        "message": "N",
+        "hash": "365345324a710f7b5f2824f1da013f2d"
     },
     "cleanup_type_never_button": {
-        "message": "Branca",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
+        "message": "*N*unca",
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
     },
     "cleanup_type_never_button@title": {
         "message": "Sem limpeza",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
     },
     "cleanup_type_startup_badge": {
-        "message": "C",
-        "hash": "08208f1cca81892a4707dec4283aa489"
+        "message": "A",
+        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
     },
     "cleanup_type_startup_button": {
-        "message": "Cinza",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
+        "message": "No *a*rranque",
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
     },
     "cleanup_type_startup_button@title": {
         "message": "Limpeza no reinício do navegador",
         "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
     "cleanup_type_leave_badge": {
-        "message": "E",
-        "hash": "324f549df0b05cab9ad26e634c312802"
+        "message": "S",
+        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
     },
     "cleanup_type_leave_button": {
-        "message": "Esquecer",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
+        "message": "Na *s*aída",
+        "hash": "474d0269f9757e726e5d91f684c33033"
     },
     "cleanup_type_leave_button@title": {
         "message": "Limpeza na saída de domínio",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
     "cleanup_type_instantly_badge": {
-        "message": "B",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
+        "message": "I",
+        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
     },
     "cleanup_type_instantly_button": {
-        "message": "Bloquear",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
+        "message": "*I*nstantaneamente",
+        "hash": "62610f955f62f7701a06a80ff04e1e1b"
     },
     "cleanup_type_instantly_button@title": {
         "message": "Os cookies irão ser impedidos de serem definidos",
         "hash": "7ea4b7e384bc7c6c94f916a543f186be"
     },
+    "cleanup_type_create_button": {
+        "message": "Criar regra",
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Escolha o tipo de limpeza para aplicar",
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
+    },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Realizar limpeza manual:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Realizar limpeza manual",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
+    },
+    "manual_cleanup_description": {
+        "message": "Com isto pode executar uma limpeza manual. Irá poder selecionar o que limpar.",
+        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
     },
     "define_rules": {
         "message": "Definir regras:",
@@ -121,6 +157,18 @@
     "recently_accessed_domains": {
         "message": "Domínios acedidos recentemente:",
         "hash": "53d2a0edc88172044b6b6db0c1996820"
+    },
+    "tabs_settings_general": {
+        "message": "Geral",
+        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
+    },
+    "tabs_settings_cleanup": {
+        "message": "Limpeza",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    },
+    "tabs_settings_experimental": {
+        "message": "Experimental",
+        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
     },
     "tabs_this_tab@title": {
         "message": "Separador atual",
@@ -158,6 +206,10 @@
         "message": "Limpar agora!",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
+    "button_clean_domain": {
+        "message": "Limpar este domínio!",
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+    },
     "button_import": {
         "message": "Importar..",
         "hash": "0192d8f28f3d837e79a05711e6379e5e"
@@ -183,32 +235,44 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza de cookies e armazenamento local ao sair de domínio\n- Limpeza de cookies de terceiros\n\nTodas as limpezas em falta serão remarcadas assim que parar o modo suspensão.\n\nCookies bloqueados não são afetados por isto. Ou seja, se colocar um domínio na lista negra, os cookies irão ainda ser bloqueados no modo suspensão.",
-        "hash": "783a3b899cfee49c995867e6102cc225"
+        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza ao sair do domínio\n- Limpeza de cookies de terceiros\n\nTodas as limpezas em falta serão remarcadas assim que parar o modo suspensão.\n\nAs regras negras (\"instantaneamente\") não estão afetadas pelo modo suspensão.",
+        "hash": "dfd24dc7f97580281d58971501628622"
     },
     "invalid_tab": {
         "message": "Separador inválido",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
     "rules_column_expression": {
-        "message": "Regra",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
+        "message": "Expressão",
+        "hash": "7fc913b5875670e140f328b8a03ed225"
     },
     "rules_column_matching_expression": {
-        "message": "Regra correspondente",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
+        "message": "Expressão correspondente",
+        "hash": "dcb63b62695c11401c78d9ea01eee3de"
     },
     "rules_column_type": {
-        "message": "Tipo",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
+        "message": "Limpeza",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
     },
     "rules_input@placeholder": {
         "message": "Pesquisar ou adicionar..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
     },
+    "expression_hint_invalid": {
+        "message": "Expressão inválida!",
+        "hash": "5960bcc4b7e809e74c69cd96049e9245"
+    },
+    "expression_hint_exists": {
+        "message": "Expressão já existe!",
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
+    },
     "rules_add": {
         "message": "Adicionar",
         "hash": "c30738ff9271a856100751bbca5e5794"
+    },
+    "rules_no_entries": {
+        "message": "Sem entradas",
+        "hash": "5ece1de076b92af71c606feadcc41439"
     },
     "help_button@title": {
         "message": "Leia acerca de como as regras funcionam, que expressões pode utilizar, funcionalidades experimentais, e alterações recentes nesta extensão.",
@@ -219,8 +283,8 @@
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Eliminar cookies expirados quando uma limpeza acontece.",
-        "hash": "1ff8b00b0ca44682a083d91280bcc011"
+        "message": "Purgar cookies expirados quando uma limpeza acontece.",
+        "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
     },
     "setting_show_update_notification": {
         "message": "Mostrar uma notificação quando a extensão for atualizada.",
@@ -282,33 +346,37 @@
         "message": "Certificados vinculados ao servidor",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
+    "setting_delay_domain_leave_cleanup_in_minutes": {
+        "message": "Atraso para a saída do domínio em minutos:",
+        "hash": "3a6053e253bf52da94ada7a933beb5d2"
+    },
     "setting_delay_in_minutes": {
         "message": "Atraso em minutos:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
     },
     "setting_remove_thirdparty": {
         "message": "Remover cookies de terceiros na criação:",
-        "hash": "10e201194069b4bc86e31630c772eb88"
+        "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
         "message": "Negar cookies de terceiros",
-        "hash": "c96674945ffdf9f8da181b05c249d29b"
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld": {
-        "message": "Adicionar domínios sem um domínio de topo à lista branca",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
+        "message": "Nunca limpar domínios sem um domínio de nível superior",
+        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Domínios como localhost, intranet, etc. (sem .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "setting_whitelist_file_system": {
-        "message": "Adicionar ficheiros do seu computador à lista branca",
-        "hash": "31f66347f86bb36b6a5292691882838b"
+        "message": "Nunca executar limpezas em ficheiros do seu computador",
+        "hash": "511a3b5151d821503759721ca9d7b1c1"
     },
     "settings_fallback_rule": {
-        "message": "Comportamento se nenhuma regra corresponder (predefinição: esquecer):",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
+        "message": "Comportamento se nenhuma regra corresponder (predefinição: na saída):",
+        "hash": "144b6e44fcfc2accebf07df655af7bea"
     },
     "setting_log_rad_enabled": {
         "message": "Registar domínios acedidos recentemente:",
@@ -317,6 +385,10 @@
     "setting_log_rad_limit": {
         "message": "Limitar para:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
+    },
+    "setting_experimental_info": {
+        "message": "Estas são funcionalidades experimentais. Leia mais acerca das mesmas [aqui](readme.html#experimental).",
+        "hash": "9a633b49e2375b929463c1ce49295f58"
     },
     "setting_initialTab": {
         "message": "Separador selecionado inicialmente neste popup:",
@@ -388,12 +460,12 @@
         "hash": "6377f0eb7328080d3949b9b855218cfc"
     },
     "tutorial_page": {
-        "message": "# Tutorial de introdução\n\n## Definições do Firefox\nPor favor note que esta extensão não tem acesso às suas definições do Firefox, por isso quaisquer definições de cookies que fizer no Firefox irão ser combinadas com esta extensão.\n\nPor isso se configurar o Firefox para negar todos os cookies, esta extensão não terá cookies para trabalhar.\n\n# Listas brancas, cinzas e vermelhas\nNomes de domínios (nomes de anfitrião de um website, como *google.com*) podem ser adicionados a listas codificadas por cores (como listas brancas)\n- **Brancas**: Cookies e armazenamento local nunca irão ser removidos.\n- **Cinzas**: Cookies e armazenamento local irão ser removidos após o reinício do navegador (deve estar ativada nas definições).\n- **Vermelhas**: Regras cinzas e brancas podem ser sobrescritas por uma regra vermelha.\n  - Exemplo: Uma regra branca permite todos os domínios (\"\\*\" como expressão) e algumas regras vermelhas definiem exceções a essa regra.\n- **Negras**: Impede cookies de se quer serem definidos\n  - Qualquer regra irá ser sobrescrita por uma regra negra.\n  - Infelizmente, cookies definidas a partir de JavaScript não podem ser bloqueadas, mas irão ser removidas quase instantaneamente após criação.\n\n## Expressões válidas\n- Qualquer nome de servidor (por exemplo www.google.com) é uma expressão válida.\n- Um asterisco (*) pode ser utilizado como marcador de posição para um segmento (por exemplo *.google.com ou www.\\*.com).\n- As listas brancas atualmente anulam listas cinza... não temos a certeza se isto é final.\n\n### Expressões específicas de cookies\nPode criar regras para combinações de nome de cookie e domínio.\n- Exemplo: `nomedecookie@*.google.com`\n- `nomedecookie` pode ser qualquer nome de cookie válido.\n- As mesmas regras, como vistas acima, aplicam-se para a parte específica do domínio à direita do sinal `@`.\n- Regras específicas de cookies são sempre preferidas sobre as regras normais.\n\n## Cookies de terceiros\n- Quando um cookie é definido sem pertencer a um domínio que está aberto num separador, é considerado um cookie de terceiros.\n- Está a ser feita pesquisa para melhorar este método.\n\n## Modo suspensão\n\nNo separador de popup \"Modo suspensão\", pode desativar temporariamente a limpeza automática. Veja o separador para instruções.\n\n## Tipos de limpeza\n\nPode escolher que dados limpar:\n- **Cookies**: Cookies HTTP normais. Cookies Flash são cobertos por \"Dados de plugins\".\n- **Armazenamento local** e **Indexed DB**: Os websites podem armazenar dados no seu navegador para permitir certas funcionalidades ou memorizar algo para a próxima visita.\nAlgumas vezes o Firefox refere-se a *Indexed DB* como \"Armazenamento\", por isso se o Firefox lhe disser que youtube.com utiliza alguns MB de armazenamento, é provavelmente *Indexed DB*.\n- **Histórico**: Isto contém todas as suas visitas a websites.\n- **Tranferências**: Isto contém o histórico das transferências.\nLimpar as transferências não remove os ficheiros no seu disco.\n- **Dados de formulários**: A certa altura deve ter introduzido informação em, por exemplo, um contacto ou formulário de cobrança.\nDependendo das suas definições, isto pode ter sido guardado, para que seja fácil para você reintroduzir estes valores.\n- **Palavras-passe**: Pode ter dito ao Firefox para memorizar certas palavras-passe. Escolha isto para removê-las novamente.\n- **Dados de plugins**: PLugins (não extras/web-extensions) como o Adobe Flash ou Acrobat Reader podem armazenar dados como cookies Flash ou outra informação e definições.\n- **Service Workers**: Os Service Workers são uma maneira de permitir aos websites serem utilizados offline e também ajudam a acelerar o carregamento de aplicaç~~oes web que fazem uso dito.\n- **Certificados vinculados ao servidor**: Se adicionou certificados para permitir ligações a um servidor, então esta é a opção para os limpar.",
-        "hash": "e3da06a89c4e4c3e8607211f3522da45"
+        "message": "# Tutorial de introdução\n\n## Definições do Firefox\nPor favor note que esta extensão não tem acesso às suas definições do Firefox, por isso quaisquer definições de cookies que fizer no próprio Firefox irão ser combinadas com esta extensão.\n\nPor isso se configurar o Firefox para negar todos os cookies, esta extensão não terá cookies para trabalhar.\n\n## Tipos de limpezas\nPode configurar as regras de limpeza que correspondem a certos nomes de domínio (nomes de anfitrião de um website, como *google.com*). Os tipos de limpeza possíveis são:\n\n- **Nunca**: Nenhuma limpeza será realizada para domínios que correspondem a esta regra.\n- **No arranque**: A limpeza irá executar no início do navegador.\n- **Na saída**: A limpeza irá executar quando sai de um domínio (ao colocar um novo na barra de url ou ao fechar o separador)\n- **Instantaneamente**: Se possível, os cookies irão ser impedidos de serem definidos. Caso contrário estes irão ser removidos quase instantaneamente.\n\nSe regras múltiplas correspondem a um domínio, a regra mais importante irá ser selecionada. Atualmente isto está definido como:\n`Instantaneamente > Na saída > Nunca > No arranque`.\n\nSe nenhuma regra corresponder a um domínio, a regra de contingência irá ser utilizada.\n\n## Expressões válidas\n- Qualquer nome de servidor (por exemplo www.google.com) é uma expressão válida.\n- Um asterisco (*) pode ser utilizado como marcador de posição para um segmento (por exemplo *.google.com ou www.\\*.com).\n\n### Expressões específicas de cookies\nPode criar regras para combinações de nome de cookie e domínio.\n- Exemplo: `nomedecookie@*.google.com`\n- `nomedecookie` pode ser qualquer nome de cookie válido.\n- As mesmas regras, como vistas acima, aplicam-se para a parte específica do domínio à direita do sinal `@`.\n- As regras específicas de cookies são sempre preferidas sobre as regras normais.\n\n## Cookies de terceiros\n- Quando um cookie é definido sem pertencer a um domínio que está aberto num separador, é considerado um cookie de terceiros.\n- Está a ser feita pesquisa para melhorar este método.\n\n## Modo suspensão\n\nNo separador de popup \"Modo suspensão\", pode desativar temporariamente a limpeza automática. Paire sob o ícone instruções (ou clique no mesmo se estiver no android).\n\n## Tipos de dados para limpar\n\nPode escolher que dados limpar:\n- **Cookies**: Cookies HTTP normais. (Cookies Flash são cobertos por \"Dados de plugins\").\n- **Armazenamento local** e **Indexed DB**: Os websites podem armazenar dados no seu navegador para permitir certas funcionalidades ou memorizar algo para a próxima visita.\nAlgumas vezes o Firefox refere-se a *Indexed DB* como \"Armazenamento\", por isso se o Firefox lhe disser que youtube.com utiliza alguns MB de armazenamento, é provavelmente *Indexed DB*.\n- **Histórico**: Isto contém todas as suas visitas a websites.\n- **Tranferências**: Isto contém o histórico das transferências.\nLimpar as transferências não remove os ficheiros no seu disco.\n- **Dados de formulários**: A certa altura deve ter introduzido informação em, por exemplo, um contacto ou formulário de cobrança.\nDependendo das suas definições, isto pode ter sido guardado, para que seja fácil para você reintroduzir estes valores.\n- **Palavras-passe**: Pode ter dito ao Firefox para memorizar certas palavras-passe. Escolha isto para removê-las novamente.\n- **Dados de plugins**: PLugins (não extras/web-extensions) como Adobe Flash ou Acrobat Reader podem armazenar dados como cookies Flash ou outra informação e definições.\n- **Service Workers**: Os Service Workers são uma maneira de permitir aos websites serem utilizados offline e também ajudam a acelerar o carregamento de aplicações web que fazem uso disto.\n- **Certificados vinculados ao servidor**: Se adicionou certificados para permitir ligações a um servidor, então esta é a opção para os limpar.",
+        "hash": "5b74c6bc9b27eec64490d14cda2871c3"
     },
     "experimental_page": {
-        "message": "## Funcionalidades experimentais\n\n- De tempo em tempo irão haver novas funcionalidades que serão marcadas como experimentais.\n- Estas serão desativadas por predefinição e terão de ser manualmente ativadas.\n- Estas funcionalidades são utilizadas para avaliar novas maneiras de melhorar a extensão.\n- Estas podem ser instáveis ou ter mau desempenho.\n- Se tiver problemas, tente desligar estas funcionalidades.\n- Por favor submeta feedback e relatórios de bugs no [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experiências ativas atualmente:\n- **Purgar cookies expirados**:\nQuando uma limpeza acontece, os cookies que têm uma data de expiração definida no passado irão ser removidos independentemente das regras configuradas. Normalmente o Firefox apenas apaga os cookies expirados quando um certo limite é atingido.\nEsses cookies não iriam ser enviados para o website, mas ainda lá estariam. Esta opção irá ajudar a remover estes cookies fantasma. \n- **Negar cookies de terceiros**:\nSe ativado, todos os pedidos web serão intercetados para remover cookies de domínios que não pertencem aos URLs de separadores e não são protegidos por uma regra. Por isso estes cookies nunca serão definidos.\n\nPor favor dê-me feedback na sua experiência com estas experiências, para que eu possa decidir se vou adicioná-las ou não permanentemente.",
-        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
+        "message": "## Funcionalidades experimentais\n\n- De tempo em tempo irão haver novas funcionalidades que serão marcadas como experimentais.\n- Estas serão desativadas por predefinição e terão de ser manualmente ativadas.\n- Estas funcionalidades são utilizadas para avaliar novas maneiras de melhorar a extensão.\n- Estas podem ser instáveis ou ter mau desempenho.\n- Se tiver problemas, tente desligar estas funcionalidades.\n- Por favor submeta feedback e relatórios de bugs no [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experiências ativas atualmente:\n- **Purgar cookies expirados**:\nQuando uma limpeza acontece, os cookies que têm uma data de expiração definida no passado irão ser removidos independentemente das regras configuradas. Normalmente o Firefox apenas apaga os cookies expirados quando um certo limite é atingido.\nEsses cookies não iriam ser enviados para o website, mas ainda lá estariam. Esta opção irá ajudar a remover estes cookies fantasma. \n- **Negar cookies de terceiros**:\nSe ativado, todos os pedidos web serão intercetados para remover cookies de domínios que não pertencem aos URLs de separadores e não são protegidos por uma regra. Por isso estes cookies nunca serão definidos.\n\nPor favor dê-me feedback na sua experiência com estas experiências, para que eu possa decidir adicioná-las ou não permanentemente.",
+        "hash": "f51573de7d1305324e703f03bf5424c2"
     },
 
     "__WET_LOCALE__": { "message": "pt-PT" }

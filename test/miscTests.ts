@@ -6,13 +6,14 @@
 
 import { assert } from "chai";
 import { getValidHostname, destroyAllAndEmpty } from "../src/shared";
-import { getFirstPartyCookieDomain, parseSetCookieHeader } from "../src/background/backgroundHelpers";
+import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, runIfCookieStoreNotIncognito } from "../src/background/backgroundHelpers";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { removeCookie, cleanLocalStorage } from "../src/background/backgroundShared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { browserMock } from "./browserMock";
 import { createSpy, doneHandler } from "./testHelpers";
 import { settings } from "../src/lib/settings";
+import { CleanupType } from "../src/lib/settingsSignature";
 
 describe("Misc functionality", () => {
     const receivers: ReceiverHandle[] = [];
@@ -91,6 +92,70 @@ describe("Misc functionality", () => {
         it("should return null if set-cookie headers is invalid", () => {
             assert.equal(parseSetCookieHeader("hello; domain=www.google.de", fallbackDomain), null);
             assert.equal(parseSetCookieHeader("", fallbackDomain), null);
+        });
+    });
+
+    describe("getBadgeForCleanupType", () => {
+        [
+            { type: CleanupType.NEVER, badge: badges.never },
+            { type: CleanupType.STARTUP, badge: badges.startup },
+            { type: CleanupType.LEAVE, badge: badges.leave },
+            { type: CleanupType.INSTANTLY, badge: badges.instantly },
+            { type: "unknown" as any as CleanupType, badge: badges.leave }
+        ].forEach(({ type, badge }) => {
+            it(`should return the correct badge for ${type}`, () => {
+                assert.equal(getBadgeForCleanupType(type), badge);
+            });
+        });
+    });
+
+    describe("getAllCookieStoreIds", () => {
+        beforeEach(() => {
+            browserMock.cookies.cookieStores = [
+                { id: "cs-1", tabIds: [], incognito: false },
+                { id: "cs-2", tabIds: [], incognito: false },
+                { id: "cs-4", tabIds: [], incognito: false }
+            ];
+            browserMock.contextualIdentities.contextualIdentities = [
+                { name: "", icon: "", iconUrl: "", color: "", colorCode: "", cookieStoreId: "ci-1" },
+                { name: "", icon: "", iconUrl: "", color: "", colorCode: "", cookieStoreId: "ci-2" },
+                { name: "", icon: "", iconUrl: "", color: "", colorCode: "", cookieStoreId: "ci-4" }
+            ];
+        });
+        it("should return the correct cookie store ids", (done) => {
+            getAllCookieStoreIds().then(doneHandler((ids: string[]) => {
+                assert.sameMembers(ids, ["firefox-default", "firefox-private", "cs-1", "cs-2", "cs-4", "ci-1", "ci-2", "ci-4"]);
+            }, done));
+        });
+    });
+
+    describe("runIfCookieStoreNotIncognito", () => {
+        beforeEach(() => {
+            browserMock.cookies.cookieStores = [
+                { id: "my-default", tabIds: [browserMock.tabs.create("something", "my-default", false)], incognito: false },
+                { id: "my-pryvate", tabIds: [browserMock.tabs.create("something", "my-pryvate", true)], incognito: true }
+            ];
+        });
+
+        [
+            { storeId: "private", result: false },
+            { storeId: "anything-private-anything", result: false },
+            { storeId: "firefox", result: true },
+            { storeId: "anything-firefox-anything", result: true },
+            { storeId: "my-default", result: true },
+            { storeId: "my-pryvate", result: false }
+        ].forEach(({ storeId, result }) => {
+            // tslint:disable-next-line:only-arrow-functions
+            it(`${result ? "Should" : "Should not"} run callback for storeId ${storeId}`, function (done) {
+                let isDone = false;
+                setTimeout(() => {
+                    !isDone && done(result ? new Error("Callback didn't run") : undefined);
+                }, 10);
+                runIfCookieStoreNotIncognito(storeId, () => {
+                    isDone = true;
+                    done(result ? undefined : new Error("Callback has been run"));
+                });
+            });
         });
     });
 

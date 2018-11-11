@@ -3,16 +3,30 @@ import { Dialog, showDialog, hideDialog } from "./dialog";
 import { on } from "../../lib/htmlUtils";
 import { HelpLink } from "../helpLink";
 import { SettingsCheckbox } from "../settingsCheckbox";
-import { CLEANUP_SETTINGS } from "../popupTabs/settingsTabs/cleanupTab";
 import { connectSettings, permanentDisableSettings } from "../../lib/htmlSettings";
 import { isFirefox, browserInfo } from "../../lib/browserInfo";
 import { messageUtil } from "../../lib/messageUtil";
+import { SettingsKey } from "../../lib/settingsSignature";
 
 const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 interface CleanDialogProps {
     button: HTMLElement;
 }
+
+type CleanupRow = [string, SettingsKey, SettingsKey | null];
+const CLEANUP_SETTINGS: CleanupRow[] = [
+    // i18n, manualCleanup, manualCleanupRules
+    ["setting_cookies", "cleanAll.cookies", "cleanAll.cookies.applyRules"],
+    ["setting_local_storage", "cleanAll.localStorage", "cleanAll.localStorage.applyRules"],
+    ["setting_history", "cleanAll.history", "cleanAll.history.applyRules"],
+    ["setting_downloads", "cleanAll.downloads", "cleanAll.downloads.applyRules"],
+    ["setting_form_data", "cleanAll.formData", null],
+    ["setting_passwords", "cleanAll.passwords", null],
+    ["setting_indexed_db", "cleanAll.indexedDB", null],
+    ["setting_plugin_data", "cleanAll.pluginData", null],
+    ["setting_service_workers", "cleanAll.serviceWorkers", null]
+];
 
 export function CleanDialog({ button }: CleanDialogProps) {
     function onOK() {
@@ -23,7 +37,7 @@ export function CleanDialog({ button }: CleanDialogProps) {
         hideDialog(dialog);
     }
 
-    const rows = CLEANUP_SETTINGS.map(([i18n, startup, startupRules, domainLeave, manualCleanup, manualCleanupRules]) => {
+    const rows = CLEANUP_SETTINGS.map(([i18n, manualCleanup, manualCleanupRules]) => {
         return <tr>
             <td data-i18n={i18n} />
             <td>{manualCleanup && <SettingsCheckbox key={manualCleanup} />}</td>

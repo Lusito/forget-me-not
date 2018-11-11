@@ -23,6 +23,7 @@ import { HelpBubble } from "../hoverBubbles/helpBubble";
 import { LogoWithLink } from "../logo/logoWithLink";
 import "./style.scss";
 import { CleanDialog } from "../dialogs/cleanDialog";
+import { EXPORT_IGNORE_KEYS, SettingsKey } from "../../lib/settingsSignature";
 
 const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
@@ -51,8 +52,8 @@ settings.onReady(() => {
     if (!removeLocalStorageByHostname)
         permanentDisableSettings(["domainLeave.localStorage", "startup.localStorage.applyRules" ], true);
 
-    messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-        if (changedKeys.length > 1 || changedKeys.indexOf("domainsToClean") === -1)
+    messageUtil.receive("settingsChanged", (changedKeys: SettingsKey[]) => {
+        if (changedKeys.some((key) => EXPORT_IGNORE_KEYS.indexOf(key) === -1))
             updateFromSettings();
     });
 

@@ -22,7 +22,7 @@ describe("TabWatcher", () => {
             onDomainEnter: createSpy(),
             onDomainLeave: createSpy()
         };
-        // fixme: add tabWatcher and ensure it gets called, also remove the | null part from the constructor parameter
+        // fixme: add RecentlyAccessedDomain and ensure it gets called, also remove the | null part from the constructor parameter
         watcher = new TabWatcher(listener, null);
     }
 

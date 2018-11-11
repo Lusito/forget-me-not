@@ -81,7 +81,7 @@ describe("Header Filter", () => {
             headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
             assert.isTrue(headerFilter.isEnabled());
         });
-        it("should return true if cleanThirdPartyCookies.beforeCreation was set before creation", (done) => {
+        it("should return true if cleanThirdPartyCookies.beforeCreation was set after creation", (done) => {
             tabWatcher = ensureNotNull(tabWatcher);
             recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
             headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
@@ -91,22 +91,32 @@ describe("Header Filter", () => {
                 assert.isTrue(headerFilter.isEnabled());
             }, done));
         });
-        it("should return true if a instantlying rule existed on creation", () => {
-            tabWatcher = ensureNotNull(tabWatcher);
-            recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
-            settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
-            headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
-            assert.isTrue(headerFilter.isEnabled());
-        });
-        it("should return true if a instantlying rule was added after creation", (done) => {
-            tabWatcher = ensureNotNull(tabWatcher);
-            recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
-            headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
-            settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
-            settings.save().then(doneHandler(() => {
-                headerFilter = ensureNotNull(headerFilter);
-                assert.isTrue(headerFilter.isEnabled());
-            }, done));
+
+        [true, false].forEach((value) => {
+            context(`with instantly.enabled=${value}`, () => {
+                beforeEach(() => {
+                    settings.set("instantly.enabled", value);
+                    settings.save();
+                });
+
+                it(`should return ${value} if an instantly rule existed before creation`, () => {
+                    tabWatcher = ensureNotNull(tabWatcher);
+                    recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
+                    settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
+                    headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
+                    assert.equal(headerFilter.isEnabled(), value);
+                });
+                it(`should return ${value} if an instantly rule was added after creation`, (done) => {
+                    tabWatcher = ensureNotNull(tabWatcher);
+                    recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
+                    headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
+                    settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
+                    settings.save().then(doneHandler(() => {
+                        headerFilter = ensureNotNull(headerFilter);
+                        assert.equal(headerFilter.isEnabled(), value);
+                    }, done));
+                });
+            });
         });
     });
 

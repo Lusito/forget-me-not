@@ -10,11 +10,11 @@ import { TabWatcher } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { browser, WebRequest } from "webextension-polyfill-ts";
 import { getValidHostname, destroyAndNull } from "../shared";
-import { CleanupType } from "../lib/settingsSignature";
+import { CleanupType, SettingsKey } from "../lib/settingsSignature";
 import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";
 
-const HEADER_FILTER_SETTINGS_KEYS = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule"];
+const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule", "instantly.enabled"];
 
 export class HeaderFilter {
     private settingsReceiver: ReceiverHandle | null = null;
@@ -74,7 +74,7 @@ export class HeaderFilter {
 
     private updateSettings() {
         this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
-        if (this.blockThirdpartyCookies || settings.hasBlockingRule())
+        if (this.blockThirdpartyCookies || settings.get("instantly.enabled") && settings.hasBlockingRule())
             browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, { urls: ["<all_urls>"] }, ["responseHeaders", "blocking"]);
         else
             browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);

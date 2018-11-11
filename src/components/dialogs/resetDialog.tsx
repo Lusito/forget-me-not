@@ -6,13 +6,15 @@ export function ResetDialog() {
     function onResetSettingsAndRules() {
         hideDialog(dialog);
         settings.setAll({
-            domainsToClean: settings.get("domainsToClean")
+            domainsToClean: settings.get("domainsToClean"),
+            downloadsToClean: settings.get("downloadsToClean")
         });
     }
     function onResetSettings() {
         hideDialog(dialog);
         settings.setAll({
             domainsToClean: settings.get("domainsToClean"),
+            downloadsToClean: settings.get("downloadsToClean"),
             rules: settings.get("rules"),
             fallbackRule: settings.get("fallbackRule"),
             whitelistNoTLD: settings.get("whitelistNoTLD"),

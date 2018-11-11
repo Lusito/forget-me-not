@@ -5,6 +5,7 @@ import { browser } from "webextension-polyfill-ts";
 import { loadJSONFile, saveJSONFile } from "../../../lib/fileHelper";
 import { settings } from "../../../lib/settings";
 import { ResetDialog } from "../../dialogs/resetDialog";
+import { EXPORT_IGNORE_KEYS } from "../../../lib/settingsSignature";
 
 function onImport() {
     // desktop firefox closes popup when dialog is shown
@@ -25,7 +26,7 @@ function onImport() {
 
 function onExport() {
     const exported = settings.getAll();
-    delete exported.domainsToClean;
+    EXPORT_IGNORE_KEYS.forEach((key) => delete exported[key]);
     saveJSONFile(exported, "forget-me-not-settings.json");
 }
 

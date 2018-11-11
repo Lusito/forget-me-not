@@ -6,6 +6,7 @@
 
 import { getDomain } from "tldjs";
 import { CleanupType } from "../lib/settingsSignature";
+import { browser } from "webextension-polyfill-ts";
 
 export function getFirstPartyCookieDomain(domain: string) {
     const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
@@ -79,5 +80,43 @@ export function getBadgeForCleanupType(type: CleanupType) {
             return badges.leave;
         case CleanupType.INSTANTLY:
             return badges.instantly;
+    }
+}
+
+// Workaround for getAllCookieStores returning only active cookie stores.
+// See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
+export function getAllCookieStoreIds() {
+    const ids: {[s: string]: boolean} = {
+        "firefox-default": true,
+        "firefox-private": true
+    };
+    return browser.cookies.getAllCookieStores().then((cookieStores) => {
+        for (const store of cookieStores)
+            ids[store.id] = true;
+        if (browser.contextualIdentities)
+            return browser.contextualIdentities.query({});
+        return [];
+    }).then((contextualIdentities) => {
+        for (const ci of contextualIdentities)
+            ids[ci.cookieStoreId] = true;
+        return Object.getOwnPropertyNames(ids);
+    });
+}
+
+export function runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
+    if (storeId.indexOf("private") >= 0)
+        return;
+    if (storeId.indexOf("firefox") >= 0)
+        callback();
+    else {
+        browser.cookies.getAllCookieStores().then((cookieStores) => {
+            const store = cookieStores.find((s) => s.id === storeId);
+            if (store && store.tabIds.length) {
+                browser.tabs.get(store.tabIds[0]).then((tab) => {
+                    if (!tab.incognito)
+                        callback();
+                });
+            }
+        });
     }
 }

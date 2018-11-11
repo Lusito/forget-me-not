@@ -25,6 +25,7 @@ export interface SettingsTypeMap {
     "whitelistFileSystem": boolean;
     "fallbackRule": CleanupType;
     "domainsToClean": { [s: string]: boolean };
+    "downloadsToClean": { [s: string]: boolean };
     "showBadge": boolean;
     "initialTab": string;
     "lastTab": string;
@@ -34,7 +35,9 @@ export interface SettingsTypeMap {
     "cleanAll.localStorage.applyRules": boolean;
     "cleanAll.protectOpenDomains": boolean;
     "cleanAll.history": boolean;
+    "cleanAll.history.applyRules": boolean;
     "cleanAll.downloads": boolean;
+    "cleanAll.downloads.applyRules": boolean;
     "cleanAll.formData": boolean;
     "cleanAll.passwords": boolean;
     "cleanAll.indexedDB": boolean;
@@ -50,6 +53,15 @@ export interface SettingsTypeMap {
     "domainLeave.delay": number;
     "domainLeave.cookies": boolean;
     "domainLeave.localStorage": boolean;
+    "domainLeave.history": boolean;
+    "domainLeave.downloads": boolean;
+
+    "instantly.enabled": boolean;
+    "instantly.cookies": boolean;
+    "instantly.history": boolean;
+    "instantly.history.applyRules": boolean;
+    "instantly.downloads": boolean;
+    "instantly.downloads.applyRules": boolean;
 
     "startup.enabled": boolean;
     "startup.cookies.applyRules": boolean;
@@ -57,7 +69,9 @@ export interface SettingsTypeMap {
     "startup.localStorage.applyRules": boolean;
     "startup.localStorage": boolean;
     "startup.history": boolean;
+    "startup.history.applyRules": boolean;
     "startup.downloads": boolean;
+    "startup.downloads.applyRules": boolean;
     "startup.formData": boolean;
     "startup.passwords": boolean;
     "startup.indexedDB": boolean;
@@ -71,4 +85,10 @@ export interface SettingsTypeMap {
     "logRAD.limit": number;
 }
 
-export type SettingsSignature = { [K in keyof SettingsTypeMap]: SettingsTypeMap[K] };
+export type SettingsKey = keyof SettingsTypeMap;
+export type SettingsSignature = { [K in SettingsKey]: SettingsTypeMap[K] };
+
+export const EXPORT_IGNORE_KEYS: SettingsKey[] = [
+    "domainsToClean",
+    "downloadsToClean"
+];

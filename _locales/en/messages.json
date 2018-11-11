@@ -99,7 +99,7 @@
         "message": "*I*nstantly"
     },
     "cleanup_type_instantly_button@title": {
-        "message": "Cookies will be prevented from ever being set"
+        "message": "Block/remove on creation"
     },
     "cleanup_type_create_button": {
         "message": "Create Rule"

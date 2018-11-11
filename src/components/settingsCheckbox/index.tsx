@@ -1,7 +1,8 @@
 import { h } from "tsx-dom";
+import { SettingsKey } from "../../lib/settingsSignature";
 
 interface SettingsCheckboxProps {
-    key: string;
+    key: SettingsKey;
     i18n?: string;
     enabledBy?: string;
 }

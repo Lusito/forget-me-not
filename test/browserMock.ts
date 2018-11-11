@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies, ContextualIdentities } from "webextension-polyfill-ts";
 import { assert } from "chai";
 import { createSpy, clone } from "./testHelpers";
 
@@ -67,6 +67,20 @@ class BrowsingDataMock {
     }
 }
 
+class BrowserContextualIdentitiesMock {
+    public contextualIdentities: ContextualIdentities.ContextualIdentity[] = [];
+
+    public reset() {
+        this.contextualIdentities = [];
+    }
+
+    public query(details: ContextualIdentities.QueryDetailsType): Promise<ContextualIdentities.ContextualIdentity[]> {
+        return new Promise<ContextualIdentities.ContextualIdentity[]>((resolve, reject) => {
+            resolve(clone(this.contextualIdentities));
+        });
+    }
+}
+
 const DOMAIN_PATH_SPLIT = /\/(.*)/;
 
 class BrowserCookiesMock {
@@ -74,12 +88,15 @@ class BrowserCookiesMock {
     public remove = createSpy(this._remove);
     public set = createSpy(this._set);
     public getAll = createSpy(this._getAll);
+    public getAllCookieStores = createSpy(this._getAllCookieStores);
+    public cookieStores: Cookies.CookieStore[] = [];
 
     public reset() {
         this.cookies.length = 0;
         this.remove.reset();
         this.set.reset();
         this.getAll.reset();
+        this.cookieStores = [];
     }
 
     private findCookie(name: string, secure: boolean, domain: string, path: string, storeId: string, firstPartyDomain?: string) {
@@ -148,6 +165,12 @@ class BrowserCookiesMock {
             resolve(clone(cookies));
         });
     }
+
+    private _getAllCookieStores() {
+        return new Promise<Cookies.CookieStore[]>((resolve, reject) => {
+            resolve(clone(this.cookieStores));
+        });
+    }
 }
 
 class BrowserTabsMock {
@@ -162,22 +185,33 @@ class BrowserTabsMock {
         this.onCreated.reset();
     }
 
+    public get(tabId: number) {
+        return new Promise<Tabs.Tab>((resolve, reject) => {
+            const tab = this.tabs.find((t) => t.id === tabId);
+            if (tab) {
+                resolve(clone(tab));
+            } else {
+                reject("Tab doesn't exist");
+            }
+        });
+    }
+
     public getTabs(): Tabs.Tab[] {
         return this.tabs;
     }
 
-    public get(tabId: number): Tabs.Tab | undefined {
+    public byId(tabId: number): Tabs.Tab | undefined {
         return this.tabs.find((ti) => ti.id === tabId);
     }
 
-    public create(url: string, cookieStoreId: string) {
+    public create(url: string, cookieStoreId: string, incognito = false) {
         const id = ++this.idCount;
         const tab: Tabs.Tab = {
             active: true,
             cookieStoreId,
             highlighted: false,
             id,
-            incognito: false,
+            incognito,
             index: this.tabs.length,
             isArticle: false,
             isInReaderMode: false,
@@ -204,6 +238,14 @@ class BrowserTabsMock {
         while (i < this.tabs.length)
             this.tabs[i].index = i++;
     }
+
+    public query(queryInfo: Tabs.QueryQueryInfoType) {
+        return {
+            then(resolve: (tabs: Tabs.Tab[]) => void) {
+                resolve(browserMock.tabs.getTabs());
+            }
+        };
+    }
 }
 
 class BrowserWebNavigationMock {
@@ -216,7 +258,7 @@ class BrowserWebNavigationMock {
     }
 
     public beforeNavigate(tabId: number, url: string) {
-        const tab = browserMock.tabs.get(tabId);
+        const tab = browserMock.tabs.byId(tabId);
         assert.isDefined(tab);
         if (tab) {
             this.onBeforeNavigate.emit({
@@ -230,7 +272,7 @@ class BrowserWebNavigationMock {
     }
 
     public commit(tabId: number, url: string) {
-        const tab = browserMock.tabs.get(tabId);
+        const tab = browserMock.tabs.byId(tabId);
         assert.isDefined(tab);
         if (tab) {
             tab.url = url;
@@ -335,6 +377,7 @@ class StorageAreaMock {
 export const browserMock = {
     browsingData: new BrowsingDataMock(),
     cookies: new BrowserCookiesMock(),
+    contextualIdentities: new BrowserContextualIdentitiesMock(),
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
     webRequest: new BrowserWebRequestMock(),
@@ -346,57 +389,33 @@ export const browserMock = {
     reset: () => {
         browserMock.browsingData.reset();
         browserMock.cookies.reset();
+        browserMock.contextualIdentities.reset();
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
         browserMock.storage.local.reset();
     }
 };
 
-// @ts-ignore
-browser.browsingData = {
-    remove: browserMock.browsingData.remove.bind(browserMock.browsingData)
-};
+function mockMethods<DT>(destination: DT, source: any, keys: Array<keyof DT>) {
+    if (!destination) destination = {} as any;
+    for (const key of keys) {
+        let mock = source[key];
+        if (typeof (mock.get) === "function")
+            mock = mock.get();
+        else
+            mock = mock.bind(source);
+        (destination as any)[key] = mock;
+    }
+    return destination;
+}
 
-// @ts-ignore
-browser.cookies = {
-    getAll: browserMock.cookies.getAll.bind(browserMock.cookies),
-    set: browserMock.cookies.set.bind(browserMock.cookies),
-    remove: browserMock.cookies.remove.bind(browserMock.cookies)
-};
-
-// @ts-ignore
-browser.tabs = {
-    // @ts-ignore
-    query: (queryInfo) => {
-        return {
-            then(resolve: (tabs: Tabs.Tab[]) => void) {
-                resolve(browserMock.tabs.getTabs());
-            }
-        };
-    },
-    onRemoved: browserMock.tabs.onRemoved.get(),
-    onCreated: browserMock.tabs.onCreated.get()
-};
-
-// @ts-ignore
-browser.webNavigation = {
-    onBeforeNavigate: browserMock.webNavigation.onBeforeNavigate.get(),
-    onCommitted: browserMock.webNavigation.onCommitted.get()
-};
-
-// @ts-ignore
-browser.webRequest = {
-    onHeadersReceived: browserMock.webRequest.onHeadersReceived.get()
-};
-
-// @ts-ignore
-browser.runtime = {
-    onMessage: browserMock.runtime.onMessage.get(),
-    sendMessage: browserMock.runtime.sendMessage.bind(browserMock.runtime)
-};
-
-// @ts-ignore
-browser.storage = {
-    onChanged: browserMock.storage.onChanged.get(),
-    local: browserMock.storage.local
-};
+browser.browsingData = mockMethods(browser.browsingData, browserMock.browsingData, ["remove"]);
+browser.cookies = mockMethods(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores"]);
+browser.contextualIdentities = mockMethods(browser.contextualIdentities, browserMock.contextualIdentities, ["query"]);
+browser.tabs = mockMethods(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
+browser.webNavigation = mockMethods(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted"]);
+browser.webRequest = mockMethods(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
+browser.runtime = mockMethods(browser.runtime, browserMock.runtime, ["onMessage", "sendMessage"]);
+browser.webRequest = mockMethods(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
+browser.storage = mockMethods(browser.storage, browserMock.storage, ["onChanged"]);
+browser.storage.local = browserMock.storage.local;

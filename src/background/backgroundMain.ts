@@ -23,7 +23,6 @@ settings.onReady(() => {
     messageUtil.receive("cleanUrlNow", (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
     messageUtil.receive("toggleSnoozingState", () => background.toggleSnoozingState());
     messageUtil.receive("getSnoozingState", () => background.sendSnoozingState());
-    browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
 
     // listen for tab changes to update badge
     const badgeUpdater = () => background.updateBadge();

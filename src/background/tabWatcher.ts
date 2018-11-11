@@ -33,6 +33,7 @@ export class TabWatcher {
     private readonly listener: TabWatcherListener;
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
+    private lastDomainChangeByCookieStore: { [s: string]: number } = {};
     private readonly recentlyAccessedDomains: RecentlyAccessedDomains | null;
 
     public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains | null) {
@@ -68,7 +69,7 @@ export class TabWatcher {
             tabInfo.nextHostnameFP = (tabInfo.nextHostname && getDomain(tabInfo.nextHostname)) || tabInfo.nextHostname;
             tabInfo.navigating = true;
         } else {
-            this.getTab(tabId);
+            this.updateTabInfo(tabId);
         }
     }
 
@@ -86,21 +87,30 @@ export class TabWatcher {
             if (hostname && this.recentlyAccessedDomains)
                 this.recentlyAccessedDomains.add(hostname);
         } else {
-            this.getTab(tabId);
+            this.updateTabInfo(tabId);
         }
     }
 
     private checkDomainEnter(cookieStoreId: string, hostname: string) {
-        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true))
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true)) {
             this.listener.onDomainEnter(cookieStoreId, hostname);
+            this.lastDomainChangeByCookieStore[cookieStoreId] = Date.now();
+        }
     }
 
     private checkDomainLeave(cookieStoreId: string, hostname: string) {
-        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname))
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname)) {
             this.listener.onDomainLeave(cookieStoreId, hostname);
+            this.lastDomainChangeByCookieStore[cookieStoreId] = Date.now();
+        }
     }
 
-    private getTab(tabId: number) {
+    // Fixme: test
+    public getLastDomainChange(cookieStoreId: string) {
+        return this.lastDomainChangeByCookieStore[cookieStoreId] || 0;
+    }
+
+    private updateTabInfo(tabId: number) {
         browser.tabs.get(tabId).then((tab) => {
             if (!tab.incognito && !this.tabInfos[tabId]) {
                 const hostname = tab.url ? getValidHostname(tab.url) : "";
@@ -131,6 +141,16 @@ export class TabWatcher {
         const list = this.tabInfosByCookieStore[cookieStoreId];
         if (list)
             return list.findIndex((ti) => ti.hostname === domain || !ignoreNext && ti.navigating && ti.nextHostname === domain) !== -1;
+        return false;
+    }
+
+    // Fixme: test
+    public containsDomain(domain: string) {
+        for (const key in this.tabInfos) {
+            const ti = this.tabInfos[key];
+            if (ti.hostname === domain || ti.navigating && ti.nextHostname === domain)
+                return true;
+        }
         return false;
     }
 

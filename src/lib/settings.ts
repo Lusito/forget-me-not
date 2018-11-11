@@ -28,6 +28,7 @@ export const defaultSettings: SettingsMap = {
     "whitelistFileSystem": true,
     "fallbackRule": CleanupType.LEAVE,
     "domainsToClean": {},
+    "downloadsToClean": {},
     "showBadge": true,
     "initialTab": "this_tab",
     "lastTab": "this_tab",
@@ -37,7 +38,9 @@ export const defaultSettings: SettingsMap = {
     "cleanAll.localStorage.applyRules": localStorageDefault,
     "cleanAll.protectOpenDomains": true,
     "cleanAll.history": false,
+    "cleanAll.history.applyRules": true,
     "cleanAll.downloads": true,
+    "cleanAll.downloads.applyRules": true,
     "cleanAll.formData": false,
     "cleanAll.passwords": false,
     "cleanAll.indexedDB": true,
@@ -53,6 +56,15 @@ export const defaultSettings: SettingsMap = {
     "domainLeave.delay": 2,
     "domainLeave.cookies": true,
     "domainLeave.localStorage": localStorageDefault,
+    "domainLeave.history": false,
+    "domainLeave.downloads": false,
+
+    "instantly.enabled": true,
+    "instantly.cookies": true,
+    "instantly.history": false,
+    "instantly.history.applyRules": true,
+    "instantly.downloads": false,
+    "instantly.downloads.applyRules": true,
 
     "startup.enabled": false,
     "startup.cookies": true,
@@ -60,7 +72,9 @@ export const defaultSettings: SettingsMap = {
     "startup.localStorage": localStorageDefault,
     "startup.localStorage.applyRules": localStorageDefault,
     "startup.history": false,
+    "startup.history.applyRules": true,
     "startup.downloads": true,
+    "startup.downloads.applyRules": false,
     "startup.formData": false,
     "startup.passwords": false,
     "startup.indexedDB": true,
@@ -276,6 +290,7 @@ export class Settings {
     }
 
     // Convenience methods
+    // Fixme: test
     public getExactCleanupType(rule: string) {
         for (const crd of this.rules) {
             if (crd.definition.rule === rule)
@@ -331,6 +346,18 @@ export class Settings {
         return this.get("fallbackRule");
     }
 
+    // Fixme: test
+    public isDomainProtected(domain: string, ignoreStartupType: boolean) {
+        const type = this.getCleanupTypeForDomain(domain);
+        return type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType);
+    }
+
+    // Fixme: test
+    public isDomainBlocked(domain: string) {
+        return this.getCleanupTypeForDomain(domain) === CleanupType.INSTANTLY;
+    }
+
+    // Fixme: test
     public getChosenRulesForDomain(domain: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
             return [];
@@ -348,6 +375,7 @@ export class Settings {
         return [];
     }
 
+    // Fixme: test
     public setRule(expression: string, type: CleanupType) {
         const rules = this.get("rules").slice();
         const ruleDef = rules.find((r) => r.rule === expression);
@@ -359,6 +387,7 @@ export class Settings {
         this.save();
     }
 
+    // Fixme: test
     public removeRule(expression: string) {
         const rules = this.get("rules").filter((r) => r.rule !== expression);
         this.set("rules", rules);

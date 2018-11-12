@@ -396,26 +396,25 @@ export const browserMock = {
     }
 };
 
-function mockMethods<DT>(destination: DT, source: any, keys: Array<keyof DT>) {
+function bindMocks<DT>(destination: DT, source: any, keys: Array<keyof DT>) {
     if (!destination) destination = {} as any;
     for (const key of keys) {
         let mock = source[key];
-        if (typeof (mock.get) === "function")
-            mock = mock.get();
-        else
+        if (typeof (mock) === "function")
             mock = mock.bind(source);
+        else if (mock.constructor.name === "ListenerMock")
+            mock = mock.get();
         (destination as any)[key] = mock;
     }
     return destination;
 }
 
-browser.browsingData = mockMethods(browser.browsingData, browserMock.browsingData, ["remove"]);
-browser.cookies = mockMethods(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores"]);
-browser.contextualIdentities = mockMethods(browser.contextualIdentities, browserMock.contextualIdentities, ["query"]);
-browser.tabs = mockMethods(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
-browser.webNavigation = mockMethods(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted"]);
-browser.webRequest = mockMethods(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
-browser.runtime = mockMethods(browser.runtime, browserMock.runtime, ["onMessage", "sendMessage"]);
-browser.webRequest = mockMethods(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
-browser.storage = mockMethods(browser.storage, browserMock.storage, ["onChanged"]);
-browser.storage.local = browserMock.storage.local;
+browser.browsingData = bindMocks(browser.browsingData, browserMock.browsingData, ["remove"]);
+browser.cookies = bindMocks(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores"]);
+browser.contextualIdentities = bindMocks(browser.contextualIdentities, browserMock.contextualIdentities, ["query"]);
+browser.tabs = bindMocks(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
+browser.webNavigation = bindMocks(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted"]);
+browser.webRequest = bindMocks(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
+browser.runtime = bindMocks(browser.runtime, browserMock.runtime, ["onMessage", "sendMessage"]);
+browser.webRequest = bindMocks(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
+browser.storage = bindMocks(browser.storage, browserMock.storage, ["onChanged", "local"]);

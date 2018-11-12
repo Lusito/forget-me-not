@@ -6,7 +6,7 @@
 
 import { assert } from "chai";
 import { getValidHostname, destroyAllAndEmpty } from "../src/shared";
-import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, runIfCookieStoreNotIncognito } from "../src/background/backgroundHelpers";
+import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, getCookieStoreIncognito } from "../src/background/backgroundHelpers";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { removeCookie, cleanLocalStorage } from "../src/background/backgroundShared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
@@ -129,7 +129,7 @@ describe("Misc functionality", () => {
         });
     });
 
-    describe("runIfCookieStoreNotIncognito", () => {
+    describe("getCookieStoreIncognito", () => {
         beforeEach(() => {
             browserMock.cookies.cookieStores = [
                 { id: "my-default", tabIds: [browserMock.tabs.create("something", "my-default", false)], incognito: false },
@@ -138,23 +138,18 @@ describe("Misc functionality", () => {
         });
 
         [
-            { storeId: "private", result: false },
-            { storeId: "anything-private-anything", result: false },
-            { storeId: "firefox", result: true },
-            { storeId: "anything-firefox-anything", result: true },
-            { storeId: "my-default", result: true },
-            { storeId: "my-pryvate", result: false }
+            { storeId: "private", result: true },
+            { storeId: "anything-private-anything", result: true },
+            { storeId: "firefox", result: false },
+            { storeId: "anything-firefox-anything", result: false },
+            { storeId: "my-default", result: false },
+            { storeId: "my-pryvate", result: true }
         ].forEach(({ storeId, result }) => {
             // tslint:disable-next-line:only-arrow-functions
-            it(`${result ? "Should" : "Should not"} run callback for storeId ${storeId}`, function (done) {
-                let isDone = false;
-                setTimeout(() => {
-                    !isDone && done(result ? new Error("Callback didn't run") : undefined);
-                }, 10);
-                runIfCookieStoreNotIncognito(storeId, () => {
-                    isDone = true;
-                    done(result ? undefined : new Error("Callback has been run"));
-                });
+            it(`Should return ${result} for storeId ${storeId}`, function (done) {
+                getCookieStoreIncognito(storeId).then(doneHandler((incognito: boolean) => {
+                    assert.equal(incognito, result);
+                }, done));
             });
         });
     });

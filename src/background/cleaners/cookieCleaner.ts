@@ -6,7 +6,7 @@
 
 import { BrowsingData, Cookies, browser } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
-import { getAllCookieStoreIds, getFirstPartyCookieDomain, runIfCookieStoreNotIncognito } from "../backgroundHelpers";
+import { getAllCookieStoreIds, getFirstPartyCookieDomain, getCookieStoreIncognito } from "../backgroundHelpers";
 import { settings } from "../../lib/settings";
 import DelayedExecution from "../../lib/delayedExecution";
 import { removeCookie } from "../backgroundShared";
@@ -88,13 +88,15 @@ export class CookieCleaner extends Cleaner {
 
     private onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
-            runIfCookieStoreNotIncognito(changeInfo.cookie.storeId, () => {
-                this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
-                // Cookies set by javascript can't be denied, but can be removed instantly.
-                if (this.shouldRemoveCookieInstantly(changeInfo.cookie))
-                    removeCookie(changeInfo.cookie);
-                else if (settings.get("cleanThirdPartyCookies.enabled"))
-                    this.removeCookieIfThirdparty(changeInfo.cookie);
+            getCookieStoreIncognito(changeInfo.cookie.storeId).then((incognito) => {
+                if (incognito) {
+                    this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
+                    // Cookies set by javascript can't be denied, but can be removed instantly.
+                    if (this.shouldRemoveCookieInstantly(changeInfo.cookie))
+                        removeCookie(changeInfo.cookie);
+                    else if (settings.get("cleanThirdPartyCookies.enabled"))
+                        this.removeCookieIfThirdparty(changeInfo.cookie);
+                }
             });
         }
     }

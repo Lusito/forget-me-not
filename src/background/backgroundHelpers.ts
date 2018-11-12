@@ -103,20 +103,19 @@ export function getAllCookieStoreIds() {
     });
 }
 
-export function runIfCookieStoreNotIncognito(storeId: string, callback: () => void) {
+export function getCookieStoreIncognito(storeId: string) {
     if (storeId.indexOf("private") >= 0)
-        return;
+        return Promise.resolve(true);
     if (storeId.indexOf("firefox") >= 0)
-        callback();
-    else {
-        browser.cookies.getAllCookieStores().then((cookieStores) => {
-            const store = cookieStores.find((s) => s.id === storeId);
-            if (store && store.tabIds.length) {
-                browser.tabs.get(store.tabIds[0]).then((tab) => {
-                    if (!tab.incognito)
-                        callback();
-                });
-            }
-        });
-    }
+        return Promise.resolve(false);
+
+    return browser.cookies.getAllCookieStores().then((cookieStores) => {
+        const store = cookieStores.find((s) => s.id === storeId);
+        if (store && store.tabIds.length) {
+            return browser.tabs.get(store.tabIds[0]).then((tab) => {
+                return tab.incognito;
+            });
+        }
+        return false;
+    });
 }

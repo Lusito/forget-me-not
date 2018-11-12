@@ -7,8 +7,9 @@
 import { assert } from "chai";
 import { TabWatcher } from "../src/background/tabWatcher";
 import { browserMock } from "./browserMock";
-import { ensureNotNull, createSpy, SpyData } from "./testHelpers";
+import { ensureNotNull, createSpy, SpyData, spyOn } from "./testHelpers";
 import { destroyAndNull } from "../src/shared";
+import { RecentlyAccessedDomains } from "../src/background/recentlyAccessedDomains";
 
 describe("TabWatcher", () => {
     beforeEach(() => browserMock.reset());
@@ -17,17 +18,36 @@ describe("TabWatcher", () => {
         onDomainLeave: SpyData
     };
     let watcher: TabWatcher | null = null;
+    let recentlyAccessedDomainAddSpy: SpyData | null = null;
     function setupWatcher() {
         listener = {
             onDomainEnter: createSpy(),
             onDomainLeave: createSpy()
         };
-        // fixme: add RecentlyAccessedDomain and ensure it gets called, also remove the | null part from the constructor parameter
-        watcher = new TabWatcher(listener, null);
+        const recentlyAccessedDomain = new RecentlyAccessedDomains();
+        recentlyAccessedDomainAddSpy = spyOn(recentlyAccessedDomain, "add");
+        watcher = new TabWatcher(listener, recentlyAccessedDomain);
     }
 
     afterEach(() => {
         watcher = destroyAndNull(watcher);
+    });
+
+    describe("recentlyAccessedDomain", () => {
+        it("add() should be called on tab create and commit", () => {
+            setupWatcher();
+            recentlyAccessedDomainAddSpy = ensureNotNull(recentlyAccessedDomainAddSpy);
+            const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
+            const tabId2 = browserMock.tabs.create("http://www.google.de", "firefox-private");
+            browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.jp");
+            browserMock.webNavigation.commit(tabId1, "http://www.google.fr");
+            browserMock.tabs.remove(tabId2);
+            recentlyAccessedDomainAddSpy.assertCalls([
+                ["www.google.com"],
+                ["www.google.de"],
+                ["www.google.fr"]
+            ]);
+        });
     });
 
     describe("listener", () => {

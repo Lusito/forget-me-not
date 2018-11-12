@@ -50,6 +50,14 @@ export function createSpy(wrappedFunction?: Function) {
     return spyData;
 }
 
+export function spyOn<T>(instance: T, method: keyof T) {
+    const original = instance[method];
+    assert.isFunction(original);
+    const spy = createSpy(original as any);
+    instance[method] = spy as any;
+    return spy;
+}
+
 export const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 export function ensureNotNull<T>(value: T | null): T {

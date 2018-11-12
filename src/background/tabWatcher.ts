@@ -34,9 +34,9 @@ export class TabWatcher {
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
     private lastDomainChangeByCookieStore: { [s: string]: number } = {};
-    private readonly recentlyAccessedDomains: RecentlyAccessedDomains | null;
+    private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
 
-    public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains | null) {
+    public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains) {
         this.listener = listener;
         this.recentlyAccessedDomains = recentlyAccessedDomains;
         browser.tabs.query({}).then((tabs) => {
@@ -84,7 +84,7 @@ export class TabWatcher {
             tabInfo.nextHostname = tabInfo.nextHostnameFP = "";
             tabInfo.navigating = false;
             this.checkDomainLeave(tabInfo.cookieStoreId, previousHostname);
-            if (hostname && this.recentlyAccessedDomains)
+            if (hostname)
                 this.recentlyAccessedDomains.add(hostname);
         } else {
             this.updateTabInfo(tabId);
@@ -115,7 +115,7 @@ export class TabWatcher {
             if (!tab.incognito && !this.tabInfos[tabId]) {
                 const hostname = tab.url ? getValidHostname(tab.url) : "";
                 this.setTabInfo(tabId, hostname, tab.cookieStoreId);
-                if (hostname && this.recentlyAccessedDomains)
+                if (hostname)
                     this.recentlyAccessedDomains.add(hostname);
             }
         });
@@ -178,7 +178,7 @@ export class TabWatcher {
             } else {
                 this.setTabInfo(tab.id, hostname, tab.cookieStoreId);
             }
-            if (hostname && this.recentlyAccessedDomains)
+            if (hostname)
                 this.recentlyAccessedDomains.add(hostname);
         }
     }

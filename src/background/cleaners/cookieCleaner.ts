@@ -28,9 +28,7 @@ export class CookieCleaner extends Cleaner {
         this.tabWatcher = tabWatcher;
         this.recentlyAccessedDomains = recentlyAccessedDomains;
 
-        // fixme: tests
-        if (browser.cookies.onChanged)
-            browser.cookies.onChanged.addListener(this.onCookieChanged.bind(this));
+        browser.cookies.onChanged.addListener(this.onCookieChanged.bind(this));
     }
 
     public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {

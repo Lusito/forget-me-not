@@ -68,7 +68,6 @@ describe("CookieCleaner", () => {
         browserMock.reset();
         recentlyAccessedDomains = new RecentlyAccessedDomains();
         tabWatcher = new TabWatcher(tabWatcherListener, recentlyAccessedDomains);
-        cleaner = new CookieCleaner(tabWatcher, recentlyAccessedDomains);
 
         const tabIds = [
             browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
@@ -90,6 +89,7 @@ describe("CookieCleaner", () => {
             { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY }
         ]);
         settings.save();
+        cleaner = new CookieCleaner(tabWatcher, recentlyAccessedDomains);
     });
 
     describe("clean", () => {
@@ -305,7 +305,7 @@ describe("CookieCleaner", () => {
                 settings.set("domainLeave.enabled", false);
                 settings.set("domainLeave.cookies", false);
                 settings.save();
-                browserMock.cookies.reset();
+                browserMock.cookies.resetCookies();
                 setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN);
                 setCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, BLACKLISTED_DOMAIN);
             });
@@ -322,6 +322,64 @@ describe("CookieCleaner", () => {
                 assertRemainingCookieDomains(done, [GRAYLISTED_DOMAIN]);
             });
         });
+    });
+
+    describe("onCookieChanged", () => {
+        beforeEach(() => {
+            browserMock.cookies.resetCookies();
+        });
+
+        // fixme: incognito or not
+        [[true, false], [false, true], [false, false]].forEach(([instantlyEnabled, instantlyCookies]) => {
+            context(`instantly.enabled = ${instantlyEnabled}, instantly.cookies = ${instantlyCookies}`, () => {
+                beforeEach(() => {
+                    settings.set("instantly.enabled", instantlyEnabled);
+                    settings.set("instantly.cookies", instantlyCookies);
+                    settings.save();
+                });
+                it("Should not remove blacklisted cookies", (done) => {
+                    cleaner = ensureNotNull(cleaner);
+                    setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    assertRemainingCookieDomains(done, [BLACKLISTED_DOMAIN]);
+                });
+                it("Should not remove whitelisted cookies", (done) => {
+                    cleaner = ensureNotNull(cleaner);
+                    setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
+                });
+            });
+        });
+        context("instantly.enabled = true, instantly.cookies = true", () => {
+            beforeEach(() => {
+                settings.set("instantly.enabled", true);
+                settings.set("instantly.cookies", true);
+                settings.save();
+            });
+            it("Should remove blacklisted cookies", (done) => {
+                cleaner = ensureNotNull(cleaner);
+                setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                assertRemainingCookieDomains(done, []);
+            });
+            it("Should not remove whitelisted cookies", (done) => {
+                cleaner = ensureNotNull(cleaner);
+                setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
+            });
+        });
+
+        // fixme: thirdparty, whitelisted thirdparty cookies?, delay
+        // context("cleanThirdPartyCookies.enabled = true", () => {
+        //     beforeEach(() => {
+        //         settings.set("cleanThirdPartyCookies.enabled", true);
+        //         settings.set("cleanThirdPartyCookies.delay", 0);
+        //         settings.save();
+        //     });
+        //     it("Should remove third-party cookies", (done) => {
+        //         cleaner = ensureNotNull(cleaner);
+        //         setCookie(UNKNOWN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        //         assertRemainingCookieDomains(done, []);
+        //     });
+        // });
     });
 
     // Fixme: setSnoozing, onChanged

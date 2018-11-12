@@ -90,6 +90,7 @@ class BrowserCookiesMock {
     public getAll = createSpy(this._getAll);
     public getAllCookieStores = createSpy(this._getAllCookieStores);
     public cookieStores: Cookies.CookieStore[] = [];
+    public onChanged = new ListenerMock<(changeInfo: Cookies.OnChangedChangeInfoType) => void>();
 
     public reset() {
         this.cookies.length = 0;
@@ -97,6 +98,11 @@ class BrowserCookiesMock {
         this.set.reset();
         this.getAll.reset();
         this.cookieStores = [];
+        this.onChanged.reset();
+    }
+
+    public resetCookies() {
+        this.cookies.length = 0;
     }
 
     private findCookie(name: string, secure: boolean, domain: string, path: string, storeId: string, firstPartyDomain?: string) {
@@ -128,6 +134,11 @@ class BrowserCookiesMock {
                 };
                 this.cookies.push(cookie);
             }
+            this.onChanged.emit({
+                removed: false,
+                cookie: clone(cookie),
+                cause: "explicit"
+            });
             resolve(clone(cookie));
         });
     }
@@ -143,6 +154,11 @@ class BrowserCookiesMock {
             if (cookie) {
                 const index = this.cookies.indexOf(cookie);
                 this.cookies.splice(index, 1);
+                this.onChanged.emit({
+                    removed: true,
+                    cookie: clone(cookie),
+                    cause: "explicit"
+                });
                 resolve({
                     url: details.url,
                     name: details.name,
@@ -410,7 +426,7 @@ function bindMocks<DT>(destination: DT, source: any, keys: Array<keyof DT>) {
 }
 
 browser.browsingData = bindMocks(browser.browsingData, browserMock.browsingData, ["remove"]);
-browser.cookies = bindMocks(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores"]);
+browser.cookies = bindMocks(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores", "onChanged"]);
 browser.contextualIdentities = bindMocks(browser.contextualIdentities, browserMock.contextualIdentities, ["query"]);
 browser.tabs = bindMocks(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
 browser.webNavigation = bindMocks(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted"]);

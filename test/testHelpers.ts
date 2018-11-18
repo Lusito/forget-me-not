@@ -39,7 +39,7 @@ export function createSpy(wrappedFunction?: Function) {
         spyData.reset();
     };
     spyData.assertNoCall = () => {
-        assert.equal(spyData.callCount, 0);
+        assert.strictEqual(spyData.callCount, 0);
     };
 
     spyData.reset = () => {
@@ -87,4 +87,20 @@ export function createCookieDomainInfo(domain: string, type: "never" | "startup"
         i18nBadge: `${className}_badge`,
         i18nButton: `${className}_button`
     };
+}
+
+export function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function booleanVariations(count: number): boolean[][] {
+    const result: boolean[][] = [];
+    const size = Math.pow(2, count);
+    for (let i = 0; i < size; i++) {
+        const entry = i.toString(2).split("").map((b) => b === "0" ? false : true);
+        while (entry.length !== count)
+            entry.unshift(false);
+        result.push(entry);
+    }
+    return result;
 }

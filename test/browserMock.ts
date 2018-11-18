@@ -303,11 +303,10 @@ class BrowserWebNavigationMock {
 }
 
 class BrowserWebRequestMock {
-    // Fixme: polyfill doesn't set WebRequest.BlockingResponse as return value..
-    public onHeadersReceived = new ListenerMock<(details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse>();
+    public onHeadersReceived = new ListenerMock<(details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse[]>();
 
-    public headersReceived(details: WebRequest.OnHeadersReceivedDetailsType): WebRequest.BlockingResponse[] {
-        return this.onHeadersReceived.emit(details) as WebRequest.BlockingResponse[];
+    public headersReceived(details: WebRequest.OnHeadersReceivedDetailsType) {
+        return this.onHeadersReceived.emit(details);
     }
 }
 
@@ -327,7 +326,7 @@ class StorageAreaMock {
     private readonly data: any = {};
 
     public get(keys?: null | string | string[] | { [s: string]: any }) {
-        assert.equal(keys, null); // only null supported for now
+        assert.isNull(keys); // only null supported for now
         return new Promise<{ [s: string]: any }>((resolve, reject) => {
             resolve(clone(this.data));
         });

@@ -33,7 +33,6 @@ export class TabWatcher {
     private readonly listener: TabWatcherListener;
     private tabInfos: { [s: string]: TabInfo } = {};
     private tabInfosByCookieStore: { [s: string]: TabInfo[] } = {};
-    private lastDomainChangeByCookieStore: { [s: string]: number } = {};
     private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
 
     public constructor(listener: TabWatcherListener, recentlyAccessedDomains: RecentlyAccessedDomains) {
@@ -92,22 +91,13 @@ export class TabWatcher {
     }
 
     private checkDomainEnter(cookieStoreId: string, hostname: string) {
-        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true)) {
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true))
             this.listener.onDomainEnter(cookieStoreId, hostname);
-            this.lastDomainChangeByCookieStore[cookieStoreId] = Date.now();
-        }
     }
 
     private checkDomainLeave(cookieStoreId: string, hostname: string) {
-        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname)) {
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname))
             this.listener.onDomainLeave(cookieStoreId, hostname);
-            this.lastDomainChangeByCookieStore[cookieStoreId] = Date.now();
-        }
-    }
-
-    // Fixme: test
-    public getLastDomainChange(cookieStoreId: string) {
-        return this.lastDomainChangeByCookieStore[cookieStoreId] || 0;
     }
 
     private updateTabInfo(tabId: number) {
@@ -144,7 +134,6 @@ export class TabWatcher {
         return false;
     }
 
-    // Fixme: test
     public containsDomain(domain: string) {
         for (const key in this.tabInfos) {
             const ti = this.tabInfos[key];

@@ -24,28 +24,28 @@ describe("Misc functionality", () => {
 
     describe("getValidHostname", () => {
         it("should return hostnames for valid urls", () => {
-            assert.equal(getValidHostname("http://www.google.com"), "www.google.com");
-            assert.equal(getValidHostname("https://www.google.com"), "www.google.com");
+            assert.strictEqual(getValidHostname("http://www.google.com"), "www.google.com");
+            assert.strictEqual(getValidHostname("https://www.google.com"), "www.google.com");
         });
         it("should return emptystring for invalid urls", () => {
-            assert.equal(getValidHostname("hhttp://www.google.com"), "");
-            assert.equal(getValidHostname("httpss://www.google.com"), "");
-            assert.equal(getValidHostname("file://www.google.com"), "");
-            assert.equal(getValidHostname("chrome://www.google.com"), "");
-            assert.equal(getValidHostname("about:preferences"), "");
-            assert.equal(getValidHostname("Bu][$<|-|!7"), "");
-            assert.equal(getValidHostname(null as any), "");
+            assert.strictEqual(getValidHostname("hhttp://www.google.com"), "");
+            assert.strictEqual(getValidHostname("httpss://www.google.com"), "");
+            assert.strictEqual(getValidHostname("file://www.google.com"), "");
+            assert.strictEqual(getValidHostname("chrome://www.google.com"), "");
+            assert.strictEqual(getValidHostname("about:preferences"), "");
+            assert.strictEqual(getValidHostname("Bu][$<|-|!7"), "");
+            assert.strictEqual(getValidHostname(null as any), "");
         });
     });
 
     describe("getFirstPartyCookieDomain", () => {
         it("should return first party domains for valid cookie domains", () => {
-            assert.equal(getFirstPartyCookieDomain("www.google.com"), "google.com");
-            assert.equal(getFirstPartyCookieDomain(".google.com"), "google.com");
-            assert.equal(getFirstPartyCookieDomain("google.com"), "google.com");
-            assert.equal(getFirstPartyCookieDomain(".michelgagne.blogspot.de"), "michelgagne.blogspot.de");
-            assert.equal(getFirstPartyCookieDomain("michelgagne.blogspot.de"), "michelgagne.blogspot.de");
-            assert.equal(getFirstPartyCookieDomain("hello.michelgagne.blogspot.de"), "michelgagne.blogspot.de");
+            assert.strictEqual(getFirstPartyCookieDomain("www.google.com"), "google.com");
+            assert.strictEqual(getFirstPartyCookieDomain(".google.com"), "google.com");
+            assert.strictEqual(getFirstPartyCookieDomain("google.com"), "google.com");
+            assert.strictEqual(getFirstPartyCookieDomain(".michelgagne.blogspot.de"), "michelgagne.blogspot.de");
+            assert.strictEqual(getFirstPartyCookieDomain("michelgagne.blogspot.de"), "michelgagne.blogspot.de");
+            assert.strictEqual(getFirstPartyCookieDomain("hello.michelgagne.blogspot.de"), "michelgagne.blogspot.de");
         });
     });
 
@@ -90,8 +90,8 @@ describe("Misc functionality", () => {
             });
         });
         it("should return null if set-cookie headers is invalid", () => {
-            assert.equal(parseSetCookieHeader("hello; domain=www.google.de", fallbackDomain), null);
-            assert.equal(parseSetCookieHeader("", fallbackDomain), null);
+            assert.strictEqual(parseSetCookieHeader("hello; domain=www.google.de", fallbackDomain), null);
+            assert.strictEqual(parseSetCookieHeader("", fallbackDomain), null);
         });
     });
 
@@ -104,7 +104,7 @@ describe("Misc functionality", () => {
             { type: "unknown" as any as CleanupType, badge: badges.leave }
         ].forEach(({ type, badge }) => {
             it(`should return the correct badge for ${type}`, () => {
-                assert.equal(getBadgeForCleanupType(type), badge);
+                assert.strictEqual(getBadgeForCleanupType(type), badge);
             });
         });
     });
@@ -148,7 +148,7 @@ describe("Misc functionality", () => {
             // tslint:disable-next-line:only-arrow-functions
             it(`Should return ${result} for storeId ${storeId}`, function (done) {
                 getCookieStoreIncognito(storeId).then(doneHandler((incognito: boolean) => {
-                    assert.equal(incognito, result);
+                    assert.strictEqual(incognito, result);
                 }, done));
             });
         });
@@ -193,10 +193,10 @@ describe("Misc functionality", () => {
 
             let doneCount = 0;
             browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.equal(cookies.length, 6);
+                assert.strictEqual(cookies.length, 6);
             }, done, () => (++doneCount === 2)));
             browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.equal(cookies.length, 2);
+                assert.strictEqual(cookies.length, 2);
             }, done, () => (++doneCount === 2)));
         });
         it("should emit cookieRemoved event", () => {
@@ -225,13 +225,13 @@ describe("Misc functionality", () => {
             simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
             let doneCount = 0;
             browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.equal(cookies.length, 4);
+                assert.strictEqual(cookies.length, 4);
                 assert.isUndefined(cookies.find((c) => c.name === "hello" && c.domain === "google.com"));
                 assert.isUndefined(cookies.find((c) => c.name === "foo" && c.domain === "google.com"));
                 assert.notEqual(cookies.findIndex((c) => c.name === "oh_long" && c.domain === "google.com"), -1);
             }, done, () => (++doneCount === 2)));
             browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.equal(cookies.length, 1);
+                assert.strictEqual(cookies.length, 1);
                 assert.notEqual(cookies.findIndex((c) => c.name === "hello" && c.domain === "google.com"), -1);
                 assert.isUndefined(cookies.find((c) => c.name === "foo" && c.domain === "google.com"));
             }, done, () => (++doneCount === 2)));

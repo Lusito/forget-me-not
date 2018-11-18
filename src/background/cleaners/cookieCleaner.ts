@@ -89,7 +89,7 @@ export class CookieCleaner extends Cleaner {
     private onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed) {
             getCookieStoreIncognito(changeInfo.cookie.storeId).then((incognito) => {
-                if (incognito) {
+                if (!incognito) {
                     this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
                     // Cookies set by javascript can't be denied, but can be removed instantly.
                     if (this.shouldRemoveCookieInstantly(changeInfo.cookie))
@@ -102,24 +102,23 @@ export class CookieCleaner extends Cleaner {
     }
 
     private removeCookieIfThirdparty(cookie: Cookies.Cookie) {
-        if (this.isThirdpartyCookie(cookie)) {
-            if (this.snoozing) {
-                this.snoozedThirdpartyCookies.push(cookie);
-                return;
-            }
-            const exec = new DelayedExecution(() => {
+        getCookieStoreIncognito(cookie.storeId).then((incognito) => {
+            if (!incognito && this.isThirdpartyCookie(cookie)) {
                 if (this.snoozing) {
                     this.snoozedThirdpartyCookies.push(cookie);
                     return;
                 }
-                const delta = Date.now() - this.tabWatcher.getLastDomainChange(cookie.storeId);
-                if (delta < 1000)
-                    exec.restart(500);
-                else if (this.isThirdpartyCookie(cookie))
-                    removeCookie(cookie);
-            });
-            exec.restart(settings.get("cleanThirdPartyCookies.delay") * 60 * 1000);
-        }
+                const exec = new DelayedExecution(() => {
+                    if (this.snoozing) {
+                        this.snoozedThirdpartyCookies.push(cookie);
+                        return;
+                    }
+                    if (this.isThirdpartyCookie(cookie) && !this.isCookieAllowed(cookie, false, false))
+                        removeCookie(cookie);
+                });
+                exec.restart(settings.get("cleanThirdPartyCookies.delay") * 60 * 1000);
+            }
+        });
     }
 
     private isThirdpartyCookie(cookie: Cookies.Cookie) {

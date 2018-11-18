@@ -29,7 +29,7 @@ describe("Recently Accessed Domains", () => {
             settings.save();
             recentlyAccessedDomains = new RecentlyAccessedDomains();
             assert.isFalse(recentlyAccessedDomains.isEnabled());
-            assert.equal(recentlyAccessedDomains.getLimit(), 42);
+            assert.strictEqual(recentlyAccessedDomains.getLimit(), 42);
         });
         it("should detect settings after creation", (done) => {
             recentlyAccessedDomains = new RecentlyAccessedDomains();
@@ -40,7 +40,7 @@ describe("Recently Accessed Domains", () => {
             settings.save().then(doneHandler(() => {
                 recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                 assert.isFalse(recentlyAccessedDomains.isEnabled());
-                assert.equal(recentlyAccessedDomains.getLimit(), 42);
+                assert.strictEqual(recentlyAccessedDomains.getLimit(), 42);
             }, done));
         });
         it("should not do anything if logRAD.enabled === false", () => {

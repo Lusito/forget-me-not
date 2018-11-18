@@ -9,13 +9,13 @@ import { ruleToRegExString, getRegExForRule } from "../src/lib/regexp";
 
 describe("ruleToRegExString", () => {
     it("should create correct regular expressions", () => {
-        assert.equal(ruleToRegExString("*"), ".*");
-        assert.equal(ruleToRegExString("*.a"), "(^|\\.)a$");
-        assert.equal(ruleToRegExString("*.a.bc"), "(^|\\.)a\\.bc$");
-        assert.equal(ruleToRegExString("www.google.co"), "^www\\.google\\.co$");
-        assert.equal(ruleToRegExString("*.g.ogle.co"), "(^|\\.)g\\.ogle\\.co$");
-        assert.equal(ruleToRegExString("*.a.*"), "(^|\\.)a($|\\..*)");
-        assert.equal(ruleToRegExString("*.a.*.b.*.c.*"), "(^|\\.)a(\\..*\\.|\\.)b(\\..*\\.|\\.)c($|\\..*)");
+        assert.strictEqual(ruleToRegExString("*"), ".*");
+        assert.strictEqual(ruleToRegExString("*.a"), "(^|\\.)a$");
+        assert.strictEqual(ruleToRegExString("*.a.bc"), "(^|\\.)a\\.bc$");
+        assert.strictEqual(ruleToRegExString("www.google.co"), "^www\\.google\\.co$");
+        assert.strictEqual(ruleToRegExString("*.g.ogle.co"), "(^|\\.)g\\.ogle\\.co$");
+        assert.strictEqual(ruleToRegExString("*.a.*"), "(^|\\.)a($|\\..*)");
+        assert.strictEqual(ruleToRegExString("*.a.*.b.*.c.*"), "(^|\\.)a(\\..*\\.|\\.)b(\\..*\\.|\\.)c($|\\..*)");
     });
 });
 

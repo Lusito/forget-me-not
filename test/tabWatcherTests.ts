@@ -144,6 +144,38 @@ describe("TabWatcher", () => {
             assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.de"));
         });
     });
+    describe("containsDomain", () => {
+        it("should work with multiple cookie stores", () => {
+            setupWatcher();
+
+            watcher = ensureNotNull(watcher);
+            assert.isFalse(watcher.containsDomain("www.google.com"));
+
+            const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
+            assert.isTrue(watcher.containsDomain("www.google.com"));
+            assert.isFalse(watcher.containsDomain("www.google.de"));
+
+            const tabId2 = browserMock.tabs.create("http://www.google.com", "firefox-default");
+            assert.isTrue(watcher.containsDomain("www.google.com"));
+
+            browserMock.tabs.remove(tabId1);
+            assert.isTrue(watcher.containsDomain("www.google.com"));
+            browserMock.tabs.remove(tabId2);
+            assert.isFalse(watcher.containsDomain("www.google.com"));
+        });
+        it("should work during navigation", () => {
+            setupWatcher();
+
+            watcher = ensureNotNull(watcher);
+            const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
+            browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
+            assert.isTrue(watcher.containsDomain("www.google.com"));
+            assert.isTrue(watcher.containsDomain("www.google.de"));
+            browserMock.webNavigation.commit(tabId1, "http://www.google.de");
+            assert.isFalse(watcher.containsDomain("www.google.com"));
+            assert.isTrue(watcher.containsDomain("www.google.de"));
+        });
+    });
     describe("isThirdPartyCookieOnTab", () => {
         it("should detect if a cookie domain is third-party for a specified tab", () => {
             setupWatcher();

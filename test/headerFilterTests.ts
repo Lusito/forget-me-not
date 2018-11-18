@@ -104,7 +104,7 @@ describe("Header Filter", () => {
                     recentlyAccessedDomains = ensureNotNull(recentlyAccessedDomains);
                     settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
                     headerFilter = new HeaderFilter(tabWatcher, recentlyAccessedDomains);
-                    assert.equal(headerFilter.isEnabled(), value);
+                    assert.strictEqual(headerFilter.isEnabled(), value);
                 });
                 it(`should return ${value} if an instantly rule was added after creation`, (done) => {
                     tabWatcher = ensureNotNull(tabWatcher);
@@ -113,7 +113,7 @@ describe("Header Filter", () => {
                     settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
                     settings.save().then(doneHandler(() => {
                         headerFilter = ensureNotNull(headerFilter);
-                        assert.equal(headerFilter.isEnabled(), value);
+                        assert.strictEqual(headerFilter.isEnabled(), value);
                     }, done));
                 });
             });

@@ -13,7 +13,7 @@ import { destroyAndNull } from "../../src/shared";
 import { settings } from "../../src/lib/settings";
 import { CleanupType } from "../../src/lib/settingsSignature";
 import { CookieCleaner } from "../../src/background/cleaners/cookieCleaner";
-import { ensureNotNull, doneHandler } from "../testHelpers";
+import { ensureNotNull, doneHandler, booleanVariations, sleep } from "../testHelpers";
 
 const COOKIE_STORE_ID = "mock";
 const WHITELISTED_DOMAIN = "never.com";
@@ -37,11 +37,11 @@ function setCookie(domain: string, name: string, value: string, path: string, st
     });
 }
 
-function assertRemainingCookieDomains(done: MochaDone, domainList: string[]) {
+function assertRemainingCookieDomains(done: MochaDone, domainList: string[], storeId = COOKIE_STORE_ID) {
     setTimeout(() => {
         browser.cookies.getAll({
             firstPartyDomain: null,
-            storeId: COOKIE_STORE_ID
+            storeId
         }).then(doneHandler((cookies: Cookies.Cookie[]) => {
             assert.sameMembers(cookies.map((c) => c.domain), domainList);
         }, done));
@@ -225,7 +225,7 @@ describe("CookieCleaner", () => {
                 assert.isDefined(cookie);
                 if (cookie) {
                     cleaner = ensureNotNull(cleaner);
-                    assert.equal(cleaner.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains), expected);
+                    assert.strictEqual(cleaner.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains), expected);
                 }
             }, done, doneCondition));
         }
@@ -329,58 +329,76 @@ describe("CookieCleaner", () => {
             browserMock.cookies.resetCookies();
         });
 
-        // fixme: incognito or not
-        [[true, false], [false, true], [false, false]].forEach(([instantlyEnabled, instantlyCookies]) => {
-            context(`instantly.enabled = ${instantlyEnabled}, instantly.cookies = ${instantlyCookies}`, () => {
+        booleanVariations(4).forEach(([incognito, instantlyEnabled, instantlyCookies, snoozing]) => {
+            context(`incognito = ${incognito}, instantly.enabled = ${instantlyEnabled}, instantly.cookies = ${instantlyCookies}, snoozing = ${snoozing}`, () => {
                 beforeEach(() => {
                     settings.set("instantly.enabled", instantlyEnabled);
                     settings.set("instantly.cookies", instantlyCookies);
                     settings.save();
+                    ensureNotNull(cleaner).setSnoozing(snoozing);
                 });
-                it("Should not remove blacklisted cookies", (done) => {
-                    cleaner = ensureNotNull(cleaner);
-                    setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    assertRemainingCookieDomains(done, [BLACKLISTED_DOMAIN]);
-                });
-                it("Should not remove whitelisted cookies", (done) => {
-                    cleaner = ensureNotNull(cleaner);
-                    setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
-                });
-            });
-        });
-        context("instantly.enabled = true, instantly.cookies = true", () => {
-            beforeEach(() => {
-                settings.set("instantly.enabled", true);
-                settings.set("instantly.cookies", true);
-                settings.save();
-            });
-            it("Should remove blacklisted cookies", (done) => {
-                cleaner = ensureNotNull(cleaner);
-                setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                assertRemainingCookieDomains(done, []);
-            });
-            it("Should not remove whitelisted cookies", (done) => {
-                cleaner = ensureNotNull(cleaner);
-                setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
+                if (!incognito && instantlyEnabled && instantlyCookies) {
+                    it("Should remove blacklisted cookies", (done) => {
+                        cleaner = ensureNotNull(cleaner);
+                        setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                        assertRemainingCookieDomains(done, []);
+                    });
+                    it("Should not remove whitelisted cookies", (done) => {
+                        cleaner = ensureNotNull(cleaner);
+                        setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                        assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
+                    });
+                } else {
+                    const localCookieStoreId = incognito ? "firefox-private" : COOKIE_STORE_ID;
+                    it("Should not remove blacklisted cookies", (done) => {
+                        cleaner = ensureNotNull(cleaner);
+                        setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", localCookieStoreId, "");
+                        assertRemainingCookieDomains(done, [BLACKLISTED_DOMAIN], localCookieStoreId);
+                    });
+                    it("Should not remove whitelisted cookies", (done) => {
+                        cleaner = ensureNotNull(cleaner);
+                        setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", localCookieStoreId, "");
+                        assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN], localCookieStoreId);
+                    });
+                }
             });
         });
 
-        // fixme: thirdparty, whitelisted thirdparty cookies?, delay
-        // context("cleanThirdPartyCookies.enabled = true", () => {
-        //     beforeEach(() => {
-        //         settings.set("cleanThirdPartyCookies.enabled", true);
-        //         settings.set("cleanThirdPartyCookies.delay", 0);
-        //         settings.save();
-        //     });
-        //     it("Should remove third-party cookies", (done) => {
-        //         cleaner = ensureNotNull(cleaner);
-        //         setCookie(UNKNOWN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        //         assertRemainingCookieDomains(done, []);
-        //     });
-        // });
+        booleanVariations(5).forEach(([incognito, thirdPartyEnabled, snoozing, delayed, whitelisted]) => {
+            const delay = delayed ? 0.001 : 0; // in minutes
+            const localCookieStoreId = incognito ? "firefox-private" : COOKIE_STORE_ID;
+            const localDomain = whitelisted ? WHITELISTED_DOMAIN : UNKNOWN_DOMAIN;
+            context(`incognito = ${incognito}, cleanThirdPartyCookies.enabled = ${thirdPartyEnabled}, cleanThirdPartyCookies.delay = ${delay}, snoozing = ${snoozing}, whitelisted=${whitelisted}`, () => {
+                beforeEach(() => {
+                    settings.set("cleanThirdPartyCookies.enabled", thirdPartyEnabled);
+                    settings.set("cleanThirdPartyCookies.delay", delay);
+                    settings.save();
+                    ensureNotNull(cleaner).setSnoozing(snoozing);
+                });
+                if (!incognito && thirdPartyEnabled && !snoozing && !whitelisted) {
+                    it(`Should remove cookie${delayed ? " delayed" : ""}`, function (done) {
+                        this.slow(300);
+                        cleaner = ensureNotNull(cleaner);
+                        setCookie(localDomain, "foo", "bar", "", localCookieStoreId, "");
+                        const finalAssert = () => assertRemainingCookieDomains(done, [], localCookieStoreId);
+                        if (delayed)
+                            assertRemainingCookieDomains((e) => e ? done(e) : sleep(100).then(finalAssert), [localDomain], localCookieStoreId);
+                        else
+                            finalAssert();
+                    });
+                } else {
+                    it(`Should not remove cookie${delayed ? " delayed" : ""}`, function (done) {
+                        this.slow(300);
+                        cleaner = ensureNotNull(cleaner);
+                        setCookie(localDomain, "foo", "bar", "", localCookieStoreId, "");
+                        const finalAssert = () => assertRemainingCookieDomains(done, [localDomain], localCookieStoreId);
+                        if (delayed)
+                            assertRemainingCookieDomains((e) => e ? done(e) : sleep(100).then(finalAssert), [localDomain], localCookieStoreId);
+                        else
+                            finalAssert();
+                    });
+                }
+            });
+        });
     });
-
-    // Fixme: setSnoozing, onChanged
 });

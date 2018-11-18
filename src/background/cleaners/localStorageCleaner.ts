@@ -8,7 +8,7 @@ import { settings } from "../../lib/settings";
 import { BrowsingData } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { getAllCookieStoreIds } from "../backgroundHelpers";
-import { cleanLocalStorage } from "../backgroundShared";
+import { cleanLocalStorage, removeLocalStorageByHostname } from "../backgroundShared";
 import { CleanupType } from "../../lib/settingsSignature";
 import { TabWatcher } from "../tabWatcher";
 
@@ -21,7 +21,7 @@ export class LocalStorageCleaner extends Cleaner {
     }
 
     public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
-        if (typeSet.localStorage) {
+        if (typeSet.localStorage && removeLocalStorageByHostname) {
             const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
             if (settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
                 typeSet.localStorage = false;

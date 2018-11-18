@@ -8,11 +8,10 @@ import { assert } from "chai";
 import { getValidHostname, destroyAllAndEmpty } from "../src/shared";
 import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, getCookieStoreIncognito } from "../src/background/backgroundHelpers";
 import { browser, Cookies } from "webextension-polyfill-ts";
-import { removeCookie, cleanLocalStorage } from "../src/background/backgroundShared";
+import { removeCookie } from "../src/background/backgroundShared";
 import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { browserMock } from "./browserMock";
 import { createSpy, doneHandler } from "./testHelpers";
-import { settings } from "../src/lib/settings";
 import { CleanupType } from "../src/lib/settingsSignature";
 
 describe("Misc functionality", () => {
@@ -251,34 +250,6 @@ describe("Misc functionality", () => {
                 [{ name: "foo", url: "https://google.de", storeId: "firefox-default", firstPartyDomain: "" }],
                 [{ name: "foo", url: "file:///C:/path/to/somewhere/", storeId: "firefox-default", firstPartyDomain: "" }]
             ]);
-        });
-    });
-
-    describe("cleanLocalStorage", () => {
-        it("should call browser.browsingData.remove", () => {
-            const hostnames = [
-                "google.com",
-                "amazon.de"
-            ];
-            cleanLocalStorage(hostnames, "firefox-default");
-            browserMock.browsingData.remove.assertCalls([[{
-                originTypes: { unprotectedWeb: true },
-                hostnames
-            }, { localStorage: true }]]);
-        });
-        it("should remove hostnames from domainsToClean", () => {
-            settings.set("domainsToClean", {
-                "google.com": true,
-                "www.google.com": true,
-                "amazon.de": true,
-                "wikipedia.org": true
-            });
-            settings.save();
-            cleanLocalStorage([
-                "google.com",
-                "amazon.de"
-            ], "firefox-default");
-            assert.deepEqual(settings.get("domainsToClean"), { "wikipedia.org": true, "www.google.com": true });
         });
     });
 });

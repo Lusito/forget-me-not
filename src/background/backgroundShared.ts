@@ -4,7 +4,6 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings } from "../lib/settings";
 import { isFirefox, browserInfo, isNodeTest } from "../lib/browserInfo";
 import { browser, Cookies } from "webextension-polyfill-ts";
 import { messageUtil } from "../lib/messageUtil";
@@ -41,23 +40,6 @@ export function removeCookie(cookie: Cookies.Cookie) {
     const promise = browser.cookies.remove(details);
     messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
     return promise;
-}
-
-export function cleanLocalStorage(hostnames: string[], cookieStoreId: string) {
-    // Fixme: use cookieStoreId when it's supported by firefox
-    if (removeLocalStorageByHostname) {
-        const domainsToClean = { ...settings.get("domainsToClean") };
-        for (const hostname of hostnames)
-            delete domainsToClean[hostname];
-        settings.set("domainsToClean", domainsToClean);
-        settings.save();
-        browser.browsingData.remove({
-            originTypes: { unprotectedWeb: true },
-            hostnames
-        }, { localStorage: true });
-        return true;
-    }
-    return false;
 }
 
 export function someItemsMatch<T>(changedKeys: T[], acceptedKeys: T[]) {

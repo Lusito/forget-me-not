@@ -5,10 +5,10 @@
  */
 
 import { settings } from "../../lib/settings";
-import { BrowsingData } from "webextension-polyfill-ts";
+import { BrowsingData, browser } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { getAllCookieStoreIds } from "../backgroundHelpers";
-import { cleanLocalStorage, removeLocalStorageByHostname } from "../backgroundShared";
+import { removeLocalStorageByHostname } from "../backgroundShared";
 import { CleanupType } from "../../lib/settingsSignature";
 import { TabWatcher } from "../tabWatcher";
 
@@ -28,7 +28,7 @@ export class LocalStorageCleaner extends Cleaner {
                 getAllCookieStoreIds().then((ids) => {
                     const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
                     for (const id of ids)
-                        cleanLocalStorage(hostnames, id);
+                        this.cleanDomains(id, hostnames);
                 });
             } else {
                 settings.set("domainsToClean", {});
@@ -39,11 +39,29 @@ export class LocalStorageCleaner extends Cleaner {
 
     public cleanDomainOnLeave(storeId: string, domain: string): void {
         if (settings.get("domainLeave.enabled") && settings.get("domainLeave.localStorage") && !this.isLocalStorageProtected(storeId, domain))
-            cleanLocalStorage([domain], storeId);
+            this.cleanDomains(storeId, [domain]);
     }
 
     public cleanDomain(storeId: string, domain: string): void {
-        cleanLocalStorage([domain], storeId);
+        this.cleanDomains(storeId, [domain]);
+    }
+
+    public cleanDomains(storeId: string, hostnames: string[]) {
+        // Fixme: use cookieStoreId when it's supported by firefox
+        if (removeLocalStorageByHostname) {
+            const domainsToClean = { ...settings.get("domainsToClean") };
+            for (const hostname of hostnames) {
+                if (!this.tabWatcher.containsDomain(hostname))
+                    delete domainsToClean[hostname];
+            }
+            settings.set("domainsToClean", domainsToClean);
+            settings.save();
+
+            browser.browsingData.remove({
+                originTypes: { unprotectedWeb: true },
+                hostnames
+            }, { localStorage: true });
+        }
     }
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean): boolean {

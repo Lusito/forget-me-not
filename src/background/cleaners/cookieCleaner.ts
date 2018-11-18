@@ -32,12 +32,10 @@ export class CookieCleaner extends Cleaner {
     }
 
     public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
-        if (typeSet.cookies) {
+        if (typeSet.cookies && settings.get(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")) {
+            typeSet.cookies = false;
             const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
-            if (settings.get(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")) {
-                typeSet.cookies = false;
-                this.cleanCookiesWithRulesNow(startup, protectOpenDomains);
-            }
+            this.cleanCookiesWithRulesNow(startup, protectOpenDomains);
         }
     }
 

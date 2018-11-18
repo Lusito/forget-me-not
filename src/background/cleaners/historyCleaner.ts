@@ -9,7 +9,6 @@ import { browser, BrowsingData, History } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { getValidHostname } from "../../shared";
 
-// fixme: make this file unit-testable and add tests
 export class HistoryCleaner extends Cleaner {
     public constructor() {
         super();
@@ -17,7 +16,7 @@ export class HistoryCleaner extends Cleaner {
     }
 
     private onVisited({ url }: History.HistoryItem) {
-        if (url && settings.get("instantly.enabled")) {
+        if (url && settings.get("instantly.enabled") && settings.get("instantly.history")) {
             const applyRules = settings.get("instantly.history.applyRules");
             const domain = getValidHostname(url);
             if (domain && (!applyRules || settings.isDomainBlocked(domain)))

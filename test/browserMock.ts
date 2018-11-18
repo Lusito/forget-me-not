@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies, ContextualIdentities } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies, ContextualIdentities, History } from "webextension-polyfill-ts";
 import { assert } from "chai";
 import { createSpy, clone } from "./testHelpers";
 
@@ -97,6 +97,7 @@ class BrowserCookiesMock {
         this.remove.reset();
         this.set.reset();
         this.getAll.reset();
+        this.getAllCookieStores.reset();
         this.cookieStores = [];
         this.onChanged.reset();
     }
@@ -186,6 +187,23 @@ class BrowserCookiesMock {
         return new Promise<Cookies.CookieStore[]>((resolve, reject) => {
             resolve(clone(this.cookieStores));
         });
+    }
+}
+
+class BrowserHistoryMock {
+    public onVisited = new ListenerMock<(result: History.HistoryItem) => void>();
+    public deleteUrl = createSpy();
+    public search = createSpy(this._search.bind(this));
+    public readonly items: History.HistoryItem[] = [];
+
+    public reset() {
+        this.onVisited.reset();
+        this.deleteUrl.reset();
+        this.items.length = 0;
+    }
+
+    private _search(query: History.SearchQueryType): Promise<History.HistoryItem[]> {
+        return new Promise((resolve) => resolve(clone(this.items)));
     }
 }
 
@@ -392,6 +410,7 @@ class StorageAreaMock {
 export const browserMock = {
     browsingData: new BrowsingDataMock(),
     cookies: new BrowserCookiesMock(),
+    history: new BrowserHistoryMock(),
     contextualIdentities: new BrowserContextualIdentitiesMock(),
     tabs: new BrowserTabsMock(),
     webNavigation: new BrowserWebNavigationMock(),
@@ -404,6 +423,7 @@ export const browserMock = {
     reset: () => {
         browserMock.browsingData.reset();
         browserMock.cookies.reset();
+        browserMock.history.reset();
         browserMock.contextualIdentities.reset();
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
@@ -426,6 +446,7 @@ function bindMocks<DT>(destination: DT, source: any, keys: Array<keyof DT>) {
 
 browser.browsingData = bindMocks(browser.browsingData, browserMock.browsingData, ["remove"]);
 browser.cookies = bindMocks(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores", "onChanged"]);
+browser.history = bindMocks(browser.history, browserMock.history, ["onVisited", "deleteUrl", "search"]);
 browser.contextualIdentities = bindMocks(browser.contextualIdentities, browserMock.contextualIdentities, ["query"]);
 browser.tabs = bindMocks(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
 browser.webNavigation = bindMocks(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted"]);

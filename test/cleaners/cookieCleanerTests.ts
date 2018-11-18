@@ -100,6 +100,32 @@ describe("CookieCleaner", () => {
             typeSet.cookies = true;
         });
 
+        booleanVariations(4).forEach(([cookies, startup, startupApplyRules, cleanAllApplyRules]) => {
+            context(`cookies=${cookies}, startup = ${startup}, startupApplyRules = ${startupApplyRules}, startupApplyRules = ${cleanAllApplyRules}`, () => {
+                beforeEach(() => {
+                    typeSet.cookies = cookies;
+                    settings.set("startup.cookies.applyRules", startupApplyRules);
+                    settings.set("cleanAll.cookies.applyRules", cleanAllApplyRules);
+                    settings.save();
+                });
+                if (cookies && (startup && startupApplyRules || !startup && cleanAllApplyRules)) {
+                    it("should clean up", () => {
+                        cleaner = ensureNotNull(cleaner);
+                        cleaner.clean(typeSet, startup);
+                        browserMock.cookies.getAllCookieStores.assertCalls([[]]);
+                        assert.isFalse(typeSet.cookies);
+                    });
+                } else {
+                    it("should not do anything", () => {
+                        cleaner = ensureNotNull(cleaner);
+                        cleaner.clean(typeSet, startup);
+                        browserMock.cookies.getAllCookieStores.assertNoCall();
+                        assert.strictEqual(typeSet.cookies, cookies);
+                    });
+                }
+            });
+        });
+
         [true, false].forEach((protectOpenDomains) => {
             context(`startup = true, protectOpenDomains = ${protectOpenDomains}`, () => {
                 beforeEach(() => {

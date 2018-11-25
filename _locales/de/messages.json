@@ -142,6 +142,10 @@
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Auf dieser Plattform nicht verfügbar.",
+        "hash": "df6d589031d810e799aad91aedd3ed41"
+    },
     "perform_manual_cleanup": {
         "message": "Manuelle Säuberung durchführen",
         "hash": "1098090c30d2dc94517833dc3d259a71"

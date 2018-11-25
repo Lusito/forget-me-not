@@ -49,9 +49,10 @@ export function CleanDialog({ button }: CleanDialogProps) {
         <button data-i18n="prompt_cancel" onClick={onCancel} />
     ];
 
-    const legend = browserInfo.mobile && <ul class="settings_legend">
+    const legend = !browserInfo.mobile && <ul class="settings_legend">
         <li><img src="../icons/tabs/delete.svg" /> <span data-i18n="perform_manual_cleanup" /></li>
         <li><img src="../icons/tabs/shield.svg" /> <span data-i18n="setting_apply_rules@title" /></li>
+        <li><b class="unsupported_checkbox">X</b> <span data-i18n="settings_unsupported_checkbox@title" /></li>
     </ul>;
 
     const dialog = <Dialog className="clean_dialog" titleI18nKey="perform_manual_cleanup">

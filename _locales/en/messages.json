@@ -109,6 +109,9 @@
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Unsupported on this platform."
+    },
     "perform_manual_cleanup": {
         "message": "Perform manual cleanup"
     },

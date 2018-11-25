@@ -37,6 +37,7 @@ export function CleanupTab() {
         <li><img src="../icons/tabs/shield.svg" /> <span data-i18n="setting_apply_rules@title" /></li>
         <li><img src="../icons/tabs/exit.svg" /> <span data-i18n="cleanup_type_leave_button@title" /></li>
         <li><img src="../icons/tabs/stop.svg" /> <span data-i18n="cleanup_type_instantly_button@title" /></li>
+        <li><b class="unsupported_checkbox">X</b> <span data-i18n="settings_unsupported_checkbox@title" /></li>
     </ul>;
 
     return <div class="active">

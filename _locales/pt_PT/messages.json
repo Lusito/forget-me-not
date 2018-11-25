@@ -128,10 +128,6 @@
         "message": "*I*nstantaneamente",
         "hash": "62610f955f62f7701a06a80ff04e1e1b"
     },
-    "cleanup_type_instantly_button@title": {
-        "message": "Os cookies irão ser impedidos de serem definidos",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
-    },
     "cleanup_type_create_button": {
         "message": "Criar regra",
         "hash": "913e8b0d4ccb47df0b1a1780c709f857"
@@ -465,7 +461,7 @@
     },
     "experimental_page": {
         "message": "## Funcionalidades experimentais\n\n- De tempo em tempo irão haver novas funcionalidades que serão marcadas como experimentais.\n- Estas serão desativadas por predefinição e terão de ser manualmente ativadas.\n- Estas funcionalidades são utilizadas para avaliar novas maneiras de melhorar a extensão.\n- Estas podem ser instáveis ou ter mau desempenho.\n- Se tiver problemas, tente desligar estas funcionalidades.\n- Por favor submeta feedback e relatórios de bugs no [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experiências ativas atualmente:\n- **Purgar cookies expirados**:\nQuando uma limpeza acontece, os cookies que têm uma data de expiração definida no passado irão ser removidos independentemente das regras configuradas. Normalmente o Firefox apenas apaga os cookies expirados quando um certo limite é atingido.\nEsses cookies não iriam ser enviados para o website, mas ainda lá estariam. Esta opção irá ajudar a remover estes cookies fantasma. \n- **Negar cookies de terceiros**:\nSe ativado, todos os pedidos web serão intercetados para remover cookies de domínios que não pertencem aos URLs de separadores e não são protegidos por uma regra. Por isso estes cookies nunca serão definidos.\n\nPor favor dê-me feedback na sua experiência com estas experiências, para que eu possa decidir adicioná-las ou não permanentemente.",
-        "hash": "f51573de7d1305324e703f03bf5424c2"
+        "hash": "bd877a339269825e5ace6407fc19cb45"
     },
 
     "__WET_LOCALE__": { "message": "pt-PT" }

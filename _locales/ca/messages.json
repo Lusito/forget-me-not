@@ -60,55 +60,23 @@
     },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "Blanc",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
-    },
-    "cleanup_type_never_button": {
-        "message": "Blanc",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
     "cleanup_type_never_button@title": {
         "message": "No netejat",
         "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "Gris",
-        "hash": "08208f1cca81892a4707dec4283aa489"
-    },
-    "cleanup_type_startup_button": {
-        "message": "Gris",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
     },
     "cleanup_type_startup_button@title": {
         "message": "Neteja el navegador a l'inici",
         "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
-    "cleanup_type_leave_badge": {
-        "message": "Oblida",
-        "hash": "324f549df0b05cab9ad26e634c312802"
-    },
-    "cleanup_type_leave_button": {
-        "message": "Oblida",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
     "cleanup_type_leave_button@title": {
         "message": "Neteja al sortir del domini",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
-    "cleanup_type_instantly_badge": {
-        "message": "Bloqueja",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "Bloqueja",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Fes una neteja manual:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Fes una neteja manual",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "define_rules": {
         "message": "Defineix les normes:",
@@ -178,25 +146,9 @@
         "message": "Atura el mode \"becaina\"",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
-    "toggle_snooze_description": {
-        "message": "En el mode \"becaina\" les següents neteges no es faran:\n-Neteja de les galetes i emmagatzemament local al sortir del domini\n-Neteja de les galetes de tercers\n\nTotes aquelles neteges que no es facin s'intentaran fer quan desactivis el mode \"becaina\".\n\nAixò no afecta a les galetes bloquejades. A més, si has posat algun domini a la llista negra seguirà bloquejada amb el mode \"becaina\". ",
-        "hash": "783a3b899cfee49c995867e6102cc225"
-    },
     "invalid_tab": {
         "message": "Pestanya no vàlida",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_column_expression": {
-        "message": "Norma",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
-    },
-    "rules_column_matching_expression": {
-        "message": "Norma coincident",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
-    },
-    "rules_column_type": {
-        "message": "Escriu",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
     },
     "rules_input@placeholder": {
         "message": "Busca o afegeix...",
@@ -213,10 +165,6 @@
     "types_of_cleanup@title": {
         "message": "Sàpiga més coses sobre que netegen aquestes opcions.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
-    },
-    "setting_purge_expired_cookies": {
-        "message": "Purga les galetes caducades sempre que es faci una neteja.",
-        "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
         "message": "Mostra una notificació sempre que l'extensió s'actualitzi.",
@@ -277,14 +225,6 @@
     "setting_whitelist_no_tld@title": {
         "message": "Dominis d'intranet, locals, etc. (sense .com, .net, .cat, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "setting_whitelist_file_system": {
-        "message": "Afegeix fitxers del teu ordinador a la llista blanca",
-        "hash": "31f66347f86bb36b6a5292691882838b"
-    },
-    "settings_fallback_rule": {
-        "message": "Comportament si no hi ha cap norma (per defecte: oblida):",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
         "message": "Registre de dominis accedits recentment",

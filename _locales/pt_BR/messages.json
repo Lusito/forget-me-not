@@ -60,59 +60,23 @@
     },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "P",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
-    },
-    "cleanup_type_never_button": {
-        "message": "Branco",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
     "cleanup_type_never_button@title": {
         "message": "Sem limpeza",
         "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "C",
-        "hash": "08208f1cca81892a4707dec4283aa489"
-    },
-    "cleanup_type_startup_button": {
-        "message": "Cinza",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
     },
     "cleanup_type_startup_button@title": {
         "message": "Limpeza ao reiniciar o navegador",
         "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
-    "cleanup_type_leave_badge": {
-        "message": "E",
-        "hash": "324f549df0b05cab9ad26e634c312802"
-    },
-    "cleanup_type_leave_button": {
-        "message": "Esquecer",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
     "cleanup_type_leave_button@title": {
         "message": "Limpeza ao sair do domínio",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
-    "cleanup_type_instantly_badge": {
-        "message": "B",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "Bloquear",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
-    "cleanup_type_instantly_button@title": {
-        "message": "Cookies serão bloqueados",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
-    },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Executar limpeza manual:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Executar limpeza manual",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "define_rules": {
         "message": "Definir filtros:",
@@ -182,25 +146,9 @@
         "message": "Ativar modo Soneca",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
-    "toggle_snooze_description": {
-        "message": "No modo soneca, essas limpezas não vão ocorrer:\n- Limpeza de cookies e armazenamento local ao sair de um domínio\n- Limpeza de cookies de terceiros\n\nTodas as limpezas que não ocorrerem serão remarcadas quando sair do modo soneca.\n\nCookies bloqueados não são afetados por isto. Ex. se você bloquear um domínio, os cookies ainda vão ser bloqueados no modo soneca.",
-        "hash": "783a3b899cfee49c995867e6102cc225"
-    },
     "invalid_tab": {
         "message": "Aba Inválida",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_column_expression": {
-        "message": "Filtro",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
-    },
-    "rules_column_matching_expression": {
-        "message": "Filtro Encontrado",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
-    },
-    "rules_column_type": {
-        "message": "Tipo",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
     },
     "rules_input@placeholder": {
         "message": "Procurar ou adicionar..",
@@ -288,23 +236,15 @@
     },
     "setting_remove_thirdparty": {
         "message": "Remover Cookies de Terceitos ao criar:",
-        "hash": "10e201194069b4bc86e31630c772eb88"
+        "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
         "message": "Bloquear Cookies de Terceiros",
-        "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_whitelist_no_tld": {
-        "message": "Adicionar domínios sem um domínio raiz, para a lista de permissão",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Domínios como localgost, intranet, etc. (sem .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "settings_fallback_rule": {
-        "message": "Comportamente ao não encontrar regras (padrão: Limpar)",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
         "message": "Logar domínios acessados recentemente.",
@@ -383,13 +323,9 @@
         "message": "## Autor\nCriado por Santo Pfingsten, © 2017-2018\n\n## Translators Needed\n\nIf you know another language well enough, you can help by creating a translation with [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problemas, perguntas e feedback\nPor favor reporte problemas e pedidos por novas funções em nosso GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Política de Privacidade\n\nSua privacidade é de extrema importância para nós. Essa extensão não analisa ou coleta nada além do necessário para executar sua função. Ela não envia nenhum dado, nem mesmo anônimamente. PONTO.\n\n## Créditos\n* Portuguese(Brazil) translation written by Victor Bambino\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "7f15f35d707c7070acc80fa38044b135"
     },
-    "tutorial_page": {
-        "message": "# Tutorial de Introdução\n\n## Configurações do Firefox\nEsta extensão não tem acesso ás confirgurações do Firefox, então qualquer configuração que você fizer no Firefox em si vão ser combinados com esta extensão.\n\nEntão se você configurar o Firefox para recusar todos os cookies, eles serão todos bloqueados independentemente da configuração dessa extensão.\n\n## Listas Brancas, Cinzas e Vermelhas\nNomes de Domínio (os nomes de host de um site, como *google.com*) podem ser adicionados à listas coloridas (como listas brancas)\n- **Branca**: Cookies e armazenamento local nunca serão removidos.\n- **Cinza**: Cookies e armazenamento local serão removidos ao reiniciar o navegador (deve ser ativado nas configurações)\n- **Vermelha**: Regras brancas e cinzas podem ser sobrepostas por uma regra vermelha.\n  - Exemplo: Uma lista de permissão permite todos os domínios (expressão \"\\*\") e algumas regras vermelhas definem exceções a esta regra.\n- **Negra**: Bloqueia cookies completamente.\n  - Todas as regras são sobrepostas por uma regra negra.\n  - Infelizmente, cookies baixados por JavaScript não podem ser bloqueados, mas serão removidos instantaneamente após sua criação.\n\n## Expressões válidas\n- Todos os nomes de host (ex. www.google.com) são uma expressão válida.\n- Utilize um asterisco (*) como coringa para um segmento (ex. *.google.com ou www.\\*.com)\n- Listas brancas sobrepõem listas cinzas.. não tenho certeza se isto permanecerá definitivo.\n\n### Expressões específicas para cookies\nVocê pode criar filtros para combinações de nomes de cookie e domínio.\n- Exemplo: `nomedocookie@*.google.com`\n- `nomedocookie` pode ser qualquer nome válido de cookie.\n- Os mesmos filtros acima se aplicam para a parte de domínio, à direita do sinal de `@`.\n- Filtros específicas de cookie sempre se sobrepõem aos filtros normais.\n\n## Cookies de terceiros\n- Quando um cookie baixado não pertence ao mesmo domínio que está aberto na aba, ele é considerado um cookie de terceiros.\n- Pesquisas estão sendo conduzidas para melhorar este método.\n\n## Modo Soneca\n\nNa aba \"Modo Soneca\", você pode desabilitar temporáriamente a limpeza automática. Veja a aba para instruções.\n\n## Tipos de Limpeza\n\nVocê pode escolher que tipo de informações limpar:\n- **Cookies**: Cookies normais de HTTP. Cookies de Flash são cobertos pela caixa \"Dados de Plugins\"\n- **Armazenamento Local** e **Bancos de Dados**: Sites podem armazenar informações no seu navegador para permitir que certos recursos funcionem ou lembrar de algo na sua próxima visita. Algumas vezes o Firefox se refere a \"Bancos de Dados\" como \"Armazenamento\", então se o Firefox informa que youtube.com está utilizando alguns MB de Armazenamento, se trata provavelmente de \"Bancos de Dados\"\n- **Histórico**: Isto inclui seu histórico de visitas a sites.\n- **Downloads**: Isto contém seu histórico de downloads. Limpar o histórico de downloads não apaga os arquivos baixados.\n- **Dados de Formulário**: Dependendo das suas configurações, dados que você digitar em formulários como informações de pagamento ou e-mails podem ser salvos, para que na próxima vez que precise digitar este dado, ele já esteja salvo.\n- **Senhas**: Você pode ter dito ao Firefox para que salve algumas senhas. Selecione isto para removê-las novamente.\n- **Dados de Plugins**: Plugins (não confundir com add-ons e extensões) como Adobe Flash ou Acrobat Reader podem armazenar informação como cookies ou outras configurações & informações.\n- **Service Workers**: Service Workers são uma forma de permitir que sites possam ser usados offline, e uma maneira de agilizar o carregamento de web-apps que utilizam este recurso.\n- **Certificados**: Se você adicionou certificados para permitir conexções à um servidor, esta opção os remove.",
-        "hash": "e3da06a89c4e4c3e8607211f3522da45"
-    },
     "experimental_page": {
         "message": "## Funções Experimentais\n\n- De vez em quando haverão novas funções que serão marcadas com experimentais.\n- Eles estarão desativadas por padrão e poderão ser manualmente ativadas.\n- Essas funções serão usadas para avaliar novas formas de melhorar a extensão.\n- Elas podem ser instáveis ou causar lentidão.\n- Se você tiver problemas, tente desligar essas funções.\n- Por favor conte-nos seu feedback e reporte bugs em nossa página do [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experimentos ativos no momento:\n- **Deletar Cookies Expirados**:\nSempre que uma limpeza ocorrer, cookies que tiverem uma data de validade vencida serão removidos independentemente das regras configuradas. Normalmente o Forefox deleta cookies expirados quando um certo limite é atingido. Estes cookies não seriam enviados para o site, mas eles ainda estariam ali. Esta opção deleta estes cookies-fantasma.\n- **Bloquear Cookies de Terceitos**:  \nSe ativado, todas as transferencias de dados vão ser interceptadas para remover cookies de domínios que não pertencem ao mesmo aberto na aba, e não estão protegidos por alguma regra. Então estes cookies nunca serão baixados.\n\nPor favor me dê feedback com a sua experiência ao utilizar estes experimentos, para que eu possa decidir se adiciono eles permanentemente.",
-        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
+        "hash": "bd877a339269825e5ace6407fc19cb45"
     },
 
     "__WET_LOCALE__": { "message": "pt-BR" }

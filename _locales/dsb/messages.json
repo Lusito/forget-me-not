@@ -60,59 +60,23 @@
     },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "B",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
-    },
-    "cleanup_type_never_button": {
-        "message": "Běły",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
     "cleanup_type_never_button@title": {
         "message": "Žedno wucysćenje",
         "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "Š",
-        "hash": "08208f1cca81892a4707dec4283aa489"
-    },
-    "cleanup_type_startup_button": {
-        "message": "Šěry",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
     },
     "cleanup_type_startup_button@title": {
         "message": "Cysćenje pśi startowanju wobglědowaka",
         "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
-    "cleanup_type_leave_badge": {
-        "message": "Z",
-        "hash": "324f549df0b05cab9ad26e634c312802"
-    },
-    "cleanup_type_leave_button": {
-        "message": "Zabyś",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
     "cleanup_type_leave_button@title": {
         "message": "Cysćenje pśi spušćanju domeny",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
-    "cleanup_type_instantly_badge": {
-        "message": "L",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "Blokěrowaś",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
-    "cleanup_type_instantly_button@title": {
-        "message": "Cookiejam se stajenje zawoborujo",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
-    },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Manuelne wucysćenje pśewjasć:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Manuelne wucysćenje pśewjasć",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "define_rules": {
         "message": "Pšawidła definěrowaś:",
@@ -182,25 +146,9 @@
         "message": "Drěmanje zachopiś",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
-    "toggle_snooze_description": {
-        "message": "W drěmańskem modusu budu se toś te wucysćenja zajźowaś:\n- Wucysćenje cookiejow a lokalnego składowaka pśi spušćanju domeny\n- Wucysćenje cookiejow tśeśich póbitowarjow\n\nWšykne zapasone wucysćenja budu se znowego planowaś, gaž drěmański modus zastajijośo.\n\nNa zablokěrowane cookieje to wliw njama. To groni, jolic domenu na carnu lisćinu stajaśo, budu se cookieje w drěmańskem modusu dalej blokěrowaś.",
-        "hash": "783a3b899cfee49c995867e6102cc225"
-    },
     "invalid_tab": {
         "message": "Njepłaśiwy rejtark",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_column_expression": {
-        "message": "Pšawidło",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
-    },
-    "rules_column_matching_expression": {
-        "message": "Góźece pšawidło",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
-    },
-    "rules_column_type": {
-        "message": "Typ",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
     },
     "rules_input@placeholder": {
         "message": "Pytaś abo pśidaś..",
@@ -288,27 +236,15 @@
     },
     "setting_remove_thirdparty": {
         "message": "Cookieje tśeśich póbitoworjow pśi napóranju wótwónoźeś:",
-        "hash": "10e201194069b4bc86e31630c772eb88"
+        "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
         "message": "Cookieje tśeśich póbitowarjow wótpokazaś",
-        "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_whitelist_no_tld": {
-        "message": "Domeny bźez domeny nejwušeje rowniny běłej lisćinje pśidaś",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Domeny ako localhost, intranet atd. (bźez .com, .net atd.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "setting_whitelist_file_system": {
-        "message": "Běłeju lisćinje dataje z wašogo licadła pśidaś",
-        "hash": "31f66347f86bb36b6a5292691882838b"
-    },
-    "settings_fallback_rule": {
-        "message": "Zaźaržanje, jolic se žedno pšawidło njegóźi (standard: Forget):",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
         "message": "Njedawno woglědane domeny protokolěrowaś.",
@@ -386,10 +322,6 @@
     "about_page": {
         "message": "## Awtor\nNapórany wót Santo Pfingsten, © 2017-2018\n\n## Pśełožowarje trěbne\n\nJolic dalšne rěcy derje dosć wumějośo, móžośo pomagaś, gaž z [toś tym pěknym webnałoženim](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) pśełožk napórajośo.\n\n## Problemy, pšašanja, komentary  a měnjenja\nPšosym dajśo problemy a pšosby wó nowe funkcije na GitHub k wěsći:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Deklaracija priwatnosći\n\nWaša priwatnopsć jo pśewšo wažna. Toś to rozšyrjenje nic njeanalyzěrujo abo njezběra, mimo, což se trjeba, aby mógło swój nadawk docyniś. Njesćelo žedne daty niźi, teke nic anonymnje. KÓŃC.\n\n## Źěkowanje\n* Dolnoserbski pśełožk wót Michaela Wolfa\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Wót Vexels.com nacerjony\n* Symbole napórane wót [Google](https://www.flaticon.com/authors/google \"Google\"), wót [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\"), su pód [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\") licencěrowane",
         "hash": "6377f0eb7328080d3949b9b855218cfc"
-    },
-    "tutorial_page": {
-        "message": "# Zapokazanje\nRozpokazanje\n\n## Nastajenja Firefox\nPšosym źiwajśo na to, až toś to rozšyrjenje njama pśistup na waše nastajenja Firefox, wšykne cookiejowe nastajenja, kótarež w Firefox samem pśewjeźośo, budu se z toś tym rozšyrjenim kombiněrowaś.\n\nJolic pótakem Firefox tak konfigurěrujośo, až se wšykne cookieje wótpokazuju,  toś to rozšyrjenje cookieje njezmějo, z kótarymiž móžo źěłaś.\n\n## Běłe, šěre a cerwjene lisćiny\nMjenja domenow (mjenja hostow websedła ako *google.com*) daju se z barwu koděrowanym lisćinam (na pś. běłym lisćinam) pśidaś\n- **Běły**: Cookieje a lokalny składowak se nigdy njewótwónoźiju.\n- **Šěry**: Cookieje a lokalny składowak se pśi znowegostartowanju wobglědowaka wótwónoźiju (musy se w nastajenjach zmóžniś).\n- **Cerwjeny**: Šere a běłe pšawidła daju se pśez cerwjene pšawidło pśepisaś.\n  - Pśikład: Běłe pšawidło wšykne domeny dowólujo (\"\\*\" ako wuraz) a někotare cerwjene pšawidła definěruju wuwześa za toś to pšawidło.\n- **Carny**: Zajźujo stajanjeju cookiejow\n- Kužde pšawidło se pśez carne pšawidło pśepišo.\n- Bóžko cookieje stajone pśez  JavaScript njedaju se blokěrowaś, ale wótwónoźuju se ned pó swójom napóranju.\n\n## Płaśiwe wuraze\n- Kužde hostowe mě (na pś. www.google.com) jo płaśiwy wuraz.\n- Gwězdka (*) dajo se ako zastupujucy symbol za segment wužywaś (na pś. *.google.com abo www.\\*.com).\n- Běłe lisćiny tuchylu pšawidła šěrych lisćinow pśepisuju... njejsom se wěsty, lěc to buźo definitiwne.\n\n### Wuraze specifiske za cookieje\nMóžośo pšawidła za kombinacije cookiejowych mjenjow a domenow napóraś.\n- Pśikład: `cookiejowe_mě@*.google.com`\n- `cookiejowe mě` móžo někake płaśiwe cookiejowe mě byś.\n- Te samske pšawidła ako górjejce se na źěl domeny napšwo wót znamuško `@` nałožyś.\n- Pšawidła, kótarež su specifiske za cookieje, maju pśecej prědnosć napśeśiwo normalnym pšawidłam.\n\n## Cookieje tśeśich póbitowarjow\n- Gaž se cookie staja, mimo až k domenje słuša, kótaraž jo w rejtarku wócynjona, maju jen za cookie tśeśego póbitowarja.\n- Wopytujo se hyšći, toś tu metodu pólěpšyś.\n\n## Drěmański modus\n\nNa rejtarku \"Drěmański modus\" móžośo awtomatiske wucysćenje nachylu znjemóžniś. Glejśo rejtark za instrukcije.\n\n## Typy wucysćenja\n\nMóžośo wubraś, kótare daty maju se cysćiś:\n- **Cookieje**: Normalne HTTP-cookieje. Cookieje Flash su w \"tykacowych datach\" wopśimjone.\n- **Lokalny składowak** a **Indexed DB**: Websedła mógu daty we wašom wobglědowaku składowaś, aby se wěste funkcije zmóžnili abo se něco za pśiducy woglěd spomnjeło.\nMłogi raz se Firefox na  *Indexed DB* ako \"składowak\" póśěgujo, na pś. gaž Firefox dajo wam k wěsći, až youtube.com někotare MB składowaka wužywa, jo to skerjej  *Indexed DB*.\n- **Historija**: To wšykne waše woglědy websydłow wopśimujo.\n- **Ześěgnjenja**: To wopśimujo historiju ześěgnjenjow. Cysćenje ześěgnjenjow na wašom licadle njewótwónoźujo.\n- **Formularne daty**: Něga raz sćo snaź zapódał informacije do kontakta abo formulara zliceńki. We wótwisnosći wót wašych nastajenjow jo se to snaź składło, togodla jo lažčej za was, toś te gódnoty znowego zapódaś.\n- **Grondła**: Snaź sćo dał Firefox k wěsći, až ma se wěste gronidła spomnjeś. Wubjeŕśo to, aby je zasej wótwónoźeł.\n- **Tykacowe daty**: Tykace (nic rozšyrjenja/webrozšyrjenja) ako Adobe Flash abo Acrobat Reader mógli daty ako cookieje Flash abo druge informacije a nastajenja składowaś.\n- **Service Workers**: Service Workers su móžnosć, websedłam, dowóliś, se offline wužywaś a pomagaju teke zacytanje weebnałoženjow póspěšyś, kótarež je wužywaju.\n- **Serwerowe certifikaty**: Jolic sćo pśidał certifikaty, aby zmóžnił zwiski ze serwerom, jo to nastajenje, aby to cysćiło.",
-        "hash": "e3da06a89c4e4c3e8607211f3522da45"
     },
     "experimental_page": {
         "message": "## Eksperimentelne funkcije\n\n- Casy dajo nowe funkcije, kótarež se ako eksperimentelne markěruju.\n- Su pó standarźe znjemóžnjone a muse se manuelnje zmóžniś.\n- Toś te funkcije se wužywaju, aby nowe móžnosći namakali, rozšyrjenje pólěpšowaś.\n- Mógu njestabilne byś abo špatne wugbaśe měś.\n- Jolic na problemy starcyjośo, wopytajśo toś te funkcije znjemóžniś.\n- Pšosym sćelśo nam komentary abo měnjenja a pišćo zmólkowe rozpšawy na [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Tuchylu aktiwne eksperimenty:\n- **Pśepadnjone cookieje wulašowaś**:\nGažkuli se wucysćenje wótměwa, se cookieje, kótarež maju datum spadnjenja nastajony w zajźonosći, njeźiwajucy na konfiguraciske pšawidła, wulašuju. Normalnje Firefox jano pśpadnjone cookije lašujo, gaž limit jo nastajony. Toś te cookieje njeby se słali na websedło, ale by wóne hyšći tam. Toś to nastajenje buźo pomagaś, toś te šarjece so cookieje wótwónoźeś.\n- **Cookieje tśeśich wótpokazaś**:  \nJolic zmóžnjone, se kužde webnapšašowanje wótpopadnjo, aby se cookieje z domenow wótwónoźeli, kótarež k URL rejtarkow njesłušaju a se pśez pšawidło šćitaju. Toś te cookieje se pótakem njestajaju.\n\nSćelśo mě swóje komentary wó nazgónjenjach, kótarež sćo z toś tymi eksperimentami cynił, aby ja mógał rozsuźiś, lěc maju se na pśecej pśidaś abo nic.",

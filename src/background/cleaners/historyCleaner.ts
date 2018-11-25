@@ -8,6 +8,7 @@ import { settings } from "../../lib/settings";
 import { browser, BrowsingData, History } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { getValidHostname } from "../../shared";
+import { getDomain } from "tldjs";
 
 export class HistoryCleaner extends Cleaner {
     public constructor() {
@@ -31,6 +32,23 @@ export class HistoryCleaner extends Cleaner {
                 const urlsToClean = this.getUrlsToClean(items, startup);
                 urlsToClean.forEach((url) => browser.history.deleteUrl({ url }));
             });
+        }
+    }
+
+    public cleanDomainOnLeave(storeId: string, domain: string): void {
+        if (settings.get("domainLeave.enabled")) {
+            if (settings.get("domainLeave.history")) {
+                const domainFP = getDomain(domain) || domain;
+                browser.history.search({ text: domainFP }).then((items) => {
+                    const filteredItems = items.filter((item) => {
+                        if (!item.url) return false;
+                        const hostname = getValidHostname(item.url);
+                        return hostname === domain || getDomain(hostname) === domainFP;
+                    });
+                    const urlsToClean = this.getUrlsToClean(filteredItems, false);
+                    urlsToClean.forEach((url) => browser.history.deleteUrl({ url }));
+                });
+            }
         }
     }
 

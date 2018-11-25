@@ -62,15 +62,16 @@ settings.onReady(() => {
     wetLayer.addListener(showUpdateNotification);
 
     setTimeout(() => {
-        background.onStartup();
-
         const manifestVersion = browser.runtime.getManifest().version;
-        if (settings.get("version") !== manifestVersion) {
+        const previousVersion = settings.get("version");
+        if (previousVersion !== manifestVersion) {
             settings.set("version", manifestVersion);
+            settings.performUpgrade(previousVersion);
             settings.save();
 
             if (settings.get("showUpdateNotification"))
                 showUpdateNotification();
         }
+        background.onStartup();
     }, 1000);
 });

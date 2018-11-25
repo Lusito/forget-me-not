@@ -152,7 +152,7 @@ describe("Cleanup Scheduler", () => {
         context("snoozing = false, domainLeave.enabled = true, domainLeave.delay = 0.4s", () => {
             beforeEach(() => {
                 settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.delay", 1 / 150);
+                settings.set("domainLeave.delay", 0.4);
                 settings.save();
                 handler = createSpy();
                 cleanupScheduler = new CleanupScheduler(handler, false);

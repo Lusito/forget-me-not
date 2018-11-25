@@ -210,8 +210,8 @@
         "message": "Dades de plugins",
         "hash": "436905ccbdfaaacb1aec25f512584e36"
     },
-    "setting_delay_in_minutes": {
-        "message": "Retarda en minuts:",
+    "setting_delay_in_seconds": {
+        "message": "Retarda en segundos:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
     },
     "setting_remove_thirdparty": {

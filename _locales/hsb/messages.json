@@ -230,10 +230,6 @@
         "message": "Certifikaty zwjazane ze serwerom",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_delay_in_minutes": {
-        "message": "Komdźenje w mjeńšinach:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
     "setting_remove_thirdparty": {
         "message": "Placki třećich poskićowarjow při wutworjenju wotstronić:",
         "hash": "10e201194069b4bc86e31630c772eb88"

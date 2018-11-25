@@ -40,7 +40,7 @@ export class CleanupScheduler {
                     delete this.snoozedDomains[domain];
             }
         }
-        this.delayTime = settings.get("domainLeave.delay") * 60 * 1000;
+        this.delayTime = settings.get("domainLeave.delay") * 1000;
     }
 
     public destroy() {

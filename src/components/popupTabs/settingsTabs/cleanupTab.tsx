@@ -65,11 +65,11 @@ export function CleanupTab() {
 
         <div class="split_equal">
             <div />
-            <SettingsNumber key="domainLeave.delay" i18n="setting_delay_domain_leave_cleanup_in_minutes" class="align_right" />
+            <SettingsNumber key="domainLeave.delay" i18n="setting_delay_domain_leave_cleanup_in_seconds" class="align_right" />
         </div>
         <div class="split_equal">
             <SettingsCheckbox key="cleanThirdPartyCookies.enabled" i18n="setting_remove_thirdparty" />
-            <SettingsNumber key="cleanThirdPartyCookies.delay" i18n="setting_delay_in_minutes" class="align_right" />
+            <SettingsNumber key="cleanThirdPartyCookies.delay" i18n="setting_delay_in_seconds" class="align_right" />
         </div>
     </div>;
 }

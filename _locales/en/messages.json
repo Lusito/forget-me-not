@@ -262,11 +262,11 @@
     "setting_server_bound_certificates": {
         "message": "Server Bound Certificates"
     },
-    "setting_delay_domain_leave_cleanup_in_minutes": {
-        "message": "Delay for domain leave cleanup in minutes:"
+    "setting_delay_domain_leave_cleanup_in_seconds": {
+        "message": "Delay for domain leave cleanup in seconds:"
     },
-    "setting_delay_in_minutes": {
-        "message": "Delay in minutes:"
+    "setting_delay_in_seconds": {
+        "message": "Delay in seconds:"
     },
     "setting_remove_thirdparty": {
         "message": "Remove Third-Party Cookies on creation:"

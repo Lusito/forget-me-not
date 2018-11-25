@@ -230,10 +230,6 @@
         "message": "Certifikaty zwězane ze serwerom",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_delay_in_minutes": {
-        "message": "Wokomuźenje w minutach:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
     "setting_remove_thirdparty": {
         "message": "Cookieje tśeśich póbitoworjow pśi napóranju wótwónoźeś:",
         "hash": "2d8b645390f60f6bb1777fbf6004d109"

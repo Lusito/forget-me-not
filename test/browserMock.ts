@@ -337,6 +337,12 @@ class BrowserRuntimeMock {
             resolve();
         });
     }
+
+    public getManifest() {
+        return {
+            version: "2.0.0"
+        };
+    }
 }
 
 class StorageAreaMock {
@@ -451,6 +457,6 @@ browser.contextualIdentities = bindMocks(browser.contextualIdentities, browserMo
 browser.tabs = bindMocks(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
 browser.webNavigation = bindMocks(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted"]);
 browser.webRequest = bindMocks(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
-browser.runtime = bindMocks(browser.runtime, browserMock.runtime, ["onMessage", "sendMessage"]);
+browser.runtime = bindMocks(browser.runtime, browserMock.runtime, ["onMessage", "sendMessage", "getManifest"]);
 browser.webRequest = bindMocks(browser.webRequest, browserMock.webRequest, ["onHeadersReceived"]);
 browser.storage = bindMocks(browser.storage, browserMock.storage, ["onChanged", "local"]);

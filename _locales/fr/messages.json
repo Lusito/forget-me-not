@@ -230,8 +230,8 @@
         "message": "Certificats liés au serveur",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_delay_in_minutes": {
-        "message": "Délai en minutes:",
+    "setting_delay_in_seconds": {
+        "message": "Délai en secondes:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
     },
     "setting_remove_thirdparty": {

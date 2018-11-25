@@ -391,10 +391,10 @@ describe("CookieCleaner", () => {
         });
 
         booleanVariations(5).forEach(([incognito, thirdPartyEnabled, snoozing, delayed, whitelisted]) => {
-            const delay = delayed ? 0.001 : 0; // in minutes
+            const delay = delayed ? 0.01 : 0; // in seconds
             const localCookieStoreId = incognito ? "firefox-private" : COOKIE_STORE_ID;
             const localDomain = whitelisted ? WHITELISTED_DOMAIN : UNKNOWN_DOMAIN;
-            context(`incognito = ${incognito}, cleanThirdPartyCookies.enabled = ${thirdPartyEnabled}, cleanThirdPartyCookies.delay = ${delay}, snoozing = ${snoozing}, whitelisted=${whitelisted}`, () => {
+            context(`incognito = ${incognito}, cleanThirdPartyCookies.enabled = ${thirdPartyEnabled}, cleanThirdPartyCookies.delay = ${delay}s, snoozing = ${snoozing}, whitelisted=${whitelisted}`, () => {
                 beforeEach(() => {
                     settings.set("cleanThirdPartyCookies.enabled", thirdPartyEnabled);
                     settings.set("cleanThirdPartyCookies.delay", delay);

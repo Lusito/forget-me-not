@@ -20,7 +20,7 @@ export type SettingsMap = { [s: string]: SettingsValue };
 export const localStorageDefault: boolean = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 58);
 
 export const defaultSettings: SettingsMap = {
-    "version": "",
+    "version": "2.0.0",
     "showUpdateNotification": true,
     "showCookieRemovalNotification": false,
     "rules": [],
@@ -49,11 +49,11 @@ export const defaultSettings: SettingsMap = {
     "cleanAll.serverBoundCertificates": false,
 
     "cleanThirdPartyCookies.enabled": false,
-    "cleanThirdPartyCookies.delay": 1,
+    "cleanThirdPartyCookies.delay": 60,
     "cleanThirdPartyCookies.beforeCreation": false,
 
     "domainLeave.enabled": false,
-    "domainLeave.delay": 2,
+    "domainLeave.delay": 120,
     "domainLeave.cookies": true,
     "domainLeave.localStorage": localStorageDefault,
     "domainLeave.history": false,
@@ -232,6 +232,16 @@ export class Settings {
         this.save();
     }
 
+    public performUpgrade(previousVersion: string) {
+        const [major] = previousVersion.split(".").map((i) => parseInt(i));
+        if (isNaN(major) || major < 2) {
+            if (this.map.hasOwnProperty("domainLeave.delay"))
+                this.set("domainLeave.delay", Math.round((this.map["domainLeave.delay"] as number) * 60));
+            if (this.map.hasOwnProperty("cleanThirdPartyCookies.delay"))
+                this.set("cleanThirdPartyCookies.delay", Math.round((this.map["cleanThirdPartyCookies.delay"] as number) * 60));
+        }
+    }
+
     public setAll(json: any) {
         // Validate and throw out anything that is no longer valid
         if (typeof (json) !== "object")
@@ -261,6 +271,8 @@ export class Settings {
         this.storage.remove(keysToRemove);
 
         this.map = json;
+        this.performUpgrade(this.get("version"));
+        this.set("version", browser.runtime.getManifest().version);
         this.rebuildRules();
         this.save();
         return true;

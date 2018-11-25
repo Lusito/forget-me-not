@@ -114,7 +114,7 @@ export class CookieCleaner extends Cleaner {
                     if (this.isThirdpartyCookie(cookie) && !this.isCookieAllowed(cookie, false, false))
                         removeCookie(cookie);
                 });
-                exec.restart(settings.get("cleanThirdPartyCookies.delay") * 60 * 1000);
+                exec.restart(settings.get("cleanThirdPartyCookies.delay") * 1000);
             }
         });
     }

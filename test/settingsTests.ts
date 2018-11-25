@@ -20,6 +20,8 @@ for (const key in defaultSettings) {
         testOverrides[key] = !defaultSettings[key];
     else if (type === "number")
         testOverrides[key] = defaultSettings[key] as number + 1;
+    else if (key === "version")
+        testOverrides[key] = "2.0.0";
     else if (type === "string")
         testOverrides[key] = "test-override";
     else if (key === "rules")

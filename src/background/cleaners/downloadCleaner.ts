@@ -36,7 +36,7 @@ export class DownloadCleaner extends Cleaner {
 
     private cleanupUrl(url: string) {
         browser.downloads.erase({ url });
-        browser.history.deleteUrl({ url });
+        browser.history && browser.history.deleteUrl({ url });
     }
 
     public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {

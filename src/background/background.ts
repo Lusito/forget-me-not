@@ -31,14 +31,14 @@ export class Background implements TabWatcherListener {
     private snoozing = false;
     // @ts-ignore
     private readonly notificationHandler = new NotificationHandler();
-    private readonly cleaners: Cleaner[] = [
-        new HistoryCleaner(),
-        new DownloadCleaner(),
-        new CookieCleaner(this.tabWatcher, this.recentlyAccessedDomains),
-        new LocalStorageCleaner(this.tabWatcher)
-    ];
+    private readonly cleaners: Cleaner[] = [];
 
     public constructor() {
+        browser.history && this.cleaners.push(new HistoryCleaner());
+        this.cleaners.push(new DownloadCleaner());
+        this.cleaners.push(new CookieCleaner(this.tabWatcher, this.recentlyAccessedDomains));
+        this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
+
         this.updateBadge();
         new HeaderFilter(this.tabWatcher, this.recentlyAccessedDomains);
         wetLayer.addListener(() => {
@@ -103,8 +103,10 @@ export class Background implements TabWatcherListener {
                     let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
                     if (!settings.get("showBadge"))
                         text = "";
-                    browser.browserAction.setBadgeText({ text, tabId: tab.id });
-                    browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
+                    if (browser.browserAction.setBadgeText)
+                        browser.browserAction.setBadgeText({ text, tabId: tab.id });
+                    if (browser.browserAction.setBadgeBackgroundColor)
+                        browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
                     browser.browserAction.enable(tab.id);
                 } else {
                     browser.browserAction.disable(tab.id);
@@ -132,7 +134,8 @@ export class Background implements TabWatcherListener {
         for (const size of [16, 32, 48, 64, 96, 128])
             path[size] = `icons/icon${size}${suffix}.png`;
 
-        browser.browserAction.setIcon({ path });
+        if (browser.browserAction.setIcon)
+            browser.browserAction.setIcon({ path });
         browser.browserAction.setTitle({
             title: wetLayer.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle")
         });

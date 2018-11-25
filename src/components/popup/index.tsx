@@ -70,9 +70,11 @@ settings.onReady(() => {
 
     popup.insertBefore(<LogoWithLink target="_blank" />, popup.querySelector(".tabs_pages"));
 
-    document.body.appendChild(<HelpBubble button={popup.querySelector("#help_button") as HTMLElement} />);
-    document.body.appendChild(<ManualCleanupBubble button={cleanupButton} />);
-    document.body.appendChild(<SnoozeBubble button={snoozeButton} />);
+    if (!browserInfo.mobile) {
+        document.body.appendChild(<HelpBubble button={popup.querySelector("#help_button") as HTMLElement} />);
+        document.body.appendChild(<ManualCleanupBubble button={cleanupButton} />);
+        document.body.appendChild(<SnoozeBubble button={snoozeButton} />);
+    }
 
     function updateTranslations() {
         translateDocument();

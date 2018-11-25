@@ -11,7 +11,7 @@ interface SettingsCheckboxProps {
 
 const UNSUPPORTED = browserInfo.mobile ? [
     "cleanAll.localStorage", "cleanAll.localStorage.applyRules", "startup.localStorage", "startup.localStorage.applyRules", "domainLeave.localStorage",
-    "startup.history.applyRules", "domainLeave.history", "instantly.history", "instantly.history.applyRules",
+    "cleanAll.history.applyRules", "startup.history.applyRules", "domainLeave.history", "instantly.history", "instantly.history.applyRules",
     "cleanAll.passwords", "startup.passwords",
     "cleanAll.indexedDB", "startup.indexedDB",
     "cleanAll.pluginData", "startup.pluginData",

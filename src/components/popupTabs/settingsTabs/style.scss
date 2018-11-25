@@ -78,6 +78,9 @@
 
     >li {
         width: 50%;
+        &:last-child:nth-child(odd) {
+            width: auto;
+        }
         display: flex;
         align-items: center;
         padding: 1px 0;

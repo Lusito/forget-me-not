@@ -9,7 +9,7 @@ interface RuleButtonProps {
     expression?: string;
     type: CleanupType | null;
     allowRemove?: boolean;
-    onConfirm: (type: CleanupType, expression?: string) => void;
+    onConfirm: (type: CleanupType, expression: string) => void;
 }
 
 function updateRuleButton(button: HTMLElement, type: CleanupType | null, translate = false) {
@@ -23,11 +23,11 @@ function updateRuleButton(button: HTMLElement, type: CleanupType | null, transla
 export function RuleButton({ expression, type, onConfirm }: RuleButtonProps) {
     function onChangeProxy(type: CleanupType) {
         updateRuleButton(button, type, true);
-        onConfirm(type, expression);
+        onConfirm(type, expression || "");
     }
 
     function onClick() {
-        <RuleDialog expression={expression} focusType={cleanupTypeForElement(button)} onConfirm={(type) => type !== false && onChangeProxy(type)} />;
+        <RuleDialog expression={expression} editable={type === null} focusType={cleanupTypeForElement(button)} onConfirm={(type) => type !== false && onChangeProxy(type)} />;
     }
 
     const button = <button onClick={onClick} />;

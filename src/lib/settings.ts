@@ -303,9 +303,9 @@ export class Settings {
 
     // Convenience methods
     // Fixme: test
-    public getExactCleanupType(rule: string) {
+    public getExactCleanupType(expression: string) {
         for (const crd of this.rules) {
-            if (crd.definition.rule === rule)
+            if (crd.definition.rule === expression)
                 return crd.definition.type;
         }
         return null;

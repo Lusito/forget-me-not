@@ -30,15 +30,15 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
     if (forDomain) {
         chosenRulesForDomain = settings.getChosenRulesForDomain(forDomain);
         const domainFP = getDomain(forDomain) || forDomain;
-        const domains = ["*." + domainFP];
+        const expressions = ["*." + domainFP];
         if (domainFP !== forDomain)
-            domains.push("*." + forDomain);
-        domains.forEach((rule) => {
-            const isChosen = chosenRulesForDomain.some((r) => r.rule === rule);
-            tbody.appendChild(<RuleTableRow rule={rule} isChosen={isChosen} type={settings.getExactCleanupType(rule)} />);
+            expressions.push("*." + forDomain);
+        expressions.forEach((expression) => {
+            const isChosen = chosenRulesForDomain.some((r) => r.rule === expression);
+            tbody.appendChild(<RuleTableRow expression={expression} isChosen={isChosen} type={settings.getExactCleanupType(expression)} />);
         });
 
-        rules = settings.getMatchingRules(forDomain).filter((rule) => domains.indexOf(rule.rule) === -1);
+        rules = settings.getMatchingRules(forDomain).filter((rule) => expressions.indexOf(rule.rule) === -1);
     } else {
         chosenRulesForDomain = [];
         rules = settings.get("rules").slice();
@@ -49,7 +49,7 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
     rules.sort(sortByRule);
     rules.forEach((rule) => {
         const isChosen = chosenRulesForDomain.some((r) => r.rule === rule.rule);
-        tbody.appendChild(<RuleTableRow rule={rule.rule} isChosen={isChosen} type={rule.type} />);
+        tbody.appendChild(<RuleTableRow expression={rule.rule} isChosen={isChosen} type={rule.type} />);
     });
 
     translateChildren(tbody);

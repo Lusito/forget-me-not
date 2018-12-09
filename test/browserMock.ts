@@ -321,7 +321,11 @@ class BrowserWebNavigationMock {
 }
 
 class BrowserWebRequestMock {
-    public onHeadersReceived = new ListenerMock<(details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse[]>();
+    public onHeadersReceived = new ListenerMock<(details: WebRequest.OnHeadersReceivedDetailsType) => Array<WebRequest.BlockingResponse | undefined>>();
+
+    public reset() {
+        this.onHeadersReceived.reset();
+    }
 
     public headersReceived(details: WebRequest.OnHeadersReceivedDetailsType) {
         return this.onHeadersReceived.emit(details);
@@ -330,6 +334,10 @@ class BrowserWebRequestMock {
 
 class BrowserRuntimeMock {
     public onMessage = new ListenerMock<(message: any | undefined, sender: Runtime.MessageSender, sendResponse: () => void) => void>();
+
+    public reset() {
+        this.onMessage.reset();
+    }
 
     public sendMessage(message: any, options?: Runtime.SendMessageOptionsType): Promise<any> {
         return new Promise((resolve, reject) => {
@@ -433,6 +441,8 @@ export const browserMock = {
         browserMock.contextualIdentities.reset();
         browserMock.tabs.reset();
         browserMock.webNavigation.reset();
+        browserMock.webRequest.reset();
+        browserMock.runtime.reset();
         browserMock.storage.local.reset();
     }
 };

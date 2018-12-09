@@ -5,22 +5,13 @@
  */
 
 import { assert } from "chai";
-import { getValidHostname, destroyAllAndEmpty } from "../src/shared";
+import { getValidHostname } from "../src/shared";
 import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, getCookieStoreIncognito } from "../src/background/backgroundHelpers";
-import { browser, Cookies } from "webextension-polyfill-ts";
-import { removeCookie } from "../src/background/backgroundShared";
-import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
 import { browserMock } from "./browserMock";
-import { createSpy, doneHandler } from "./testHelpers";
+import { doneHandler } from "./testHelpers";
 import { CleanupType } from "../src/lib/settingsSignature";
 
 describe("Misc functionality", () => {
-    const receivers: ReceiverHandle[] = [];
-    beforeEach(() => browserMock.reset());
-    afterEach(() => {
-        destroyAllAndEmpty(receivers);
-    });
-
     describe("getValidHostname", () => {
         it("should return hostnames for valid urls", () => {
             assert.strictEqual(getValidHostname("http://www.google.com"), "www.google.com");
@@ -150,106 +141,6 @@ describe("Misc functionality", () => {
                     assert.strictEqual(incognito, result);
                 }, done));
             });
-        });
-    });
-
-    describe("removeCookie", () => {
-        function setCookie(domain: string, name: string, value: string, path: string, storeId: string, firstPartyDomain: string) {
-            browser.cookies.set({
-                url: "mock",
-                name,
-                value,
-                domain,
-                path,
-                storeId,
-                firstPartyDomain
-            });
-        }
-        function simpleCookieRemove(domain: string, name: string, path: string, storeId: string, firstPartyDomain: string, secure: boolean = false) {
-            return removeCookie({
-                name,
-                domain,
-                path,
-                storeId,
-                firstPartyDomain,
-                value: "",
-                hostOnly: false,
-                secure,
-                httpOnly: false,
-                session: false,
-                sameSite: "no_restriction"
-            });
-        }
-        beforeEach((done) => {
-            setCookie("google.com", "hello", "world", "", "firefox-default", "");
-            setCookie("google.com", "foo", "bar", "", "firefox-default", "");
-            setCookie("google.com", "oh_long", "johnson", "", "firefox-default", "");
-            setCookie("google.de", "hello", "world", "", "firefox-default", "");
-            setCookie("google.de", "foo", "bar", "", "firefox-default", "");
-            setCookie("google.com", "hello", "world", "", "firefox-default-2", "");
-            setCookie("google.com", "foo", "bar", "", "firefox-default-2", "");
-            setCookie("", "foo", "bar", "/C:/path/to/somewhere/", "firefox-default", "");
-
-            let doneCount = 0;
-            browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.strictEqual(cookies.length, 6);
-            }, done, () => (++doneCount === 2)));
-            browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.strictEqual(cookies.length, 2);
-            }, done, () => (++doneCount === 2)));
-        });
-        it("should emit cookieRemoved event", () => {
-            const spy = createSpy();
-            receivers.push(messageUtil.receive("cookieRemoved", spy));
-            simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
-            simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
-            simpleCookieRemove("google.de", "hello", "", "firefox-default", "");
-            simpleCookieRemove("google.de", "foo", "", "firefox-default", "");
-            simpleCookieRemove("google.com", "hello", "", "firefox-default-2", "");
-            simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
-            simpleCookieRemove("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
-            spy.assertCalls([
-                ["google.com", {}],
-                ["google.com", {}],
-                ["google.de", {}],
-                ["google.de", {}],
-                ["google.com", {}],
-                ["google.com", {}],
-                ["/C:/path/to/somewhere/", {}]
-            ]);
-        });
-        it("should remove cookies from the specified store", (done) => {
-            simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
-            simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
-            simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
-            let doneCount = 0;
-            browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.strictEqual(cookies.length, 4);
-                assert.isUndefined(cookies.find((c) => c.name === "hello" && c.domain === "google.com"));
-                assert.isUndefined(cookies.find((c) => c.name === "foo" && c.domain === "google.com"));
-                assert.notEqual(cookies.findIndex((c) => c.name === "oh_long" && c.domain === "google.com"), -1);
-            }, done, () => (++doneCount === 2)));
-            browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
-                assert.strictEqual(cookies.length, 1);
-                assert.notEqual(cookies.findIndex((c) => c.name === "hello" && c.domain === "google.com"), -1);
-                assert.isUndefined(cookies.find((c) => c.name === "foo" && c.domain === "google.com"));
-            }, done, () => (++doneCount === 2)));
-        });
-
-        it("should call browser.cookies.remove with the correct parameters", () => {
-            simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
-            simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
-            simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
-            simpleCookieRemove("google.de", "foo", "", "firefox-default", "", true);
-            simpleCookieRemove("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
-
-            browserMock.cookies.remove.assertCalls([
-                [{ name: "hello", url: "http://google.com", storeId: "firefox-default", firstPartyDomain: "" }],
-                [{ name: "foo", url: "http://google.com", storeId: "firefox-default", firstPartyDomain: "" }],
-                [{ name: "foo", url: "http://google.com", storeId: "firefox-default-2", firstPartyDomain: "" }],
-                [{ name: "foo", url: "https://google.de", storeId: "firefox-default", firstPartyDomain: "" }],
-                [{ name: "foo", url: "file:///C:/path/to/somewhere/", storeId: "firefox-default", firstPartyDomain: "" }]
-            ]);
         });
     });
 });

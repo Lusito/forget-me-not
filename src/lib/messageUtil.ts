@@ -62,5 +62,8 @@ export const messageUtil = {
                     callbacks.splice(index, 1);
             }
         };
+    },
+    clearCallbacksMap() {
+        callbacksMap = null;
     }
 };

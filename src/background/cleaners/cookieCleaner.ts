@@ -9,14 +9,44 @@ import { Cleaner } from "./cleaner";
 import { getAllCookieStoreIds, getFirstPartyCookieDomain, getCookieStoreIncognito } from "../backgroundHelpers";
 import { settings } from "../../lib/settings";
 import DelayedExecution from "../../lib/delayedExecution";
-import { removeCookie } from "../backgroundShared";
 import { TabWatcher } from "../tabWatcher";
 import { CleanupType } from "../../lib/settingsSignature";
 import { RecentlyAccessedDomains } from "../recentlyAccessedDomains";
 import { getDomain } from "tldjs";
 import { isNodeTest, isFirefox, browserInfo } from "../../lib/browserInfo";
+import { messageUtil } from "../../lib/messageUtil";
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
+
+function getCookieRemovalInfo(cookie: Cookies.Cookie) {
+    if (cookie.domain.length === 0) {
+        return {
+            url: `file://${cookie.path}`,
+            removedFrom: cookie.path
+        };
+    }
+    const allowSubDomains = cookie.domain.startsWith(".");
+    const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+    return {
+        url: (cookie.secure ? "https://" : "http://") + rawDomain + cookie.path,
+        removedFrom: rawDomain
+    };
+}
+
+export function removeCookie(cookie: Cookies.Cookie) {
+    const removalInfo = getCookieRemovalInfo(cookie);
+    const details: Cookies.RemoveDetailsType = {
+        name: cookie.name,
+        url: removalInfo.url,
+        storeId: cookie.storeId
+    };
+    if (supportsFirstPartyIsolation)
+        details.firstPartyDomain = cookie.firstPartyDomain;
+
+    const promise = browser.cookies.remove(details);
+    messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
+    return promise;
+}
 
 export class CookieCleaner extends Cleaner {
     private readonly snoozedThirdpartyCookies: Cookies.Cookie[] = [];
@@ -51,10 +81,10 @@ export class CookieCleaner extends Cleaner {
     }
 
     private cleanDomainInternal(storeId: string, domain: string, ignoreRules: boolean): void {
+        const domainFP = getDomain(domain) || domain;
         this.removeCookies(storeId, (cookie) => {
             if (this.shouldPurgeExpiredCookie(cookie))
                 return true;
-            const domainFP = getDomain(domain) || domain;
             const match = cookie.firstPartyDomain ? cookie.firstPartyDomain === domainFP : getFirstPartyCookieDomain(cookie.domain) === domainFP;
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
         });

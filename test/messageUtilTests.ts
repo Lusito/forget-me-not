@@ -11,7 +11,10 @@ import { destroyAllAndEmpty } from "../src/shared";
 
 describe("Message Utility", () => {
     const receivers: ReceiverHandle[] = [];
-    beforeEach(() => browserMock.reset());
+    beforeEach(() => {
+        messageUtil.clearCallbacksMap();
+        browserMock.reset();
+    });
     afterEach(() => {
         destroyAllAndEmpty(receivers);
     });

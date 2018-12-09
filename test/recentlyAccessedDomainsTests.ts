@@ -15,7 +15,10 @@ import { settings } from "../src/lib/settings";
 describe("Recently Accessed Domains", () => {
     let recentlyAccessedDomains: RecentlyAccessedDomains | null = null;
     let receiver: ReceiverHandle | null = null;
-    beforeEach(() => browserMock.reset());
+    beforeEach(() => {
+        messageUtil.clearCallbacksMap();
+        browserMock.reset();
+    });
     afterEach(() => {
         recentlyAccessedDomains = destroyAndNull(recentlyAccessedDomains);
         receiver = destroyAndNull(receiver);

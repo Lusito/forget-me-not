@@ -5,13 +5,12 @@
  */
 
 import { settings } from "../lib/settings";
-import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
+import { messageUtil } from "../lib/messageUtil";
 import { someItemsMatch } from "./backgroundShared";
 
 const DOMAIN_LEAVE_SETTINGS_KEYS = ["domainLeave.enabled", "domainLeave.delay"];
 
 export class CleanupScheduler {
-    private settingsReceiver: ReceiverHandle | null;
     private delayTime: number = 0;
     private enabled: boolean = false;
     private readonly handler: (domain: string) => void;
@@ -24,7 +23,7 @@ export class CleanupScheduler {
         this.handler = handler;
 
         this.updateSettings();
-        this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, DOMAIN_LEAVE_SETTINGS_KEYS))
                 this.updateSettings();
         });
@@ -41,14 +40,6 @@ export class CleanupScheduler {
             }
         }
         this.delayTime = settings.get("domainLeave.delay") * 1000;
-    }
-
-    public destroy() {
-        if (this.settingsReceiver) {
-            this.settingsReceiver.destroy();
-            this.settingsReceiver = null;
-        }
-        this.clearAllTimeouts();
     }
 
     private clearAllTimeouts() {

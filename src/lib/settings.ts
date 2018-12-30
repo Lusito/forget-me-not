@@ -170,10 +170,6 @@ export class Settings {
         browser.storage.onChanged.addListener(this.load);
     }
 
-    public destroy() {
-        browser.storage.onChanged.removeListener(this.load);
-    }
-
     public load(changes?: { [key: string]: Storage.StorageChange }) {
         this.storage.get(null).then((map) => {
             this.map = map;
@@ -302,7 +298,6 @@ export class Settings {
     }
 
     // Convenience methods
-    // Fixme: test
     public getExactCleanupType(expression: string) {
         for (const crd of this.rules) {
             if (crd.definition.rule === expression)
@@ -339,7 +334,7 @@ export class Settings {
     public getCleanupTypeForCookie(domain: string, name: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
             return CleanupType.NEVER;
-        if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
+        if (this.get("whitelistNoTLD") && domain.length > 0 && domain.indexOf(".") === -1)
             return CleanupType.NEVER;
         const matchingRules = this.getMatchingRules(domain, name);
         if (matchingRules.length)
@@ -350,7 +345,7 @@ export class Settings {
     public getCleanupTypeForDomain(domain: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
             return CleanupType.NEVER;
-        if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
+        if (this.get("whitelistNoTLD") && domain.length > 0 && domain.indexOf(".") === -1)
             return CleanupType.NEVER;
         const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length)
@@ -358,22 +353,19 @@ export class Settings {
         return this.get("fallbackRule");
     }
 
-    // Fixme: test
     public isDomainProtected(domain: string, ignoreStartupType: boolean) {
         const type = this.getCleanupTypeForDomain(domain);
         return type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType);
     }
 
-    // Fixme: test
     public isDomainBlocked(domain: string) {
         return this.getCleanupTypeForDomain(domain) === CleanupType.INSTANTLY;
     }
 
-    // Fixme: test
     public getChosenRulesForDomain(domain: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
             return [];
-        if (this.get("whitelistNoTLD") && domain.indexOf(".") === -1)
+        if (this.get("whitelistNoTLD") && domain.length > 0 && domain.indexOf(".") === -1)
             return [];
         const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length) {
@@ -387,7 +379,6 @@ export class Settings {
         return [];
     }
 
-    // Fixme: test
     public setRule(expression: string, type: CleanupType) {
         const rules = this.get("rules").slice();
         const ruleDef = rules.find((r) => r.rule === expression);
@@ -399,7 +390,6 @@ export class Settings {
         this.save();
     }
 
-    // Fixme: test
     public removeRule(expression: string) {
         const rules = this.get("rules").filter((r) => r.rule !== expression);
         this.set("rules", rules);

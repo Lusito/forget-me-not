@@ -81,7 +81,7 @@ export class LocalStorageCleaner extends Cleaner {
     }
 
     public isLocalStorageProtected(storeId: string, domain: string): boolean {
-        if (this.tabWatcher.cookieStoreContainsDomain(storeId, domain))
+        if (this.tabWatcher.cookieStoreContainsDomain(storeId, domain, true))
             return true;
         const type = settings.getCleanupTypeForDomain(domain);
         return type === CleanupType.NEVER || type === CleanupType.STARTUP;

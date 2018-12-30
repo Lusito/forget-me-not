@@ -7,14 +7,14 @@
 import { assert } from "chai";
 import { browser, BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { TabWatcher } from "../../src/background/tabWatcher";
-import { RecentlyAccessedDomains } from "../../src/background/recentlyAccessedDomains";
 import { browserMock } from "../browserMock";
-import { destroyAndNull, destroyAllAndEmpty } from "../../src/shared";
 import { settings } from "../../src/lib/settings";
 import { CleanupType } from "../../src/lib/settingsSignature";
-import { CookieCleaner, removeCookie } from "../../src/background/cleaners/cookieCleaner";
-import { ensureNotNull, doneHandler, booleanVariations, sleep, createSpy } from "../testHelpers";
+import { CookieCleaner } from "../../src/background/cleaners/cookieCleaner";
+import { ensureNotNull, doneHandler, sleep, createSpy, booleanContext } from "../testHelpers";
 import { messageUtil, ReceiverHandle } from "../../src/lib/messageUtil";
+import { IncognitoWatcher } from "../../src/background/incognitoWatcher";
+import { quickSetCookie, quickRemoveCookie } from "../quickHelpers";
 
 const COOKIE_STORE_ID = "mock";
 const WHITELISTED_DOMAIN = "never.com";
@@ -25,34 +25,6 @@ const OPEN_DOMAIN2 = "open2.com";
 const UNKNOWN_DOMAIN = "unknown.com";
 const UNKNOWN_DOMAIN2 = "unknown2.com";
 const UNKNOWN_SUBDOMAIN = "sub.unknown.com";
-
-function setCookie(domain: string, name: string, value: string, path: string, storeId: string, firstPartyDomain: string) {
-    browser.cookies.set({
-        url: "mock",
-        name,
-        value,
-        domain,
-        path,
-        storeId,
-        firstPartyDomain
-    });
-}
-
-function simpleCookieRemove(domain: string, name: string, path: string, storeId: string, firstPartyDomain: string, secure: boolean = false) {
-    return removeCookie({
-        name,
-        domain,
-        path,
-        storeId,
-        firstPartyDomain,
-        value: "",
-        hostOnly: false,
-        secure,
-        httpOnly: false,
-        session: false,
-        sameSite: "no_restriction"
-    });
-}
 
 function assertRemainingCookieDomains(done: MochaDone, domainList: string[], storeId = COOKIE_STORE_ID) {
     setTimeout(() => {
@@ -72,14 +44,14 @@ describe("removeCookie", () => {
         messageUtil.clearCallbacksMap();
         browserMock.reset();
 
-        setCookie("google.com", "hello", "world", "", "firefox-default", "");
-        setCookie("google.com", "foo", "bar", "", "firefox-default", "");
-        setCookie("google.com", "oh_long", "johnson", "", "firefox-default", "");
-        setCookie("google.de", "hello", "world", "", "firefox-default", "");
-        setCookie("google.de", "foo", "bar", "", "firefox-default", "");
-        setCookie("google.com", "hello", "world", "", "firefox-default-2", "");
-        setCookie("google.com", "foo", "bar", "", "firefox-default-2", "");
-        setCookie("", "foo", "bar", "/C:/path/to/somewhere/", "firefox-default", "");
+        quickSetCookie("google.com", "hello", "world", "", "firefox-default", "");
+        quickSetCookie("google.com", "foo", "bar", "", "firefox-default", "");
+        quickSetCookie("google.com", "oh_long", "johnson", "", "firefox-default", "");
+        quickSetCookie("google.de", "hello", "world", "", "firefox-default", "");
+        quickSetCookie("google.de", "foo", "bar", "", "firefox-default", "");
+        quickSetCookie("google.com", "hello", "world", "", "firefox-default-2", "");
+        quickSetCookie("google.com", "foo", "bar", "", "firefox-default-2", "");
+        quickSetCookie("", "foo", "bar", "/C:/path/to/somewhere/", "firefox-default", "");
 
         let doneCount = 0;
         browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
@@ -90,20 +62,16 @@ describe("removeCookie", () => {
         }, done, () => (++doneCount === 2)));
     });
 
-    afterEach(() => {
-        destroyAllAndEmpty(receivers);
-    });
-
     it("should emit cookieRemoved event", () => {
         const spy = createSpy();
         receivers.push(messageUtil.receive("cookieRemoved", spy));
-        simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
-        simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
-        simpleCookieRemove("google.de", "hello", "", "firefox-default", "");
-        simpleCookieRemove("google.de", "foo", "", "firefox-default", "");
-        simpleCookieRemove("google.com", "hello", "", "firefox-default-2", "");
-        simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
-        simpleCookieRemove("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
+        quickRemoveCookie("google.com", "hello", "", "firefox-default", "");
+        quickRemoveCookie("google.com", "foo", "", "firefox-default", "");
+        quickRemoveCookie("google.de", "hello", "", "firefox-default", "");
+        quickRemoveCookie("google.de", "foo", "", "firefox-default", "");
+        quickRemoveCookie("google.com", "hello", "", "firefox-default-2", "");
+        quickRemoveCookie("google.com", "foo", "", "firefox-default-2", "");
+        quickRemoveCookie("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
         spy.assertCalls([
             ["google.com", {}],
             ["google.com", {}],
@@ -115,9 +83,9 @@ describe("removeCookie", () => {
         ]);
     });
     it("should remove cookies from the specified store", (done) => {
-        simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
-        simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
-        simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
+        quickRemoveCookie("google.com", "hello", "", "firefox-default", "");
+        quickRemoveCookie("google.com", "foo", "", "firefox-default", "");
+        quickRemoveCookie("google.com", "foo", "", "firefox-default-2", "");
         let doneCount = 0;
         browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" }).then(doneHandler((cookies: Cookies.Cookie[]) => {
             assert.strictEqual(cookies.length, 4);
@@ -133,11 +101,11 @@ describe("removeCookie", () => {
     });
 
     it("should call browser.cookies.remove with the correct parameters", () => {
-        simpleCookieRemove("google.com", "hello", "", "firefox-default", "");
-        simpleCookieRemove("google.com", "foo", "", "firefox-default", "");
-        simpleCookieRemove("google.com", "foo", "", "firefox-default-2", "");
-        simpleCookieRemove("google.de", "foo", "", "firefox-default", "", true);
-        simpleCookieRemove("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
+        quickRemoveCookie("google.com", "hello", "", "firefox-default", "");
+        quickRemoveCookie("google.com", "foo", "", "firefox-default", "");
+        quickRemoveCookie("google.com", "foo", "", "firefox-default-2", "");
+        quickRemoveCookie("google.de", "foo", "", "firefox-default", "", true);
+        quickRemoveCookie("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
 
         browserMock.cookies.remove.assertCalls([
             [{ name: "hello", url: "http://google.com", storeId: "firefox-default", firstPartyDomain: "" }],
@@ -149,26 +117,26 @@ describe("removeCookie", () => {
     });
 });
 
+// Fixme: cleanup with frames
 describe("CookieCleaner", () => {
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
         onDomainLeave: () => undefined
     };
     let tabWatcher: TabWatcher | null = null;
-    let recentlyAccessedDomains: RecentlyAccessedDomains | null = null;
     let cleaner: CookieCleaner | null = null;
+    let incognitoWatcher: IncognitoWatcher | null = null;
 
     afterEach(() => {
-        recentlyAccessedDomains = destroyAndNull(recentlyAccessedDomains);
-        tabWatcher = destroyAndNull(tabWatcher);
+        tabWatcher = null;
         cleaner = null;
         settings.restoreDefaults();
     });
 
     beforeEach(() => {
         browserMock.reset();
-        recentlyAccessedDomains = new RecentlyAccessedDomains();
-        tabWatcher = new TabWatcher(tabWatcherListener, recentlyAccessedDomains);
+        tabWatcher = new TabWatcher(tabWatcherListener);
+        incognitoWatcher = new IncognitoWatcher();
 
         const tabIds = [
             browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
@@ -177,20 +145,20 @@ describe("CookieCleaner", () => {
         browserMock.cookies.cookieStores = [
             { id: COOKIE_STORE_ID, tabIds, incognito: false }
         ];
-        setCookie(OPEN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        setCookie(OPEN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN2);
-        setCookie(UNKNOWN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        setCookie(UNKNOWN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN2);
-        setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        setCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        quickSetCookie(OPEN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        quickSetCookie(OPEN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN2);
+        quickSetCookie(UNKNOWN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        quickSetCookie(UNKNOWN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN2);
+        quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        quickSetCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
         settings.set("rules", [
             { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
             { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
             { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY }
         ]);
         settings.save();
-        cleaner = new CookieCleaner(tabWatcher, recentlyAccessedDomains);
+        cleaner = new CookieCleaner(tabWatcher, incognitoWatcher);
     });
 
     describe("clean", () => {
@@ -201,44 +169,40 @@ describe("CookieCleaner", () => {
             typeSet.cookies = true;
         });
 
-        booleanVariations(4).forEach(([cookies, startup, startupApplyRules, cleanAllApplyRules]) => {
-            context(`cookies=${cookies}, startup = ${startup}, startupApplyRules = ${startupApplyRules}, startupApplyRules = ${cleanAllApplyRules}`, () => {
-                beforeEach(() => {
-                    typeSet.cookies = cookies;
-                    settings.set("startup.cookies.applyRules", startupApplyRules);
-                    settings.set("cleanAll.cookies.applyRules", cleanAllApplyRules);
-                    settings.save();
-                });
-                if (cookies && (startup && startupApplyRules || !startup && cleanAllApplyRules)) {
-                    it("should clean up", () => {
-                        cleaner = ensureNotNull(cleaner);
-                        cleaner.clean(typeSet, startup);
-                        browserMock.cookies.getAllCookieStores.assertCalls([[]]);
-                        assert.isFalse(typeSet.cookies);
-                    });
-                } else {
-                    it("should not do anything", () => {
-                        cleaner = ensureNotNull(cleaner);
-                        cleaner.clean(typeSet, startup);
-                        browserMock.cookies.getAllCookieStores.assertNoCall();
-                        assert.strictEqual(typeSet.cookies, cookies);
-                    });
-                }
+        booleanContext((cookies, startup, startupApplyRules, cleanAllApplyRules) => {
+            beforeEach(() => {
+                typeSet.cookies = cookies;
+                settings.set("startup.cookies.applyRules", startupApplyRules);
+                settings.set("cleanAll.cookies.applyRules", cleanAllApplyRules);
+                settings.save();
             });
-        });
-
-        [true, false].forEach((protectOpenDomains) => {
-            context(`startup = true, protectOpenDomains = ${protectOpenDomains}`, () => {
-                beforeEach(() => {
-                    settings.set("cleanAll.protectOpenDomains", protectOpenDomains);
-                    settings.save();
-                });
-                it("should protect whitelisted cookies and open domains", (done) => {
+            if (cookies && (startup && startupApplyRules || !startup && cleanAllApplyRules)) {
+                it("should clean up", () => {
                     cleaner = ensureNotNull(cleaner);
-                    cleaner.clean(typeSet, true);
-                    assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2]);
+                    cleaner.clean(typeSet, startup);
+                    browserMock.cookies.getAllCookieStores.assertCalls([[]]);
                     assert.isFalse(typeSet.cookies);
                 });
+            } else {
+                it("should not do anything", () => {
+                    cleaner = ensureNotNull(cleaner);
+                    cleaner.clean(typeSet, startup);
+                    browserMock.cookies.getAllCookieStores.assertNoCall();
+                    assert.strictEqual(typeSet.cookies, cookies);
+                });
+            }
+        });
+
+        booleanContext((protectOpenDomains) => {
+            beforeEach(() => {
+                settings.set("cleanAll.protectOpenDomains", protectOpenDomains);
+                settings.save();
+            });
+            it("should protect whitelisted cookies and open domains", (done) => {
+                cleaner = ensureNotNull(cleaner);
+                cleaner.clean(typeSet, true);
+                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2]);
+                assert.isFalse(typeSet.cookies);
             });
         });
         context("startup = false, protectOpenDomains = true", () => {
@@ -332,7 +296,7 @@ describe("CookieCleaner", () => {
                 settings.save();
 
                 // should clean subdomain cookies as well
-                setCookie(UNKNOWN_SUBDOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                quickSetCookie(UNKNOWN_SUBDOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
             });
             it("should clean cookies", (done) => {
                 cleaner = ensureNotNull(cleaner);
@@ -343,6 +307,7 @@ describe("CookieCleaner", () => {
     });
 
     describe("isCookieAllowed", () => {
+        // fixme: protectSubFrames = false
         function testCookieAllowed(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean, expected: boolean, done: MochaDone, doneCondition?: () => boolean) {
             browser.cookies.getAll({
                 firstPartyDomain: null,
@@ -352,7 +317,7 @@ describe("CookieCleaner", () => {
                 assert.isDefined(cookie);
                 if (cookie) {
                     cleaner = ensureNotNull(cleaner);
-                    assert.strictEqual(cleaner.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains), expected);
+                    assert.strictEqual(cleaner.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains, true), expected);
                 }
             }, done, doneCondition));
         }
@@ -433,8 +398,8 @@ describe("CookieCleaner", () => {
                 settings.set("domainLeave.cookies", false);
                 settings.save();
                 browserMock.cookies.resetCookies();
-                setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-                setCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, BLACKLISTED_DOMAIN);
+                quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN);
+                quickSetCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, BLACKLISTED_DOMAIN);
             });
             it("should not remove cookies which have a first party domain if that first party domain is not the one to be cleaned", (done) => {
                 cleaner = ensureNotNull(cleaner);
@@ -456,76 +421,72 @@ describe("CookieCleaner", () => {
             browserMock.cookies.resetCookies();
         });
 
-        booleanVariations(4).forEach(([incognito, instantlyEnabled, instantlyCookies, snoozing]) => {
-            context(`incognito = ${incognito}, instantly.enabled = ${instantlyEnabled}, instantly.cookies = ${instantlyCookies}, snoozing = ${snoozing}`, () => {
-                beforeEach(() => {
-                    settings.set("instantly.enabled", instantlyEnabled);
-                    settings.set("instantly.cookies", instantlyCookies);
-                    settings.save();
-                    ensureNotNull(cleaner).setSnoozing(snoozing);
-                });
-                if (!incognito && instantlyEnabled && instantlyCookies) {
-                    it("Should remove blacklisted cookies", (done) => {
-                        cleaner = ensureNotNull(cleaner);
-                        setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                        assertRemainingCookieDomains(done, []);
-                    });
-                    it("Should not remove whitelisted cookies", (done) => {
-                        cleaner = ensureNotNull(cleaner);
-                        setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                        assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
-                    });
-                } else {
-                    const localCookieStoreId = incognito ? "firefox-private" : COOKIE_STORE_ID;
-                    it("Should not remove blacklisted cookies", (done) => {
-                        cleaner = ensureNotNull(cleaner);
-                        setCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", localCookieStoreId, "");
-                        assertRemainingCookieDomains(done, [BLACKLISTED_DOMAIN], localCookieStoreId);
-                    });
-                    it("Should not remove whitelisted cookies", (done) => {
-                        cleaner = ensureNotNull(cleaner);
-                        setCookie(WHITELISTED_DOMAIN, "foo", "bar", "", localCookieStoreId, "");
-                        assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN], localCookieStoreId);
-                    });
-                }
+        booleanContext((incognito, instantlyEnabled, instantlyCookies, snoozing) => {
+            beforeEach(() => {
+                browserMock.tabs.create("", COOKIE_STORE_ID, incognito);
+                settings.set("instantly.enabled", instantlyEnabled);
+                settings.set("instantly.cookies", instantlyCookies);
+                settings.save();
+                ensureNotNull(cleaner).setSnoozing(snoozing);
             });
+            if (!incognito && instantlyEnabled && instantlyCookies) {
+                it("Should remove blacklisted cookies", (done) => {
+                    cleaner = ensureNotNull(cleaner);
+                    quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    assertRemainingCookieDomains(done, []);
+                });
+                it("Should not remove whitelisted cookies", (done) => {
+                    cleaner = ensureNotNull(cleaner);
+                    quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN]);
+                });
+            } else {
+                it("Should not remove blacklisted cookies", (done) => {
+                    cleaner = ensureNotNull(cleaner);
+                    quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    assertRemainingCookieDomains(done, [BLACKLISTED_DOMAIN], COOKIE_STORE_ID);
+                });
+                it("Should not remove whitelisted cookies", (done) => {
+                    cleaner = ensureNotNull(cleaner);
+                    quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN], COOKIE_STORE_ID);
+                });
+            }
         });
 
-        booleanVariations(5).forEach(([incognito, thirdPartyEnabled, snoozing, delayed, whitelisted]) => {
-            const delay = delayed ? 0.01 : 0; // in seconds
-            const localCookieStoreId = incognito ? "firefox-private" : COOKIE_STORE_ID;
+        booleanContext((incognito, thirdPartyEnabled, snoozing, delayed, whitelisted) => {
+            const delay = delayed ? 0.1 : 0; // in seconds
             const localDomain = whitelisted ? WHITELISTED_DOMAIN : UNKNOWN_DOMAIN;
-            context(`incognito = ${incognito}, cleanThirdPartyCookies.enabled = ${thirdPartyEnabled}, cleanThirdPartyCookies.delay = ${delay}s, snoozing = ${snoozing}, whitelisted=${whitelisted}`, () => {
-                beforeEach(() => {
-                    settings.set("cleanThirdPartyCookies.enabled", thirdPartyEnabled);
-                    settings.set("cleanThirdPartyCookies.delay", delay);
-                    settings.save();
-                    ensureNotNull(cleaner).setSnoozing(snoozing);
-                });
-                if (!incognito && thirdPartyEnabled && !snoozing && !whitelisted) {
-                    it(`Should remove cookie${delayed ? " delayed" : ""}`, function (done) {
-                        this.slow(300);
-                        cleaner = ensureNotNull(cleaner);
-                        setCookie(localDomain, "foo", "bar", "", localCookieStoreId, "");
-                        const finalAssert = () => assertRemainingCookieDomains(done, [], localCookieStoreId);
-                        if (delayed)
-                            assertRemainingCookieDomains((e) => e ? done(e) : sleep(100).then(finalAssert), [localDomain], localCookieStoreId);
-                        else
-                            finalAssert();
-                    });
-                } else {
-                    it(`Should not remove cookie${delayed ? " delayed" : ""}`, function (done) {
-                        this.slow(300);
-                        cleaner = ensureNotNull(cleaner);
-                        setCookie(localDomain, "foo", "bar", "", localCookieStoreId, "");
-                        const finalAssert = () => assertRemainingCookieDomains(done, [localDomain], localCookieStoreId);
-                        if (delayed)
-                            assertRemainingCookieDomains((e) => e ? done(e) : sleep(100).then(finalAssert), [localDomain], localCookieStoreId);
-                        else
-                            finalAssert();
-                    });
-                }
+            beforeEach(() => {
+                browserMock.tabs.create("", COOKIE_STORE_ID, incognito);
+                settings.set("cleanThirdPartyCookies.enabled", thirdPartyEnabled);
+                settings.set("cleanThirdPartyCookies.delay", delay);
+                settings.save();
+                ensureNotNull(cleaner).setSnoozing(snoozing);
             });
+            if (!incognito && thirdPartyEnabled && !snoozing && !whitelisted) {
+                it(`Should remove cookie${delayed ? " delayed" : ""}`, function (done) {
+                    this.slow(300);
+                    cleaner = ensureNotNull(cleaner);
+                    quickSetCookie(localDomain, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    const finalAssert = () => assertRemainingCookieDomains(done, [], COOKIE_STORE_ID);
+                    if (delayed)
+                        assertRemainingCookieDomains((e) => e ? done(e) : sleep(100).then(finalAssert), [localDomain], COOKIE_STORE_ID);
+                    else
+                        finalAssert();
+                });
+            } else {
+                it(`Should not remove cookie${delayed ? " delayed" : ""}`, function (done) {
+                    this.slow(300);
+                    cleaner = ensureNotNull(cleaner);
+                    quickSetCookie(localDomain, "foo", "bar", "", COOKIE_STORE_ID, "");
+                    const finalAssert = () => assertRemainingCookieDomains(done, [localDomain], COOKIE_STORE_ID);
+                    if (delayed)
+                        assertRemainingCookieDomains((e) => e ? done(e) : sleep(100).then(finalAssert), [localDomain], COOKIE_STORE_ID);
+                    else
+                        finalAssert();
+                });
+            }
         });
     });
 });

@@ -46,7 +46,7 @@ export interface BadgeInfo {
     color: string | [number, number, number, number];
 }
 
-function createBadge(name: string, color: [number, number, number, number]) {
+function createBadge(name: string, color: [number, number, number, number]): BadgeInfo {
     const className = `cleanup_type_${name}`;
     return {
         className,
@@ -56,17 +56,14 @@ function createBadge(name: string, color: [number, number, number, number]) {
     };
 }
 
+const badgeNone: BadgeInfo = { className: "", i18nBadge: "", i18nButton: "", color: [0, 0, 0, 255] };
+
 export const badges = {
     never: createBadge("never", [38, 69, 151, 255]),
     startup: createBadge("startup", [116, 116, 116, 255]),
     leave: createBadge("leave", [190, 23, 38, 255]),
     instantly: createBadge("instantly", [0, 0, 0, 255]),
-    none: {
-        className: "",
-        i18nBadge: "",
-        i18nButton: "",
-        color: [0, 0, 0, 255] as [number, number, number, number]
-    }
+    none: badgeNone
 };
 
 export function getBadgeForCleanupType(type: CleanupType) {
@@ -100,22 +97,5 @@ export function getAllCookieStoreIds() {
         for (const ci of contextualIdentities)
             ids[ci.cookieStoreId] = true;
         return Object.getOwnPropertyNames(ids);
-    });
-}
-
-export function getCookieStoreIncognito(storeId: string) {
-    if (storeId.indexOf("private") >= 0)
-        return Promise.resolve(true);
-    if (storeId.indexOf("firefox") >= 0)
-        return Promise.resolve(false);
-
-    return browser.cookies.getAllCookieStores().then((cookieStores) => {
-        const store = cookieStores.find((s) => s.id === storeId);
-        if (store && store.tabIds.length) {
-            return browser.tabs.get(store.tabIds[0]).then((tab) => {
-                return tab.incognito;
-            });
-        }
-        return false;
     });
 }

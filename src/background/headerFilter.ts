@@ -4,12 +4,11 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
+import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import { TabWatcher } from "./tabWatcher";
-import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { browser, WebRequest } from "webextension-polyfill-ts";
-import { getValidHostname, destroyAndNull } from "../shared";
+import { getValidHostname } from "../shared";
 import { CleanupType, SettingsKey } from "../lib/settingsSignature";
 import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";
@@ -17,15 +16,12 @@ import { someItemsMatch } from "./backgroundShared";
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule", "instantly.enabled"];
 
 export class HeaderFilter {
-    private settingsReceiver: ReceiverHandle | null = null;
     private blockThirdpartyCookies = false;
     private readonly tabWatcher: TabWatcher;
-    private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
     private readonly onHeadersReceived: (details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse;
 
-    public constructor(tabWatcher: TabWatcher, recentlyAccessedDomains: RecentlyAccessedDomains) {
+    public constructor(tabWatcher: TabWatcher) {
         this.tabWatcher = tabWatcher;
-        this.recentlyAccessedDomains = recentlyAccessedDomains;
         this.onHeadersReceived = (details) => {
             if (details.responseHeaders) {
                 return {
@@ -35,15 +31,10 @@ export class HeaderFilter {
             return {};
         };
         this.updateSettings();
-        this.settingsReceiver = messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, HEADER_FILTER_SETTINGS_KEYS))
                 this.updateSettings();
         });
-    }
-
-    public destroy() {
-        this.settingsReceiver = destroyAndNull(this.settingsReceiver);
-        browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
     }
 
     public isEnabled() {
@@ -62,10 +53,8 @@ export class HeaderFilter {
             if (x.name.toLowerCase() === "set-cookie") {
                 if (x.value) {
                     const cookieInfo = parseSetCookieHeader(x.value, fallbackDomain);
-                    if (cookieInfo && this.shouldCookieBeBlocked(tabId, cookieInfo)) {
-                        this.recentlyAccessedDomains.add(cookieInfo.domain);
+                    if (cookieInfo && this.shouldCookieBeBlocked(tabId, cookieInfo))
                         return false;
-                    }
                 }
             }
             return true;

@@ -6,15 +6,15 @@
 
 import { BrowsingData, Cookies, browser } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
-import { getAllCookieStoreIds, getFirstPartyCookieDomain, getCookieStoreIncognito } from "../backgroundHelpers";
+import { getAllCookieStoreIds, getFirstPartyCookieDomain } from "../backgroundHelpers";
 import { settings } from "../../lib/settings";
 import DelayedExecution from "../../lib/delayedExecution";
 import { TabWatcher } from "../tabWatcher";
 import { CleanupType } from "../../lib/settingsSignature";
-import { RecentlyAccessedDomains } from "../recentlyAccessedDomains";
 import { getDomain } from "tldjs";
 import { isNodeTest, isFirefox, browserInfo } from "../../lib/browserInfo";
 import { messageUtil } from "../../lib/messageUtil";
+import { IncognitoWatcher } from "../incognitoWatcher";
 
 const supportsFirstPartyIsolation = isNodeTest || isFirefox && browserInfo.versionAsNumber >= 59;
 
@@ -51,12 +51,12 @@ export function removeCookie(cookie: Cookies.Cookie) {
 export class CookieCleaner extends Cleaner {
     private readonly snoozedThirdpartyCookies: Cookies.Cookie[] = [];
     private readonly tabWatcher: TabWatcher;
-    private readonly recentlyAccessedDomains: RecentlyAccessedDomains;
+    private readonly incognitoWatcher: IncognitoWatcher;
 
-    public constructor(tabWatcher: TabWatcher, recentlyAccessedDomains: RecentlyAccessedDomains) {
+    public constructor(tabWatcher: TabWatcher, incognitoWatcher: IncognitoWatcher) {
         super();
         this.tabWatcher = tabWatcher;
-        this.recentlyAccessedDomains = recentlyAccessedDomains;
+        this.incognitoWatcher = incognitoWatcher;
 
         browser.cookies.onChanged.addListener(this.onCookieChanged.bind(this));
     }
@@ -86,7 +86,7 @@ export class CookieCleaner extends Cleaner {
             if (this.shouldPurgeExpiredCookie(cookie))
                 return true;
             const match = cookie.firstPartyDomain ? cookie.firstPartyDomain === domainFP : getFirstPartyCookieDomain(cookie.domain) === domainFP;
-            return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true));
+            return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true, true));
         });
     }
 
@@ -102,7 +102,7 @@ export class CookieCleaner extends Cleaner {
     private cleanCookiesWithRulesNow(ignoreStartupType: boolean, protectOpenDomains: boolean) {
         getAllCookieStoreIds().then((ids) => {
             for (const id of ids)
-                this.removeCookies(id, (cookie) => this.shouldPurgeExpiredCookie(cookie) || !this.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains));
+                this.removeCookies(id, (cookie) => this.shouldPurgeExpiredCookie(cookie) || !this.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains, true));
         });
     }
 
@@ -115,45 +115,38 @@ export class CookieCleaner extends Cleaner {
     }
 
     private onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
-        if (!changeInfo.removed) {
-            getCookieStoreIncognito(changeInfo.cookie.storeId).then((incognito) => {
-                if (!incognito) {
-                    this.recentlyAccessedDomains.add(changeInfo.cookie.domain);
-                    // Cookies set by javascript can't be denied, but can be removed instantly.
-                    if (this.shouldRemoveCookieInstantly(changeInfo.cookie))
-                        removeCookie(changeInfo.cookie);
-                    else if (settings.get("cleanThirdPartyCookies.enabled"))
-                        this.removeCookieIfThirdparty(changeInfo.cookie);
-                }
-            });
+        if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
+            // Cookies set by javascript can't be denied, but can be removed instantly.
+            if (this.shouldRemoveCookieInstantly(changeInfo.cookie))
+                removeCookie(changeInfo.cookie);
+            else if (settings.get("cleanThirdPartyCookies.enabled"))
+                this.removeCookieIfThirdparty(changeInfo.cookie);
         }
     }
 
     private removeCookieIfThirdparty(cookie: Cookies.Cookie) {
-        getCookieStoreIncognito(cookie.storeId).then((incognito) => {
-            if (!incognito && this.isThirdpartyCookie(cookie)) {
+        if (!this.incognitoWatcher.hasCookieStore(cookie.storeId) && this.isThirdpartyCookie(cookie)) {
+            if (this.snoozing) {
+                this.snoozedThirdpartyCookies.push(cookie);
+                return;
+            }
+            const exec = new DelayedExecution(() => {
                 if (this.snoozing) {
                     this.snoozedThirdpartyCookies.push(cookie);
                     return;
                 }
-                const exec = new DelayedExecution(() => {
-                    if (this.snoozing) {
-                        this.snoozedThirdpartyCookies.push(cookie);
-                        return;
-                    }
-                    if (this.isThirdpartyCookie(cookie) && !this.isCookieAllowed(cookie, false, false))
-                        removeCookie(cookie);
-                });
-                exec.restart(settings.get("cleanThirdPartyCookies.delay") * 1000);
-            }
-        });
+                if (this.isThirdpartyCookie(cookie) && !this.isCookieAllowed(cookie, false, false, false))
+                    removeCookie(cookie);
+            });
+            exec.restart(settings.get("cleanThirdPartyCookies.delay") * 1000);
+        }
     }
 
     private isThirdpartyCookie(cookie: Cookies.Cookie) {
         const firstPartyDomain = getFirstPartyCookieDomain(cookie.domain);
         if (cookie.firstPartyDomain)
             return cookie.firstPartyDomain !== firstPartyDomain;
-        return !this.tabWatcher.isFirstPartyDomainOnCookieStore(cookie.storeId, firstPartyDomain);
+        return !this.tabWatcher.cookieStoreContainsDomainFP(cookie.storeId, firstPartyDomain, false);
     }
 
     private removeCookies(storeId: string, test: (cookie: Cookies.Cookie) => boolean) {
@@ -173,7 +166,7 @@ export class CookieCleaner extends Cleaner {
         return settings.get("purgeExpiredCookies") && cookie.expirationDate && cookie.expirationDate < Date.now() / 1000;
     }
 
-    public isCookieAllowed(cookie: Cookies.Cookie, ignoreStartupType: boolean, protectOpenDomains: boolean) {
+    public isCookieAllowed(cookie: Cookies.Cookie, ignoreStartupType: boolean, protectOpenDomains: boolean, protectSubFrames: boolean) {
         const allowSubDomains = cookie.domain.startsWith(".");
         const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
         const type = settings.getCleanupTypeForCookie(rawDomain, cookie.name);
@@ -182,8 +175,8 @@ export class CookieCleaner extends Cleaner {
         if (type === CleanupType.INSTANTLY || !protectOpenDomains)
             return false;
         if (cookie.firstPartyDomain)
-            return this.tabWatcher.isFirstPartyDomainOnCookieStore(cookie.storeId, cookie.firstPartyDomain);
-        const firstPartyDomain = getFirstPartyCookieDomain(cookie.domain);
-        return this.tabWatcher.isFirstPartyDomainOnCookieStore(cookie.storeId, firstPartyDomain);
+            return this.tabWatcher.cookieStoreContainsDomainFP(cookie.storeId, cookie.firstPartyDomain, protectSubFrames);
+        const firstPartyDomain = getDomain(rawDomain) || rawDomain;
+        return this.tabWatcher.cookieStoreContainsDomainFP(cookie.storeId, firstPartyDomain, protectSubFrames);
     }
 }

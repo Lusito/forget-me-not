@@ -36,9 +36,7 @@ settings.onReady(() => {
     // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.
     messageUtil.receive("import", () => {
         loadJSONFile((json) => {
-            if (json && settings.setAll(json)) {
-                console.log("success");
-            }
+            json && settings.setAll(json);
         });
     });
 

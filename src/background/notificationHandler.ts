@@ -7,8 +7,7 @@
 import { browser } from "webextension-polyfill-ts";
 import { settings } from "../lib/settings";
 import DelayedExecution from "../lib/delayedExecution";
-import { messageUtil, ReceiverHandle } from "../lib/messageUtil";
-import { destroyAllAndEmpty } from "../shared";
+import { messageUtil } from "../lib/messageUtil";
 import { wetLayer } from "wet-layer";
 
 const COOKIE_CLEANUP_NOTIFICATION_ID = "CookieCleanupNotification";
@@ -19,7 +18,6 @@ const DELAY_NOTIFICATION = 500;
 
 export class NotificationHandler {
     private enabled: boolean;
-    private receivers: ReceiverHandle[] = [];
     private readonly delayNotification = new DelayedExecution(this.showNotification.bind(this));
     private readonly delayClearNotification = new DelayedExecution(this.clearNotification.bind(this));
     private removalCountsByDomain: { [s: string]: number } = {};
@@ -31,17 +29,10 @@ export class NotificationHandler {
         browser.notifications.onClosed.addListener(this.onNotificationClosed);
 
         this.enabled = settings.get("showCookieRemovalNotification");
-        this.receivers = [
-            messageUtil.receive("settingsChanged", () => {
-                this.enabled = settings.get("showCookieRemovalNotification");
-            }),
-            messageUtil.receive("cookieRemoved", this.onCookieRemoved.bind(this))
-        ];
-    }
-
-    public destroy() {
-        destroyAllAndEmpty(this.receivers);
-        browser.notifications.onClosed.removeListener(this.onNotificationClosed);
+        messageUtil.receive("settingsChanged", () => {
+            this.enabled = settings.get("showCookieRemovalNotification");
+        });
+        messageUtil.receive("cookieRemoved", this.onCookieRemoved.bind(this));
     }
 
     private onNotificationClosed(id: string) {

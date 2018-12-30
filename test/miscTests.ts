@@ -6,9 +6,9 @@
 
 import { assert } from "chai";
 import { getValidHostname } from "../src/shared";
-import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, getCookieStoreIncognito } from "../src/background/backgroundHelpers";
+import { getFirstPartyCookieDomain, parseSetCookieHeader, badges, getBadgeForCleanupType, getAllCookieStoreIds, BadgeInfo } from "../src/background/backgroundHelpers";
 import { browserMock } from "./browserMock";
-import { doneHandler } from "./testHelpers";
+import { doneHandler, contextWithResult } from "./testHelpers";
 import { CleanupType } from "../src/lib/settingsSignature";
 
 describe("Misc functionality", () => {
@@ -86,14 +86,14 @@ describe("Misc functionality", () => {
     });
 
     describe("getBadgeForCleanupType", () => {
-        [
-            { type: CleanupType.NEVER, badge: badges.never },
-            { type: CleanupType.STARTUP, badge: badges.startup },
-            { type: CleanupType.LEAVE, badge: badges.leave },
-            { type: CleanupType.INSTANTLY, badge: badges.instantly },
-            { type: "unknown" as any as CleanupType, badge: badges.leave }
-        ].forEach(({ type, badge }) => {
-            it(`should return the correct badge for ${type}`, () => {
+        contextWithResult<CleanupType, BadgeInfo>("type", [
+            { context: CleanupType.NEVER, result: badges.never },
+            { context: CleanupType.STARTUP, result: badges.startup },
+            { context: CleanupType.LEAVE, result: badges.leave },
+            { context: CleanupType.INSTANTLY, result: badges.instantly },
+            { context: "unknown" as any as CleanupType, result: badges.leave }
+        ], (type, badge) => {
+            it("should return the correct badge", () => {
                 assert.strictEqual(getBadgeForCleanupType(type), badge);
             });
         });
@@ -116,31 +116,6 @@ describe("Misc functionality", () => {
             getAllCookieStoreIds().then(doneHandler((ids: string[]) => {
                 assert.sameMembers(ids, ["firefox-default", "firefox-private", "cs-1", "cs-2", "cs-4", "ci-1", "ci-2", "ci-4"]);
             }, done));
-        });
-    });
-
-    describe("getCookieStoreIncognito", () => {
-        beforeEach(() => {
-            browserMock.cookies.cookieStores = [
-                { id: "my-default", tabIds: [browserMock.tabs.create("something", "my-default", false)], incognito: false },
-                { id: "my-pryvate", tabIds: [browserMock.tabs.create("something", "my-pryvate", true)], incognito: true }
-            ];
-        });
-
-        [
-            { storeId: "private", result: true },
-            { storeId: "anything-private-anything", result: true },
-            { storeId: "firefox", result: false },
-            { storeId: "anything-firefox-anything", result: false },
-            { storeId: "my-default", result: false },
-            { storeId: "my-pryvate", result: true }
-        ].forEach(({ storeId, result }) => {
-            // tslint:disable-next-line:only-arrow-functions
-            it(`Should return ${result} for storeId ${storeId}`, function (done) {
-                getCookieStoreIncognito(storeId).then(doneHandler((incognito: boolean) => {
-                    assert.strictEqual(incognito, result);
-                }, done));
-            });
         });
     });
 });

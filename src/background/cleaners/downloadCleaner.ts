@@ -9,8 +9,6 @@ import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { getValidHostname } from "../../shared";
 
-// fixme: make this file unit-testable and add tests
-// fixme: snooze
 export class DownloadCleaner extends Cleaner {
     public constructor() {
         super();
@@ -24,7 +22,7 @@ export class DownloadCleaner extends Cleaner {
                 const applyRules = settings.get("instantly.downloads.applyRules");
                 if (!applyRules || settings.isDomainBlocked(domain)) {
                     this.cleanupUrl(url);
-                } else if (!settings.isDomainProtected(domain, false) && settings.get("startup.downloads")) {
+                } else if (settings.get("startup.enabled") && settings.get("startup.downloads") && !settings.isDomainProtected(domain, false)) {
                     const downloadsToClean = { ...settings.get("downloadsToClean") };
                     downloadsToClean[url] = true;
                     settings.set("downloadsToClean", downloadsToClean);
@@ -36,6 +34,7 @@ export class DownloadCleaner extends Cleaner {
 
     private cleanupUrl(url: string) {
         browser.downloads.erase({ url });
+        // Firefox Android doesn't support history API yet
         browser.history && browser.history.deleteUrl({ url });
     }
 
@@ -56,11 +55,18 @@ export class DownloadCleaner extends Cleaner {
         const downloadsToClean = { ...settings.get("downloadsToClean") };
         downloads.forEach((d) => downloadsToClean[d.url] = true);
 
+        const newDownloadsToClean: { [s: string]: boolean } = {};
         let urls = Object.getOwnPropertyNames(downloadsToClean);
-        if (applyRules)
-            urls = urls.filter((url) => !settings.isDomainProtected(getValidHostname(url), startup));
+        if (applyRules) {
+            urls = urls.filter((url) => {
+                const isProtected = settings.isDomainProtected(getValidHostname(url), startup);
+                if (isProtected)
+                    newDownloadsToClean[url] = true;
+                return !isProtected;
+            });
+        }
 
-        settings.set("downloadsToClean", {});
+        settings.set("downloadsToClean", newDownloadsToClean);
         settings.save();
         return urls;
     }

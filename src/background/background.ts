@@ -7,10 +7,10 @@
 import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import { removeLocalStorageByHostname } from "./backgroundShared";
-import { TabWatcher, TabWatcherListener, DEFAULT_COOKIE_STORE_ID } from "./tabWatcher";
+import { TabWatcher, TabWatcherListener } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { HeaderFilter } from "./headerFilter";
-import { getValidHostname } from "../shared";
+import { getValidHostname, DEFAULT_COOKIE_STORE_ID } from "../shared";
 import { browser, BrowsingData } from "webextension-polyfill-ts";
 import { getBadgeForCleanupType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
@@ -21,13 +21,14 @@ import { LocalStorageCleaner } from "./cleaners/localStorageCleaner";
 import { CookieCleaner } from "./cleaners/cookieCleaner";
 import { Cleaner } from "./cleaners/cleaner";
 import { HistoryCleaner } from "./cleaners/historyCleaner";
+import { IncognitoWatcher } from "./incognitoWatcher";
 
 // fixme: make this file unit-testable and add tests
 
 export class Background implements TabWatcherListener {
     private readonly cleanupScheduler: { [s: string]: CleanupScheduler } = {};
-    private readonly recentlyAccessedDomains = new RecentlyAccessedDomains();
-    private readonly tabWatcher = new TabWatcher(this, this.recentlyAccessedDomains);
+    private readonly incognitoWatcher = new IncognitoWatcher();
+    private readonly tabWatcher = new TabWatcher(this);
     private snoozing = false;
     // @ts-ignore
     private readonly notificationHandler = new NotificationHandler();
@@ -36,11 +37,12 @@ export class Background implements TabWatcherListener {
     public constructor() {
         browser.history && this.cleaners.push(new HistoryCleaner());
         this.cleaners.push(new DownloadCleaner());
-        this.cleaners.push(new CookieCleaner(this.tabWatcher, this.recentlyAccessedDomains));
+        this.cleaners.push(new CookieCleaner(this.tabWatcher, this.incognitoWatcher));
         this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
 
         this.updateBadge();
-        new HeaderFilter(this.tabWatcher, this.recentlyAccessedDomains);
+        new HeaderFilter(this.tabWatcher);
+        new RecentlyAccessedDomains(this.incognitoWatcher);
         wetLayer.addListener(() => {
             this.updateBadge();
             this.updateBrowserAction();

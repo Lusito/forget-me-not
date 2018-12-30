@@ -6,10 +6,10 @@
 
 import { assert } from "chai";
 import { browserMock } from "./browserMock";
-import { ensureNotNull, doneHandler, clone } from "./testHelpers";
-import { destroyAndNull } from "../src/shared";
+import { ensureNotNull, doneHandler, clone, booleanContext, createSpy } from "./testHelpers";
 import { settings, defaultSettings, Settings, SettingsMap } from "../src/lib/settings";
 import { SettingsTypeMap, CleanupType, RuleDefinition } from "../src/lib/settingsSignature";
+import { browser } from "webextension-polyfill-ts";
 
 // generate settings map that is unequal to default settings
 const testOverrides: SettingsMap = {};
@@ -108,7 +108,7 @@ describe("Settings", () => {
                 settings2 = new Settings();
         });
         afterEach(() => {
-            settings2 = destroyAndNull(settings2);
+            settings2 = null;
         });
         it("should affect other settings instances", (done) => {
             settings2 = ensureNotNull(settings2);
@@ -173,6 +173,85 @@ describe("Settings", () => {
         });
     });
 
+    describe("isDomainProtected", () => {
+        booleanContext((ignoreStartupType) => {
+            it("should return true if proected", () => {
+                settings.set("rules", [
+                    { rule: "*.google.com", type: CleanupType.NEVER },
+                    { rule: "*.google.de", type: CleanupType.STARTUP },
+                    { rule: "*.google.co.uk", type: CleanupType.LEAVE },
+                    { rule: "*.google.jp", type: CleanupType.INSTANTLY }
+                ]);
+                settings.save();
+                assert.isTrue(settings.isDomainProtected("www.google.com", true));
+                assert.equal(settings.isDomainProtected("www.google.de", ignoreStartupType), !ignoreStartupType);
+                assert.isFalse(settings.isDomainProtected("www.google.co.uk", true));
+                assert.isFalse(settings.isDomainProtected("www.google.jp", true));
+                assert.isFalse(settings.isDomainBlocked("www.amazon.com"));
+            });
+        });
+    });
+
+    describe("isDomainBlocked", () => {
+        it("should return true if proected", () => {
+            settings.set("rules", [
+                { rule: "*.google.com", type: CleanupType.NEVER },
+                { rule: "*.google.de", type: CleanupType.STARTUP },
+                { rule: "*.google.co.uk", type: CleanupType.LEAVE },
+                { rule: "*.google.jp", type: CleanupType.INSTANTLY }
+            ]);
+            settings.save();
+            assert.isFalse(settings.isDomainBlocked("www.google.com"));
+            assert.isFalse(settings.isDomainBlocked("www.google.de"));
+            assert.isFalse(settings.isDomainBlocked("www.google.co.uk"));
+            assert.isTrue(settings.isDomainBlocked("www.google.jp"));
+            assert.isFalse(settings.isDomainBlocked("www.amazon.com"));
+        });
+    });
+
+    describe("getChosenRulesForDomain", () => {
+        const catchAllRuleStartup = { rule: "*", type: CleanupType.STARTUP };
+        const catchComRuleStartup = { rule: "*.com", type: CleanupType.STARTUP };
+        const catchAllRuleNever = { rule: "*", type: CleanupType.NEVER };
+        const catchAllRuleLeave = { rule: "*", type: CleanupType.LEAVE };
+        const catchAllRuleInstantly = { rule: "*", type: CleanupType.INSTANTLY };
+        it("should return an empty array if whitelistFileSystem = true and domain is empty", () => {
+            settings.set("rules", [catchAllRuleNever]);
+            settings.set("whitelistFileSystem", true);
+            assert.isEmpty(settings.getChosenRulesForDomain(""));
+        });
+        it("should return an empty array if whitelistNoTLD = true and domain contains no dot", () => {
+            settings.set("rules", [catchAllRuleNever]);
+            settings.set("whitelistNoTLD", true);
+            settings.set("whitelistFileSystem", false);
+            assert.isEmpty(settings.getChosenRulesForDomain("hello"));
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleNever]);
+            assert.sameMembers(settings.getChosenRulesForDomain(""), [catchAllRuleNever]);
+        });
+        it("should return the chosen rule", () => {
+            settings.set("whitelistNoTLD", false);
+            settings.set("whitelistFileSystem", false);
+            settings.set("rules", []);
+            assert.isEmpty(settings.getChosenRulesForDomain("google.com"));
+            settings.set("rules", [catchAllRuleStartup]);
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleStartup]);
+            settings.set("rules", [catchAllRuleStartup, catchAllRuleNever]);
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleNever]);
+            settings.set("rules", [catchAllRuleStartup, catchAllRuleNever, catchAllRuleLeave]);
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleLeave]);
+            settings.set("rules", [catchAllRuleStartup, catchAllRuleNever, catchAllRuleLeave, catchAllRuleInstantly]);
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleInstantly]);
+            settings.set("rules", [catchAllRuleInstantly, catchAllRuleLeave, catchAllRuleNever, catchAllRuleStartup]);
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleInstantly]);
+        });
+        it("should return multiple chosen rules", () => {
+            settings.set("whitelistNoTLD", false);
+            settings.set("whitelistFileSystem", false);
+            settings.set("rules", [catchAllRuleStartup, catchComRuleStartup]);
+            assert.sameMembers(settings.getChosenRulesForDomain("google.com"), [catchAllRuleStartup, catchComRuleStartup]);
+        });
+    });
+
     describe("getCleanupTypeForCookie", () => {
         it("should return the default rule if no rule matches", () => {
             settings.set("rules", [
@@ -233,11 +312,30 @@ describe("Settings", () => {
             assert.strictEqual(settings.getCleanupTypeForCookie("localmachine", "hello"), CleanupType.NEVER);
             settings.set("rules", [{ rule: "hello@localmachine", type: CleanupType.INSTANTLY }]);
             assert.strictEqual(settings.getCleanupTypeForCookie("localmachine", "hello"), CleanupType.NEVER);
+            settings.set("whitelistFileSystem", false);
+            assert.strictEqual(settings.getCleanupTypeForCookie("", "hello"), CleanupType.LEAVE);
         });
         it("should return NEVER for empty domains if whitelistFileSystem is set", () => {
             assert.strictEqual(settings.getCleanupTypeForCookie("", "hello"), CleanupType.NEVER);
             settings.set("whitelistFileSystem", false);
             assert.strictEqual(settings.getCleanupTypeForCookie("", "hello"), CleanupType.LEAVE);
+        });
+    });
+
+    describe("getExactCleanupType", () => {
+        it("should return exact matches only", () => {
+            settings.set("rules", [
+                { rule: "google.com", type: CleanupType.NEVER },
+                { rule: "www.google.com", type: CleanupType.STARTUP },
+                { rule: "mail.google.com", type: CleanupType.LEAVE },
+                { rule: "*.google.com", type: CleanupType.INSTANTLY }
+            ]);
+            settings.save();
+            assert.equal(settings.getExactCleanupType("google.com"), CleanupType.NEVER);
+            assert.equal(settings.getExactCleanupType("www.google.com"), CleanupType.STARTUP);
+            assert.equal(settings.getExactCleanupType("mail.google.com"), CleanupType.LEAVE);
+            assert.equal(settings.getExactCleanupType("*.google.com"), CleanupType.INSTANTLY);
+            assert.isNull(settings.getExactCleanupType("images.google.com"));
         });
     });
 
@@ -327,6 +425,50 @@ describe("Settings", () => {
                 assert.deepEqual(settings.getMatchingRules("amazon.com", "hello"), [domainRule2]);
                 assert.deepEqual(settings.getMatchingRules("prime.amazon.jp", "hello"), [domainRule2]);
             });
+        });
+    });
+
+    describe("setRule", () => {
+        it("should save rules", () => {
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.setRule("*.com", CleanupType.INSTANTLY);
+            onChangedSpy.assertCalls([[{ rules: { newValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }] } }, "local"]]);
+            assert.deepEqual(settings.get("rules"), [{ rule: "*.com", type: CleanupType.INSTANTLY }]);
+        });
+        it("should override existing rules", () => {
+            settings.setRule("*.com", CleanupType.NEVER);
+            settings.setRule("*.de", CleanupType.NEVER);
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.setRule("*.com", CleanupType.INSTANTLY);
+            onChangedSpy.assertCalls([
+                [{ rules: {
+                    newValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }, { rule: "*.de", type: CleanupType.NEVER }],
+                    oldValue: [{ rule: "*.com", type: CleanupType.NEVER }, { rule: "*.de", type: CleanupType.NEVER }]
+                } }, "local"]
+            ]);
+            assert.deepEqual(settings.get("rules"), [{ rule: "*.com", type: CleanupType.INSTANTLY }, { rule: "*.de", type: CleanupType.NEVER }]);
+        });
+    });
+
+    describe("removeRule", () => {
+        it("should save rules", () => {
+            settings.setRule("*.com", CleanupType.INSTANTLY);
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.removeRule("*.com");
+            onChangedSpy.assertCalls([[{ rules: { newValue: [], oldValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }] } }, "local"]]);
+            assert.deepEqual(settings.get("rules"), []);
+        });
+        it("should keep other rules", () => {
+            settings.setRule("*.com", CleanupType.INSTANTLY);
+            settings.setRule("*.de", CleanupType.NEVER);
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.removeRule("*.com");
+            onChangedSpy.assertCalls([[{ rules: { newValue: [{ rule: "*.de", type: CleanupType.NEVER }], oldValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }, { rule: "*.de", type: CleanupType.NEVER }] } }, "local"]]);
+            assert.deepEqual(settings.get("rules"), [{ rule: "*.de", type: CleanupType.NEVER }]);
         });
     });
 });

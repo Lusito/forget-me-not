@@ -17,9 +17,7 @@ function onImport() {
         window.close();
     } else {
         loadJSONFile((json) => {
-            if (json && settings.setAll(json)) {
-                console.log("success");
-            }
+            json && settings.setAll(json);
         });
     }
 }

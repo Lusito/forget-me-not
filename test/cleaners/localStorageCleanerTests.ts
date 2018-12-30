@@ -6,12 +6,10 @@
 
 import { assert } from "chai";
 import { settings } from "../../src/lib/settings";
-import { ensureNotNull } from "../testHelpers";
+import { ensureNotNull, booleanContext } from "../testHelpers";
 import { browserMock } from "../browserMock";
 import { TabWatcher } from "../../src/background/tabWatcher";
-import { RecentlyAccessedDomains } from "../../src/background/recentlyAccessedDomains";
 import { LocalStorageCleaner } from "../../src/background/cleaners/localStorageCleaner";
-import { destroyAndNull } from "../../src/shared";
 import { CleanupType } from "../../src/lib/settingsSignature";
 
 const COOKIE_STORE_ID = "mock";
@@ -28,20 +26,17 @@ describe("LocalStorageCleaner", () => {
         onDomainLeave: () => undefined
     };
     let tabWatcher: TabWatcher | null = null;
-    let recentlyAccessedDomains: RecentlyAccessedDomains | null = null;
     let cleaner: LocalStorageCleaner | null = null;
 
     afterEach(() => {
-        recentlyAccessedDomains = destroyAndNull(recentlyAccessedDomains);
-        tabWatcher = destroyAndNull(tabWatcher);
+        tabWatcher = null;
         cleaner = null;
         settings.restoreDefaults();
     });
 
     beforeEach(() => {
         browserMock.reset();
-        recentlyAccessedDomains = new RecentlyAccessedDomains();
-        tabWatcher = new TabWatcher(tabWatcherListener, recentlyAccessedDomains);
+        tabWatcher = new TabWatcher(tabWatcherListener);
         cleaner = new LocalStorageCleaner(tabWatcher);
 
         const tabIds = [
@@ -60,13 +55,35 @@ describe("LocalStorageCleaner", () => {
     });
 
     describe("cleanDomainOnLeave", () => {
-        [[true, false], [false, false], [false, true]].forEach(([domainLeaveEnabled, localStorageEnabled]) => {
-            context(`domainLeave.enabled = ${domainLeaveEnabled}, domainLeave.localStorage=${localStorageEnabled}`, () => {
-                beforeEach(() => {
-                    settings.set("domainLeave.enabled", domainLeaveEnabled);
-                    settings.set("domainLeave.localStorage", localStorageEnabled);
-                    settings.save();
+        booleanContext((domainLeaveEnabled, localStorageEnabled) => {
+            beforeEach(() => {
+                settings.set("domainLeave.enabled", domainLeaveEnabled);
+                settings.set("domainLeave.localStorage", localStorageEnabled);
+                settings.save();
+            });
+            if (domainLeaveEnabled && localStorageEnabled) {
+                it("should clean localstorage", () => {
+                    cleaner = ensureNotNull(cleaner);
+                    cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
+
+                    browserMock.browsingData.remove.assertCalls([[{
+                        originTypes: { unprotectedWeb: true },
+                        hostnames: [UNKNOWN_DOMAIN]
+                    }, { localStorage: true }]]);
                 });
+                it("should not clean localstorage if the domain is protected", () => {
+                    cleaner = ensureNotNull(cleaner);
+
+                    cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
+                    browserMock.browsingData.remove.assertNoCall();
+
+                    cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
+                    browserMock.browsingData.remove.assertNoCall();
+
+                    cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, GRAYLISTED_DOMAIN);
+                    browserMock.browsingData.remove.assertNoCall();
+                });
+            } else {
                 it("should not do anything", () => {
                     cleaner = ensureNotNull(cleaner);
 
@@ -76,35 +93,7 @@ describe("LocalStorageCleaner", () => {
                     cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
                     browserMock.browsingData.remove.assertNoCall();
                 });
-            });
-        });
-        context("domainLeave.enabled = true, domainLeave.localStorage=true", () => {
-            beforeEach(() => {
-                settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.localStorage", true);
-                settings.save();
-            });
-            it("should clean localstorage", () => {
-                cleaner = ensureNotNull(cleaner);
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-
-                browserMock.browsingData.remove.assertCalls([[{
-                    originTypes: { unprotectedWeb: true },
-                    hostnames: [UNKNOWN_DOMAIN]
-                }, { localStorage: true }]]);
-            });
-            it("should not clean localstorage if the domain is protected", () => {
-                cleaner = ensureNotNull(cleaner);
-
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
-                browserMock.browsingData.remove.assertNoCall();
-
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
-                browserMock.browsingData.remove.assertNoCall();
-
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, GRAYLISTED_DOMAIN);
-                browserMock.browsingData.remove.assertNoCall();
-            });
+            }
         });
     });
 

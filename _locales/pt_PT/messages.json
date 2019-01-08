@@ -128,6 +128,10 @@
         "message": "*I*nstantaneamente",
         "hash": "62610f955f62f7701a06a80ff04e1e1b"
     },
+    "cleanup_type_instantly_button@title": {
+        "message": "Bloquear/remover na criação",
+        "hash": "f253ddd17544f84b52a993fe784164e6"
+    },
     "cleanup_type_create_button": {
         "message": "Criar regra",
         "hash": "913e8b0d4ccb47df0b1a1780c709f857"
@@ -138,6 +142,10 @@
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Não suportado nesta plataforma.",
+        "hash": "99286998bff7ecef26245d3858e4fe0f"
+    },
     "perform_manual_cleanup": {
         "message": "Realizar limpeza manual",
         "hash": "1098090c30d2dc94517833dc3d259a71"
@@ -344,11 +352,11 @@
     },
     "setting_delay_domain_leave_cleanup_in_seconds": {
         "message": "Atraso para a saída do domínio em segundos:",
-        "hash": "3a6053e253bf52da94ada7a933beb5d2"
+        "hash": "078f159c3a6f33936199104b956d77a7"
     },
     "setting_delay_in_seconds": {
         "message": "Atraso em segundos:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
+        "hash": "4f52d0e15398d35039f73e8a04275ae9"
     },
     "setting_remove_thirdparty": {
         "message": "Remover cookies de terceiros na criação:",

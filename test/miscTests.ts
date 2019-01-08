@@ -47,7 +47,6 @@ describe("Misc functionality", () => {
                 value: "world",
                 domain: "www.google.de"
             });
-            // fixme: not sure if whitespaces should be trimmed from key and value...
             assert.deepEqual(parseSetCookieHeader("foo = bar; domain=www.google.com", fallbackDomain), {
                 name: "foo",
                 value: "bar",

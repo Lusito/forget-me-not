@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies, ContextualIdentities, History } from "webextension-polyfill-ts";
+import { browser, Tabs, WebNavigation, Runtime, Storage, WebRequest, Cookies, ContextualIdentities, History, ExtensionTypes } from "webextension-polyfill-ts";
 import { assert } from "chai";
 import { createSpy, clone, SpyData } from "./testHelpers";
 
@@ -203,11 +203,14 @@ class BrowserTabsMock {
     private tabs: Tabs.Tab[] = [];
     public onRemoved = new ListenerMock<(tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => void>();
     public onCreated = new ListenerMock<(tab: Tabs.Tab) => void>();
+    public executeScriptSuccess = false;
+    public executeScript = createSpy(this._executeScript);
 
     public reset() {
         this.tabs.length = 0;
         this.onRemoved.reset();
         this.onCreated.reset();
+        this.executeScriptSuccess = false;
     }
 
     public get(tabId: number) {
@@ -268,6 +271,14 @@ class BrowserTabsMock {
                 resolve(browserMock.tabs.getTabs());
             }
         };
+    }
+
+    public _executeScript(tabId: number | undefined, details: ExtensionTypes.InjectDetails) {
+        if (this.executeScriptSuccess) {
+            return Promise.resolve([]);
+        } else {
+            return Promise.reject({});
+        }
     }
 }
 
@@ -467,7 +478,7 @@ browser.browsingData = bindMocks(browser.browsingData, browserMock.browsingData,
 browser.cookies = bindMocks(browser.cookies, browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores", "onChanged"]);
 browser.history = bindMocks(browser.history, browserMock.history, ["onVisited", "deleteUrl", "search"]);
 browser.contextualIdentities = bindMocks(browser.contextualIdentities, browserMock.contextualIdentities, ["query"]);
-browser.tabs = bindMocks(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated"]);
+browser.tabs = bindMocks(browser.tabs, browserMock.tabs, ["get", "query", "onRemoved", "onCreated", "executeScript"]);
 browser.webNavigation = bindMocks(browser.webNavigation, browserMock.webNavigation, ["onBeforeNavigate", "onCommitted", "onCompleted"]);
 browser.webRequest = bindMocks(browser.webRequest, browserMock.webRequest, ["onHeadersReceived", "onBeforeRedirect"]);
 browser.runtime = bindMocks(browser.runtime, browserMock.runtime, ["onMessage", "sendMessage", "getManifest"]);

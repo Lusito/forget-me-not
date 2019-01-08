@@ -29,11 +29,13 @@ export class FrameInfo {
     }
 
     public prepareNavigation(hostname: string) {
+        this.lastTimeStamp = Date.now();
+        if (this.navigating && this.nextHostname === hostname)
+            return "";
         const lastHostname = this.nextHostname;
         this.navigating = true;
         this.nextHostname = hostname;
         this.nextHostnameFP = (hostname && getDomain(hostname)) || hostname;
-        this.lastTimeStamp = Date.now();
         return lastHostname;
     }
 

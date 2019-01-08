@@ -51,7 +51,8 @@ export class TabInfo {
                         console.warn("frame info not found: " + frameId);
                     }
                 }
-                this.checkDomainLeave(this.cookieStoreId, deadFrameHostnames);
+                if (deadFrameHostnames.size)
+                    this.checkDomainLeave(this.cookieStoreId, deadFrameHostnames);
             }
             if (!allFramesIdle)
                 this.scheduleDeadFramesCheck();

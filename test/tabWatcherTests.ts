@@ -10,7 +10,6 @@ import { browserMock } from "./browserMock";
 import { ensureNotNull, createSpy, SpyData, booleanContext } from "./testHelpers";
 import { quickBeforeRedirectDetails } from "./quickHelpers";
 
-// fixme: frames
 describe("TabWatcher", () => {
     beforeEach(() => browserMock.reset());
     let listener: {
@@ -113,6 +112,28 @@ describe("TabWatcher", () => {
             browserMock.webNavigation.complete(tabId1, "");
             scheduleDeadFramesCheck.assertCalls([[]]);
         });
+        it("should be called for frames", () => {
+            setupWatcher();
+            watcher = ensureNotNull(watcher);
+            const tabId1 = browserMock.tabs.create("http://www.amazon.com", "firefox-default");
+            listener.onDomainEnter.assertCalls([["firefox-default", "www.amazon.com"]]);
+            watcher.prepareNavigation(tabId1, 1, "images.google.com");
+            watcher.prepareNavigation(tabId1, 1, "www.google.com");
+            listener.onDomainLeave.assertCalls([["firefox-default", "images.google.com"]]);
+            listener.onDomainEnter.assertNoCall();
+            watcher.commitNavigation(tabId1, 1, "www.google.com");
+            listener.onDomainEnter.assertCalls([["firefox-default", "www.google.com"]]);
+
+            watcher.commitNavigation(tabId1, 1, "www.google.com");
+            listener.onDomainEnter.assertNoCall();
+
+            watcher.prepareNavigation(tabId1, 1, "");
+            listener.onDomainLeave.assertNoCall();
+            watcher.commitNavigation(tabId1, 1, "");
+            listener.onDomainLeave.assertCalls([["firefox-default", "www.google.com"]]);
+
+            listener.onDomainEnter.assertNoCall();
+        });
     });
     describe("cookieStoreContainsDomain", () => {
         booleanContext((checkNext) => {
@@ -153,6 +174,23 @@ describe("TabWatcher", () => {
             assert.isFalse(watcher.cookieStoreContainsDomain("firefox-default", "www.google.com", true));
             assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.de", true));
         });
+        it("should work with frames", () => {
+            setupWatcher();
+
+            watcher = ensureNotNull(watcher);
+            const tabId1 = browserMock.tabs.create("", "firefox-default");
+            watcher.commitNavigation(tabId1, 1, "www.google.com");
+            watcher.prepareNavigation(tabId1, 1, "www.google.de");
+            assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.com", false));
+            assert.isFalse(watcher.cookieStoreContainsDomain("firefox-default", "www.google.de", false));
+            assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.com", true));
+            assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.de", true));
+            watcher.commitNavigation(tabId1, 1, "www.google.de");
+            assert.isFalse(watcher.cookieStoreContainsDomain("firefox-default", "www.google.com", false));
+            assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.de", false));
+            assert.isFalse(watcher.cookieStoreContainsDomain("firefox-default", "www.google.com", true));
+            assert.isTrue(watcher.cookieStoreContainsDomain("firefox-default", "www.google.de", true));
+        });
     });
     describe("containsDomain", () => {
         it("should work with multiple cookie stores", () => {
@@ -185,6 +223,19 @@ describe("TabWatcher", () => {
             assert.isFalse(watcher.containsDomain("www.google.com"));
             assert.isTrue(watcher.containsDomain("www.google.de"));
         });
+        it("should work with frames", () => {
+            setupWatcher();
+
+            watcher = ensureNotNull(watcher);
+            const tabId1 = browserMock.tabs.create("", "firefox-default");
+            watcher.commitNavigation(tabId1, 1, "www.google.com");
+            watcher.prepareNavigation(tabId1, 1, "www.google.de");
+            assert.isTrue(watcher.containsDomain("www.google.com"));
+            assert.isTrue(watcher.containsDomain("www.google.de"));
+            watcher.commitNavigation(tabId1, 1, "www.google.de");
+            assert.isFalse(watcher.containsDomain("www.google.com"));
+            assert.isTrue(watcher.containsDomain("www.google.de"));
+        });
     });
     describe("isThirdPartyCookieOnTab", () => {
         it("should detect if a cookie domain is third-party for a specified tab", () => {
@@ -200,6 +251,9 @@ describe("TabWatcher", () => {
             assert.isFalse(watcher.isThirdPartyCookieOnTab(tabId1, "google.com"));
             assert.isTrue(watcher.isThirdPartyCookieOnTab(tabId1, "google.de"));
             assert.isFalse(watcher.isThirdPartyCookieOnTab(tabId1, "www.google.com"));
+            // A frame should not be detected as first party
+            watcher.commitNavigation(tabId1, 1, "google.de");
+            assert.isTrue(watcher.isThirdPartyCookieOnTab(tabId1, "google.de"));
 
             // during navigation both domains are first party
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
@@ -240,6 +294,10 @@ describe("TabWatcher", () => {
                 const tabId1 = browserMock.tabs.create("http://www.google.com", cookieStoreId);
                 assert.isTrue(watcher.cookieStoreContainsDomainFP(cookieStoreId, "google.com", deep));
                 assert.isFalse(watcher.cookieStoreContainsDomainFP(cookieStoreId, "google.de", deep));
+                // in another frame
+                watcher.commitNavigation(tabId1, 1, "www.amazon.com");
+                assert.equal(watcher.cookieStoreContainsDomainFP(cookieStoreId, "amazon.com", deep), deep);
+                assert.isFalse(watcher.cookieStoreContainsDomainFP(cookieStoreId, "amazon.de", deep));
                 // in another store
                 assert.isFalse(watcher.cookieStoreContainsDomainFP(cookieStoreId2, "google.com", deep));
                 assert.isFalse(watcher.cookieStoreContainsDomainFP(cookieStoreId2, "google.de", deep));
@@ -255,6 +313,11 @@ describe("TabWatcher", () => {
                 browserMock.webNavigation.commit(tabId1, "http://www.google.de");
                 assert.isFalse(watcher.cookieStoreContainsDomainFP(cookieStoreId, "google.com", deep));
                 assert.isTrue(watcher.cookieStoreContainsDomainFP(cookieStoreId, "google.de", deep));
+                // in another frame
+                watcher.commitNavigation(tabId1, 1, "www.amazon.com");
+                watcher.prepareNavigation(tabId1, 1, "www.amazon.de");
+                assert.equal(watcher.cookieStoreContainsDomainFP(cookieStoreId, "amazon.com", deep), deep);
+                assert.equal(watcher.cookieStoreContainsDomainFP(cookieStoreId, "amazon.de", deep), deep);
 
                 // Second level
                 browserMock.webNavigation.beforeNavigate(tabId1, "http://michelgagne.blogspot.de");

@@ -22,9 +22,12 @@ const GRAYLISTED_DOMAIN = "startup.com";
 const BLACKLISTED_DOMAIN = "instantly.com";
 const OPEN_DOMAIN = "open.com";
 const OPEN_DOMAIN2 = "open2.com";
+const FRAME_DOMAIN = "frame.com";
+const FRAME_DOMAIN2 = "frame2.com";
 const UNKNOWN_DOMAIN = "unknown.com";
 const UNKNOWN_DOMAIN2 = "unknown2.com";
 const UNKNOWN_SUBDOMAIN = "sub.unknown.com";
+const ALL_COOKIE_DOMAINS = [WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2, UNKNOWN_DOMAIN, UNKNOWN_DOMAIN2];
 
 function assertRemainingCookieDomains(done: MochaDone, domainList: string[], storeId = COOKIE_STORE_ID) {
     setTimeout(() => {
@@ -117,7 +120,6 @@ describe("removeCookie", () => {
     });
 });
 
-// Fixme: cleanup with frames
 describe("CookieCleaner", () => {
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
@@ -142,11 +144,15 @@ describe("CookieCleaner", () => {
             browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
             browserMock.tabs.create(`http://${OPEN_DOMAIN2}`, COOKIE_STORE_ID)
         ];
+        tabWatcher.commitNavigation(tabIds[0], 1, FRAME_DOMAIN);
+        tabWatcher.commitNavigation(tabIds[1], 1, FRAME_DOMAIN2);
         browserMock.cookies.cookieStores = [
             { id: COOKIE_STORE_ID, tabIds, incognito: false }
         ];
         quickSetCookie(OPEN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
         quickSetCookie(OPEN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN2);
+        quickSetCookie(FRAME_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+        quickSetCookie(FRAME_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN);
         quickSetCookie(UNKNOWN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
         quickSetCookie(UNKNOWN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN2);
         quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
@@ -198,10 +204,10 @@ describe("CookieCleaner", () => {
                 settings.set("cleanAll.protectOpenDomains", protectOpenDomains);
                 settings.save();
             });
-            it("should protect whitelisted cookies and open domains", (done) => {
+            it("should protect whitelisted cookies and open domains (+iframes)", (done) => {
                 cleaner = ensureNotNull(cleaner);
                 cleaner.clean(typeSet, true);
-                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2]);
+                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2]);
                 assert.isFalse(typeSet.cookies);
             });
         });
@@ -210,10 +216,10 @@ describe("CookieCleaner", () => {
                 settings.set("cleanAll.protectOpenDomains", true);
                 settings.save();
             });
-            it("should protect whitelisted and graylisted cookies, as well as open domains", (done) => {
+            it("should protect whitelisted and graylisted cookies, as well as open domains (+iframes)", (done) => {
                 cleaner = ensureNotNull(cleaner);
                 cleaner.clean(typeSet, false);
-                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2]);
+                assertRemainingCookieDomains(done, [WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2]);
                 assert.isFalse(typeSet.cookies);
             });
         });
@@ -238,7 +244,7 @@ describe("CookieCleaner", () => {
             });
             it("should not do anything", () => {
                 cleaner = ensureNotNull(cleaner);
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
+                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
 
                 browserMock.cookies.remove.assertNoCall();
                 browserMock.cookies.getAll.assertNoCall();
@@ -252,38 +258,7 @@ describe("CookieCleaner", () => {
             });
             it("should not do anything", () => {
                 cleaner = ensureNotNull(cleaner);
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
-
-                browserMock.cookies.remove.assertNoCall();
-                browserMock.cookies.getAll.assertNoCall();
-            });
-        });
-        context("domainLeave.enabled = true, domainLeave.cookies=false", () => {
-            beforeEach(() => {
-                settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.cookies", false);
-                settings.save();
-            });
-            it("should not do anything on cookies", () => {
-                cleaner = ensureNotNull(cleaner);
                 cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-
-                browserMock.cookies.remove.assertNoCall();
-                browserMock.cookies.getAll.assertNoCall();
-            });
-            it("should not clean anything if the domain is protected", () => {
-                cleaner = ensureNotNull(cleaner);
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
-
-                browserMock.cookies.remove.assertNoCall();
-                browserMock.cookies.getAll.assertNoCall();
-
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
-
-                browserMock.cookies.remove.assertNoCall();
-                browserMock.cookies.getAll.assertNoCall();
-
-                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, GRAYLISTED_DOMAIN);
 
                 browserMock.cookies.remove.assertNoCall();
                 browserMock.cookies.getAll.assertNoCall();
@@ -301,14 +276,20 @@ describe("CookieCleaner", () => {
             it("should clean cookies", (done) => {
                 cleaner = ensureNotNull(cleaner);
                 cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-                assertRemainingCookieDomains(done, [OPEN_DOMAIN, OPEN_DOMAIN2, UNKNOWN_DOMAIN2, WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN]);
+                assertRemainingCookieDomains(done, [OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2, UNKNOWN_DOMAIN2, WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN]);
+            });
+            it("should not clean anything if the domain is protected", () => {
+                cleaner = ensureNotNull(cleaner);
+                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
+                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
+                cleaner.cleanDomainOnLeave(COOKIE_STORE_ID, GRAYLISTED_DOMAIN);
+                browserMock.cookies.remove.assertNoCall();
             });
         });
     });
 
     describe("isCookieAllowed", () => {
-        // fixme: protectSubFrames = false
-        function testCookieAllowed(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean, expected: boolean, done: MochaDone, doneCondition?: () => boolean) {
+        function testCookieAllowed(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean, protectSubFrames: boolean, expected: boolean, done: MochaDone, doneCondition?: () => boolean) {
             browser.cookies.getAll({
                 firstPartyDomain: null,
                 storeId: COOKIE_STORE_ID
@@ -317,64 +298,99 @@ describe("CookieCleaner", () => {
                 assert.isDefined(cookie);
                 if (cookie) {
                     cleaner = ensureNotNull(cleaner);
-                    assert.strictEqual(cleaner.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains, true), expected);
+                    assert.strictEqual(cleaner.isCookieAllowed(cookie, ignoreStartupType, protectOpenDomains, protectSubFrames), expected);
                 }
             }, done, doneCondition));
         }
         it("should return true if the matching rule is never", (done) => {
             let count = 0;
+            const doneCondition = () => ++count === 8;
+            testCookieAllowed(WHITELISTED_DOMAIN, true, true, false, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, false, true, false, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, false, false, false, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, true, false, false, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, true, true, true, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, false, true, true, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, false, false, true, true, done, doneCondition);
+            testCookieAllowed(WHITELISTED_DOMAIN, true, false, true, true, done, doneCondition);
+        });
+        it("should return true if the matching rule is startup and ignoreStartupType=false", (done) => {
+            let count = 0;
             const doneCondition = () => ++count === 4;
-            testCookieAllowed(WHITELISTED_DOMAIN, true, true, true, done, doneCondition);
-            testCookieAllowed(WHITELISTED_DOMAIN, false, true, true, done, doneCondition);
-            testCookieAllowed(WHITELISTED_DOMAIN, false, false, true, done, doneCondition);
-            testCookieAllowed(WHITELISTED_DOMAIN, true, false, true, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, false, false, false, true, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, false, true, false, true, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, false, false, true, true, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, false, true, true, true, done, doneCondition);
         });
-        it("should return true if the matching rule is startup and ignoreStartupType=false", (done) => {
+        it("should return false if the matching rule is startup and ignoreStartupType=true", (done) => {
             let count = 0;
-            const doneCondition = () => ++count === 2;
-            testCookieAllowed(GRAYLISTED_DOMAIN, false, false, true, done, doneCondition);
-            testCookieAllowed(GRAYLISTED_DOMAIN, false, true, true, done, doneCondition);
-        });
-        it("should return true if the matching rule is startup and ignoreStartupType=false", (done) => {
-            let count = 0;
-            const doneCondition = () => ++count === 2;
-            testCookieAllowed(GRAYLISTED_DOMAIN, false, false, true, done, doneCondition);
-            testCookieAllowed(GRAYLISTED_DOMAIN, false, true, true, done, doneCondition);
+            const doneCondition = () => ++count === 4;
+            testCookieAllowed(GRAYLISTED_DOMAIN, true, false, false, false, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, true, true, false, false, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, true, false, true, false, done, doneCondition);
+            testCookieAllowed(GRAYLISTED_DOMAIN, true, true, true, false, done, doneCondition);
         });
         it("should return false if the matching rule is instantly", (done) => {
             let count = 0;
-            const doneCondition = () => ++count === 4;
-            testCookieAllowed(BLACKLISTED_DOMAIN, true, true, false, done, doneCondition);
-            testCookieAllowed(BLACKLISTED_DOMAIN, false, true, false, done, doneCondition);
-            testCookieAllowed(BLACKLISTED_DOMAIN, false, false, false, done, doneCondition);
-            testCookieAllowed(BLACKLISTED_DOMAIN, true, false, false, done, doneCondition);
+            const doneCondition = () => ++count === 8;
+            testCookieAllowed(BLACKLISTED_DOMAIN, true, true, false, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, false, true, false, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, false, false, false, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, true, false, false, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, true, true, true, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, false, true, true, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, false, false, true, false, done, doneCondition);
+            testCookieAllowed(BLACKLISTED_DOMAIN, true, false, true, false, done, doneCondition);
         });
-        it("should return false if the matching rule is leave and protectOpenDomains = false", (done) => {
+        it("should return false if the matching rule is leave", (done) => {
             let count = 0;
-            const doneCondition = () => ++count === 2;
-            testCookieAllowed(UNKNOWN_DOMAIN, false, false, false, done, doneCondition);
-            testCookieAllowed(UNKNOWN_DOMAIN, true, false, false, done, doneCondition);
-        });
-        it("should return false if the matching rule is startup, ignoreStartupType = true and protectOpenDomains = false", (done) => {
-            testCookieAllowed(GRAYLISTED_DOMAIN, true, false, false, done);
+            const doneCondition = () => ++count === 8;
+            testCookieAllowed(UNKNOWN_DOMAIN, false, false, false, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, true, false, false, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, false, false, true, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, true, false, true, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, false, true, false, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, true, true, false, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, false, true, true, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN, true, true, true, false, done, doneCondition);
         });
         it("should return true if protectOpenDomains = true and cookie has firstpartydomain, which is on watcher", (done) => {
             let count = 0;
-            const doneCondition = () => ++count === 2;
-            testCookieAllowed(OPEN_DOMAIN2, true, true, true, done, doneCondition);
-            testCookieAllowed(OPEN_DOMAIN2, false, true, true, done, doneCondition);
+            const doneCondition = () => ++count === 4;
+            testCookieAllowed(OPEN_DOMAIN2, true, true, false, true, done, doneCondition);
+            testCookieAllowed(OPEN_DOMAIN2, false, true, false, true, done, doneCondition);
+            testCookieAllowed(OPEN_DOMAIN2, true, true, true, true, done, doneCondition);
+            testCookieAllowed(OPEN_DOMAIN2, false, true, true, true, done, doneCondition);
         });
         it("should return false if protectOpenDomains = true and cookie has firstpartydomain, which is not on watcher", (done) => {
             let count = 0;
-            const doneCondition = () => ++count === 2;
-            testCookieAllowed(UNKNOWN_DOMAIN2, true, true, false, done, doneCondition);
-            testCookieAllowed(UNKNOWN_DOMAIN2, false, true, false, done, doneCondition);
+            const doneCondition = () => ++count === 4;
+            testCookieAllowed(UNKNOWN_DOMAIN2, true, true, false, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN2, false, true, false, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN2, true, true, true, false, done, doneCondition);
+            testCookieAllowed(UNKNOWN_DOMAIN2, false, true, true, false, done, doneCondition);
         });
         it("should return true if protectOpenDomains = true and first party domain of cookie is on watcher", (done) => {
             let count = 0;
+            const doneCondition = () => ++count === 4;
+            testCookieAllowed(OPEN_DOMAIN, true, true, false, true, done, doneCondition);
+            testCookieAllowed(OPEN_DOMAIN, false, true, false, true, done, doneCondition);
+            testCookieAllowed(OPEN_DOMAIN, true, true, true, true, done, doneCondition);
+            testCookieAllowed(OPEN_DOMAIN, false, true, true, true, done, doneCondition);
+        });
+        it("should return true if protectOpenDomains = true, protectSubFrames = true and first party domain of cookie is on watcher", (done) => {
+            let count = 0;
             const doneCondition = () => ++count === 2;
-            testCookieAllowed(OPEN_DOMAIN, true, true, true, done, doneCondition);
-            testCookieAllowed(OPEN_DOMAIN, false, true, true, done, doneCondition);
+            testCookieAllowed(FRAME_DOMAIN, true, true, true, true, done, doneCondition);
+            testCookieAllowed(FRAME_DOMAIN, false, true, true, true, done, doneCondition);
+        });
+        it("should return false if protectOpenDomains = false or protectSubFrames = false and first party domain of cookie is on watcher", (done) => {
+            let count = 0;
+            const doneCondition = () => ++count === 4;
+            testCookieAllowed(FRAME_DOMAIN, true, false, true, false, done, doneCondition);
+            testCookieAllowed(FRAME_DOMAIN, false, false, true, false, done, doneCondition);
+            testCookieAllowed(FRAME_DOMAIN, true, true, false, false, done, doneCondition);
+            testCookieAllowed(FRAME_DOMAIN, false, true, false, false, done, doneCondition);
         });
     });
 
@@ -385,12 +401,19 @@ describe("CookieCleaner", () => {
                 settings.set("domainLeave.cookies", false);
                 settings.save();
             });
-            it("should clean regardless of rules and settings", (done) => {
-                cleaner = ensureNotNull(cleaner);
-                cleaner.cleanDomain(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
+            const NON_FP_COOKIE_DOMAINS = ALL_COOKIE_DOMAINS.filter((value) => value !== FRAME_DOMAIN2 && value !== UNKNOWN_DOMAIN2);
+            for (const domain of NON_FP_COOKIE_DOMAINS) {
+                it(`should clean ${domain} regardless of rules and settings`, (done) => {
+                    cleaner = ensureNotNull(cleaner);
 
-                assertRemainingCookieDomains(done, [OPEN_DOMAIN, OPEN_DOMAIN2, UNKNOWN_DOMAIN, UNKNOWN_DOMAIN2, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN]);
-            });
+                    cleaner.cleanDomain(COOKIE_STORE_ID, domain);
+                    const remainder = ALL_COOKIE_DOMAINS.slice();
+                    remainder.splice(ALL_COOKIE_DOMAINS.indexOf(domain), 1);
+                    if (domain === OPEN_DOMAIN)
+                        remainder.splice(remainder.indexOf(FRAME_DOMAIN2), 1);
+                    assertRemainingCookieDomains(done, remainder);
+                });
+            }
         });
         context("First-party-domain cookies", () => {
             beforeEach(() => {

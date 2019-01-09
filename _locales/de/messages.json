@@ -144,7 +144,7 @@
     "__WET_GROUP__3": { "message": "Settings" },
     "settings_unsupported_checkbox@title": {
         "message": "Auf dieser Plattform nicht verfügbar.",
-        "hash": "df6d589031d810e799aad91aedd3ed41"
+        "hash": "99286998bff7ecef26245d3858e4fe0f"
     },
     "perform_manual_cleanup": {
         "message": "Manuelle Säuberung durchführen",
@@ -352,11 +352,11 @@
     },
     "setting_delay_domain_leave_cleanup_in_seconds": {
         "message": "Verzögerung der Säuberung beim Verlassen einer Domäne in Sekunden:",
-        "hash": "3a6053e253bf52da94ada7a933beb5d2"
+        "hash": "078f159c3a6f33936199104b956d77a7"
     },
     "setting_delay_in_seconds": {
         "message": "Verzögerung in Sekunden:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
+        "hash": "4f52d0e15398d35039f73e8a04275ae9"
     },
     "setting_remove_thirdparty": {
         "message": "Cookies von Dritten bei Erstellung löschen:",

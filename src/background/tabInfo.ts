@@ -7,7 +7,6 @@
 import { browser } from "webextension-polyfill-ts";
 import { FrameInfo } from "./frameInfo";
 
-// Fixme: Unit Test for this entire file
 const MIN_DEAD_FRAME_CHECK_INTERVAL = 1000;
 
 function frameDead(tabId: number, frameId: number) {
@@ -62,7 +61,6 @@ export class TabInfo {
     public scheduleDeadFramesCheck() {
         if (!this.scheduledDeadFrameCheck) {
             // Fixme: also call for the active tab every once in a while
-            // fixme: browser.tabs.executeScript mock
             const delta = Date.now() - this.lastDeadFrameCheck;
             if (delta > MIN_DEAD_FRAME_CHECK_INTERVAL)
                 this.checkDeadFrames();

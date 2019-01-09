@@ -2,7 +2,6 @@
 .rules_table {
     width: 100%;
     border-collapse: collapse;
-    margin: 15px 0;
     
     th:first-child {
         width: 100%;
@@ -36,13 +35,17 @@
         text-align: center;
     }
 
-    &.rules_table_for_domain tbody {
-        > tr:not(.is-selected):not(:hover) {
-            opacity: 0.82;
-        }
+    &.rules_table_for_domain {
+        margin: 15px 0 10px;
 
-        > tr.is-selected > td:first-child {
-            font-weight: bold;
+        tbody {
+            > tr:not(.is-selected):not(:hover) {
+                opacity: 0.82;
+            }
+
+            > tr.is-selected > td:first-child {
+                font-weight: bold;
+            }
         }
     }
 }

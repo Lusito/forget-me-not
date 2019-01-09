@@ -55,7 +55,9 @@ export function RulesTab() {
             </div>
             <button data-i18n="rules_add" onClick={addRule} />
         </div>
-        <RuleTable headerI18n="rules_column_expression" filterInput={filterInput}/>
+        <div class="rules_table_wrapper">
+            <RuleTable headerI18n="rules_column_expression" filterInput={filterInput}/>
+        </div>
         <div><SettingsCheckbox key="whitelistNoTLD" i18n="setting_whitelist_no_tld?text?title" /></div>
         <div><SettingsCheckbox key="whitelistFileSystem" i18n="setting_whitelist_file_system" /></div>
         <div class="split_equal">

@@ -40,6 +40,12 @@
     }
 }
 
+.rules_table_wrapper {
+    max-height: 245px;
+    overflow-y: scroll;
+    margin: 15px 0;
+}
+
 .tab_heading {
     font-size: 14px;
     margin-top: 0;

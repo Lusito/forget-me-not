@@ -245,6 +245,44 @@ describe("Header Filter", () => {
                     "http://www.never.com", tabId, headers
                 )), [{ responseHeaders: headers }]);
             });
+
+            it("should handle multiline values correctly", () => {
+                tabWatcher = ensureNotNull(tabWatcher);
+                const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
+                headerFilter = new HeaderFilter(tabWatcher);
+                const headers = [
+                    quickHttpHeader("set-cookie", "hello=world\nfoo=bar")
+                ];
+                assert.deepEqual(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
+                    "http://www.instantly.com", tabId, headers
+                )), [{ responseHeaders: [] }]);
+                assert.deepEqual(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
+                    "http://www.leave.com", tabId, headers
+                )), [{ responseHeaders: headers }]);
+                assert.deepEqual(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
+                    "http://www.startup.com", tabId, headers
+                )), [{ responseHeaders: headers }]);
+                assert.deepEqual(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
+                    "http://www.never.com", tabId, headers
+                )), [{ responseHeaders: headers }]);
+
+                settings.set("rules", [{ rule: "hello@*.google.com", type: CleanupType.INSTANTLY }]);
+                settings.save();
+
+                assert.deepEqual(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
+                    "http://www.google.com", tabId, headers
+                )), [{ responseHeaders: [ quickHttpHeader("set-cookie", "foo=bar") ] }]);
+
+                settings.set("rules", [
+                    { rule: "hello@*.google.com", type: CleanupType.INSTANTLY },
+                    { rule: "foo@*.google.com", type: CleanupType.INSTANTLY }
+                ]);
+                settings.save();
+
+                assert.deepEqual(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
+                    "http://www.google.com", tabId, headers
+                )), [{ responseHeaders: [] }]);
+            });
         });
     });
 });

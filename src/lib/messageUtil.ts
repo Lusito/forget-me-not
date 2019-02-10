@@ -36,6 +36,8 @@ function getCallbacksList(name: string) {
     return callbacksMap[name] = [];
 }
 
+const noop = () => undefined;
+
 export const messageUtil = {
     send(name: string, params?: any, callback?: (value: any) => any) {
         const data = {
@@ -45,6 +47,7 @@ export const messageUtil = {
         const promise = browser.runtime.sendMessage(data);
         if (callback)
             promise.then(callback);
+        promise.catch(noop);
     },
     sendSelf(name: string, params: any) {
         if (callbacksMap) {

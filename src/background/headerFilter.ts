@@ -10,7 +10,7 @@ import { TabWatcher } from "./tabWatcher";
 import { browser, WebRequest } from "webextension-polyfill-ts";
 import { getValidHostname } from "../shared";
 import { CleanupType, SettingsKey } from "../lib/settingsSignature";
-import { SetCookieHeader, parseSetCookieHeader } from "./backgroundHelpers";
+import { parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";
 
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule", "instantly.enabled"];
@@ -41,11 +41,11 @@ export class HeaderFilter {
         return browser.webRequest.onHeadersReceived.hasListener(this.onHeadersReceived);
     }
 
-    private shouldCookieBeBlocked(tabId: number, cookieInfo: SetCookieHeader) {
-        const type = settings.getCleanupTypeForCookie(cookieInfo.domain.startsWith(".") ? cookieInfo.domain.substr(1) : cookieInfo.domain, cookieInfo.name);
+    private shouldCookieBeBlocked(tabId: number, domain: string, name: string) {
+        const type = settings.getCleanupTypeForCookie(domain.startsWith(".") ? domain.substr(1) : domain, name);
         if (type === CleanupType.NEVER || type === CleanupType.STARTUP)
             return false;
-        return type === CleanupType.INSTANTLY || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, cookieInfo.domain);
+        return type === CleanupType.INSTANTLY || this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, domain);
     }
 
     private filterResponseHeaders(responseHeaders: WebRequest.HttpHeaders, fallbackDomain: string, tabId: number): WebRequest.HttpHeaders | undefined {
@@ -54,7 +54,14 @@ export class HeaderFilter {
                 if (x.value) {
                     const filtered = x.value.split("\n").filter((value) => {
                         const cookieInfo = parseSetCookieHeader(value.trim(), fallbackDomain);
-                        return !cookieInfo || !this.shouldCookieBeBlocked(tabId, cookieInfo);
+                        if (cookieInfo) {
+                            const domain = cookieInfo.domain.startsWith(".") ? cookieInfo.domain.substr(1) : cookieInfo.domain;
+                            if (this.shouldCookieBeBlocked(tabId, domain, cookieInfo.name)) {
+                                messageUtil.sendSelf("cookieRemoved", domain);
+                                return false;
+                            }
+                        }
+                        return true;
                     });
 
                     if (filtered.length === 0)

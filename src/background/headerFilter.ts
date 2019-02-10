@@ -52,9 +52,14 @@ export class HeaderFilter {
         return responseHeaders.filter((x) => {
             if (x.name.toLowerCase() === "set-cookie") {
                 if (x.value) {
-                    const cookieInfo = parseSetCookieHeader(x.value, fallbackDomain);
-                    if (cookieInfo && this.shouldCookieBeBlocked(tabId, cookieInfo))
+                    const filtered = x.value.split("\n").filter((value) => {
+                        const cookieInfo = parseSetCookieHeader(value.trim(), fallbackDomain);
+                        return !cookieInfo || !this.shouldCookieBeBlocked(tabId, cookieInfo);
+                    });
+
+                    if (filtered.length === 0)
                         return false;
+                    x.value = filtered.join("\n");
                 }
             }
             return true;

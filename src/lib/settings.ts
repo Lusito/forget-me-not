@@ -47,6 +47,7 @@ export const defaultSettings: SettingsMap = {
     "cleanAll.pluginData": true,
     "cleanAll.serviceWorkers": true,
     "cleanAll.serverBoundCertificates": false,
+    "cleanAll.cache": false,
 
     "cleanThirdPartyCookies.enabled": false,
     "cleanThirdPartyCookies.delay": 60,
@@ -81,6 +82,7 @@ export const defaultSettings: SettingsMap = {
     "startup.pluginData": true,
     "startup.serviceWorkers": true,
     "startup.serverBoundCertificates": false,
+    "startup.cache": false,
 
     "purgeExpiredCookies": false,
 

@@ -73,7 +73,8 @@ export class Background implements TabWatcherListener {
             indexedDB: settings.get(startup ? "startup.indexedDB" : "cleanAll.indexedDB"),
             pluginData: settings.get(startup ? "startup.pluginData" : "cleanAll.pluginData"),
             serverBoundCertificates: settings.get(startup ? "startup.serverBoundCertificates" : "cleanAll.serverBoundCertificates"),
-            serviceWorkers: settings.get(startup ? "startup.serviceWorkers" : "cleanAll.serviceWorkers")
+            serviceWorkers: settings.get(startup ? "startup.serviceWorkers" : "cleanAll.serviceWorkers"),
+            cache: settings.get(startup ? "startup.cache" : "cleanAll.cache")
         };
 
         this.cleaners.forEach((cleaner) => cleaner.clean(typeSet, startup));

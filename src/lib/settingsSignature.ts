@@ -44,6 +44,7 @@ export interface SettingsTypeMap {
     "cleanAll.pluginData": boolean;
     "cleanAll.serviceWorkers": boolean;
     "cleanAll.serverBoundCertificates": boolean;
+    "cleanAll.cache": boolean;
 
     "cleanThirdPartyCookies.enabled": boolean;
     "cleanThirdPartyCookies.delay": number;
@@ -78,6 +79,7 @@ export interface SettingsTypeMap {
     "startup.pluginData": boolean;
     "startup.serviceWorkers": boolean;
     "startup.serverBoundCertificates": boolean;
+    "startup.cache": boolean;
 
     "purgeExpiredCookies": boolean;
 

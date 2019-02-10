@@ -25,7 +25,8 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
     ["setting_passwords", "cleanAll.passwords", null],
     ["setting_indexed_db", "cleanAll.indexedDB", null],
     ["setting_plugin_data", "cleanAll.pluginData", null],
-    ["setting_service_workers", "cleanAll.serviceWorkers", null]
+    ["setting_service_workers", "cleanAll.serviceWorkers", null],
+    ["setting_cache", "cleanAll.cache", null]
 ];
 
 export function CleanDialog({ button }: CleanDialogProps) {

@@ -346,6 +346,10 @@
         "message": "Service Workers",
         "hash": "584545acfce5580c7967bc8c366df556"
     },
+    "setting_cache": {
+        "message": "Cache",
+        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
+    },
     "setting_server_bound_certificates": {
         "message": "Servergebundene Zertifikate",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"

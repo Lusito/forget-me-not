@@ -262,6 +262,9 @@
     "setting_service_workers": {
         "message": "Service Workers"
     },
+    "setting_cache": {
+        "message": "Cache"
+    },
     "setting_server_bound_certificates": {
         "message": "Server Bound Certificates"
     },

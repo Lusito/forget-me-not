@@ -17,7 +17,8 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
     ["setting_passwords", "startup.passwords", null, null, null, null],
     ["setting_indexed_db", "startup.indexedDB", null, null, null, null],
     ["setting_plugin_data", "startup.pluginData", null, null, null, null],
-    ["setting_service_workers", "startup.serviceWorkers", null, null, null, null]
+    ["setting_service_workers", "startup.serviceWorkers", null, null, null, null],
+    ["setting_cache", "startup.cache", null, null, null, null]
 ];
 
 export function CleanupTab() {

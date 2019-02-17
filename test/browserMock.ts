@@ -190,6 +190,7 @@ class BrowserHistoryMock {
     public reset() {
         this.onVisited.reset();
         this.deleteUrl.reset();
+        this.search.reset();
         this.items.length = 0;
     }
 

@@ -11,18 +11,34 @@ import { settings } from "../../src/lib/settings";
 import { CleanupType } from "../../src/lib/settingsSignature";
 import { HistoryCleaner } from "../../src/background/cleaners/historyCleaner";
 import { BrowsingData } from "webextension-polyfill-ts";
+import { TabWatcher } from "../../src/background/tabWatcher";
 
 const COOKIE_STORE_ID = "mock";
 const BLACKLISTED_DOMAIN = "instantly.com";
 const WHITELISTED_DOMAIN = "never.com";
 const GRAYLISTED_DOMAIN = "startup.com";
 const UNKNOWN_DOMAIN = "unknown.com";
+const OPEN_DOMAIN = "open.com";
 
 describe("HistoryCleaner", () => {
+    const tabWatcherListener = {
+        onDomainEnter: () => undefined,
+        onDomainLeave: () => undefined
+    };
     let cleaner: HistoryCleaner | null = null;
+    let tabWatcher: TabWatcher | null = null;
+
+    afterEach(() => {
+        tabWatcher = null;
+        cleaner = null;
+        settings.restoreDefaults();
+    });
 
     beforeEach(() => {
         browserMock.reset();
+        tabWatcher = new TabWatcher(tabWatcherListener);
+
+        browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID);
 
         browserMock.cookies.cookieStores = [
             { id: COOKIE_STORE_ID, tabIds: [], incognito: false }
@@ -33,7 +49,7 @@ describe("HistoryCleaner", () => {
             { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY }
         ]);
         settings.save();
-        cleaner = new HistoryCleaner();
+        cleaner = new HistoryCleaner(tabWatcher);
     });
 
     describe("onVisited", () => {
@@ -101,8 +117,9 @@ describe("HistoryCleaner", () => {
                 browserMock.history.items.push({ id: "2", url: `https://${BLACKLISTED_DOMAIN}` });
                 browserMock.history.items.push({ id: "3", url: `https://${WHITELISTED_DOMAIN}` });
                 browserMock.history.items.push({ id: "4", url: `https://${GRAYLISTED_DOMAIN}` });
+                browserMock.history.items.push({ id: "5", url: `https://${OPEN_DOMAIN}` });
             });
-            it(`should protect whitelisted${startup ? "" : "and graylisted"} domains`, async () => {
+            it(`should protect whitelisted${startup ? "" : "and graylisted"} ${(startup || protectOpenDomains) ? "and open" : ""} domains`, async () => {
                 cleaner = ensureNotNull(cleaner);
                 cleaner.clean(typeSet, startup);
                 assert.isFalse(typeSet.history);
@@ -113,6 +130,8 @@ describe("HistoryCleaner", () => {
                 ];
                 if (startup)
                     expectedCalls.push([{ url: `https://${GRAYLISTED_DOMAIN}` }]);
+                if (!startup && !protectOpenDomains)
+                    expectedCalls.push([{ url: `https://${OPEN_DOMAIN}` }]);
                 browserMock.history.deleteUrl.assertCalls(expectedCalls);
                 browserMock.history.search.assertCalls([[{ text: "" }]]);
                 assert.isFalse(typeSet.history);

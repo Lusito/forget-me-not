@@ -35,8 +35,8 @@ export class Background implements TabWatcherListener {
     private readonly cleaners: Cleaner[] = [];
 
     public constructor() {
-        browser.history && this.cleaners.push(new HistoryCleaner());
-        this.cleaners.push(new DownloadCleaner());
+        browser.history && this.cleaners.push(new HistoryCleaner(this.tabWatcher));
+        this.cleaners.push(new DownloadCleaner(this.tabWatcher));
         this.cleaners.push(new CookieCleaner(this.tabWatcher, this.incognitoWatcher));
         this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
 

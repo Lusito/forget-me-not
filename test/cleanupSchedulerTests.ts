@@ -5,7 +5,6 @@
  */
 
 import { settings } from "../src/lib/settings";
-import { destroyAndNull } from "../src/shared";
 import { browserMock } from "./browserMock";
 import { ensureNotNull, createSpy, SpyData, doneHandler } from "./testHelpers";
 import { assert } from "chai";
@@ -16,7 +15,7 @@ describe("Cleanup Scheduler", () => {
     let cleanupScheduler: CleanupScheduler | null = null;
 
     afterEach(() => {
-        cleanupScheduler = destroyAndNull(cleanupScheduler);
+        cleanupScheduler = null;
         settings.restoreDefaults();
     });
 
@@ -152,7 +151,7 @@ describe("Cleanup Scheduler", () => {
         context("snoozing = false, domainLeave.enabled = true, domainLeave.delay = 0.4s", () => {
             beforeEach(() => {
                 settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.delay", 1 / 150);
+                settings.set("domainLeave.delay", 0.4);
                 settings.save();
                 handler = createSpy();
                 cleanupScheduler = new CleanupScheduler(handler, false);

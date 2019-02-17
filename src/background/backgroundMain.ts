@@ -23,7 +23,6 @@ settings.onReady(() => {
     messageUtil.receive("cleanUrlNow", (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
     messageUtil.receive("toggleSnoozingState", () => background.toggleSnoozingState());
     messageUtil.receive("getSnoozingState", () => background.sendSnoozingState());
-    browser.cookies.onChanged.addListener((i) => background.onCookieChanged(i));
 
     // listen for tab changes to update badge
     const badgeUpdater = () => background.updateBadge();
@@ -37,9 +36,7 @@ settings.onReady(() => {
     // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.
     messageUtil.receive("import", () => {
         loadJSONFile((json) => {
-            if (json && settings.setAll(json)) {
-                console.log("success");
-            }
+            json && settings.setAll(json);
         });
     });
 
@@ -63,15 +60,16 @@ settings.onReady(() => {
     wetLayer.addListener(showUpdateNotification);
 
     setTimeout(() => {
-        background.onStartup();
-
         const manifestVersion = browser.runtime.getManifest().version;
-        if (settings.get("version") !== manifestVersion) {
+        const previousVersion = settings.get("version");
+        if (previousVersion !== manifestVersion) {
             settings.set("version", manifestVersion);
+            settings.performUpgrade(previousVersion);
             settings.save();
 
             if (settings.get("showUpdateNotification"))
                 showUpdateNotification();
         }
+        background.onStartup();
     }, 1000);
 });

@@ -30,10 +30,6 @@
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
     },
-    "alert_title_error": {
-        "message": "Fehler",
-        "hash": "28f8a082ad9a4452d343d532dbc76750"
-    },
     "prompt_ok": {
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -50,6 +46,18 @@
         "message": "Dies kann nicht rückgängig gemacht werden.",
         "hash": "db630835e0fd63a96fcb2feed83facc3"
     },
+    "rule_dialog_title": {
+        "message": "Wähle eine Reinigungsregel",
+        "hash": "8b92b69da821db80656274e044e68643"
+    },
+    "rule_dialog_content": {
+        "message": "- **N**iemals: Keine Reinigung.\n- Beim **S**tart: Säuberung bei Browserstart.\n- Beim **V**erlassen: Säuberung beim Verlassen einer Domäne, als auch beim Browserstart.\n- **I**nstant: Verhindere das setzen von Daten, sofern möglich. Ansonsten wie `Beim Verlassen` verhalten.\n\n**\\*** Damit `Beim Verlassen` und `Beim Start` funktionieren, müssen die entsprechenden Säuberungsoptionen eingeschaltet sein. Einige Limitierungen können aufgrund von Einschränkungen in der Web-Extension API auftreten. [Mehr lesen](readme.html#tutorial)",
+        "hash": "bb88166ccd6ce8e41eb96328204fb401"
+    },
+    "rule_dialog_expression": {
+        "message": "Ausdruck:",
+        "hash": "4342463f910507a3f4f1f81716912f1c"
+    },
     "confirm_settings_and_rules": {
         "message": "Einstellungen & Regeln",
         "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
@@ -58,33 +66,93 @@
         "message": "Nur Einstellungen",
         "hash": "47dbae6cf11a5b79c1abae7b56485c18"
     },
+    "confirm_ok": {
+        "message": "OK",
+        "hash": "d2702da8185dd5d533913d767bddc05d"
+    },
     "confirm_cancel": {
         "message": "Abbrechen",
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
+    "confirm_rule_replace_dialog_title": {
+        "message": "Regelausdruck existiert bereits",
+        "hash": "c75edd105dd87f7b72216c1e32dcf101"
+    },
+    "confirm_rule_replace_dialog_content": {
+        "message": "Der spezifizierte Regelausdruck besteht bereits.. möchtest du diesen ersetzen?",
+        "hash": "74219b377804324016c6fbca36518b25"
+    },
 
-    "__WET_GROUP__2": { "message": "Badges" },
-    "badge_white": {
-        "message": "W",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_badge": {
+        "message": "N",
+        "hash": "365345324a710f7b5f2824f1da013f2d"
     },
-    "badge_gray": {
-        "message": "G",
-        "hash": "08208f1cca81892a4707dec4283aa489"
+    "cleanup_type_never_button": {
+        "message": "*N*iemals",
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
     },
-    "badge_forget": {
+    "cleanup_type_never_button@title": {
+        "message": "Keine Säuberung",
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
+    },
+    "cleanup_type_startup_badge": {
+        "message": "S",
+        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
+    },
+    "cleanup_type_startup_button": {
+        "message": "Beim *S*tart",
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
+    },
+    "cleanup_type_startup_button@title": {
+        "message": "Säuberung beim Neustart des Browsers",
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
+    },
+    "cleanup_type_leave_badge": {
         "message": "V",
-        "hash": "324f549df0b05cab9ad26e634c312802"
+        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
     },
-    "badge_block": {
-        "message": "B",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
+    "cleanup_type_leave_button": {
+        "message": "Beim *V*erlassen",
+        "hash": "474d0269f9757e726e5d91f684c33033"
+    },
+    "cleanup_type_leave_button@title": {
+        "message": "Säuberung beim Verlassen einer Domäne",
+        "hash": "a69a2b082be9de0589a0f807f6be2179"
+    },
+    "cleanup_type_instantly_badge": {
+        "message": "I",
+        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
+    },
+    "cleanup_type_instantly_button": {
+        "message": "*I*nstant",
+        "hash": "62610f955f62f7701a06a80ff04e1e1b"
+    },
+    "cleanup_type_instantly_button@title": {
+        "message": "Blockieren/nach Erstellung löschen",
+        "hash": "f253ddd17544f84b52a993fe784164e6"
+    },
+    "cleanup_type_create_button": {
+        "message": "Neue Regel",
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Wähle den anzuwendenden Säuberungstyp",
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Auf dieser Plattform nicht verfügbar.",
+        "hash": "99286998bff7ecef26245d3858e4fe0f"
+    },
     "perform_manual_cleanup": {
-        "message": "Manuelle Säuberung durchführen:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Manuelle Säuberung durchführen",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
+    },
+    "manual_cleanup_description": {
+        "message": "Mit dieser Aktion kann eine manuelle Säuberung durchgeführt werden. Vorher kannst du auswählen, was du säubern möchtest.",
+        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
     },
     "define_rules": {
         "message": "Regeln definieren:",
@@ -94,13 +162,21 @@
         "message": "Zuletzt genutzte Domänen:",
         "hash": "53d2a0edc88172044b6b6db0c1996820"
     },
+    "tabs_settings_general": {
+        "message": "Allgemeines",
+        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
+    },
+    "tabs_settings_cleanup": {
+        "message": "Säuberungen",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    },
+    "tabs_settings_experimental": {
+        "message": "Experimentell",
+        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
+    },
     "tabs_this_tab@title": {
         "message": "Aktiver Tab",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_clean_all@title": {
-        "message": "Manuelle Säuberung durchführen",
-        "hash": "7141bfe69b29cdc954a0f353385213fe"
     },
     "tabs_rules@title": {
         "message": "Regeln definieren",
@@ -109,10 +185,6 @@
     "tabs_settings@title": {
         "message": "Einstellungen",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_snooze@title": {
-        "message": "Säuberung beim Verlassen von Domänen temporär ausschalten",
-        "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
         "message": "Domänenlog",
@@ -137,6 +209,10 @@
     "button_clean_now": {
         "message": "Jetzt Löschen!",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
+    },
+    "button_clean_domain": {
+        "message": "Diese Domäne säubern!",
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
     },
     "button_import": {
         "message": "Importieren..",
@@ -163,60 +239,56 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "Im Snooze Modus werden folgende Säuberungen verhindert:\n- Säuberung beim Verlassen einer Domäne\n- Säuberungen von Cookies von Dritten.\n\nAlle verpassten Säuberungen werden erneut geplant sobald du den Snooze Modus stoppst.\n\nBlockierte Cookies sind hiervon nicht betroffen. D.h. wenn du eine Domäne Blacklistest, werden die Cookies weiterhin im Snooze Modus blockiert.",
-        "hash": "783a3b899cfee49c995867e6102cc225"
+        "message": "Im Snooze Modus werden folgende Säuberungen verhindert:\n- Säuberung beim Verlassen einer Domäne\n- Säuberungen von Cookies von Dritten.\n\nAlle verpassten Säuberungen werden erneut geplant sobald du den Snooze Modus stoppst.\n\nSchwarze Regeln (\"Instant\") sind vom Snooze-Mode nicht betroffen.",
+        "hash": "dfd24dc7f97580281d58971501628622"
     },
     "invalid_tab": {
         "message": "Invalid Tab",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
-    "rules_column_rule": {
-        "message": "Regel",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
+    "rules_column_expression": {
+        "message": "Ausdruck",
+        "hash": "7fc913b5875670e140f328b8a03ed225"
     },
-    "rules_column_matching_rule": {
-        "message": "Greifende Regel",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
+    "rules_column_matching_expression": {
+        "message": "Greifender Ausdruck",
+        "hash": "dcb63b62695c11401c78d9ea01eee3de"
     },
     "rules_column_type": {
-        "message": "Typ",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
-    },
-    "rules_column_remove": {
-        "message": "Löschen",
-        "hash": "3908a268c854fe64242e38845dbb7c81"
+        "message": "Säuberung",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
     },
     "rules_input@placeholder": {
         "message": "Suchen oder hinzufügen..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
     },
-    "rules_hint_add": {
-        "message": "Eingabe = Weiße Regel hinzuzufügen, Shift+Eingabe = Graue Regel hinzufügen",
-        "hash": "a4bf383cbddf44323b6b53b164fc5016"
+    "expression_hint_invalid": {
+        "message": "Ungültiger Ausdruck!",
+        "hash": "5960bcc4b7e809e74c69cd96049e9245"
     },
-    "rules_hint_invalid": {
-        "message": "Ungültiger Ausdruck",
-        "hash": "c3be6cd37388a5b0133fb430741b7eb3"
+    "expression_hint_exists": {
+        "message": "Ausdruck existiert bereits!",
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
     },
     "rules_add": {
         "message": "Hinzufügen",
         "hash": "c30738ff9271a856100751bbca5e5794"
     },
+    "rules_no_entries": {
+        "message": "Keine Einträge",
+        "hash": "5ece1de076b92af71c606feadcc41439"
+    },
     "help_button@title": {
         "message": "Lese wie Regeln funktionieren, welche Ausdrücke genutzt werden können, über experimentelle Features und was sich kürzlich in dieser Extension geändert hat.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
-    },
-    "types_of_cleanup": {
-        "message": "Was beinhalten diese Checkboxen?",
-        "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
     },
     "types_of_cleanup@title": {
         "message": "Lies mehr über das, was diese Checkboxen bereinigen.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Experimentell: Abgelaufene Cookies löschen wann immer eine Säuberung geschieht.",
-        "hash": "1ff8b00b0ca44682a083d91280bcc011"
+        "message": "Abgelaufene Cookies löschen wann immer eine Säuberung geschieht.",
+        "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
     },
     "setting_show_update_notification": {
         "message": "Zeige eine Notifikation wenn die Erweiterung aktualisiert wurde.",
@@ -230,53 +302,17 @@
         "message": "Zeige die greifende Regel als Markierung auf dem Toolbarbutton",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
-    "setting_type_white": {
-        "message": "Weiß",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
-    "setting_type_white@title": {
-        "message": "Keine Säuberung",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "setting_type_gray": {
-        "message": "Grau",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
-    },
-    "setting_type_gray@title": {
-        "message": "Säuberung beim Neustart des Browsers",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "setting_type_forget": {
-        "message": "Vergessen",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
-    "setting_type_forget@title": {
-        "message": "Säuberung beim Verlassen einer Domäne",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "setting_type_block": {
-        "message": "Blockieren",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
-    "setting_type_block@title": {
-        "message": "Cookies werden am gesetzt werden gehindert.",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
+    "setting_apply_rules@title": {
+        "message": "Regeln anwenden",
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_cookies": {
         "message": "Cookies",
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
-    "setting_apply_rules": {
-        "message": "Regeln anwenden",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
     "setting_local_storage": {
         "message": "Lokaler Speicher",
         "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_apply_rules_ff58": {
-        "message": "Regeln anwenden (Firefox 58+)",
-        "hash": "85e4a052235986fbbbdd74a36732ed1a"
     },
     "setting_protect_open_domains": {
         "message": "Offene Domänen beschützen, falls \"Regeln anwenden\" gewählt ist",
@@ -310,53 +346,45 @@
         "message": "Service Workers",
         "hash": "584545acfce5580c7967bc8c366df556"
     },
+    "setting_cache": {
+        "message": "Cache",
+        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
+    },
     "setting_server_bound_certificates": {
         "message": "Servergebundene Zertifikate",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_local_storage_ff58": {
-        "message": "Lokaler Speicher (Firefox 58+)",
-        "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
+    "setting_delay_domain_leave_cleanup_in_seconds": {
+        "message": "Verzögerung der Säuberung beim Verlassen einer Domäne in Sekunden:",
+        "hash": "078f159c3a6f33936199104b956d77a7"
     },
-    "setting_delay_in_minutes": {
-        "message": "Verzögerung in Minuten:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_domain_leave_enabled": {
-        "message": "Löschen, wenn alle Instanzen einer Domäne verlassen wurden:",
-        "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Regeln werden angewandt",
-        "hash": "b349aa92b42d990a4a59dadcead1c09d"
+    "setting_delay_in_seconds": {
+        "message": "Verzögerung in Sekunden:",
+        "hash": "4f52d0e15398d35039f73e8a04275ae9"
     },
     "setting_remove_thirdparty": {
         "message": "Cookies von Dritten bei Erstellung löschen:",
-        "hash": "10e201194069b4bc86e31630c772eb88"
+        "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimentell: Cookies von Dritten verweigern",
-        "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_startup_enabled": {
-        "message": "Beim Browserstart löschen:",
-        "hash": "60eb224ee962894d10c6fb67328a69f1"
+        "message": "Cookies von Dritten verweigern",
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld": {
-        "message": "Domänen ohne Top Level Domäne zur weißen Liste hinzufügen",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
+        "message": "Niemals Domänen ohne Top Level Domäne säubern",
+        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Domänen, wie z.B. localhost, intranet, etc. (ohne .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "setting_whitelist_file_system": {
-        "message": "Dateien vom Computer zur weißen Liste hinzufügen",
-        "hash": "31f66347f86bb36b6a5292691882838b"
+        "message": "Niemals Dateien vom Computer säubern",
+        "hash": "511a3b5151d821503759721ca9d7b1c1"
     },
     "settings_fallback_rule": {
-        "message": "Verhalten falls keine Regel greift (default: Vergessen):",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
+        "message": "Säuberung falls keine Regel greift (default: Beim Verlassen):",
+        "hash": "144b6e44fcfc2accebf07df655af7bea"
     },
     "setting_log_rad_enabled": {
         "message": "Kürzlich verwendete Domänen loggen.",
@@ -366,9 +394,9 @@
         "message": "Limitieren auf:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
     },
-    "experimental_link@title": {
-        "message": "Dies ist eine experimentelle Funktionalität. Klicke auf den Link um mehr herauszufinden.",
-        "hash": "e924b30645472d8e56f61b2492dc1bfb"
+    "setting_experimental_info": {
+        "message": "Dies sind experimentelle Features. Lies mehr über sie [hier](readme.html#experimental).",
+        "hash": "9a633b49e2375b929463c1ce49295f58"
     },
     "setting_initialTab": {
         "message": "Initial selektierter Reiter in diesem Popup:",
@@ -382,10 +410,6 @@
         "message": "Aktiver Tab",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "initial_tab_clean_all": {
-        "message": "Säuberung",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
     "initial_tab_rules": {
         "message": "Regeln",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
@@ -394,17 +418,9 @@
         "message": "Einstellungen",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
-    "initial_tab_snooze": {
-        "message": "Snooze",
-        "hash": "0777d03b979676427cadc44e5b133315"
-    },
     "initial_tab_log": {
         "message": "Domänenlog",
         "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "initial_tab_about": {
-        "message": "Über",
-        "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },
@@ -448,20 +464,20 @@
 
     "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Autor\nErstellt von Santo Pfingsten, © 2017-2018\n\n## Übersetzer gesucht\n\nFalls du eine weitere Sprache gut genug beherrscht, kannst du helfen, indem du eine Übersetzung mit [dieser eleganten Web-App](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) erstellst.\n\n## Probleme, Fragen und andere Anregungen\nBitte Probleme und Featurewünsche auf GitHub posten:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Datenschutzerklärung\n\nDeine Privatsphäre hat höchste Priorität. Weder analysisert, noch sammelt diese Erweiterung mehr als notwendig um die Funktion zu gewährleisten. In keinem Fall werden Daten irgendwohin geschickt, nicht einmal anonymisiert. PUNKT.\n\n## Credits\n* Deutsche Übersetzung von Santo Pfingsten\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
-        "hash": "6377f0eb7328080d3949b9b855218cfc"
+        "message": "## Autor\nErstellt von Santo Pfingsten, © 2017-2019\n\n## Übersetzer gesucht\n\nFalls du eine weitere Sprache gut genug beherrscht, kannst du helfen, indem du eine Übersetzung mit [dieser eleganten Web-App](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) erstellst.\n\n## Probleme, Fragen und andere Anregungen\nBitte Probleme und Featurewünsche auf GitHub posten:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Datenschutzerklärung\n\nDeine Privatsphäre hat höchste Priorität. Weder analysisert, noch sammelt diese Erweiterung mehr als notwendig um die Funktion zu gewährleisten. In keinem Fall werden Daten irgendwohin geschickt, nicht einmal anonymisiert. PUNKT.\n\n## Credits\n* Deutsche Übersetzung von Santo Pfingsten\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "hash": "8b79e24d589555578de474316b748218"
     },
     "tutorial_page": {
-        "message": "# Einführung\n\n## Firefox Einstellungen\nBitte bedenke, dass diese Erweiterung keinen Zugriff auf deine Firefox Einstellungen hat. Alle Einstellungen, die du in Firefox selbst vornimmst, werden mit dieser Erweiterung kombiniert.\n\nWenn du also Firefox so konfigurierst, dass er alle Cookies verweigert, wird diese Erweiterung keine Cookies zum Verarbeiten haben.\n\n## Weiße, graue und rote Listen\nDomänennamen (Hostnamen von Webseiten, wie z.B. *google.de*) können zu farbkodierten Listen (z.B. Whitelist) hinzugefügt werden\n- **Weiß**: Cookies und lokaler Speicher werden niemals entfernt\n- **Grau**: Cookies und lokaler Speicher werden beim Browser Neustart entfernt (muss in den Optionen aktiviert werden).\n- **Rot**: Weiße und graue Regeln können durch eine rote Regel überschrieben werden.\n  - Beispiel: Eine weiße Regel erlaubt alle Domänen (\"\\*\" als Ausdruck) und einige rote Regeln markieren Ausnahmen zu dieser Regel.\n- **Schwarz**: Verhindern, dass Cookies überhaupt gesetzt werden.\n  - Jede Regel wird durch eine schwarze Regel überschrieben.\n  - Cookies, die von JavaScript gesetzt werden, können leider nicht verweigert werden, sie werden jedoch direkt nach dem Erstellen wieder gelöscht.\n\n## Valide Ausdrücke\n- Jeder hostname (z.B. www.google.de) ist eine gültige Regel.\n- Ein Stern (*) kann als Platzhalter für ein Segment eingesetzt werden (z.B. *.google.de oder www.\\*.de).\n- Weiße Listen überstimmen derzeit Graue. Es ist noch nicht klar, ob dies dauerhaft  so bleibt.\n\n### Cookiebezogene Ausdrücke\nDu kannst Regeln erzeugen, die für eine Kombination aus Cookiename und Domain gelten.\n- Beispiel: `cookiename@*.google.de`\n- `cookiename` kann jeder valide Cookiename sein.\n- Die gleichen Regeln, wie oben gesehen, gelten für den Domänenspezifischen Teil rechts vom `@` Zeichen.\n- Cookiebezogene Regeln werden gegenüber normalen Regeln vorgezogen.\n\n## Cookies von Dritten\n- Wird ein Cookie gesetzt, ohne dass die dazu gehörige Domäne in einem Tab aktiv ist, wird er als Cookie Dritter behandelt.\n- Es wird evaluiert, ob es bessere Methoden gibt.\n\n## Snooze Modus\n\nIm Popup-Tab \"Snooze Modus\" kann man die automatische Bereinigung temporär abschalten. In diesem Tab stehen genauere Instruktionen.\n\n## Typen der Säuberung\n\nDu kannst aussuchen, was du säubern möchtest:\n- **Cookies**: Normale HTTP cookies. Flash cookies sind in \"Plugin Daten\" enthalten.\n- **Lokaler Speicher** und **Indexed DB**: Webseiten können Daten im Browser speichern um bestimmte Features zu ermöglichen oder damit etwas beim nächsten Besuch nicht vergessen wird.\nGelegentlich bezeichnet Firefox  *Indexed DB* als \"Speicher\", also wenn Firefox sagt, dass youtube.com einige MB Speicher nutzt, dann ist das wahrscheinlich *Indexed DB*.\n- **History**: Dies enthält all deine Webseitenbesuche.\n- **Downloads**: Dies enthält die Liste deiner Downloads. Diese zu säubern entfernt nicht die Dateien von der Festplatte.\n- **Form Daten**: Irgendwann hast du ggf. ein Kontaktformular oder ein Bezahlformular ausgefüllt. Je nachdem wie deine Einstellungen sind, werden diese Daten gespeichert um das erneute Eintragen zu erleichtern.\n- **Passwörter**: Solltest du Firefox beauftragt haben, einige Passwörter zu speichern, so kannst du sie hiermit wieder entfernen.\n- **Plugin Daten**: Plugins (nicht Add-ons/Web-Extensions), wie Adobe Flash oder Acrobat Reader speichern ggf. Daten, wie Flash Cookies oder andere Informationen und Einstellungen.\n- **Service Workers**: Service Worker erlauben Webseiten offline genutzt zu werden und helfen das erneute Laden von Web-Apps zu beschleunigen, welche dies Nutzen.\n- **Servergebundene Zertifikate**: Falls du Zertifikate hinzugefügt hast um Verbindunden zu einem Server zu erlauben, so kannst du sie mit dieser Option wieder entfernen.",
-        "hash": "e3da06a89c4e4c3e8607211f3522da45"
+        "message": "# Einführung\n\n## Firefox Einstellungen\nBitte bedenke, dass diese Erweiterung keinen Zugriff auf deine Firefox Einstellungen hat. Alle Einstellungen, die du in Firefox selbst vornimmst, werden mit dieser Erweiterung kombiniert.\n\nWenn du also Firefox so konfigurierst, dass er alle Cookies verweigert, wird diese Erweiterung keine Cookies zum Verarbeiten haben.\n\n## Säuberungstypen\nDu kannst Säuberungsregeln definieren, die auf bestimmten Domänennamen (Hostnamen von Webseiten, wie z.B. *google.de*) greifen. Mögliche Säuberungstypen sind:\n\n- **Niemals**: Es wird keine Säuberung für zutreffende Domänennamen durchgeführt.\n- **Beim Start**: Säuberung wird beim Browserstart durchgeführt.\n- **Beim Verlassen**: Säuberung wird durchgeführt sobald eine Domäne verlassen wird (durch Änderung in der URL-Leiste oder durch Schließen des Tabs).\n- **Instant**: Wenn möglich, werden cookies am Schreiben gehindert. Andernfalls werden sie nahezu instant danach gelöscht.\n\nWenn mehrere Regeln auf eine Domänen zutreffen, wird die wichtigste Regel selektiert. Dies ist derzeit wie folgt definiert: `Instant > Beim Verlassen > Niemals > Beim Start`.\n\nWenn keine Regel auf eine Domäne zutrifft, wird die konfigurierte Ersatzregel verwendet.\n\n## Valide Ausdrücke\n- Jeder hostname (z.B. www.google.de) ist eine gültige Regel.\n- Ein Stern (*) kann als Platzhalter für ein Segment eingesetzt werden (z.B. *.google.de oder www.\\*.de).\n\n### Cookiebezogene Ausdrücke\nDu kannst Regeln erzeugen, die für eine Kombination aus Cookiename und Domain gelten.\n- Beispiel: `cookiename@*.google.de`\n- `cookiename` kann jeder valide Cookiename sein.\n- Die gleichen Regeln, wie oben gesehen, gelten für den Domänenspezifischen Teil rechts vom `@` Zeichen.\n- Cookiebezogene Regeln werden gegenüber normalen Regeln vorgezogen.\n\n## Cookies von Dritten\n- Wird ein Cookie gesetzt, ohne dass die dazu gehörige Domäne in einem Tab aktiv ist, wird er als Cookie Dritter behandelt.\n- Es wird evaluiert, ob es bessere Methoden gibt.\n\n## Snooze Modus\n\nMit dem \"Snooze Modus\" kann man die automatische Bereinigung temporär abschalten. Bewege die Maus über das Symbol für Instruktionen (oder Klicken, falls du auf Android bist).\n\n## Datentypen zur Säuberung\n\nDu kannst aussuchen, was du säubern möchtest:\n- **Cookies**: Normale HTTP cookies. (Flash cookies sind in \"Plugin Daten\" enthalten).\n- **Lokaler Speicher** und **Indexed DB**: Webseiten können Daten im Browser speichern um bestimmte Features zu ermöglichen oder damit etwas beim nächsten Besuch nicht vergessen wird.\nGelegentlich bezeichnet Firefox  *Indexed DB* als \"Speicher\", also wenn Firefox sagt, dass youtube.com einige MB Speicher nutzt, dann ist das wahrscheinlich *Indexed DB*.\n- **History**: Dies enthält eine Auflistung all deiner Webseitenbesuche.\n- **Downloads**: Dies enthält die Liste deiner Downloads. Diese zu säubern entfernt nicht die Dateien von der Festplatte.\n- **Form Daten**: Irgendwann hast du ggf. ein Kontaktformular oder ein Bezahlformular ausgefüllt. Je nachdem wie deine Einstellungen sind, werden diese Daten gespeichert um das erneute Eintragen zu erleichtern.\n- **Passwörter**: Solltest du Firefox beauftragt haben, einige Passwörter zu speichern, so kannst du sie hiermit wieder entfernen.\n- **Plugin Daten**: Plugins (nicht Add-ons/Web-Extensions), wie Adobe Flash oder Acrobat Reader speichern ggf. Daten, wie Flash Cookies oder andere Informationen und Einstellungen.\n- **Service Workers**: Service Worker erlauben Webseiten offline genutzt zu werden und helfen das erneute Laden von Web-Apps zu beschleunigen, welche dies Nutzen.\n- **Servergebundene Zertifikate**: Falls du Zertifikate hinzugefügt hast um Verbindunden zu einem Server zu erlauben, so kannst du sie mit dieser Option wieder entfernen.",
+        "hash": "5b74c6bc9b27eec64490d14cda2871c3"
     },
     "experimental_page": {
-        "message": "## Experimentale  Funktionalität\n\n- Von Zeit zu Zeit wird es neue Funktionalität geben, die als experimentell markiert ist.\n- Diese sind von Haus aus abgeschaltet und müssen manuell eingeschaltet werden.\n- Damit werden neue Möglichkeiten evaluiert, wie man die Erweiterung verbessern kann.\n- Diese neuen Funktionen können instabil sein oder eine schlechte Performanz haben.\n- Wenn du Probleme bemerkst, versuche diese Funktionalitäten abzuschauten.\n- Bitte Feedback und Fehler auf [GitHub](https://github.com/Lusito/forget-me-not/issues) melden.\n\n\n## Derzeit aktive Experimente\n- **Abgelaufene Cookies Löschen**:\nWann immer eine Säuberung geschieht werden Cookies gelöscht, deren Ablaufdatum in der Vergangenheit liegt. Unabhängig von den konfigurierten Regeln. Normalerweise löscht Firefox abgelaufene Cookies erst, wenn ein gewisses Limit erreicht wird. Diese Cookies würden zwar nicht an Webseiten gesendet, jedoch sind sie weiterhin vorhanden. Diese Option hilft es, solche Geistercookies zu entfernen.\n- **Cookies von Dritten verweigern**:  \nWenn eingeschaltet, wird jede Web-Anfrage von Cookies befreit, die nicht zur URL des Tabs gehören und nicht in einer Regel geschützt sind. Diese Cookies werden also nie gesetzt.\n\nBitte gebt mir Rückmeldung zu euren Erfahrungen mit diesen Experimenten, so dass ich entscheiden kann, ob sie dauerhaft zum Funktionsumfang hinzugefügt werden sollen.",
-        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
+        "message": "## Experimentale  Funktionalität\n\n- Von Zeit zu Zeit wird es neue Funktionalität geben, die als experimentell markiert ist.\n- Diese sind von Haus aus abgeschaltet und müssen manuell eingeschaltet werden.\n- Damit werden neue Möglichkeiten evaluiert, wie man die Erweiterung verbessern kann.\n- Diese neuen Funktionen können instabil sein oder eine schlechte Performanz haben.\n- Wenn du Probleme bemerkst, versuche diese Funktionalitäten abzuschauten.\n- Bitte Feedback und Fehler auf [GitHub](https://github.com/Lusito/forget-me-not/issues) melden.\n\n## Derzeit aktive Experimente\n- **Abgelaufene Cookies Löschen**:\nWann immer eine Säuberung geschieht werden Cookies gelöscht, deren Ablaufdatum in der Vergangenheit liegt. Unabhängig von den konfigurierten Regeln. Normalerweise löscht Firefox abgelaufene Cookies erst, wenn ein gewisses Limit erreicht wird. Diese Cookies würden zwar nicht an Webseiten gesendet, jedoch sind sie weiterhin vorhanden. Diese Option hilft es, solche Geistercookies zu entfernen.\n- **Cookies von Dritten verweigern**:  \nWenn eingeschaltet, wird jede Web-Anfrage von Cookies befreit, die nicht zur URL des Tabs gehören und nicht in einer Regel geschützt sind. Diese Cookies werden also nie gesetzt.\n\nBitte gebt mir Rückmeldung zu euren Erfahrungen mit diesen Experimenten, so dass ich entscheiden kann, ob sie dauerhaft zum Funktionsumfang hinzugefügt werden sollen.",
+        "hash": "bd877a339269825e5ace6407fc19cb45"
     },
     "changelog_page": {
-        "message": "## Änderungshistorie\n\n### Version 1.0.5 (2018/09/02)\n- Bug behoben, der die Update Notifikation bei jedem Start angezeigt hat.\n\n### Version 1.0.4 (02.09.2018)\n- Workaround für Firefox bug, welcher die download history nicht korrekt leert.\n- Workaround für Firefox bug, welcher container cookies nicht korrekt löscht\n- Lokale cookies (von Websites auf deinem Computer) können nun auch gelöscht werden.\n- Italienische Übersetzung von temptemptmp.\n- Support fürr den Live-Apply Button vom web-extension-translator.\n- Besserer Support für das Firefox Overflow Menü.\n\n### Version 1.0.3 (23.08.2018)\n- Fix a bug in the rule expression parser\n- Spanische (Argentinien) Übersetzungen von [Fabián Pérez](https://www.github.com/thepante)\n- Schwedishe Übersetzung von Jo3yA\n- Portugisische Übersetzung von SW1FT\n- Portugisische(Brasilien) Übersetzungen von Victor Bambino\n- Aktualisierung der ober- und untersorbischen Übersetzung von Michael Wolf\n\n### Version 1.0.2 (03.06.2018)\n- Unterstützung für Keyboardnavigation und Screen Reader\n\n### Version 1.0.1 (28.05.2018)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (27.05.2018)\n- Anderes Icon und tooltip im Snooze Modus.\n- Übersetzungen ins Ober- und Untersorbische durch @milupo\n- Nutzer können nun wählen, welcher Regel-Typ angewandt wird, wenn keine passende Regel gefunden wurde.\n- Regeln können nun spezifisch für benannte cookies erstellt werden.\n- Cookies Dritter werden nun besser erkannt.\n- Bugs beim Entfernen von Subdomänencookies behoben.\n- Bessere Unterstützung für First Party Isolation\n- Neues experimentelles Feature: Automatisches entfernen von abgelaufenen Cookies wann immer eine Säuberung stattfindet.\n- Einige visuelle Probleme wurden behoben.\n- Viele Verbesserungen im Code für bessere Stabilität und Leistung!\n- Über 100 Unit Tests um hohe Qualität zu gewährleisten!\n- Bessere Hilfe und mehr Beschreibungen.\n- Datenschutzerklärung hinzugefügt.\n\n### Version 0.9.1 (06.04.2018)\n- Bug der verhinderte, dass die Einstellung -nicht über updates informieren- ignoriert wurde\n\n### Version 0.9.0 (24.03.2018)\n- Einstellung zum Limitieren oder Abschalten des Domänen-Logs\n- Punycode Domänen können nun korrekt dargestellt werden\n- Fix: Cookies wurden in einigen Fällen nicht korrekt entfernt\n- In den Popup Tabs werden nun Bilder statt Text verwendet\n- Manuelles Löschen kann nun optional auch die derzeit aktiven Domänen löschen.\n- Automatische Säuberung kann nun temporär abgeschaltet werden. Die Bereinigungen werden erneut geplant sobald der \"Snooze\" gestoppt wurde.\n- Technologieupgrade\n\n### Version 0.8.8 (24.01.2018)\n- Neuer, Regeltyp \"Schwarz\" zum blockieren von cookies hinzugefügt.\n- First Party Isolation verhindert nicht mehr, dass cookies entfernt werden (funktioniert erst ab Firefox 59). Verbesserte Unterstützung wird demnächst über eine Betaversion zur Verfügung gestellt.\n- Bugfix: Nach Verlassen einer Domain, diese wieder besuchen und verlassen bevor der erste Säuberungstimeout verstrichen war, wurden Cookies zu früh gelöscht.\n- Bugfix: Notifikationen konnten durch neuere ersetzt werden, bevor der Nutzer diese sehen konnte.\n\n### Version 0.8.7 (20.12.2017)\n- Übergangslösung für nicht funktionierende Einstellungsimporte aus dem Firefox browserAction Popup.\n- Partielle Unterstützung für Umgebungstabs: Cookies funktionieren, lokaler Speicher jedoch nicht (Mozilla muss hier erst noch etwas beheben)\n- Neue \"Vergiss\" Regel (rot) hinzugefügt um andere Regeln zu überschreiben (siehe Tutorials).\n- Problem bei der Browsertartbereinigung behoben\n- Unit Tests eingeführt\n- Option zum Verstecken der Badge (Markierung der Regel) hinzugefügt\n- Option zum Auswählen des initial selektierten Reiters hinzugefügt\n- Option zum Anzeigen einer Notifikation Bei Cookieentfernung.\n- Problem mit dem Export behoben\n\n### Version 0.8.6 (06.12.2017)\n- Anpassungen an der Übersetzung. Einsatz von [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Einführung von in-extension Readme, Tutorial, Änderungshistorie.\n  - Diese können über den Fragezeichen Button erreicht werden.\n- Anzeige einer Notifikation wenn die Erweiterung aktualisiert wurde (kann abgeschaltet werden).\n- Domänen ohne Top Level Domäne (wie z.B. localhost, intranet, etc.) können nun mit einer Checkbox zur weißen Liste hinzugefügt werden.\n- Experimentelle Funktionalität zum Blockieren von Cookies Dritter.\n\n### Version 0.8.5 (25.11.2017)\n- Tippfehler behoben\n- Wechsel des Regeltyps weicher gestaltet\n- Button zum Hinzufügen neuer Regeln (vorher konnten neue Regeln nur über Enter hinzugefügt werden)\n- Button für weitere Informationen zu gültigen Regeln\n\n### Version 0.8.4 (25.11.2017)\n- Bessere Mobilkompatibilität\n- Inkognitocookies werden nicht mehr gelogged und entfernt\n\n### Version 0.8.3 (24.11.2017)\n- Abschaltung in Inkognitofenstern\n- Eine liste der Domänen, auf denen kürzlich Cookieänderungen durchgeführt wurden\n- Ein Button zum einfacheren Hinzufügen neuer Regeln mit Domänen der oben beschriebenen Liste, als auch der Domäne des aktuellen tabs\n\n### Version 0.8.2 (19.11.2017)\n- Einige Bugfixes und Säuberungen\n\n### Version 0.8.0 (19.11.2017)\n- Erste Version",
-        "hash": "0dd61bf62909481c3442be3c736a5687"
+        "message": "## Änderungshistorie\n\n### Version 2.0.0 (17.02.2019)\n\n- Verbessertes und simplifiziertes Benutzerinterface.\n- Die Regelnamen wurden geändert um besser darzustellen, was sie bedeuten.\n- Tutorials, Beschreibungen, etc. wurden aussagekräftiger gestaltet.\n- Android unterstützt nicht alle Reinigungsmethoden. das neue UI zeigt nun welche Features fehlen.\n- Neue Übersetzungen hinzugefügt: Französisch (Benny Hill, djizuss) und Katalanisch (Lakatoi).\n- Verzögerungswerte können nun in Sekunden anstatt in Minuten angegeben.\n- Frames werden nun beim Säubern mitbedacht.\n- Ein seltenes Problem mit der Cookie-Blockierungslogik wurde behoben.\n- Blockierte Cookies erzeugen nun auch eine \"entfernt\" Benachrichtigung.\n- Es ist nun möglich den Cache zu leeren.\n- Regeln können nun auf Downloads and Verlaufshistorie angewandt werden und somit auch beim Verlassen einer Domäne angewandt werden.\n- Der Code wurde großteils umgeschrieben für verbesserte Stabilität.\n- Die Anzahl der Unit-Tests ist deutlich angestiegen um sicherzustellen, dass die Logik fehlerfrei ist: Es sind nun 334 Tests!\n\n### Version 1.0.5 (02.09.2018)\n- Bug behoben, der die Update Notifikation bei jedem Start angezeigt hat.\n\n### Version 1.0.4 (02.09.2018)\n- Workaround für Firefox bug, welcher die download history nicht korrekt leert.\n- Workaround für Firefox bug, welcher container cookies nicht korrekt löscht\n- Lokale cookies (von Websites auf deinem Computer) können nun auch gelöscht werden.\n- Italienische Übersetzung von temptemptmp.\n- Support fürr den Live-Apply Button vom web-extension-translator.\n- Besserer Support für das Firefox Overflow Menü.\n\n### Version 1.0.3 (23.08.2018)\n- Fix a bug in the rule expression parser\n- Spanische (Argentinien) Übersetzungen von [Fabián Pérez](https://www.github.com/thepante)\n- Schwedishe Übersetzung von Jo3yA\n- Portugisische Übersetzung von SW1FT\n- Portugisische(Brasilien) Übersetzungen von Victor Bambino\n- Aktualisierung der ober- und untersorbischen Übersetzung von Michael Wolf\n\n### Version 1.0.2 (03.06.2018)\n- Unterstützung für Keyboardnavigation und Screen Reader\n\n### Version 1.0.1 (28.05.2018)\n- Fix for purging expired cookies\n\n### Version 1.0.0 (27.05.2018)\n- Anderes Icon und tooltip im Snooze Modus.\n- Übersetzungen ins Ober- und Untersorbische durch @milupo\n- Nutzer können nun wählen, welcher Regel-Typ angewandt wird, wenn keine passende Regel gefunden wurde.\n- Regeln können nun spezifisch für benannte cookies erstellt werden.\n- Cookies Dritter werden nun besser erkannt.\n- Bugs beim Entfernen von Subdomänencookies behoben.\n- Bessere Unterstützung für First Party Isolation\n- Neues experimentelles Feature: Automatisches entfernen von abgelaufenen Cookies wann immer eine Säuberung stattfindet.\n- Einige visuelle Probleme wurden behoben.\n- Viele Verbesserungen im Code für bessere Stabilität und Leistung!\n- Über 100 Unit Tests um hohe Qualität zu gewährleisten!\n- Bessere Hilfe und mehr Beschreibungen.\n- Datenschutzerklärung hinzugefügt.\n\n### Version 0.9.1 (06.04.2018)\n- Bug der verhinderte, dass die Einstellung -nicht über updates informieren- ignoriert wurde\n\n### Version 0.9.0 (24.03.2018)\n- Einstellung zum Limitieren oder Abschalten des Domänen-Logs\n- Punycode Domänen können nun korrekt dargestellt werden\n- Fix: Cookies wurden in einigen Fällen nicht korrekt entfernt\n- In den Popup Tabs werden nun Bilder statt Text verwendet\n- Manuelles Löschen kann nun optional auch die derzeit aktiven Domänen löschen.\n- Automatische Säuberung kann nun temporär abgeschaltet werden. Die Bereinigungen werden erneut geplant sobald der \"Snooze\" gestoppt wurde.\n- Technologieupgrade\n\n### Version 0.8.8 (24.01.2018)\n- Neuer, Regeltyp \"Schwarz\" zum blockieren von cookies hinzugefügt.\n- First Party Isolation verhindert nicht mehr, dass cookies entfernt werden (funktioniert erst ab Firefox 59). Verbesserte Unterstützung wird demnächst über eine Betaversion zur Verfügung gestellt.\n- Bugfix: Nach Verlassen einer Domain, diese wieder besuchen und verlassen bevor der erste Säuberungstimeout verstrichen war, wurden Cookies zu früh gelöscht.\n- Bugfix: Notifikationen konnten durch neuere ersetzt werden, bevor der Nutzer diese sehen konnte.\n\n### Version 0.8.7 (20.12.2017)\n- Übergangslösung für nicht funktionierende Einstellungsimporte aus dem Firefox browserAction Popup.\n- Partielle Unterstützung für Umgebungstabs: Cookies funktionieren, lokaler Speicher jedoch nicht (Mozilla muss hier erst noch etwas beheben)\n- Neue \"Vergiss\" Regel (rot) hinzugefügt um andere Regeln zu überschreiben (siehe Tutorials).\n- Problem bei der Browsertartbereinigung behoben\n- Unit Tests eingeführt\n- Option zum Verstecken der Badge (Markierung der Regel) hinzugefügt\n- Option zum Auswählen des initial selektierten Reiters hinzugefügt\n- Option zum Anzeigen einer Notifikation Bei Cookieentfernung.\n- Problem mit dem Export behoben\n\n### Version 0.8.6 (06.12.2017)\n- Anpassungen an der Übersetzung. Einsatz von [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Einführung von in-extension Readme, Tutorial, Änderungshistorie.\n  - Diese können über den Fragezeichen Button erreicht werden.\n- Anzeige einer Notifikation wenn die Erweiterung aktualisiert wurde (kann abgeschaltet werden).\n- Domänen ohne Top Level Domäne (wie z.B. localhost, intranet, etc.) können nun mit einer Checkbox zur weißen Liste hinzugefügt werden.\n- Experimentelle Funktionalität zum Blockieren von Cookies Dritter.\n\n### Version 0.8.5 (25.11.2017)\n- Tippfehler behoben\n- Wechsel des Regeltyps weicher gestaltet\n- Button zum Hinzufügen neuer Regeln (vorher konnten neue Regeln nur über Enter hinzugefügt werden)\n- Button für weitere Informationen zu gültigen Regeln\n\n### Version 0.8.4 (25.11.2017)\n- Bessere Mobilkompatibilität\n- Inkognitocookies werden nicht mehr gelogged und entfernt\n\n### Version 0.8.3 (24.11.2017)\n- Abschaltung in Inkognitofenstern\n- Eine liste der Domänen, auf denen kürzlich Cookieänderungen durchgeführt wurden\n- Ein Button zum einfacheren Hinzufügen neuer Regeln mit Domänen der oben beschriebenen Liste, als auch der Domäne des aktuellen tabs\n\n### Version 0.8.2 (19.11.2017)\n- Einige Bugfixes und Säuberungen\n\n### Version 0.8.0 (19.11.2017)\n- Erste Version",
+        "hash": "858a2705217268073ec25e1978cb98c4"
     },
 
     "__WET_LOCALE__": { "message": "de" }

@@ -1,0 +1,47 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
+@import "./open_sans";
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", sans-serif;
+    width: 500px;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background: white;
+    position: relative;
+    color: black
+}
+
+html {
+    padding-top: 4px;
+}
+
+html.fullscreen,
+html.fullscreen>body {
+    width: 100%;
+    height: 100%;
+}
+
+html.small_size {
+    width: auto;
+    body {
+        width: auto;
+    }
+}
+
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(42, 42, 42, 0.1);
+    border-radius: 3px;
+}

@@ -1,0 +1,147 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+@import "../../styles/input";
+@import "../../styles/variables";
+@import "../../styles/base";
+
+.top_margin {
+    margin-top: 10px;
+}
+
+th,
+td {
+    text-align: left;
+}
+
+div.split_equal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+
+    >* {
+        min-width: 10%;
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+    &.split_wrap {
+        flex-wrap: wrap;
+    }
+}
+
+input[type=checkbox]:checked+span:before {
+    color: #5095ea;
+}
+
+.cleanup_type_never {
+    background-color: $badgeColorNever;
+}
+
+.cleanup_type_startup {
+    background-color: $badgeColorStartup;
+}
+
+.cleanup_type_leave {
+    background-color: $badgeColorLeave;
+}
+
+.cleanup_type_instantly {
+    background-color: $badgeColorInstantly;
+}
+
+.cleanup_type_never,
+.cleanup_type_startup,
+.cleanup_type_leave,
+.cleanup_type_instantly {
+    color: white;
+}
+
+button:hover {
+    &.cleanup_type_never,
+    &.cleanup_type_startup,
+    &.cleanup_type_leave,
+    &.cleanup_type_instantly {
+        color: black;
+    }
+}
+
+span.cleanup_type_never,
+span.cleanup_type_startup,
+span.cleanup_type_leave,
+span.cleanup_type_instantly {
+    display: inline-block;
+    margin: 0 5px 0 0;
+    font-size: 10px;
+    text-align: center;
+    width: 16px;
+    line-height: 16px;
+}
+
+.compact_markdown {
+    h2 {
+        margin: 0;
+        font-size: 14px;
+    }
+    p {
+        margin: 0 0 10px 0;
+    }
+    >p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+#toolbar {
+    position: absolute;
+    top: 0;
+    right: 57px;
+    height: 38px;
+
+    button {
+        box-sizing: content-box;
+        background-color: transparent;
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin: 0 0 0 10px;
+        padding: 0;
+        border: none;
+        width: 28px;
+        height: 100%;
+
+        &:focus {
+            outline: 1px dashed $focus-color;
+        }
+
+        &::-moz-focus-inner {
+            border: 0;
+        }
+    }
+    .manual_cleanup_button {
+        background-image: url("../icons/tabs/delete.svg");
+    }
+}
+
+.align_right {
+    text-align: right;
+}
+
+input[type=number] {
+    width: 60px;
+    text-align: right;
+    height: 20px;
+    margin: 2px 4px 2px 7px;
+}
+
+button > p {
+    display: inline;
+    margin: 0;
+    padding: 0;
+
+    > em {
+        font-style: normal;
+        text-decoration: underline;
+    }
+}

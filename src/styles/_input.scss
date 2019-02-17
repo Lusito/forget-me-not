@@ -1,0 +1,213 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+
+// Colors
+$focus-color: #5095ea;
+$disabled-label: gray;
+$disabled-background: gray;
+$disabled-foreground: white;
+$border-color: rgba(0, 0, 0, 0.25);
+$hover-border-color: rgba(0, 0, 0, 0.3);
+
+// Fieldset
+fieldset {
+    border: 1px solid #A7A7A7;
+    box-sizing: border-box;
+}
+
+// Labels
+label {
+    margin-right: 2px;
+}
+
+label>input:disabled+span {
+    color: $disabled-label;
+}
+
+// Button & Select
+button,
+select {
+    margin: 0;
+    padding: 2px 8px;
+    height: 26px;
+    background-color: #EDEDED;
+    border: 1px solid $border-color;
+    color: black;
+    font: inherit;
+    outline: none;
+
+    &:not(:last-child) {
+        margin-right: 3px;
+    }
+    
+    &:hover {
+        background-color: #F4F4F4;
+        border-color: $hover-border-color;
+    }
+}
+
+button {
+    position: relative;
+    cursor: pointer;
+    
+    &:after {
+        display: block;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(45deg, #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%);
+        background-repeat: no-repeat;
+        background-position: 50%;
+        transform: scale(1, 1);
+        opacity: 0;
+        transition: transform .25s, opacity 1s;
+        pointer-events: none;
+    }
+
+    &:active:after {
+        transition: 0s;
+        transform: scale(0, 0);
+        opacity: .3;
+    }
+}
+
+select {
+    padding: 2px 24px 2px 8px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #EDEDED;
+    background-image: url(../icons/downarrow.svg);
+    background-position: calc(100% - -1px) -1px, left top;
+    background-size: 27px 27px, 100% 100%;
+    background-repeat: no-repeat;
+}
+
+// Input fields
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=text],
+input[type=url],
+input:not([type]),
+textarea {
+    height: 26px;
+    margin: 0px;
+    padding: 0 3px;
+    box-sizing: border-box;
+    background-color: white;
+    color: rgb(46, 46, 46);
+    border: 1px solid #bfbfbf;
+    font: inherit;
+    outline: none;
+
+    &:disabled {
+        background: $disabled-background;
+        color: $disabled-foreground;
+    }
+}
+
+// Checkboxes & Radio Buttons
+input[type=radio],
+input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    +span {
+        vertical-align: middle;
+        
+        &:before {
+            width: 17px;
+            height: 17px;
+            line-height: 17px;
+            display: inline-block;
+            content: "\02713";
+            text-align: center;
+            font-weight: bold;
+            color: transparent;
+            background-color: white;
+            margin: 2px 4px 2px 0;
+            transition: color 0.2s, background-color 0.2s, border 0.2s;
+            box-sizing: border-box;
+            box-shadow: 0 0 1px 1px gray;
+            vertical-align: middle;
+        }
+    }
+    &:focus,
+    &:hover {
+        +span:before {
+            box-shadow: 0 0 1px 2px $focus-color;
+        }
+    }
+    &:disabled+span:before {
+        box-shadow: none;
+    }
+}
+
+input[type=checkbox] {
+    +span:before {
+        margin-left: 2px;
+    }
+    &:disabled {
+        +span:before {
+            background: $disabled-background;
+        }
+        &:checked+span:before {
+            color: $disabled-foreground;
+        }
+    }
+}
+
+input[type=radio] {
+    +span:before {
+        border-radius: 10px;
+        border: 3px solid white;
+        margin-left: 3px;
+        vertical-align: middle;
+    }
+    &:checked+span:before {
+        background-color: $focus-color;
+    }
+    &:disabled {
+        +span:before {
+            border-color: $disabled-background;
+        }
+        &:not(:checked)+span:before {
+            background-color: $disabled-background;
+        }
+        &:checked+span:before {
+            background-color: $disabled-foreground;
+        }
+    }
+}
+
+// Focus/Hover
+button,
+input,
+textarea,
+select {
+    transition: color 0.2s, background-color 0.2s, border 0.2s;
+    &:not(:disabled) {
+        &:hover {
+            border-color: $hover-border-color;
+        }
+        &:focus {
+            border-color: $focus-color;
+        }
+        &:focus,
+        &:hover {
+            outline: none;
+        }
+    }
+}

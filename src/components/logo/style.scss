@@ -1,0 +1,21 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/forget-me-not
+ */
+ 
+ .logo_area {
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 40px;
+    height: 38px;
+    background-image: url(../icons/icon64.png);
+    background-repeat: no-repeat;
+    background-position: calc(100% + 22px) -2px;
+
+    &:focus {
+        outline: 1px dashed #5095ea;
+    }
+}

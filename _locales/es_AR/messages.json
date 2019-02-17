@@ -30,10 +30,6 @@
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
     },
-    "alert_title_error": {
-        "message": "Error",
-        "hash": "28f8a082ad9a4452d343d532dbc76750"
-    },
     "prompt_ok": {
         "message": "OK",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -63,28 +59,24 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
 
-    "__WET_GROUP__2": { "message": "Badges" },
-    "badge_white": {
-        "message": "W",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_button@title": {
+        "message": "No limpiar",
+        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
     },
-    "badge_gray": {
-        "message": "G",
-        "hash": "08208f1cca81892a4707dec4283aa489"
+    "cleanup_type_startup_button@title": {
+        "message": "Limpiar al reiniciar el navegador",
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
-    "badge_forget": {
-        "message": "F",
-        "hash": "324f549df0b05cab9ad26e634c312802"
-    },
-    "badge_block": {
-        "message": "B",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
+    "cleanup_type_leave_button@title": {
+        "message": "Limpiar al salir del dominio de la web",
+        "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Hacer limpieza manual:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Hacer limpieza manual",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "define_rules": {
         "message": "Definir reglas:",
@@ -98,10 +90,6 @@
         "message": "Pestaña Actual",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "tabs_clean_all@title": {
-        "message": "Hacer Limpieza",
-        "hash": "7141bfe69b29cdc954a0f353385213fe"
-    },
     "tabs_rules@title": {
         "message": "Definir Reglas",
         "hash": "21d4563d916a5e113022379778156fff"
@@ -109,10 +97,6 @@
     "tabs_settings@title": {
         "message": "Preferencias",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_snooze@title": {
-        "message": "Desactivar temporalmente la limpieza del dominio",
-        "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
         "message": "Log de Dominios",
@@ -162,41 +146,13 @@
         "message": "Terminar Snooze",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
-    "toggle_snooze_description": {
-        "message": "En modo snooze, se evitarán:\n- Limpieza de cookies y almacenamiento local del dominio\n- Limpieza de cookies de terceros\n\nTodas las limpiezas omitidas se reprogramarán una vez que detengas el modo snooze.\n\nLas cookies bloqueadas no se ven afectadas por esto. Es decir: si bloqueas un dominio, esas cookies seguirán bloqueadas en el modo snooze.",
-        "hash": "783a3b899cfee49c995867e6102cc225"
-    },
     "invalid_tab": {
         "message": "Pestaña Inválida",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
-    "rules_column_rule": {
-        "message": "Regla",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
-    },
-    "rules_column_matching_rule": {
-        "message": "Regla Coincidente",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
-    },
-    "rules_column_type": {
-        "message": "Tipo",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
-    },
-    "rules_column_remove": {
-        "message": "Eliminar",
-        "hash": "3908a268c854fe64242e38845dbb7c81"
-    },
     "rules_input@placeholder": {
         "message": "Buscar o agregar..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_hint_add": {
-        "message": "Presiona enter para agregar una regla blanca, shift+enter para una regla gris.",
-        "hash": "a4bf383cbddf44323b6b53b164fc5016"
-    },
-    "rules_hint_invalid": {
-        "message": "Expresión incorrecta",
-        "hash": "c3be6cd37388a5b0133fb430741b7eb3"
     },
     "rules_add": {
         "message": "Agregar",
@@ -206,16 +162,12 @@
         "message": "Leé cómo funcionan las reglas, qué expresiones podes usar, las funciones experimentales, y los cambios recientes en esta extensión.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
-    "types_of_cleanup": {
-        "message": "¿Qué incluyen esas opciones?",
-        "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
-    },
     "types_of_cleanup@title": {
         "message": "Información sobre qué limpian cada una de estas opciones.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Experimental: Elimina las cookies expiradas cada vez que se realiza una limpieza.",
+        "message": "Elimina las cookies expiradas cada vez que se realiza una limpieza.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
@@ -230,53 +182,17 @@
         "message": "Mostrar reglas detectadas en el icono de la barra de herramientas",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
-    "setting_type_white": {
-        "message": "Blanca",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
-    "setting_type_white@title": {
-        "message": "No limpiar",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "setting_type_gray": {
-        "message": "Gris",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
-    },
-    "setting_type_gray@title": {
-        "message": "Limpiar al reiniciar el navegador",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "setting_type_forget": {
-        "message": "Olvidar",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
-    "setting_type_forget@title": {
-        "message": "Limpiar al salir del dominio de la web",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "setting_type_block": {
-        "message": "Bloquear",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
-    "setting_type_block@title": {
-        "message": "Se bloquearán las cookies que el dominio intente crear",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
+    "setting_apply_rules@title": {
+        "message": "Aplicar Regla",
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_cookies": {
         "message": "Cookies",
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
-    "setting_apply_rules": {
-        "message": "Aplicar Regla",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
     "setting_local_storage": {
         "message": "Almacenamiento Local",
         "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_apply_rules_ff58": {
-        "message": "Aplicar Reglas (Firefox 58+)",
-        "hash": "85e4a052235986fbbbdd74a36732ed1a"
     },
     "setting_protect_open_domains": {
         "message": "Proteger dominios ya abiertos si \"Aplicar Reglas\" está marcado",
@@ -314,45 +230,21 @@
         "message": "Certificados de servidores vinculados",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_local_storage_ff58": {
-        "message": "Almacenamiento Local (Firefox 58+)",
-        "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
-    },
-    "setting_delay_in_minutes": {
-        "message": "Retraso en minutos:",
+    "setting_delay_in_seconds": {
+        "message": "Retraso en segundos:",
         "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_domain_leave_enabled": {
-        "message": "Limpiar cuando cierre todas las instancias de un dominio:",
-        "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Reglas se aplicarán",
-        "hash": "b349aa92b42d990a4a59dadcead1c09d"
     },
     "setting_remove_thirdparty": {
         "message": "Borrar cookies de terceros al crearse:",
-        "hash": "10e201194069b4bc86e31630c772eb88"
+        "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimental: Denegar cookies de terceros",
-        "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_startup_enabled": {
-        "message": "Limpiar al iniciar el navegador:",
-        "hash": "60eb224ee962894d10c6fb67328a69f1"
-    },
-    "setting_whitelist_no_tld": {
-        "message": "Agregar a la lista blanca las direcciones sin un dominio de nivel superior",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
+        "message": "Denegar cookies de terceros",
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Direcciones como localhost, intranet, etc. (sin .com, .net, etc.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "settings_fallback_rule": {
-        "message": "Comportamiento si no hay regla que coincida (por defecto es Olvidar):",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
         "message": "Registro de los dominios visitados recientemente.",
@@ -361,10 +253,6 @@
     "setting_log_rad_limit": {
         "message": "Límite:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
-    },
-    "experimental_link@title": {
-        "message": "Esta es una función experimental. Click en este enlace para leer más.",
-        "hash": "e924b30645472d8e56f61b2492dc1bfb"
     },
     "setting_initialTab": {
         "message": "Pestaña seleccionada por defecto en este popup:",
@@ -378,10 +266,6 @@
         "message": "Pestaña Actual",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "initial_tab_clean_all": {
-        "message": "Limpieza",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
     "initial_tab_rules": {
         "message": "Reglas",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
@@ -390,17 +274,9 @@
         "message": "Preferencias",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
-    "initial_tab_snooze": {
-        "message": "Snooze",
-        "hash": "0777d03b979676427cadc44e5b133315"
-    },
     "initial_tab_log": {
         "message": "Log de dominios",
         "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "initial_tab_about": {
-        "message": "Acerca de",
-        "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },
@@ -444,16 +320,12 @@
 
     "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Autor\nHecho por Santo Pfingsten, © 2017-2018\n\n## Translators Needed\n\nIf you know another language well enough, you can help by creating a translation with [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problemas, preguntas y demás feedback\nPor favor reportar problemas o pedidos de características en GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Declaración de Privacidad\n\nTu privacidad es de la mayor importancia.\nEsta extensión no analiza o recolecta nada más de lo necesitado para lograr su tarea. No envía datos a ningún lado, ni de manera anónima. Punto.\n\n## Créditos\n* Español (Argentina) traducción escrita por [Fabián Pérez](https://www.github.com/thepante)\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Diseñado por Vexels.com\n* Iconos por [Google](https://www.flaticon.com/authors/google \"Google\")  desde [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") bajo licencia [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "message": "## Autor\nHecho por Santo Pfingsten, © 2017-2019\n\n## Translators Needed\n\nIf you know another language well enough, you can help by creating a translation with [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problemas, preguntas y demás feedback\nPor favor reportar problemas o pedidos de características en GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Declaración de Privacidad\n\nTu privacidad es de la mayor importancia.\nEsta extensión no analiza o recolecta nada más de lo necesitado para lograr su tarea. No envía datos a ningún lado, ni de manera anónima. Punto.\n\n## Créditos\n* Español (Argentina) traducción escrita por [Fabián Pérez](https://www.github.com/thepante)\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Diseñado por Vexels.com\n* Iconos por [Google](https://www.flaticon.com/authors/google \"Google\")  desde [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") bajo licencia [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "7f15f35d707c7070acc80fa38044b135"
-    },
-    "tutorial_page": {
-        "message": "# Tutorial de Introducción\n\n## Preferencias de Firefox\nTenga en cuenta que esta extensión no tiene acceso a las preferencias de tu Firefox, así que cualquier ajuste de cookies que hagas en el navegador, se combinará con esta extensión.\n\nAsí que si configuras Firefox para denegar todas las cookies, esta extensión no tendrá cookies con las que trabajar.\n\n## Listas blanca, gris y roja\nDirecciones de dominio (host de un sitio web, como *google.com*) pueden ser agregadas a listas de colores (como las listas blancas)\n- **Blanca**: Las cookies y almacenamiento local nunca serán eliminadas.\n- **Gris**: Las cookies y almacenamiento local se eliminarán al reiniciar el navegador (debe activarse en las preferencias).\n- **Roja**: Las reglas blancas y grises pueden ser anuladas por una regla roja.\n  - Ejemplo: Una regla blanca permite a todos los dominios (\"\\*\" como expresión) y un par de reglas rojas definen excepciones a esa regla.\n- **Negra**: Previene que las cookies se formen\n  - Cualquier regla será anulada por una regla negra.\n  - Lamentablemente, cookies formadas por JavaScript no se pueden bloquear, pero serán removidas instantáneamente al crearse.\n\n## Expresiones válidas\n- Todo hostname (ej. www.google.com) es una expresión válida.\n- Un asterisco (*) puede ser usado como comodín de una sección (ej. *.google.com o www.\\*.com).\n- Actualmente la lista blanca anula a la lista gris... no estoy seguro si esto es definitivo.\n\n### Expresiones específicas para cookies\nPodes crear reglas para nombres de cookies y combinaciones de dominios.\n- Ejemplo: `nombredecookie@*.google.com`\n- `nombredecookie` puede ser cualquier nombre válido de una cookie.\n- Lo mismo que lo anterior aplica para la parte específica de los dominios, a la derecha del arroba (`@`).\n- Las reglas de cookies serán preferidas antes que las normales.\n\n## Cookies de terceros\n- Cuando se establece una cookie sin pertenecer a un dominio que esté abierto en una pestaña, se considera cookie de terceros.\n- Se está investigando para mejorar este método.\n\n## Modo Snooze\n\nEn el popup \"Modo Snooze\", puede desactivar temporalmente la limpieza automática. Ver la pestaña para obtener instrucciones.\n\n## Tipos de Limpieza\n\nPodes elegir que datos limpiar:\n- **Cookies**: Cookies normales HTTP. Cookies Flash son cubiertas por \"Datos de Plugins\".\n- **Almacenamiento Local** y **Base de Datos Indexadas**: Los sitios web pueden almacenar datos en su navegador para permitir ciertas funciones o recordar algo para tu próxima visita.\nA veces Firefox se refiere a *BD indexada* como \"Almacenamiento\", por lo que si Firefox te dice que youtube.com usa cierta cantidad de MB de almacenamiento, probablemente sea de *BD indexada*.\n- **Historial**: Contiene todas las páginas web visitadas.\n- **Descargas**: Contiene el historial de las descargas. Limpiar el historial de descargas no elimina los archivos descargados en tu disco duro.\n- **Datos de Formulario**: En algún momento quizá pusiste información en por ejemplo un formulario de contacto o de pagos. Dependiendo de tus ajustes, esto puede ser guardado, así se te hace más fácil al volverlos a usar.\n- **Contraseñas**: Quizá le has aceptado a Firefox a que guarde alguna contraseña. Elije esta opción para eliminarlas.\n- **Datos de Plugins**: Plugins (no addons/web-extensions) como Adobe Flash o Acrobat Reader pueden almacenar cookies  de Flash u otra información y preferencias.\n- **Service Workers**: Son servicios que permiten a los sitios web a ser utilizados offline y ayuda a la velocidad de carga de aplicaciones web que hagan uso de estos.\n- **Certificados de servidores vinculados**: Si agregaste certificados para permitir conexiones a un servidor, entonces esta es la opción para eliminarlos.",
-        "hash": "e3da06a89c4e4c3e8607211f3522da45"
     },
     "experimental_page": {
         "message": "## Funciones Experimentales\n\n- De vez en cuando pueden haber nuevas funciones que sean marcadas como experimentales.\n- Estarán desactivadas por defecto y será necesario activarlas manualmente.\n- Estas funciones probarán nuevas características para mejorar la extensión.\n- Pueden ser inestables o tener mal rendimiento.\n- Si experimentas problemas, intenta desactivar dichas funciones.\n- Por favor envía feedback y reporta los bugs en [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experimentos actuales:\n- **Eliminar Cookies Expiradas**:\nEn cada limpieza, las cookies que tienen una fecha de vencimiento ya cumplida, serán eliminadas independientemente de las reglas configuradas.   Normalmente Firefox elimina las cookies expiradas solo cuando se alcanza cierto límite. Esas cookies ya no se utilizan, pero aún están allí. Esta opción ayudará a eliminar estas cookies fantasmas.\n- **Denegar Cookies de Terceros**:  \nSi está habilitado, todas las solicitudes web serán interceptadas para eliminar las cookies de los dominios que no pertenezcan a las URL de las pestañas y que no estén protegidas por una regla. Entonces estas cookies nunca serán establecidas.\n\n\nPor favor dame tu opinión (en inglés) sobre tu experiencia con estos experimentos, para que pueda decidir si los agrego permanentemente.",
-        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
+        "hash": "bd877a339269825e5ace6407fc19cb45"
     },
 
     "__WET_LOCALE__": { "message": "es-AR" }

@@ -5,7 +5,8 @@
  */
 
 import { getDomain } from "tldjs";
-import { RuleType } from "../lib/settingsSignature";
+import { CleanupType } from "../lib/settingsSignature";
+import { browser } from "webextension-polyfill-ts";
 
 export function getFirstPartyCookieDomain(domain: string) {
     const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
@@ -39,42 +40,62 @@ export function parseSetCookieHeader(header: string, fallbackDomain: string): Se
 }
 
 export interface BadgeInfo {
-    i18nKey?: string;
+    className: string;
+    i18nBadge: string;
+    i18nButton: string;
     color: string | [number, number, number, number];
 }
 
-export const badges: { [s: string]: BadgeInfo } = {
-    white: {
-        i18nKey: "badge_white",
-        color: [38, 69, 151, 255]
-    },
-    gray: {
-        i18nKey: "badge_gray",
-        color: [116, 116, 116, 255]
-    },
-    forget: {
-        i18nKey: "badge_forget",
-        color: [190, 23, 38, 255]
-    },
-    block: {
-        i18nKey: "badge_block",
-        color: [0, 0, 0, 255]
-    },
-    none: {
-        color: [0, 0, 0, 255]
-    }
+function createBadge(name: string, color: [number, number, number, number]): BadgeInfo {
+    const className = `cleanup_type_${name}`;
+    return {
+        className,
+        i18nBadge: `${className}_badge`,
+        i18nButton: `${className}_button`,
+        color
+    };
+}
+
+const badgeNone: BadgeInfo = { className: "", i18nBadge: "", i18nButton: "", color: [0, 0, 0, 255] };
+
+export const badges = {
+    never: createBadge("never", [38, 69, 151, 255]),
+    startup: createBadge("startup", [116, 116, 116, 255]),
+    leave: createBadge("leave", [190, 23, 38, 255]),
+    instantly: createBadge("instantly", [0, 0, 0, 255]),
+    none: badgeNone
 };
 
-export function getBadgeForRuleType(type: RuleType) {
+export function getBadgeForCleanupType(type: CleanupType) {
     switch (type) {
-        case RuleType.WHITE:
-            return badges.white;
-        case RuleType.GRAY:
-            return badges.gray;
+        case CleanupType.NEVER:
+            return badges.never;
+        case CleanupType.STARTUP:
+            return badges.startup;
         default:
-        case RuleType.FORGET:
-            return badges.forget;
-        case RuleType.BLOCK:
-            return badges.block;
+        case CleanupType.LEAVE:
+            return badges.leave;
+        case CleanupType.INSTANTLY:
+            return badges.instantly;
     }
+}
+
+// Workaround for getAllCookieStores returning only active cookie stores.
+// See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
+export function getAllCookieStoreIds() {
+    const ids: {[s: string]: boolean} = {
+        "firefox-default": true,
+        "firefox-private": true
+    };
+    return browser.cookies.getAllCookieStores().then((cookieStores) => {
+        for (const store of cookieStores)
+            ids[store.id] = true;
+        if (browser.contextualIdentities)
+            return browser.contextualIdentities.query({});
+        return [];
+    }).then((contextualIdentities) => {
+        for (const ci of contextualIdentities)
+            ids[ci.cookieStoreId] = true;
+        return Object.getOwnPropertyNames(ids);
+    });
 }

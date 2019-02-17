@@ -5,6 +5,7 @@
  */
 
 import { assert } from "chai";
+import { Suite } from "mocha";
 
 export interface SpyData {
     (...args: any[]): any;
@@ -39,7 +40,7 @@ export function createSpy(wrappedFunction?: Function) {
         spyData.reset();
     };
     spyData.assertNoCall = () => {
-        assert.equal(spyData.callCount, 0);
+        assert.strictEqual(spyData.callCount, 0);
     };
 
     spyData.reset = () => {
@@ -48,6 +49,14 @@ export function createSpy(wrappedFunction?: Function) {
         spyData.args.length = 0;
     };
     return spyData;
+}
+
+export function spyOn<T>(instance: T, method: keyof T) {
+    const original = instance[method];
+    assert.isFunction(original);
+    const spy = createSpy(original as any);
+    instance[method] = spy as any;
+    return spy;
 }
 
 export const clone = (value: any) => JSON.parse(JSON.stringify(value));
@@ -69,4 +78,58 @@ export function doneHandler<T extends Function>(handler: T, done: MochaDone, don
             done(e);
         }
     };
+}
+
+export function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function booleanVariations(count: number): boolean[][] {
+    const result: boolean[][] = [];
+    const size = Math.pow(2, count);
+    for (let i = 0; i < size; i++) {
+        const entry = i.toString(2).split("").map((b) => b === "0" ? false : true);
+        while (entry.length !== count)
+            entry.unshift(false);
+        result.push(entry);
+    }
+    return result;
+}
+
+function getArgs(func: (...value: boolean[]) => void): string[] {
+    const match = func.toString().match(/.*\(([^)]*)\)/);
+    if (!match) throw new Error("Can't detect argument names for function");
+
+    return match[1].split(",")
+        .map((arg: string) => arg.replace(/\/\*.*\*\//, "").trim())
+        .filter((arg: string) => arg);
+}
+
+export interface SimpleSuiteFunction<T> { (callback: T): void; only: (callback: T) => void; }
+function createSimpleSuiteFunction<T>(wrapper: (context: (title: string, fn: (this: Suite) => void) => Suite, callback: T) => void) {
+    const result: SimpleSuiteFunction<T> = (callback: T) => wrapper(context, callback);
+    result.only = (callback: T) => wrapper(context.only, callback);
+    return result;
+}
+
+export const booleanContext = createSimpleSuiteFunction<(...value: boolean[]) => void>((context, callback) => {
+    const names = getArgs(callback);
+    booleanVariations(names.length).forEach((booleans) => {
+        const label = "with " + booleans.map((value, index) => `${names[index]} = ${value}`).join(", ");
+
+        context(label, () => callback.apply(null, booleans));
+    });
+});
+
+type ContextWithResultRow<CT, RT> = { context: CT, result: RT };
+
+export function contextWithResult<CT, RT>(name: string, rows: Array<ContextWithResultRow<CT, RT>>, callback: (context: CT, result: RT) => void) {
+    rows.forEach((row) => context(`with ${name} = ${row.context}`, () => callback(row.context, row.result)));
+}
+
+// tslint:disable-next-line:no-namespace
+export namespace contextWithResult {
+    export function only<CT, RT>(name: string, rows: Array<ContextWithResultRow<CT, RT>>, callback: (context: CT, result: RT) => void): void {
+        rows.forEach((row) => context.only(`with ${name} = ${row.context}`, () => callback(row.context, row.result)));
+    }
 }

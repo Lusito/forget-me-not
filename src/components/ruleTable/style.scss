@@ -1,0 +1,51 @@
+
+.rules_table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    th:first-child {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+        white-space: nowrap;
+    }
+
+    tbody.is-not-empty + tbody.no_entries_label {
+        display: none;
+    }
+
+    .is-filtered {
+        display: none;
+    }
+
+    .rules_table_row_expression {
+        display: block;
+        width: 0;
+        min-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    thead th.rules_column_type {
+        padding: 0 8px;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    &.rules_table_for_domain {
+        margin: 15px 0 10px;
+
+        tbody {
+            > tr:not(.is-selected):not(:hover) {
+                opacity: 0.82;
+            }
+
+            > tr.is-selected > td:first-child {
+                font-weight: bold;
+            }
+        }
+    }
+}

@@ -6,14 +6,12 @@
 
 import { browserMock } from "./browserMock";
 import { createSpy } from "./testHelpers";
-import { messageUtil, ReceiverHandle } from "../src/lib/messageUtil";
-import { destroyAllAndEmpty } from "../src/shared";
+import { messageUtil } from "../src/lib/messageUtil";
 
 describe("Message Utility", () => {
-    const receivers: ReceiverHandle[] = [];
-    beforeEach(() => browserMock.reset());
-    afterEach(() => {
-        destroyAllAndEmpty(receivers);
+    beforeEach(() => {
+        messageUtil.clearCallbacksMap();
+        browserMock.reset();
     });
     const event1 = "event1";
     const event2 = "event2";
@@ -23,11 +21,11 @@ describe("Message Utility", () => {
     describe("sendSelf", () => {
         it("should call receive methods in order", () => {
             const spy = createSpy();
-            receivers.push(messageUtil.receive(event1, spy.bind(1)));
-            receivers.push(messageUtil.receive(event1, spy.bind(2)));
-            receivers.push(messageUtil.receive(event2, spy.bind(3)));
-            receivers.push(messageUtil.receive(event1, spy.bind(4)));
-            receivers.push(messageUtil.receive(event2, spy.bind(5)));
+            messageUtil.receive(event1, spy.bind(1));
+            messageUtil.receive(event1, spy.bind(2));
+            messageUtil.receive(event2, spy.bind(3));
+            messageUtil.receive(event1, spy.bind(4));
+            messageUtil.receive(event2, spy.bind(5));
 
             messageUtil.sendSelf(event1, data1);
             spy.assertCalls([
@@ -56,11 +54,11 @@ describe("Message Utility", () => {
         it("should call receive methods in order", () => {
             const spy = createSpy();
             const sender = { id: "mock" };
-            receivers.push(messageUtil.receive(event1, spy.bind(1)));
-            receivers.push(messageUtil.receive(event1, spy.bind(2)));
-            receivers.push(messageUtil.receive(event2, spy.bind(3)));
-            receivers.push(messageUtil.receive(event1, spy.bind(4)));
-            receivers.push(messageUtil.receive(event2, spy.bind(5)));
+            messageUtil.receive(event1, spy.bind(1));
+            messageUtil.receive(event1, spy.bind(2));
+            messageUtil.receive(event2, spy.bind(3));
+            messageUtil.receive(event1, spy.bind(4));
+            messageUtil.receive(event2, spy.bind(5));
 
             messageUtil.send(event1, data1);
             spy.assertCalls([

@@ -1,0 +1,17 @@
+
+.expression_hint {
+    display: none;
+    
+    &.error {
+        right: 0;
+        display: block;
+        color: #800000;
+        position: absolute;
+        background: white;
+        border: 1px solid #800000;
+        border-top: 0;
+        padding: 1px 7px;
+        margin-top: -1px;
+        box-shadow: 0px 1px 0px rgba(150, 150, 150, 0.5);
+    }
+}

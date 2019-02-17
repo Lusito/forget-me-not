@@ -30,10 +30,6 @@
         "message": "W porjadku",
         "hash": "d2702da8185dd5d533913d767bddc05d"
     },
-    "alert_title_error": {
-        "message": "Zmylk",
-        "hash": "28f8a082ad9a4452d343d532dbc76750"
-    },
     "prompt_ok": {
         "message": "W porjadku",
         "hash": "d2702da8185dd5d533913d767bddc05d"
@@ -63,28 +59,24 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
 
-    "__WET_GROUP__2": { "message": "Badges" },
-    "badge_white": {
-        "message": "B",
-        "hash": "bb699961fc5a751108afdcb88ef696aa"
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_button@title": {
+        "message": "Žane čisćenje",
+        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
     },
-    "badge_gray": {
-        "message": "Š",
-        "hash": "08208f1cca81892a4707dec4283aa489"
+    "cleanup_type_startup_button@title": {
+        "message": "Čisćenje při startowanju wobhladowaka",
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
     },
-    "badge_forget": {
-        "message": "Z",
-        "hash": "324f549df0b05cab9ad26e634c312802"
-    },
-    "badge_block": {
-        "message": "L",
-        "hash": "bcdd4ddfd851cce6e4fb6dcc3773ade4"
+    "cleanup_type_leave_button@title": {
+        "message": "Čisćenje při wopušćenju domeny",
+        "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
 
     "__WET_GROUP__3": { "message": "Settings" },
     "perform_manual_cleanup": {
-        "message": "Manuelne wučisćenje přewjesć:",
-        "hash": "db16149642eab7b99485906fb084002d"
+        "message": "Manuelne wučisćenje přewjesć",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "define_rules": {
         "message": "Prawidła definować:",
@@ -98,10 +90,6 @@
         "message": "Aktualny rajtark",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "tabs_clean_all@title": {
-        "message": "Wučisćenje přewjesć",
-        "hash": "7141bfe69b29cdc954a0f353385213fe"
-    },
     "tabs_rules@title": {
         "message": "Prawidła definować",
         "hash": "21d4563d916a5e113022379778156fff"
@@ -109,10 +97,6 @@
     "tabs_settings@title": {
         "message": "Nastajenja",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_snooze@title": {
-        "message": "Wučisćenje při wopušćenju domeny nachwilu znjemóžnić",
-        "hash": "dfbc0b8fec5901cee334e48a46fdcc32"
     },
     "tabs_log@title": {
         "message": "Domenowy protokol",
@@ -162,41 +146,13 @@
         "message": "Drěmanje započeć",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
-    "toggle_snooze_description": {
-        "message": "W drěmanskim modusu budu so tute wučisćenja zadźěwać:\n- Wučisćenje plackow a lokalneho składowaka při wopušćenju domeny\n- Wučisćenje plackow třećich poskićowarjow\n\nWšě zapasene wučisćenja budu so znowa planować, hdyž drěmanski modus zastajiće.\n\nNa zablokowane placki to wliw nima. To rěka, jeli domenu na čornu lisćinu stajeće, budu so placki w drěmanskim modusu dale blokować.",
-        "hash": "783a3b899cfee49c995867e6102cc225"
-    },
     "invalid_tab": {
         "message": "Njepłaćiwy rajtark",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
-    "rules_column_rule": {
-        "message": "Prawidło",
-        "hash": "ff03da96c246b9de7485f0e7a8e5d2e8"
-    },
-    "rules_column_matching_rule": {
-        "message": "Přihódne prawidło",
-        "hash": "ac1f9b914fdf1ca41e4240073a6cc96b"
-    },
-    "rules_column_type": {
-        "message": "Typ",
-        "hash": "ae8e16a1c702b86ab4a1de1cc659ef38"
-    },
-    "rules_column_remove": {
-        "message": "Wotstronić",
-        "hash": "3908a268c854fe64242e38845dbb7c81"
-    },
     "rules_input@placeholder": {
         "message": "Pytać abo přidać..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_hint_add": {
-        "message": "Tłóčće zapodawansku tastu, zo byšće běłe prawidło přidał, Umsch+zapodawansku tastu, zo byšće šěre prawidło přidał",
-        "hash": "a4bf383cbddf44323b6b53b164fc5016"
-    },
-    "rules_hint_invalid": {
-        "message": "Njepłaćiwy wuraz",
-        "hash": "c3be6cd37388a5b0133fb430741b7eb3"
     },
     "rules_add": {
         "message": "Přidać",
@@ -206,16 +162,12 @@
         "message": "Čitajće, kak prawidła funguja, kotre wurazy móžeće wužiwać, kotre eksperimentelne funkcije a najnowše změny su w tutym rozšěrjenju.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
-    "types_of_cleanup": {
-        "message": "Što tute kontrolne kašćiki wobsahuja?",
-        "hash": "eac783dfb8ddb8d925ced41ffa4950d6"
-    },
     "types_of_cleanup@title": {
         "message": "Čitajće wjace wo tym, štož tute kontrolne kašćiki čisća.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Eksperimentelny: Spadnjene placki zhašeć, hdyžkuli so čisćenje wotměwa.",
+        "message": "Spadnjene placki zhašeć, hdyžkuli so čisćenje wotměwa.",
         "hash": "1ff8b00b0ca44682a083d91280bcc011"
     },
     "setting_show_update_notification": {
@@ -230,53 +182,17 @@
         "message": "Přihódne prawidło jako marku na tłóčatku w symbolowej lajsće pokazać",
         "hash": "fcc8735498ed21670a55314e40bd5b23"
     },
-    "setting_type_white": {
-        "message": "Běły",
-        "hash": "333377f0d431ac6506374ecec7db4a5f"
-    },
-    "setting_type_white@title": {
-        "message": "Žane čisćenje",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "setting_type_gray": {
-        "message": "Šěry",
-        "hash": "99120a99c4fd2db689b08297d7b255c4"
-    },
-    "setting_type_gray@title": {
-        "message": "Čisćenje při startowanju wobhladowaka",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "setting_type_forget": {
-        "message": "Zabyć",
-        "hash": "0c0704fcdb8556f6843385cac84cf6b6"
-    },
-    "setting_type_forget@title": {
-        "message": "Čisćenje při wopušćenju domeny",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "setting_type_block": {
-        "message": "Blokować",
-        "hash": "2b5eab2160bb60a8417c56c38d20ec4f"
-    },
-    "setting_type_block@title": {
-        "message": "Placki so při stajenju  haća",
-        "hash": "7ea4b7e384bc7c6c94f916a543f186be"
+    "setting_apply_rules@title": {
+        "message": "Prawidła nałožić",
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_cookies": {
         "message": "Placki",
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
-    "setting_apply_rules": {
-        "message": "Prawidła nałožić",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
     "setting_local_storage": {
         "message": "Lokalny składowak",
         "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_apply_rules_ff58": {
-        "message": "Prawidła nałožić (Firefox 58+)",
-        "hash": "85e4a052235986fbbbdd74a36732ed1a"
     },
     "setting_protect_open_domains": {
         "message": "Tuchwilu wočinjene domeny škitać, jeli \"Prawidła nałožić\" je zmóžnjene",
@@ -314,45 +230,17 @@
         "message": "Certifikaty zwjazane ze serwerom",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
-    "setting_local_storage_ff58": {
-        "message": "Lokalny składowak (Firefox 58+)",
-        "hash": "d6b62c9d7eb91c03f72204cc92907ae3"
-    },
-    "setting_delay_in_minutes": {
-        "message": "Komdźenje w mjeńšinach:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_domain_leave_enabled": {
-        "message": "Zhašeć, hdyž so wšě instancy domeny wopušćeja:",
-        "hash": "beb9bb74d1e682625bd67ddf951ac5f6"
-    },
-    "setting_domain_leave_enabled@title": {
-        "message": "Prawidła so nałožuja",
-        "hash": "b349aa92b42d990a4a59dadcead1c09d"
-    },
     "setting_remove_thirdparty": {
         "message": "Placki třećich poskićowarjow při wutworjenju wotstronić:",
         "hash": "10e201194069b4bc86e31630c772eb88"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Experimentelny: Placki třećich poskićowarjow wotpokazać",
+        "message": "Placki třećich poskićowarjow wotpokazać",
         "hash": "c96674945ffdf9f8da181b05c249d29b"
-    },
-    "setting_startup_enabled": {
-        "message": "Při startowanju wobhladowaka zhašeć:",
-        "hash": "60eb224ee962894d10c6fb67328a69f1"
-    },
-    "setting_whitelist_no_tld": {
-        "message": "Domeny bjez domeny najwyšeje runiny běłej lisćinje přidać",
-        "hash": "09fcfb5cc217a92c2a70edbda064b8f4"
     },
     "setting_whitelist_no_tld@title": {
         "message": "Domeny kaž localhost, intranet atd. (bjez .com, .net atd.)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "settings_fallback_rule": {
-        "message": "Zadźerženje, jeli žane prawidło so njehodźi (standard: Zabyć):",
-        "hash": "631eb1b5a61db49d86fe06ce2a681756"
     },
     "setting_log_rad_enabled": {
         "message": "Njedawno wopytane domeny protokolować.",
@@ -361,10 +249,6 @@
     "setting_log_rad_limit": {
         "message": "Wobmjezować na:",
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
-    },
-    "experimental_link@title": {
-        "message": "To je eksperimentelna funkcija. Klikńće na wotkaz, zo byšće wjace zhonił.",
-        "hash": "e924b30645472d8e56f61b2492dc1bfb"
     },
     "setting_initialTab": {
         "message": "Najprjedy wubrany rajtark we wočinjenym woknje:",
@@ -378,10 +262,6 @@
         "message": "Aktualny rajtark",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
-    "initial_tab_clean_all": {
-        "message": "Wučisćić",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
     "initial_tab_rules": {
         "message": "Prawidła",
         "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
@@ -390,17 +270,9 @@
         "message": "Nastajenja",
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
-    "initial_tab_snooze": {
-        "message": "Drěmać",
-        "hash": "0777d03b979676427cadc44e5b133315"
-    },
     "initial_tab_log": {
         "message": "Domenowy protokol",
         "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "initial_tab_about": {
-        "message": "Wo",
-        "hash": "da73d37076fcb711ec18ea36c7efb1d5"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },
@@ -444,20 +316,16 @@
 
     "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Awtor\nWutworjeny wot Santo Pfingsten, © 2017-2018\n\n## Translators Needed\n\nIf you know another language well enough, you can help by creating a translation with [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problemy, prašenja, komentary  a měnjenja\nProšu zdźělće problemy a próstwy wo nowe funkcije na GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Deklaracija priwatnosće\n\nWaša priwatnosć je nimoměrnje wažna.\nTute rozšěrjenje ničo njeanalyzuje abo njezběra, štož njetrjeba, zo by swój nadawk spjelniło. Njesćele žane daty nihdźe, tež nic anonymnje. DYPK.\n\n## Dźakprajenje\n* Hornjoserbski přełožk wot Michaela Wolfa\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Wot Vexels.com naćisnjeny\n* Symbole wutworjene wot [Google](https://www.flaticon.com/authors/google \"Google\"), wot [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\"), su pod [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\") licencowane",
-        "hash": "7f15f35d707c7070acc80fa38044b135"
-    },
-    "tutorial_page": {
-        "message": "# Zawod\nNawod\n\n## Nastajenja Firefox\nProšu dźiwajće na to, zo tute rozšěrjenje nima přistup na waše nastajenja Firefox, wšě plackowe nastajenja, kotrež w Firefox samym přewjedźeće, budu so z tutym rozšěrjenjom kombinować.\n\nJeli tuž Firefox tak konfigurujeće, zo so wšě placki wotpokazuja,  tute rozšěrjenje placki njezměje, z kotrymiž móže dźěłać.\n\n## Běłe, šěre a čerwjene lisćiny\nMjena domenow (mjena hostow websydła kaž *google.com*) hodźa so z barbu kodowanym lisćinam (na př. běłym lisćinam) přidać\n- **Běły**: Placki a lokalny składowak so ženje njewotstronja.\n- **Šěry**: Placki a lokalny składowak so při znowastartowanju wobhladowaka wotstronja (dyrbi so w nastajenjach zmóžnić).\n- **Čerwjeny**: Šěre a běłe prawidła dadźa so přez čerwjene prawidło přepisać.\n  - Přikład: Běłe prawidło wšě domeny dowoluje (\"\\*\" jako wuraz) a někotre čerwjene prawidła definuja wuwzaća za tute prawidło.\n- **Čorny**: Zadźěwa stajenju plackow \n  - Kóžde prawidło so přez čorne prawidło přepisa.\n  - Bohužel njeje móžno, placki stajene přez JavaScript blokować, ale wotstronjeja so hnydom po wutworjenju.\n\n## Płaćiwe wurazy\n- Kóžde hostowe mjeno (na př. www.google.com) je płaćiwy wuraz.\n- Hwěžka (*) da so jako zastupowacy symbol za segment wužiwać (na př. *.google.com abo www.\\*.com).\n- Běłe lisćiny tuchwilu prawidła šěrych lisćinow přepisuja... njejsym sej wěsty, hač to budźe definitiwne.\n\n### Wurazy specifiske za placki\nMóžeće prawidła za kombinacije plackowych mjenow a domenow wutworić.\n- Přikład: `plackowe_mjeno@*.google.com`\n- `plackowe_mjeno` móže někajke płaćiwe plackowe mjeno być.\n- Samsne prawidła kaž horjeka dadźa so na dźěl domeny naprawo wot znamješka `@` nałožić.\n- Prawidła, kotrež su specifiske za placki, so přeco porno normalnym prawidłam preferuja.\n\n## Placki třećich poskićowarjow\n- Hdyž so plack staja bjeztoho, zo by k domenje słušał, kotraž je w rajtarku wočinjena, maja jón za plack třećeho poskićowarja.\n- Pospytuje so hišće, tutu metodu polěpšić.\n\n## Drěmanski modus\n\nNa rajtarku \"Drěmanski modus\" móžeće awtomatiske wučisćenje nachwilu znjemóžnić. Hlejće rajtark za instrukcije.\n\n## Typy wučisćenja\n\nMóžeće wubrać, kotre daty maja so čisćeć:\n- **Placki**: Normalne HTTP-placki. Placki Flash su w \"tykačowych datach\" wobsahowane.\n- **Lokalny składowak** a **Indexed DB**: Websydła móža daty we wašim wobhladowaku składować, zo bychu wěste funkcije zmóžnili abo sej něšto za přichodny wopyt spomjatkował.\nDruhdy so Firefox na *Indexed DB* jako \"składowak\" poćahuje, na přikład, hdyž Firefox wam zdźěla, zo youtube.com něšto MB składowaka wužiwa, je to najskerje *Indexed DB*.\n- **Historija**: To wšě waše wopyty websydłow wobsahuje.\n- **Sćehnjenja**: To historiju sćehnjenjow wobsahuje. Čisćenje sćehnjenjow dataje na wašej tačeli njewotstronja.\n- **Formularne daty**: Něhdy sće snano informacije do kontakta abo zličbowanskeho formulara zapodał. We wotwisnosći wot wašich nastajenjow je so to snano składowało, tohodla je lóšo za was tute hódnoty znowa zapodać.\n- **Hesła**: Sće snano Firefox zdźělił, zo ma sej wěste hesła spomjatkować. Wubjerće to, zo byšće je zaso wotstronił..\n- **Tykačowe daty**: Tykače (nic rozšěrjenja/webrozšěrjenja) kaž Adobe Flash abo Acrobat Reader móhli daty kaž placki Flash abo druhe informacije a nastajenja składować.\n- **Service Workers**: Service Workers su móžnosć, websydłam dowolić, so offline wužiwać a pomhaja tež začitanje webnałoženjow pospěšić, kotrež je wužiwaja.\n- **Serwerowe certifikaty**: Jeli sće certifikaty přidał, zo byšće zwiski ze serwerom zmóžnił, je to nastajenje, zo byšće to čisćiło.",
-        "hash": "e3da06a89c4e4c3e8607211f3522da45"
+        "message": "## Awtor\nWutworjeny wot Santo Pfingsten, © 2017-2019\n\n## Přełožowarjo trěbni\n\nJeli dalše rěče derje dosć rozumiće, móžeće pomhać, hdyž ze [šwarnym webnałoženjom](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) přełožk wutworjeće.\n\n## Problemy, prašenja, komentary  a měnjenja\nProšu zdźělće problemy a próstwy wo nowe funkcije na GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Deklaracija priwatnosće\n\nWaša priwatnosć je nimoměrnje wažna.\nTute rozšěrjenje ničo njeanalyzuje abo njezběra, štož njetrjeba, zo by swój nadawk spjelniło. Njesćele žane daty nihdźe, tež nic anonymnje. DYPK.\n\n## Dźakprajenje\n* Hornjoserbski přełožk wot Michaela Wolfa\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Wot Vexels.com naćisnjeny\n* Symbole wutworjene wot [Google](https://www.flaticon.com/authors/google \"Google\"), wot [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\"), su pod [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\") licencowane",
+        "hash": "8b79e24d589555578de474316b748218"
     },
     "experimental_page": {
         "message": "## Eksperimentelne funkcije\n\n- Hdys a hdys su nowe funkcije, kotrež so jako eksperimentelne markěruja.\n- Su po standardźe znjemóžnjene a dyrbja so manuelnje zmóžnić.\n- Tute funkcije so wužiwaja, zo bychu nowe móžnosće namakali, rozšěrjenje polěpšować.\n- Móža njestabilne być abo špatny wukon měć.\n- Jeli na problemy storčiće, spytajće tute funkcije znjemóžnić.\n- Prošu sćelće nam komentary abo měnjenja a pisajće zmylkowe rozprawy na [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Tuchwilu aktiwne eksperimenty:\n- **Spadnjene placki zhašeć**:\nHdyžkuli so wučisćenje wotměwa, so placki, kotrež maja datum spadnjenja nastajeny w zańdźenosći, njedźiwajo na konfiguraciske prawidła, zhašeja. Normalnje Firefox jenož spadnjene placki zhaša, hdyž so wěsty limit docpěwa. Tute placki njebychu so na websydło słali, ale bychu hišće tam byli. Tute nastajenje pomha, tute šerjace placki wotstronić.\n- **Placki třećich wotpokazać**:  \nJeli zmóžnjene, so kóžde webnaprašowanje wotpopadnje, zo bychu so placki z domenow wotstronili, kotrež k URL rajtarkow njesłušeja a so přez prawidło škitaja. Tute placki so potajkim njestajeja.\n\nSćelće mi swoje komentary wo nazhonjenjach, kotrež sće z tutymi eksperimentami činił, zo bych móhł rozsudźić, hač maja so na přeco přidać abo nic.",
-        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
+        "hash": "bd877a339269825e5ace6407fc19cb45"
     },
     "changelog_page": {
-        "message": "## Protokol změnow\n\n### Version 1.0.5 (2018/09/02)\n- Fixed a bug causing the update notification to appear on every start.\n\n### Version 1.0.4 (2018/09/02)\n- Workaround for Firefox bug, which doesn't clear download history.\n- Workaround for Firefox bug preventing container cookies to be cleaned correctly\n- Local cookies (from websites stored on your computer) can now be cleared as well.\n- Italian translation written by temptemptmp.\n- Support for the live apply button of the web-extension-translator.\n- Better support for Firefox overflow menu\n\n### Version 1.0.3 (2018/08/23)\n- Fix a bug in the rule expression parser\n- Spanish (Argentina) translation written by [Fabián Pérez](https://www.github.com/thepante)\n- Swedish translation written by Jo3yA\n- Portuguese translation written by SW1FT\n- Portuguese(Brazil) translation written by Victor Bambino\n- Updated upper and lower sorbian translation written by Michael Wolf\n\n### Wersija 1.0.2 (2018/06/03)\n- Podpěra za nawigaciju z tastaturu a čitakami wobrazowki\n\n### Wersija 1.0.1 (2018/05/28)\n- Porjedźenje za wotstronjenje spadnjenych plackow\n\n### Wersija 1.0.0 (2018/05/27)\n- Druhi symbol a pomocny tekst za  drěmanski modus.\n- Hornjoserbski a delnjoserbski přełožk dźak @milupo.\n- Wužiwarjo móža nětko wubrać, kotry prawidłowy typ so nałožuje, jeli njeje so žane hodźace so prawidło namakało.\n- Podpěra za wutworjenje prawidłow, kotrež su specifiske za pomjenowany plack\n- Polěpšene spóznawanje plackow třećich poskićowarjow.\n- Porjedźene zmylki při wotstronjenju poddomenowych plackow.\n- Polěpšena podpěra za izolaciju prěnjeho poskićowarja\n- Nowa eksperimentelna funkcijka: Zhašenje spadnjenych plackow, hdyžkuli so wučisćenje wotměwa.\n- Někotre wizuelne problemy rozrisane.\n- Wjele polěpšenjow koda za lěpšu stabilitu a polěpšeny wukon!\n- Wjace hač 100 testowych jednotkow, zo by so dobra kwalita zawěsćiła!\n- Lěpša pomoc a wjace wopisanjow.\n- Zdźělenja priwantosće je so přidała.\n\n### Wersija 0.9.1 (2018/04/06)\n- Zmylk, kotryž nastajenje -wo aktualizacijach njeinformować- ignorowaše\n\n### Wersija 0.9.0 (2018/03/24)\n- Nastajenja přidate, kotrež protokolowanje domenow znjemóžnjeja abo wobmjezuja\n- Podpěra za zwobraznjenje domenowych mjenow z punycode\n- Problem z plackami rozrisał, kotrež njejsu so we wěstych padach porjadnje wotstronili\n- Wužiwanje symbolow město titulow w rajtarkach wuskakowaceho wokna\n- Manuelnemu wučisćenju so nětko dowola, prawidło \"wočinjene domeny škitać\" ignorować.\n- Drěmanska funkcija je so přidała, zo by so awtomatiske wučisćenje nachwilu znjemóžniło. Wučisćenja budu so znowa planować, hdyž so drěmanje zastaji.\n- Techniska aktualizacija\n\n### Wersija 0.8.8 (2018/01/24)\n- Nowe čorne prawidło je so přidało, zo by placki dospołnje blokowało.\n- Izolacija prěnjeho poskićowarja hižo rozšěrjenje při wotstronjenju placki njehaći (funguje wot Firefox 59). Lěpša podpěra budźe bórze w betawersiji k dispoziciji.\n- Porjedźeny zmylk: Hdyž so domena wopušća, so znowa wopytuje a so znowa wopušća, prjedy hač prěnjotne časowe překročenje za zrumowanje je zańdźene, bychu so placki přezahe zhašeli.\n- Porjedźeny zmylk: Zdźělenki móhli so narunać, prjedy hač wužiwar móže je widźeć.\n\n### Wersija 0.8.7 (2017/12/20)\n- Prowizoriske rozrisanje za importowanje nastajenjow, kotrež we wuskakowacym woknje browserAction Firefox bjez zmylka njefunguje.\n- Dźělna podpěra za kontejnerowe rajtarki: Placki funguja, lokalny składowak nic (Mozilla dyrbi najprjedy něšto porjedźić)\n- Nowe prawidło \"Zabyć\" (čerwjene) je so přidało, zo by so přepisowanje druhich prawidłow zmóžniło (čitajće nawod za podrobnosće).\n- Problem z wurjedźenjom při startowanju je so rozrisał\n- Modulowe testy su so přidali\n- Nastajenje za chowanje markow je so přidało\n- Nastajenje za wuběranje spočatnje wubraneho rajtarka je so přidało\n- Nastajenje za pokazowanje zdźělenkow za wotstronjenje plackow je so přidało\n- Eksportowy problem je so rozrisał\n\n### Wersija 0.8.6 (2017/12/06)\n- Změny přełožka z pomocu [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Zawjedźenje dataje readme w rozšěrjenju, nawoda a protokola změnow.\n  - Přistup na to z pomocu prašakoweho tłóčatka.\n- Zdźělenka so pokazuje, hdyž so rozšěrjenje aktualizuje (hodźi so znjemóžnić).\n- Domeny bjez Top Level Domain (kaž localhost, intranet atd.) hodźa so nětko z kontrolnym kašćikom do běłeje lisćiny přewzać.\n- Eksperimentelna funkcija za blokowanje plackow třećich poskićowarjow\n\n### Wersija 0.8.5 (2017/11/25)\n- Pisanski zmylk je so porjedźił\n- Přepinanje prawidłoweho typa je so złahodniło\n- Tłóčatko za přidawanje nowych prawidłow (do toho móžeštej jenož nowe prawidło přidać, hdyž sće enter tłóčił)\n- Tłóčatko za dóstawanje informacijow wo płaćiwych wurazach \n\n### Wersija 0.8.4 (2017/11/25)\n- Lěpša mobilna kompatibilita\n- Priwatne placki so hižo njeprotokoluja a wotstronjeja\n\n### Wersija 0.8.3 (2017/11/24)\n- Na priwatnych rajtarkach/woknach znjemóžnjene\n- Protokol je so přidał, zo by domeny najnowšich plackowych změnow pokazał\n- Tłóčatka su so přidałi,  zo by so zapodawanske polo za filtry z domenami horjeka mjenowaneje lisćiny a aktualneho rajtarka wupjelniło\n\n### Wersija 0.8.2 (2017/11/19)\n- Někotre korektury zmylkow, wurjedźenja\n\n### Wersija 0.8.0 (2017/11/19)\n- Prěnja wersija",
-        "hash": "a037815bbcc7b6c4bdaa52e50f4cbd13"
+        "message": "## Protokol změnow\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Wersija 1.0.5 (2018/09/02)\n- Zmylk porjedźeny, kotryž zawinuje, zo so aktualizaciska zdźělenka při kóždym starće jewi.\n\n### Wersija 1.0.4 (2018/09/02)\n- Prowizoriske rozrisanje za zmylk Firefox, kotryž historiju sćehnjenjow njezhaša.\n- Prowizoriske rozrisanje za zmylk Firefox, kotryž korektnemu porjedźenju kontejnerowych plackow zadźěwa\n- Lokalne placki (składowane wot websydłow na wašim ličaku) dadźa so nětko tež zhašeć.\n- Italski přełožk wot temptemptmp.\n- Podpěra tłóčatka direktneho nałoženja programa web-extension-translator.\n- Lěpša podpěra za přeběžkowy meni Firefox\n\n### Wersija 1.0.3 (2018/08/23)\n- Zmylk w parserje prawidłowych wurazow porjedźeny\n- Španiski (Argentinska) přełožk wot [Fabián Pérez](https://www.github.com/thepante)\n- Šwedski přełožk wot Jo3yA\n- Portugalski přełožk wot SW1FT\n- Portugalski (Brazilska) přełožk wot Victor Bambino\n- Zaktualizowanej hornjoserbski a delnjoserbski přełožkaj wot Michaela Wolfa\n\n### Wersija 1.0.2 (2018/06/03)\n- Podpěra za nawigaciju z tastaturu a čitakami wobrazowki\n\n### Wersija 1.0.1 (2018/05/28)\n- Porjedźenje za wotstronjenje spadnjenych plackow\n\n### Wersija 1.0.0 (2018/05/27)\n- Druhi symbol a pomocny tekst za  drěmanski modus.\n- Hornjoserbski a delnjoserbski přełožk dźak @milupo.\n- Wužiwarjo móža nětko wubrać, kotry prawidłowy typ so nałožuje, jeli njeje so žane hodźace so prawidło namakało.\n- Podpěra za wutworjenje prawidłow, kotrež su specifiske za pomjenowany plack\n- Polěpšene spóznawanje plackow třećich poskićowarjow.\n- Porjedźene zmylki při wotstronjenju poddomenowych plackow.\n- Polěpšena podpěra za izolaciju prěnjeho poskićowarja\n- Nowa eksperimentelna funkcijka: Zhašenje spadnjenych plackow, hdyžkuli so wučisćenje wotměwa.\n- Někotre wizuelne problemy rozrisane.\n- Wjele polěpšenjow koda za lěpšu stabilitu a polěpšeny wukon!\n- Wjace hač 100 testowych jednotkow, zo by so dobra kwalita zawěsćiła!\n- Lěpša pomoc a wjace wopisanjow.\n- Zdźělenja priwantosće je so přidała.\n\n### Wersija 0.9.1 (2018/04/06)\n- Zmylk, kotryž nastajenje -wo aktualizacijach njeinformować- ignorowaše\n\n### Wersija 0.9.0 (2018/03/24)\n- Nastajenja přidate, kotrež protokolowanje domenow znjemóžnjeja abo wobmjezuja\n- Podpěra za zwobraznjenje domenowych mjenow z punycode\n- Problem z plackami rozrisał, kotrež njejsu so we wěstych padach porjadnje wotstronili\n- Wužiwanje symbolow město titulow w rajtarkach wuskakowaceho wokna\n- Manuelnemu wučisćenju so nětko dowola, prawidło \"wočinjene domeny škitać\" ignorować.\n- Drěmanska funkcija je so přidała, zo by so awtomatiske wučisćenje nachwilu znjemóžniło. Wučisćenja budu so znowa planować, hdyž so drěmanje zastaji.\n- Techniska aktualizacija\n\n### Wersija 0.8.8 (2018/01/24)\n- Nowe čorne prawidło je so přidało, zo by placki dospołnje blokowało.\n- Izolacija prěnjeho poskićowarja hižo rozšěrjenje při wotstronjenju placki njehaći (funguje wot Firefox 59). Lěpša podpěra budźe bórze w betawersiji k dispoziciji.\n- Porjedźeny zmylk: Hdyž so domena wopušća, so znowa wopytuje a so znowa wopušća, prjedy hač prěnjotne časowe překročenje za zrumowanje je zańdźene, bychu so placki přezahe zhašeli.\n- Porjedźeny zmylk: Zdźělenki móhli so narunać, prjedy hač wužiwar móže je widźeć.\n\n### Wersija 0.8.7 (2017/12/20)\n- Prowizoriske rozrisanje za importowanje nastajenjow, kotrež we wuskakowacym woknje browserAction Firefox bjez zmylka njefunguje.\n- Dźělna podpěra za kontejnerowe rajtarki: Placki funguja, lokalny składowak nic (Mozilla dyrbi najprjedy něšto porjedźić)\n- Nowe prawidło \"Zabyć\" (čerwjene) je so přidało, zo by so přepisowanje druhich prawidłow zmóžniło (čitajće nawod za podrobnosće).\n- Problem z wurjedźenjom při startowanju je so rozrisał\n- Modulowe testy su so přidali\n- Nastajenje za chowanje markow je so přidało\n- Nastajenje za wuběranje spočatnje wubraneho rajtarka je so přidało\n- Nastajenje za pokazowanje zdźělenkow za wotstronjenje plackow je so přidało\n- Eksportowy problem je so rozrisał\n\n### Wersija 0.8.6 (2017/12/06)\n- Změny přełožka z pomocu [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Zawjedźenje dataje readme w rozšěrjenju, nawoda a protokola změnow.\n  - Přistup na to z pomocu prašakoweho tłóčatka.\n- Zdźělenka so pokazuje, hdyž so rozšěrjenje aktualizuje (hodźi so znjemóžnić).\n- Domeny bjez Top Level Domain (kaž localhost, intranet atd.) hodźa so nětko z kontrolnym kašćikom do běłeje lisćiny přewzać.\n- Eksperimentelna funkcija za blokowanje plackow třećich poskićowarjow\n\n### Wersija 0.8.5 (2017/11/25)\n- Pisanski zmylk je so porjedźił\n- Přepinanje prawidłoweho typa je so złahodniło\n- Tłóčatko za přidawanje nowych prawidłow (do toho móžeštej jenož nowe prawidło přidać, hdyž sće enter tłóčił)\n- Tłóčatko za dóstawanje informacijow wo płaćiwych wurazach \n\n### Wersija 0.8.4 (2017/11/25)\n- Lěpša mobilna kompatibilita\n- Priwatne placki so hižo njeprotokoluja a wotstronjeja\n\n### Wersija 0.8.3 (2017/11/24)\n- Na priwatnych rajtarkach/woknach znjemóžnjene\n- Protokol je so přidał, zo by domeny najnowšich plackowych změnow pokazał\n- Tłóčatka su so přidałi,  zo by so zapodawanske polo za filtry z domenami horjeka mjenowaneje lisćiny a aktualneho rajtarka wupjelniło\n\n### Wersija 0.8.2 (2017/11/19)\n- Někotre korektury zmylkow, wurjedźenja\n\n### Wersija 0.8.0 (2017/11/19)\n- Prěnja wersija",
+        "hash": "0dd61bf62909481c3442be3c736a5687"
     },
 
     "__WET_LOCALE__": { "message": "hsb" }

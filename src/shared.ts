@@ -1,3 +1,5 @@
+import { isFirefox } from "./lib/browserInfo";
+
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
@@ -6,7 +8,9 @@
 
 export interface CookieDomainInfo {
     domain: string;
-    badge: string;
+    className: string;
+    i18nBadge: string;
+    i18nButton: string;
 }
 
 export const allowedProtocols = /^https?:$/;
@@ -20,17 +24,4 @@ export function getValidHostname(url: string) {
     }
 }
 
-export interface Destructible {
-    destroy(): void;
-}
-
-export function destroyAndNull(value: Destructible | null) {
-    if (value)
-        value.destroy();
-    return null;
-}
-
-export function destroyAllAndEmpty(values: Destructible[]) {
-    values.forEach((r) => r.destroy());
-    values.length = 0;
-}
+export const DEFAULT_COOKIE_STORE_ID = isFirefox ? "firefox-default" : "0";

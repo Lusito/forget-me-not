@@ -1,0 +1,11 @@
+
+.snooze_button {
+    background-image: url("../icons/tabs/snooze.svg");
+    
+    &.is-active {
+        background-image: url("../icons/tabs/snooze_active.svg");
+    }
+    &:not(.is-active):not(:hover) {
+        opacity: 0.8;
+    }
+}

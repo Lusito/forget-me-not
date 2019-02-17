@@ -45,10 +45,16 @@ export function updateFromSettings() {
         const info = settingsInfoMap[key];
         if (info) {
             if (!info.permanentlyUnchecked) {
-                if (info.element.type === "checkbox")
-                    (info.element as HTMLInputElement).checked = settings.get(key as any);
-                else
+                if (info.element.type === "checkbox") {
+                    const input = (info.element as HTMLInputElement);
+                    input.checked = settings.get(key as any);
+                    input.dispatchEvent(new Event("change"));
+                } else
                     info.element.value = settings.get(key as any);
+
+                const enabledBy = info.element.dataset.settingsEnabledBy;
+                if (enabledBy)
+                    info.element.disabled = !enabledBy.split(" ").every((key2) => settings.get(key2 as any) === true);
             }
         }
     }

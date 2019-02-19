@@ -20,18 +20,20 @@ export class DownloadCleaner extends Cleaner {
     }
 
     private onCreated({ url }: Downloads.DownloadItem) {
-        if (settings.get("instantly.enabled") && settings.get("instantly.downloads")) {
-            const domain = getValidHostname(url);
-            if (domain) {
+        const domain = getValidHostname(url);
+        if (domain) {
+            if (settings.get("instantly.enabled") && settings.get("instantly.downloads")) {
                 const applyRules = settings.get("instantly.downloads.applyRules");
                 if (!applyRules || settings.isDomainBlocked(domain)) {
                     this.cleanupUrl(url);
-                } else if (settings.get("startup.enabled") && settings.get("startup.downloads") && !settings.isDomainProtected(domain, false)) {
-                    const downloadsToClean = { ...settings.get("downloadsToClean") };
-                    downloadsToClean[url] = true;
-                    settings.set("downloadsToClean", downloadsToClean);
-                    settings.save();
+                    return;
                 }
+            }
+            if (settings.get("startup.enabled") && settings.get("startup.downloads") && !settings.isDomainProtected(domain, false)) {
+                const downloadsToClean = { ...settings.get("downloadsToClean") };
+                downloadsToClean[url] = true;
+                settings.set("downloadsToClean", downloadsToClean);
+                settings.save();
             }
         }
     }

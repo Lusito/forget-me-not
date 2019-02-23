@@ -42,7 +42,7 @@ export function CleanDialog({ button }: CleanDialogProps) {
         return <tr>
             <td data-i18n={i18n} />
             <td>{manualCleanup && <SettingsCheckbox key={manualCleanup} />}</td>
-            <td>{manualCleanupRules && <SettingsCheckbox key={manualCleanupRules} enabledBy={manualCleanup || undefined} />}</td>
+            <td>{manualCleanupRules && <SettingsCheckbox key={manualCleanupRules} enabledBy={manualCleanup || undefined}  i18n="setting_apply_rules?title"/>}</td>
         </tr>;
     });
     const buttons = [
@@ -64,7 +64,7 @@ export function CleanDialog({ button }: CleanDialogProps) {
                     <tr>
                         <th><span>Cleanable Data</span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
                         <th><img src="../icons/tabs/delete.svg" /></th>
-                        <th><img src="../icons/tabs/shield.svg" /></th>
+                        <th><img src="../icons/tabs/shield.svg" data-i18n="setting_apply_rules?title"/></th>
                     </tr>
                 </thead>
                 <tbody>{rows}</tbody>

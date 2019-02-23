@@ -38,7 +38,7 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
             tbody.appendChild(<RuleTableRow expression={expression} isChosen={isChosen} type={settings.getExactCleanupType(expression)} />);
         });
 
-        rules = settings.getMatchingRules(forDomain).filter((rule) => expressions.indexOf(rule.rule) === -1);
+        rules = settings.getRulesForDomain(forDomain).filter((rule) => expressions.indexOf(rule.rule) === -1);
     } else {
         chosenRulesForDomain = [];
         rules = settings.get("rules").slice();

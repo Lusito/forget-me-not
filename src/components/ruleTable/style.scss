@@ -39,11 +39,11 @@
         margin: 15px 0 10px;
 
         tbody {
-            > tr:not(.is-selected):not(:hover) {
+            > tr:not(.is-chosen-rule):not(.is-cookie-rule):not(:hover) {
                 opacity: 0.82;
             }
 
-            > tr.is-selected > td:first-child {
+            > tr.is-chosen-rule > td:first-child {
                 font-weight: bold;
             }
         }

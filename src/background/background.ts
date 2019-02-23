@@ -41,7 +41,7 @@ export class Background implements TabWatcherListener {
         this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
 
         this.updateBadge();
-        new HeaderFilter(this.tabWatcher);
+        new HeaderFilter(this.tabWatcher, this.incognitoWatcher);
         new RecentlyAccessedDomains(this.incognitoWatcher);
         wetLayer.addListener(() => {
             this.updateBadge();

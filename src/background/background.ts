@@ -119,7 +119,7 @@ export class Background implements TabWatcherListener {
     }
 
     public onDomainEnter(cookieStoreId: string, hostname: string): void {
-        if (removeLocalStorageByHostname) {
+        if (removeLocalStorageByHostname && !this.incognitoWatcher.hasCookieStore(cookieStoreId)) {
             const domainsToClean = { ...settings.get("domainsToClean") };
             domainsToClean[hostname] = true;
             settings.set("domainsToClean", domainsToClean);

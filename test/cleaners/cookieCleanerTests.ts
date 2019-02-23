@@ -126,11 +126,12 @@ describe("CookieCleaner", () => {
         onDomainLeave: () => undefined
     };
     let tabWatcher: TabWatcher | null = null;
-    let cleaner: CookieCleaner | null = null;
     let incognitoWatcher: IncognitoWatcher | null = null;
+    let cleaner: CookieCleaner | null = null;
 
     afterEach(() => {
         tabWatcher = null;
+        incognitoWatcher = null;
         cleaner = null;
         settings.restoreDefaults();
     });

@@ -19,7 +19,7 @@ export class DownloadCleaner extends Cleaner {
         browser.downloads.onCreated.addListener(this.onCreated.bind(this));
     }
 
-    private onCreated({ url }: Downloads.DownloadItem) {
+    private onCreated({ url, incognito }: Downloads.DownloadItem) {
         const domain = getValidHostname(url);
         if (domain) {
             if (settings.get("instantly.enabled") && settings.get("instantly.downloads")) {
@@ -29,7 +29,7 @@ export class DownloadCleaner extends Cleaner {
                     return;
                 }
             }
-            if (settings.get("startup.enabled") && settings.get("startup.downloads") && !settings.isDomainProtected(domain, false)) {
+            if (!incognito && settings.get("startup.enabled") && settings.get("startup.downloads") && !settings.isDomainProtected(domain, false)) {
                 const downloadsToClean = { ...settings.get("downloadsToClean") };
                 downloadsToClean[url] = true;
                 settings.set("downloadsToClean", downloadsToClean);

@@ -29,6 +29,7 @@ export class LocalStorageCleaner extends Cleaner {
                     const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
                     for (const id of ids)
                         this.cleanDomains(id, hostnames);
+                    this.removeFromDomainsToClean(hostnames);
                 });
             } else {
                 settings.set("domainsToClean", {});
@@ -39,24 +40,28 @@ export class LocalStorageCleaner extends Cleaner {
 
     public cleanDomainOnLeave(storeId: string, domain: string): void {
         if (settings.get("domainLeave.enabled") && settings.get("domainLeave.localStorage") && !this.isLocalStorageProtected(storeId, domain))
-            this.cleanDomains(storeId, [domain]);
+            this.cleanDomain(storeId, domain);
     }
 
     public cleanDomain(storeId: string, domain: string): void {
-        this.cleanDomains(storeId, [domain]);
+        const domains = [domain];
+        this.cleanDomains(storeId, domains);
+        this.removeFromDomainsToClean(domains);
+    }
+
+    private removeFromDomainsToClean(hostnames: string[]) {
+        const domainsToClean = { ...settings.get("domainsToClean") };
+        for (const hostname of hostnames) {
+            if (!this.tabWatcher.containsDomain(hostname))
+                delete domainsToClean[hostname];
+        }
+        settings.set("domainsToClean", domainsToClean);
+        settings.save();
     }
 
     public cleanDomains(storeId: string, hostnames: string[]) {
         // Fixme: use cookieStoreId when it's supported by firefox
         if (removeLocalStorageByHostname) {
-            const domainsToClean = { ...settings.get("domainsToClean") };
-            for (const hostname of hostnames) {
-                if (!this.tabWatcher.containsDomain(hostname))
-                    delete domainsToClean[hostname];
-            }
-            settings.set("domainsToClean", domainsToClean);
-            settings.save();
-
             browser.browsingData.remove({
                 originTypes: { unprotectedWeb: true },
                 hostnames

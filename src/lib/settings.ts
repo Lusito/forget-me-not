@@ -364,6 +364,7 @@ export class Settings {
         return this.getCleanupTypeForDomain(domain) === CleanupType.INSTANTLY;
     }
 
+    // FIXME: add tests
     public getRulesForDomain(domain: string) {
         return this.rules.concat(this.cookieRules)
             .filter((rule) => rule.regex.test(domain))

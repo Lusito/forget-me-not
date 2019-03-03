@@ -306,6 +306,10 @@
         "message": "Regeln anwenden",
         "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
+    "setting_ignore_rules@title": {
+        "message": "Regeln ignorieren",
+        "hash": "ccb8dbed77ececb457ea594439d42146"
+    },
     "setting_cookies": {
         "message": "Cookies",
         "hash": "4aef64b30489430071825bcb3db557b6"

@@ -232,6 +232,9 @@
     "setting_apply_rules@title": {
         "message": "Apply Rules"
     },
+    "setting_ignore_rules@title": {
+        "message": "Ignore Rules"
+    },
     "setting_cookies": {
         "message": "Cookies"
     },

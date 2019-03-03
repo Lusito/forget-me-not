@@ -1,3 +1,4 @@
+@import "../../../styles/variables";
 
 .settings_table {
     width: 100%;
@@ -11,8 +12,9 @@
 
     th:not(:first-child) {
         text-align: center;
-        padding-top: 3px;
-        padding-bottom: 0px;
+        > img {
+            margin-top: 3px;
+        }
     }
 
     thead > tr:last-child {
@@ -36,6 +38,38 @@
         margin-left: 3px;
     }
 
+    .apply_rules_checkbox {
+        input[type=checkbox] {
+            +span:before {
+                content: "";
+                background: url("../icons/tabs/shield_white.svg");
+            }
+            +span:before {
+                box-shadow: none;
+            }
+        }
+        input[type=checkbox]:disabled {
+            +span {
+                display: none;
+            }
+        }
+        input[type=checkbox]:not(:disabled) {
+            &:not(:checked)+span:before {
+                background: url("../icons/tabs/no_shield_white.svg");
+            }
+            &:focus,
+            &:hover {
+                +span {
+                    outline: 1px dashed rgba(80, 149, 234, 0.75);
+                }
+            }
+        }
+    }
+
+    .unsupported_checkbox {
+        color: white;
+    }
+
     th {
         border-bottom: 1px solid #afafaf;
     }
@@ -46,11 +80,27 @@
         border-right: 1px solid #afafaf;
     }
 
-    tr>*:nth-child(2),
-    tr>*:nth-child(3),
-    tr>*:nth-child(5),
-    tr>*:nth-child(6) {
-        background: #e8e9ed;
+    thead>tr:not(:first-child)>th,
+    tbody>tr>td {
+        &.cleanup_type_never {
+            background: rgba($badgeColorNever, 0.7);
+        }
+
+        &.cleanup_type_startup {
+            background: rgba($badgeColorStartup, 0.7);
+        }
+
+        &.cleanup_type_leave {
+            background: rgba($badgeColorLeave, 0.7);
+        }
+
+        &.cleanup_type_instantly {
+            background: rgba($badgeColorInstantly, 0.7);
+        }
+
+        &.cleanup_type_manual {
+            background: rgba($badgeColorManual, 0.7);
+        }
     }
     th:first-child {
         padding-left: 4px;

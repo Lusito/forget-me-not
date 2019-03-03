@@ -3,12 +3,10 @@ import { Dialog, showDialog, hideDialog } from "./dialog";
 import { on } from "../../lib/htmlUtils";
 import { HelpLink } from "../helpLink";
 import { SettingsCheckbox } from "../settingsCheckbox";
-import { connectSettings, permanentDisableSettings } from "../../lib/htmlSettings";
-import { isFirefox, browserInfo } from "../../lib/browserInfo";
+import { connectSettings } from "../../lib/htmlSettings";
+import { browserInfo } from "../../lib/browserInfo";
 import { messageUtil } from "../../lib/messageUtil";
 import { SettingsKey } from "../../lib/settingsSignature";
-
-const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 interface CleanDialogProps {
     button: HTMLElement;
@@ -41,8 +39,8 @@ export function CleanDialog({ button }: CleanDialogProps) {
     const rows = CLEANUP_SETTINGS.map(([i18n, manualCleanup, manualCleanupRules]) => {
         return <tr>
             <td data-i18n={i18n} />
-            <td>{manualCleanup && <SettingsCheckbox key={manualCleanup} />}</td>
-            <td>{manualCleanupRules && <SettingsCheckbox key={manualCleanupRules} enabledBy={manualCleanup || undefined}  i18n="setting_apply_rules?title"/>}</td>
+            <td class="cleanup_type_manual">{manualCleanup && <SettingsCheckbox key={manualCleanup} />}</td>
+            <td class="cleanup_type_manual apply_rules_checkbox">{manualCleanupRules && <SettingsCheckbox key={manualCleanupRules} enabledBy={manualCleanup || undefined}  i18n="setting_apply_rules?title" i18nUnchecked="setting_ignore_rules?title" />}</td>
         </tr>;
     });
     const buttons = [
@@ -63,8 +61,8 @@ export function CleanDialog({ button }: CleanDialogProps) {
                 <thead>
                     <tr>
                         <th><span>Cleanable Data</span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
-                        <th><img src="../icons/tabs/delete.svg" /></th>
-                        <th><img src="../icons/tabs/shield.svg" data-i18n="setting_apply_rules?title"/></th>
+                        <th class="cleanup_type_manual"><img src="../icons/tabs/delete_white.svg" /></th>
+                        <th class="cleanup_type_manual"><img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title"/></th>
                     </tr>
                 </thead>
                 <tbody>{rows}</tbody>
@@ -75,7 +73,5 @@ export function CleanDialog({ button }: CleanDialogProps) {
     </Dialog>;
     on(button, "click", () =>  showDialog(dialog, buttons[0]));
     connectSettings(dialog);
-    if (!removeLocalStorageByHostname)
-        permanentDisableSettings(["cleanAll.localStorage.applyRules"], true);
     return dialog;
 }

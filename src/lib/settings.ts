@@ -364,6 +364,13 @@ export class Settings {
         return this.getCleanupTypeForDomain(domain) === CleanupType.INSTANTLY;
     }
 
+    // FIXME: add tests
+    public getRulesForDomain(domain: string) {
+        return this.rules.concat(this.cookieRules)
+            .filter((rule) => rule.regex.test(domain))
+            .map((rule) => rule.definition);
+    }
+
     public getChosenRulesForDomain(domain: string) {
         if (this.get("whitelistFileSystem") && domain.length === 0)
             return [];

@@ -6,8 +6,8 @@
 
 import { settings } from "../../lib/settings";
 import { translateDocument } from "../../lib/htmlUtils";
-import { isFirefox, browserInfo } from "../../lib/browserInfo";
-import { connectSettings, permanentDisableSettings, updateFromSettings } from "../../lib/htmlSettings";
+import { browserInfo } from "../../lib/browserInfo";
+import { connectSettings, updateFromSettings } from "../../lib/htmlSettings";
 import { messageUtil } from "../../lib/messageUtil";
 import { wetLayer } from "wet-layer";
 import { h } from "tsx-dom";
@@ -24,8 +24,6 @@ import { LogoWithLink } from "../logo/logoWithLink";
 import "./style.scss";
 import { CleanDialog } from "../dialogs/cleanDialog";
 import { EXPORT_IGNORE_KEYS, SettingsKey } from "../../lib/settingsSignature";
-
-const removeLocalStorageByHostname = isFirefox && browserInfo.versionAsNumber >= 58;
 
 settings.onReady(() => {
     if (browserInfo.mobile)
@@ -49,8 +47,6 @@ settings.onReady(() => {
     </TabContainer>;
 
     connectSettings(popup);
-    if (!removeLocalStorageByHostname)
-        permanentDisableSettings(["domainLeave.localStorage", "startup.localStorage.applyRules" ], true);
 
     messageUtil.receive("settingsChanged", (changedKeys: SettingsKey[]) => {
         if (changedKeys.some((key) => EXPORT_IGNORE_KEYS.indexOf(key) === -1))

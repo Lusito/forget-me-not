@@ -25,11 +25,11 @@ export function CleanupTab() {
     const rows = CLEANUP_SETTINGS.map(([i18n, startup, startupRules, domainLeave, instantly, instantlyRules]) => {
         return <tr>
             <td data-i18n={i18n} />
-            <td>{startup && <SettingsCheckbox key={startup} enabledBy="startup.enabled" i18n="cleanup_type_startup_button?title" />}</td>
-            <td>{startupRules && <SettingsCheckbox key={startupRules} enabledBy={`startup.enabled ${startup}`} i18n="setting_apply_rules?title" />}</td>
-            <td>{domainLeave && <SettingsCheckbox key={domainLeave} enabledBy="domainLeave.enabled" i18n="cleanup_type_leave_button?title" />}</td>
-            <td>{instantly && <SettingsCheckbox key={instantly} enabledBy="instantly.enabled" i18n="cleanup_type_instantly_button?title" />}</td>
-            <td>{instantlyRules && <SettingsCheckbox key={instantlyRules} enabledBy={`instantly.enabled ${instantly}`} i18n="setting_apply_rules?title" />}</td>
+            <td class="cleanup_type_startup">{startup && <SettingsCheckbox key={startup} enabledBy="startup.enabled" i18n="cleanup_type_startup_button?title" />}</td>
+            <td class="cleanup_type_startup apply_rules_checkbox">{startupRules && <SettingsCheckbox key={startupRules} enabledBy={`startup.enabled ${startup}`} i18n="setting_apply_rules?title" i18nUnchecked="setting_ignore_rules?title" />}</td>
+            <td class="cleanup_type_leave">{domainLeave && <SettingsCheckbox key={domainLeave} enabledBy="domainLeave.enabled" i18n="cleanup_type_leave_button?title" />}</td>
+            <td class="cleanup_type_instantly">{instantly && <SettingsCheckbox key={instantly} enabledBy="instantly.enabled" i18n="cleanup_type_instantly_button?title" />}</td>
+            <td class="cleanup_type_instantly apply_rules_checkbox">{instantlyRules && <SettingsCheckbox key={instantlyRules} enabledBy={`instantly.enabled ${instantly}`} i18n="setting_apply_rules?title" i18nUnchecked="setting_ignore_rules?title" />}</td>
         </tr>;
     });
 
@@ -47,19 +47,19 @@ export function CleanupTab() {
             <thead>
                 <tr>
                     <th><span>Cleanable Data</span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
-                    <th><img src="../icons/tabs/power.svg" data-i18n="cleanup_type_startup_button?title" /></th>
-                    <th><img src="../icons/tabs/shield.svg" data-i18n="setting_apply_rules?title" /></th>
-                    <th><img src="../icons/tabs/exit.svg" data-i18n="cleanup_type_leave_button?title" /></th>
-                    <th><img src="../icons/tabs/stop.svg" data-i18n="cleanup_type_instantly_button?title" /></th>
-                    <th><img src="../icons/tabs/shield.svg" data-i18n="setting_apply_rules?title" /></th>
+                    <th class="cleanup_type_startup" data-i18n="cleanup_type_startup_button?title"><span data-i18n="cleanup_type_startup_badge" /></th>
+                    <th class="cleanup_type_startup"><img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" /></th>
+                    <th class="cleanup_type_leave" data-i18n="cleanup_type_leave_button?title"><span data-i18n="cleanup_type_leave_badge" /></th>
+                    <th class="cleanup_type_instantly" data-i18n="cleanup_type_instantly_button?title"><span data-i18n="cleanup_type_instantly_badge" /></th>
+                    <th class="cleanup_type_instantly"><img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" /></th>
                 </tr>
                 <tr>
                     <th>Enable</th>
-                    <th><SettingsCheckbox key="startup.enabled" i18n="cleanup_type_startup_button?title" /></th>
-                    <th />
-                    <th><SettingsCheckbox key="domainLeave.enabled" i18n="cleanup_type_leave_button?title" /></th>
-                    <th><SettingsCheckbox key="instantly.enabled" i18n="cleanup_type_instantly_button?title" /></th>
-                    <th />
+                    <th class="cleanup_type_startup"><SettingsCheckbox key="startup.enabled" i18n="cleanup_type_startup_button?title" /></th>
+                    <th class="cleanup_type_startup" />
+                    <th class="cleanup_type_leave"><SettingsCheckbox key="domainLeave.enabled" i18n="cleanup_type_leave_button?title" /></th>
+                    <th class="cleanup_type_instantly"><SettingsCheckbox key="instantly.enabled" i18n="cleanup_type_instantly_button?title" /></th>
+                    <th class="cleanup_type_instantly" />
                 </tr>
             </thead>
             <tbody>{rows}</tbody>

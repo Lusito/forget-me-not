@@ -16,8 +16,11 @@ export function RuleTableRow({ expression, type, isChosen }: RuleTableRowProps) 
     if (punified !== expression)
         content.push(<i> ({punified})</i>);
     const title = content.map((e) => e.textContent).join("");
+    const classes = isChosen ? [ "is-chosen-rule" ] : [];
+    if (expression.indexOf("@") >= 0)
+        classes.push("is-cookie-rule");
 
-    return <tr class={isChosen ? "is-selected" : undefined}>
+    return <tr class={classes.length ? classes.join(" ") : undefined}>
         <td title={title}><div class="rules_table_row_expression">{content}</div></td>
         <td><RuleButton expression={expression} type={type} onConfirm={(newType, updatedExpression) => settings.setRule(updatedExpression, newType)} /></td>
         <td><button onClick={() => settings.removeRule(expression)}>X</button></td>

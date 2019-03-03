@@ -41,7 +41,7 @@ export class Background implements TabWatcherListener {
         this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
 
         this.updateBadge();
-        new HeaderFilter(this.tabWatcher);
+        new HeaderFilter(this.tabWatcher, this.incognitoWatcher);
         new RecentlyAccessedDomains(this.incognitoWatcher);
         wetLayer.addListener(() => {
             this.updateBadge();
@@ -119,7 +119,7 @@ export class Background implements TabWatcherListener {
     }
 
     public onDomainEnter(cookieStoreId: string, hostname: string): void {
-        if (removeLocalStorageByHostname) {
+        if (removeLocalStorageByHostname && !this.incognitoWatcher.hasCookieStore(cookieStoreId)) {
             const domainsToClean = { ...settings.get("domainsToClean") };
             domainsToClean[hostname] = true;
             settings.set("domainsToClean", domainsToClean);

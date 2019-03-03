@@ -12,6 +12,7 @@ import { getValidHostname } from "../shared";
 import { CleanupType, SettingsKey } from "../lib/settingsSignature";
 import { parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";
+import { IncognitoWatcher } from "./incognitoWatcher";
 
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule", "instantly.enabled"];
 
@@ -20,10 +21,10 @@ export class HeaderFilter {
     private readonly tabWatcher: TabWatcher;
     private readonly onHeadersReceived: (details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse;
 
-    public constructor(tabWatcher: TabWatcher) {
+    public constructor(tabWatcher: TabWatcher, incognitoWatcher: IncognitoWatcher) {
         this.tabWatcher = tabWatcher;
         this.onHeadersReceived = (details) => {
-            if (details.responseHeaders) {
+            if (details.responseHeaders && !incognitoWatcher.hasTab(details.tabId)) {
                 return {
                     responseHeaders: this.filterResponseHeaders(details.responseHeaders, getValidHostname(details.url), details.tabId)
                 };

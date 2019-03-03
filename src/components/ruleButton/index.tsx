@@ -21,13 +21,13 @@ function updateRuleButton(button: HTMLElement, type: CleanupType | null, transla
 }
 
 export function RuleButton({ expression, type, onConfirm }: RuleButtonProps) {
-    function onChangeProxy(type: CleanupType) {
+    function onChangeProxy(type: CleanupType, expression?: string) {
         updateRuleButton(button, type, true);
         onConfirm(type, expression || "");
     }
 
     function onClick() {
-        <RuleDialog expression={expression} editable={type === null} focusType={cleanupTypeForElement(button)} onConfirm={(type) => type !== false && onChangeProxy(type)} />;
+        <RuleDialog expression={expression} editable={type === null} focusType={cleanupTypeForElement(button)} onConfirm={(type, expression) => type !== false && onChangeProxy(type, expression)} />;
     }
 
     const button = <button onClick={onClick} />;

@@ -121,6 +121,26 @@ describe("LocalStorageCleaner", () => {
                 hostnames: [WHITELISTED_DOMAIN]
             }, { localStorage: true }]]);
         });
+        it("should remove hostnames from domainsToClean if they don't exist on the TabWatcher", () => {
+            settings.set("domainsToClean", {
+                "google.com": true,
+                "www.google.com": true,
+                "wikipedia.org": true
+            });
+            settings.save();
+            ensureNotNull(cleaner).cleanDomain("firefox-default", "google.com");
+            assert.deepEqual(settings.get("domainsToClean"), { "wikipedia.org": true, "www.google.com": true });
+        });
+        it("should not remove hostnames from domainsToClean if they exist on the TabWatcher", () => {
+            settings.set("domainsToClean", {
+                "www.google.com": true,
+                [OPEN_DOMAIN]: true,
+                "wikipedia.org": true
+            });
+            settings.save();
+            ensureNotNull(cleaner).cleanDomain("firefox-default", OPEN_DOMAIN);
+            assert.deepEqual(settings.get("domainsToClean"), { [OPEN_DOMAIN]: true, "wikipedia.org": true, "www.google.com": true });
+        });
     });
 
     describe("cleanDomains", () => {
@@ -134,36 +154,6 @@ describe("LocalStorageCleaner", () => {
                 originTypes: { unprotectedWeb: true },
                 hostnames
             }, { localStorage: true }]]);
-        });
-        it("should remove hostnames from domainsToClean if they don't exist on the TabWatcher", () => {
-            settings.set("domainsToClean", {
-                "google.com": true,
-                "www.google.com": true,
-                "amazon.de": true,
-                "wikipedia.org": true
-            });
-            settings.save();
-            ensureNotNull(cleaner).cleanDomains("firefox-default", [
-                "google.com",
-                "amazon.de"
-            ]);
-            assert.deepEqual(settings.get("domainsToClean"), { "wikipedia.org": true, "www.google.com": true });
-        });
-        it("should not remove hostnames from domainsToClean if they exist on the TabWatcher", () => {
-            settings.set("domainsToClean", {
-                "google.com": true,
-                "www.google.com": true,
-                "amazon.de": true,
-                [OPEN_DOMAIN]: true,
-                "wikipedia.org": true
-            });
-            settings.save();
-            ensureNotNull(cleaner).cleanDomains("firefox-default", [
-                "google.com",
-                "amazon.de",
-                OPEN_DOMAIN
-            ]);
-            assert.deepEqual(settings.get("domainsToClean"), { [OPEN_DOMAIN]: true, "wikipedia.org": true, "www.google.com": true });
         });
     });
 });

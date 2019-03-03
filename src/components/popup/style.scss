@@ -52,6 +52,10 @@ input[type=checkbox]:checked+span:before {
     background-color: $badgeColorInstantly;
 }
 
+.cleanup_type_manual {
+    background-color: $badgeColorManual;
+}
+
 .cleanup_type_never,
 .cleanup_type_startup,
 .cleanup_type_leave,

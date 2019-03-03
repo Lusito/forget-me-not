@@ -46,7 +46,7 @@ export function CleanupTab() {
         <table class="settings_table">
             <thead>
                 <tr>
-                    <th><span>Cleanable Data</span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
+                    <th><span data-i18n="settings_cleanable_data"></span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
                     <th class="cleanup_type_startup" data-i18n="cleanup_type_startup_button?title"><span data-i18n="cleanup_type_startup_badge" /></th>
                     <th class="cleanup_type_startup"><img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" /></th>
                     <th class="cleanup_type_leave" data-i18n="cleanup_type_leave_button?title"><span data-i18n="cleanup_type_leave_badge" /></th>
@@ -54,7 +54,7 @@ export function CleanupTab() {
                     <th class="cleanup_type_instantly"><img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" /></th>
                 </tr>
                 <tr>
-                    <th>Enable</th>
+                    <th data-i18n="settings_enable"></th>
                     <th class="cleanup_type_startup"><SettingsCheckbox key="startup.enabled" i18n="cleanup_type_startup_button?title" /></th>
                     <th class="cleanup_type_startup" />
                     <th class="cleanup_type_leave"><SettingsCheckbox key="domainLeave.enabled" i18n="cleanup_type_leave_button?title" /></th>

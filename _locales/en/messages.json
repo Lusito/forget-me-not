@@ -322,6 +322,12 @@
     "initial_tab_log": {
         "message": "Domain Log"
     },
+    "settings_cleanable_data": {
+        "message": "Cleanable Data"
+    },
+    "settings_enable": {
+        "message": "Enable"
+    },
 
     "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {

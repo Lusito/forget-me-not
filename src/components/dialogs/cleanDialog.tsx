@@ -60,7 +60,7 @@ export function CleanDialog({ button }: CleanDialogProps) {
             <table class="settings_table">
                 <thead>
                     <tr>
-                        <th><span>Cleanable Data</span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
+                        <th><span data-i18n="settings_cleanable_data"></span><HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" /></th>
                         <th class="cleanup_type_manual"><img src="../icons/tabs/delete_white.svg" /></th>
                         <th class="cleanup_type_manual"><img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title"/></th>
                     </tr>

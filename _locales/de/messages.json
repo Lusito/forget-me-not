@@ -426,6 +426,14 @@
         "message": "Domänenlog",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
+    "settings_cleanable_data": {
+        "message": "Löschbare Daten",
+        "hash": "63fe0e7a1fc35e835bc8495abdfbd6fb"
+    },
+    "settings_enable": {
+        "message": "Einschalten",
+        "hash": "2212934c2b3d751385bf1c26d91172f3"
+    },
 
     "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {

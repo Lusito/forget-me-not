@@ -1,12 +1,12 @@
 {
     "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
-        "message": "Forget Me Not - Vergiss Guezzli & anderi Datä",
+        "message": "Forget Me Not - Vergiss Guetzli & anderi Datä",
         "description": "Name of the extension.",
         "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
     },
     "extensionDescription": {
-        "message": "Macht das dä Browser Datä vo Siite vergisst, uusgno diä Datä wod wotsch bhalte.",
+        "message": "Macht das dä Browser Datä vo Web Siite vergisst, uusgno diä Datä wod wotsch bhalte.",
         "description": "Description of the extension.",
         "hash": "8138b17e7f1daceffca0d19015bb86e7"
     },
@@ -47,7 +47,7 @@
         "hash": "db630835e0fd63a96fcb2feed83facc3"
     },
     "rule_dialog_title": {
-        "message": "tue ä Löschregle uuswähle",
+        "message": "Tue ä Löschreglä uuswählä",
         "hash": "8b92b69da821db80656274e044e68643"
     },
     "rule_dialog_content": {
@@ -75,11 +75,11 @@
         "hash": "17aa19f18a894459ab6ff21156e8a341"
     },
     "confirm_rule_replace_dialog_title": {
-        "message": "dä Usdruck für nä Reglä gits scho",
+        "message": "Dä Usdruck für nä Reglä gits scho",
         "hash": "c75edd105dd87f7b72216c1e32dcf101"
     },
     "confirm_rule_replace_dialog_content": {
-        "message": "dä Usdruck für nä Reglä gits scho.. wotsch di alti Reglä überschriibe?",
+        "message": "Dä Usdruck für nä Reglä gits scho.. wotsch di alti Reglä überschriibe?",
         "hash": "74219b377804324016c6fbca36518b25"
     },
 
@@ -101,7 +101,7 @@
         "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
     },
     "cleanup_type_startup_button": {
-        "message": "bim uf*S*tarte",
+        "message": "Bim uf*S*tarte",
         "hash": "a828be5a7de52d416d9ace00bc40fd3a"
     },
     "cleanup_type_startup_button@title": {
@@ -113,7 +113,7 @@
         "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
     },
     "cleanup_type_leave_button": {
-        "message": "bim ver*L*aa",
+        "message": "Bim ver*L*aa",
         "hash": "474d0269f9757e726e5d91f684c33033"
     },
     "cleanup_type_leave_button@title": {
@@ -133,7 +133,7 @@
         "hash": "f253ddd17544f84b52a993fe784164e6"
     },
     "cleanup_type_create_button": {
-        "message": "ä neui Regle chreierä",
+        "message": "Ä neui Regle chreierä",
         "hash": "913e8b0d4ccb47df0b1a1780c709f857"
     },
     "cleanup_type_create_button@title": {
@@ -143,11 +143,11 @@
 
     "__WET_GROUP__3": { "message": "Settings" },
     "settings_unsupported_checkbox@title": {
-        "message": "das isch nöd Unterstützt",
+        "message": "Das isch nöd Unterstützt",
         "hash": "99286998bff7ecef26245d3858e4fe0f"
     },
     "perform_manual_cleanup": {
-        "message": "mach vo Hand suuber",
+        "message": "Mach vo Hand suuber",
         "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "manual_cleanup_description": {
@@ -155,7 +155,7 @@
         "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
     },
     "define_rules": {
-        "message": "ä neui Reglä definierä:",
+        "message": "Ä neui Reglä definierä:",
         "hash": "958b9c121084b503102f5f7e566a833e"
     },
     "recently_accessed_domains": {
@@ -171,15 +171,15 @@
         "hash": "338c238d02c3001ea6d21739b8678ec5"
     },
     "tabs_settings_experimental": {
-        "message": "Experimänt",
+        "message": "Experimäntel",
         "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
     },
     "tabs_this_tab@title": {
-        "message": "aktuelli Karteicharte Riiter",
+        "message": "Aktuelli Charteicharte Riiter",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
     "tabs_rules@title": {
-        "message": "ä neui Reglä definierä",
+        "message": "Ä neui Reglä definierä",
         "hash": "21d4563d916a5e113022379778156fff"
     },
     "tabs_settings@title": {
@@ -207,11 +207,11 @@
         "hash": "d1f539e046abe83e76dcf2163f9a143c"
     },
     "button_clean_now": {
-        "message": "jetz Suubermache!",
+        "message": "Jetz ä Suubermache!",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
     "button_clean_domain": {
-        "message": "mach diä Domäne suuber",
+        "message": "Mach diä Domäne suuber",
         "hash": "2e3cc752e235b2a95737ad9113e45bf5"
     },
     "button_import": {
@@ -223,27 +223,27 @@
         "hash": "46a378d64766cc2c8491cd13b018657f"
     },
     "button_reset": {
-        "message": "uf Standardiistellige zruggsetzä",
+        "message": "Uf Standardiistellige zrugg setzä",
         "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
     },
     "button_log_add_rule": {
-        "message": "+ ä Regle neui dazue mache",
+        "message": "+ Ä Regle neui dazue mache",
         "hash": "28421d68b672702c44a611f9e741e4d2"
     },
     "button_toggle_snooze_true": {
-        "message": "Stop Schlaafmodus",
+        "message": "Stop Pfuus Modus",
         "hash": "71669281f5e594169489a032087e7b3f"
     },
     "button_toggle_snooze_false": {
-        "message": "Start Schlaafmodus",
+        "message": "Start Pfuus Modus",
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "bim Schlafä werdet dia Süüberigsaktionä verhindered:\n- Suubermache biim verlaa vo nerä Domäne\n- Suubermachä vo Guezzli vo dritt Server\n\nAlli verpasste Süüberigsaktionä werdet nahgholt wän du dä Schlaafmodus tuesch stoppä.\n\nSchwarzi Reglä (\"Sofort\") sind vom Schlaafmodus nöd betroffä.",
+        "message": "Bim Schlafä werdet dia Süüberigsaktionä verhindered:\n- Suubermache biim verlaa vo nerä Domäne\n- Suubermachä vo Guezzli vo dritt Server\n\nAlli verpasste Süüberigsaktionä werdet nahgholt wän du dä Pfuus Modus tuesch stoppä.\n\nSchwarzi Reglä (\"Sofort\") sind vom Pfuus Modus nöd betroffä.",
         "hash": "dfd24dc7f97580281d58971501628622"
     },
     "invalid_tab": {
-        "message": "ungültigä Charteicharte Riiter",
+        "message": "Ungültigä Charteicharte Riiter",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
     "rules_column_expression": {
@@ -251,7 +251,7 @@
         "hash": "7fc913b5875670e140f328b8a03ed225"
     },
     "rules_column_matching_expression": {
-        "message": "passendi Uusdruck",
+        "message": "Passendi Uusdruck",
         "hash": "dcb63b62695c11401c78d9ea01eee3de"
     },
     "rules_column_type": {
@@ -263,11 +263,11 @@
         "hash": "a0766c32473f97b153fd63a92cadd450"
     },
     "expression_hint_invalid": {
-        "message": "ungültigä Ussdruck",
+        "message": "Ungültigä Ussdruck",
         "hash": "5960bcc4b7e809e74c69cd96049e9245"
     },
     "expression_hint_exists": {
-        "message": "dä Ussdruck giits scho",
+        "message": "Dä Ussdruck giits scho",
         "hash": "8171dd015c1bd031c6c7af75d5fa7100"
     },
     "rules_add": {
@@ -275,11 +275,11 @@
         "hash": "c30738ff9271a856100751bbca5e5794"
     },
     "rules_no_entries": {
-        "message": "chei Iiträg vorhandä",
+        "message": "Da sind chei Iiträg vorhandä",
         "hash": "5ece1de076b92af71c606feadcc41439"
     },
     "help_button@title": {
-        "message": "Liis wia diä Regle funktionieräd, welli Ussdruck du chasch bruuchä, experimentelli Funktionä, und chürzlichi Änderige vo däre erwiiterig.",
+        "message": "Liis wia diä Regle funktionieräd, welli Ussdruck du chasch bruuchä, experimentelli Funktionä, und chürzlichi Änderige vo däre Erwiiterig.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
     "types_of_cleanup@title": {
@@ -295,7 +295,7 @@
         "hash": "b09faefa5c53650a8e8d549be96e09a6"
     },
     "setting_show_cookie_removal_notification": {
-        "message": "Zeig ä Nachricht wän Guezzli entfernt wordä sind.",
+        "message": "Zeig ä Nachricht wän Guetzli entfernt wordä sind.",
         "hash": "5d31d92f2c4eb88af04bf02b9078d058"
     },
     "setting_show_badge": {
@@ -307,11 +307,11 @@
         "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
     "setting_cookies": {
-        "message": "Guezzli",
+        "message": "Guetzli",
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
     "setting_local_storage": {
-        "message": "lokali Speicher",
+        "message": "Lokali Spiicher",
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
     "setting_protect_open_domains": {
@@ -323,7 +323,7 @@
         "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
     },
     "setting_downloads": {
-        "message": "Abegladä",
+        "message": "Abegladinä",
         "hash": "12caefee10c407a13df4027c244d1118"
     },
     "setting_form_data": {
@@ -347,11 +347,11 @@
         "hash": "584545acfce5580c7967bc8c366df556"
     },
     "setting_cache": {
-        "message": "Zwischäspeicher",
+        "message": "Zwischäspiicher",
         "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
     },
     "setting_server_bound_certificates": {
-        "message": "Server bundeni Certifikat",
+        "message": "Server bundeni Zertifikat",
         "hash": "0dfdb1326c1206379e7866da9c9bbf11"
     },
     "setting_delay_domain_leave_cleanup_in_seconds": {
@@ -371,7 +371,7 @@
         "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld": {
-        "message": "mach nia ä Domäne suuber wo chei Hauptdomäne händ.",
+        "message": "Mach nia ä Domäne suuber wo chei Hauptdomäne hät.",
         "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
     },
     "setting_whitelist_no_tld@title": {
@@ -387,7 +387,7 @@
         "hash": "144b6e44fcfc2accebf07df655af7bea"
     },
     "setting_log_rad_enabled": {
-        "message": "träg chürzlich bsuechti Domäne is Logbuech inä.",
+        "message": "Träg chürzlich bsuechti Domäne is Logbuech inä.",
         "hash": "3b8f9710163140ee92e5924c8f7bdbca"
     },
     "setting_log_rad_limit": {
@@ -399,15 +399,15 @@
         "hash": "9a633b49e2375b929463c1ce49295f58"
     },
     "setting_initialTab": {
-        "message": "biim Start uusgwählte Charteicharte Riiter i däm Feischter",
+        "message": "Biim Start uusgwählte Charteicharte Riiter i däm Feischter",
         "hash": "4f7c8a9bcef6c6476565d540dde62998"
     },
     "initial_tab_last_active": {
-        "message": "<Erinnerä>",
+        "message": "<Siich Erinnerä>",
         "hash": "aa5aecbdb436117318ba27e868fe98c8"
     },
     "initial_tab_this_tab": {
-        "message": "aktuelli Charteicharte Riiter",
+        "message": "Aktuelli Charteicharte Riiter",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
     "initial_tab_rules": {
@@ -425,7 +425,7 @@
 
     "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
-        "message": "Forget Me Not isch Erneueret worde.",
+        "message": "Forget Me Not isch Erneueret worde!",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
     },
     "update_notification_message": {
@@ -463,6 +463,14 @@
     },
 
     "__WET_GROUP__6": { "message": "Info Pages" },
+    "about_page": {
+        "message": "## Author\nMade by Santo Pfingsten, © 2017-2019\n\n## Übersetzer gsueächt\n\nWän Du än anderi Spraach gut gnueg chasch um ä neui Übersetzig z mache dän chasch hälfe mit [däre schlauä Web App](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Probläm, Fragä und anderi Rückmäldige \nBittä tuen offeni Pünkt und Afrage für neui Funktionä bii GitHub mäldä: [https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Privatspährä Uussag\n\nDini Privatsphöre isch vo höchschter Wichtigkeit.\nDiä Erwiiterig tuet nöd mee analisierä oder sammlä als das sii bruucht um ihrii Pflicht z'erfüllä. Sii tuet au nöd irgendwälchi Datä irgendwo anä schickä, nöd emal anonym. PUNKT. \n\n## Danksägigä\nDiä Änglischi Übersetzig isch gschribä vo Santo Pfingsten\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "hash": "8b79e24d589555578de474316b748218"
+    },
+    "tutorial_page": {
+        "message": "# Iiführigslehrgang\n\n## Firefox Iistelligä\nBittä notirä, das diä Erwiiterig chein Zuegriff uuf diini Iistelligä im Firefox hät, das heisst irgendwelchi Iistelligä bii dä Guetzli werdät mit dä Iistelligä vo därä Erwiiterig kombiniert.\n\nDas heisst wään Du dä Firefox ä so tuesch iistelle das alli Guetzli abglähnt wärdet, so hätt diä Erwiiterig ä chei Gueztli zum verarbeitä.\n\n## Süüberigs Typä.\nDu chasch süüberigs Reglä so iistellä das bestimmti Domänenamä zuträffed (Servärnamä vo nä ere Siite im Internet, wie *google.com*). \n\n- **Niä**: Chei süüberig wird jemals gmacht für Domäne wo uuf diä Reglä zuäträffed.\n- **Biim Uufstartä**: Süüberig wird biim Start vom Browser durrä gführt.\n- **Biimm Verlaa**: Süüberig wird biim Schlüssä vom Browsär durrä gführt.\n- **Sofort**: Wän mögliich wird verhindäred das Guetzli gsetzt wärdet. Aanderer siits wärdet diä sofort nach äm setzä glöscht.\n\nWänn mehreri Reglä uf ä ne Domäne zuträffed, wird eifach diä wichtigschti Reglä aagwändet. Im momänt isch Priorität ä so definiert: 'Sofort > Biim Verlaa > Niä > Biim Uufstartä'.\n\nWän ä chei Reglä uf äne Domäne zutrifft, wird eiifach die nöchschti Reglä agwändet.\n\n## Güültigi Uusdrüück\n- Jedä Servernamä (z. Bsp. www.google.com)\n- äs Stärnli (*) chan als Ersatz für än Teil vo nämä Uusdruck verwändet wärdä (z. Bsp. *.ggolge.com odär www.\\*.com).\n\n### Spezielli Uusdrück für Guetzli\nDu chasch spezielli Reglä für Näme vo Guetzli und Domänä kombinierä. \n- Biispil: 'Guetzlinamä@*.google.com'\n- 'Guetzlinamä' dörf numä än gültigä Guetzlinamä sii.\n- Dii gliichä Reglä wie obä werdät au für dä Domänspezifischi Teil i dä rächti Siitä vom '@' Symbol bruucht.\n- Spezifizierti Reglä für Guetzli werdät immer Prioritär vor anderä Reglä vorzogä.\n\n## Guetzli vo driit Partiä\n- Wän es Guetzli vo enerä Domäne gsetzt wird wo chein offenä Charteicharteriiter im Browser hät, wird das als Guezli vo enerä dritt Partii betrachtet.\n- Äs sind no Untersuechigä im gang um diä Methodä z verbesserä.\n\n## Pfuus Modus\n\nMit äm Pfuusmodus cha mär ziitewiis diä automatischi Sübberig deaktivirä. Dä Muuszeiger über das Symbolbild hebä um Aawisigä z gsee (oder click wän Du Android verwändisch).\n\n## Datä Typä wo mö cha Süüberä\n\nDu chasch wählä welli Datä das wotsch usäputzä:\n- **Guetzli**: Normali HTTP Guetzli. (Blitz Guetzli (flash cookies) wärded i dä Sektion Datä Süüberig behandläd).\n- **Lokali Speichär** und **Indexierti DB**: Siitä im Internät chönd bestimmti Datä i diim Browser speicherä um bestimmti Funktionä z erlaubä oder än Erinnerig vo diim Bsuech für dä nöchschit Bsuech. \nMängmal wiist dä Firefox uuf Indexierti DB als \"Speicher\" hii, also wän dä Firefox diir säge tuet youtube.com bruucht äs paar MB vo diim *Speicher*, dän isch äs höchscht wahrschinli diä *Indexierti DB*.\n- **Gschicht**: Das beinhaltäd Logiiträg vo denä voo Diir bsuechtä Siitä.\n- **Abbägladä**: Das beinhaltäd ä Gschiicht vo diinä abegladenä Dateiä. Süüberä bedüted nöd das diini abgegladenä Dateiä entfärnt werdät.\n- **Formular Datä**: Irgendwänn häsch viilicht emol Informationä iigä (zum Biispil) än Kontakt oder än Überwiisigsuuftrag. Abhängig vo diinä Iistelligä sind diä viilicht gspeicherät wordä so das äs liechtär isch diä Informationä wiider ii zträge.\n- **Gheimwörter**: Du häsch viilicht äm Browser gseit das dä söll gwüssi Gheimwörter spiicherä. Wähl das uus wän dia wotsch löschä.\n- **Datä vo Erwiiterige**: Erwiiterige (nöd zuasätz/web-erwiiterige) wia Adobe Flash Player tüend undär Umstäänd Datä wiä Blitz Guetzli odär anderii Informationä und Iisteligiä speicherä.\n- **Dienschtleischtigs Arbeiter**: Diä sind ä Möglichkeit zum Websiitä oni Verbindig is Internät benutzä chönnä oder ä Hiilf zum gwüssi Siitä gschwinder z machä.\n- **Server bundeni Zertifkat**: Wän Du Zertifikat dazue ta häsch um ä Verbindig zu enemä Server z ermögliche, dänn isch das die Möglichkeit zum diä löschä.",
+        "hash": "5b74c6bc9b27eec64490d14cda2871c3"
+    },
 
     "__WET_LOCALE__": { "message": "gsw" }
 }

@@ -19,6 +19,73 @@
     ul:not(.settings_legend) {
         padding-left: 25px;
     }
+
+    .cookie_list_search {
+        width: 100%;
+    }
+
+    ul.cookie_list {
+        margin: 10px;
+        padding-left: 0;
+        overflow: auto;
+        max-height: 300px;
+        
+        &, ul {
+            list-style: none;
+        }
+        ul {
+            padding-left: 8px;
+            margin-left: 9px;
+            border-left: 1px dashed gray;
+            ul {
+                padding-left: 8px;
+            }
+        }
+        .cookie_attributes {
+            font-family: monospace;
+        }
+        .cookie_list_split {
+            display: flex;
+            width: 100%;
+            margin-bottom: 2px;
+
+            .cookie_list_toggle {
+                padding: 0 5px;
+                cursor: pointer;
+                width: 8px;
+                text-align: center;
+            }
+            .cookie_list_value {
+                margin: 0 3px;
+            }
+            .cookie_list_label,
+            .cookie_list_value {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex-shrink: 1;
+            }
+            .cookie_list_add_rule {
+                height: auto;
+                padding: 1px 7px;
+                display: inline-block;
+                color: white;
+                margin: 0 5px;
+                font-size: 10px;
+                cursor: pointer;
+
+                &:not(:hover) {
+                    background: #264597;
+                }
+                
+                &:hover {
+                    color: black;
+                }
+            }
+        }
+        .collapsed {
+            display: none;
+        }
+    }
 }
 
 .dialog ~ * {

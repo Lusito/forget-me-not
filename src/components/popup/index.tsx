@@ -24,6 +24,8 @@ import { LogoWithLink } from "../logo/logoWithLink";
 import "./style.scss";
 import { CleanDialog } from "../dialogs/cleanDialog";
 import { EXPORT_IGNORE_KEYS, SettingsKey } from "../../lib/settingsSignature";
+import { CookieBrowserDialog } from "../dialogs/cookieBrowserDialog";
+import { CookieBrowserBubble } from "../hoverBubbles/cookieBrowserBubble";
 
 settings.onReady(() => {
     if (browserInfo.mobile)
@@ -55,11 +57,14 @@ settings.onReady(() => {
 
     document.body.appendChild(popup);
 
+    const cookieBrowserButton = <button class="cookie_browser_button">{/*fixme:title/aria*/}</button>;
     const cleanupButton = <button class="manual_cleanup_button">{/*fixme:title/aria*/}</button>;
     const snoozeButton = <SnoozeButton />;
+    <CookieBrowserDialog button={cookieBrowserButton} />;
     <CleanDialog button={cleanupButton} />;
 
     popup.insertBefore(<div id="toolbar">
+        {cookieBrowserButton}
         {cleanupButton}
         {snoozeButton}
     </div>, popup.querySelector(".tabs_pages"));
@@ -68,6 +73,7 @@ settings.onReady(() => {
 
     if (!browserInfo.mobile) {
         document.body.appendChild(<HelpBubble button={popup.querySelector("#help_button") as HTMLElement} />);
+        document.body.appendChild(<CookieBrowserBubble button={cookieBrowserButton} />);
         document.body.appendChild(<ManualCleanupBubble button={cleanupButton} />);
         document.body.appendChild(<SnoozeBubble button={snoozeButton} />);
     }

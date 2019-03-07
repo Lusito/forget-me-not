@@ -118,6 +118,12 @@
     "manual_cleanup_description": {
         "message": "With this you can run a manual clean up. You will be able to select what to clean."
     },
+    "cookie_browser_title": {
+        "message": "Cookie Browser"
+    },
+    "cookie_browser_description": {
+        "message": "With this you can inspect cookies and easily add cookie-specific rules."
+    },
     "define_rules": {
         "message": "Define rules:"
     },

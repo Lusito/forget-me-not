@@ -5,33 +5,15 @@ import { messageUtil } from "../../lib/messageUtil";
 import { CookieDomainInfo } from "../../shared";
 import { removeAllChildren } from "../../lib/htmlUtils";
 import { wetLayer } from "wet-layer";
-import * as punycode from "punycode";
 import "./style.scss";
-import { isValidExpression, settings } from "../../lib/settings";
-import { CleanupType } from "../../lib/settingsSignature";
-import { RuleDialog } from "../dialogs/ruleDialog";
-import { getDomain } from "tldjs";
+import { appendPunycode, getSuggestedRuleExpression, showAddRuleDialog } from "../helpers";
 
 export function LogTab() {
     const list = <ul id="recently_accessed_domains" />;
 
-    function appendPunycode(domain: string) {
-        const punified = punycode.toUnicode(domain);
-        return (punified === domain) ? domain : `${domain} (${punified})`;
-    }
     function createListItem(info: CookieDomainInfo) {
         function addRule() {
-            const expression = "*." + (getDomain(info.domain) || info.domain);
-            if (isValidExpression(expression)) {
-                function onConfirm(type: CleanupType | false, expression?: string) {
-                    if (expression && type !== false)
-                        settings.setRule(expression, type);
-                }
-                let focusType = settings.getExactCleanupType(expression);
-                if (focusType === null)
-                    focusType = CleanupType.NEVER;
-                <RuleDialog expression={expression} editable={true} focusType={focusType} onConfirm={onConfirm} />;
-            }
+            showAddRuleDialog(getSuggestedRuleExpression(info.domain));
         }
         const punified = appendPunycode(info.domain);
         const addRuleMessage = wetLayer.getMessage("button_log_add_rule");

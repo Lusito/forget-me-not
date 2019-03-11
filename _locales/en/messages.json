@@ -63,6 +63,9 @@
     "confirm_rule_replace_dialog_content": {
         "message": "The specified rule expression already exists.. do you want to replace it?"
     },
+    "dialog_back": {
+        "message": "Back"
+    },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
     "cleanup_type_never_badge": {

@@ -45,13 +45,15 @@ function compareCookieName(a: CookieListCookie, b: CookieListCookie) {
     return compareCaseInsensitive(a.cookie.name, b.cookie.name);
 }
 
+const noopToArray = () => [];
+
 async function getCookieList() {
     const cookieStores = await getAllCookieStoreIds();
     const nestedCookies = await Promise.all(cookieStores.map((storeId) => {
         const details: Cookies.GetAllDetailsType = { storeId };
         if (supportsFirstPartyIsolation)
             details.firstPartyDomain = null;
-        return browser.cookies.getAll(details);
+        return browser.cookies.getAll(details).catch(noopToArray);
     }));
     const cookies = ([] as Cookies.Cookie[]).concat(...nestedCookies);
 
@@ -176,13 +178,7 @@ interface CookieBrowserDialogProps {
 }
 
 export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
-    function onCancel() {
-        hideDialog(dialog);
-    }
-
-    const buttons = [
-        <button data-i18n="prompt_cancel" onClick={onCancel} />
-    ];
+    const buttons = [<button data-i18n="dialog_back" onClick={() => hideDialog(dialog)} />];
 
     const cookieList = <ul class="cookie_list" />;
     const searchField = <input class="cookie_list_search" placeholder="Search.." /> as HTMLInputElement;

@@ -82,6 +82,10 @@
         "message": "Der spezifizierte Regelausdruck besteht bereits.. möchtest du diesen ersetzen?",
         "hash": "74219b377804324016c6fbca36518b25"
     },
+    "dialog_back": {
+        "message": "Zurück",
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
+    },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
     "cleanup_type_never_badge": {

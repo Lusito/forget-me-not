@@ -79,7 +79,7 @@ function mapToCookieItem(entry: CookieListCookie) {
     const cookieAttributes = <ul class="collapsed cookie_attributes">
         <li class="cookie_list_split">
             <b>Value:</b>
-            <span class="cookie_list_value" data-searchable>{entry.cookie.value}</span>
+            <span class="cookie_list_value" data-searchable title={entry.cookie.value}>{entry.cookie.value}</span>
         </li>
         <li class="cookie_list_split">
             <b>Expires:</b>

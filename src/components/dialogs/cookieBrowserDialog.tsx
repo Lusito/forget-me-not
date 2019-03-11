@@ -74,7 +74,7 @@ async function getCookieList() {
 function mapToCookieItem(entry: CookieListCookie) {
     const expires = entry.cookie.session
         ? "On Session End"
-        : new Date(entry.cookie.expirationDate || 0).toLocaleString() || "?";
+        : new Date((entry.cookie.expirationDate || 0) * 1000).toLocaleString() || "?";
 
     const cookieAttributes = <ul class="collapsed cookie_attributes">
         <li class="cookie_list_split">

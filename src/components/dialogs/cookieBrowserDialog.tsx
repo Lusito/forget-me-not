@@ -2,12 +2,15 @@ import { h } from "tsx-dom";
 import { Dialog, showDialog, hideDialog } from "./dialog";
 import { on, removeAllChildren } from "../../lib/htmlUtils";
 import { connectSettings } from "../../lib/htmlSettings";
-import { Cookies, browser } from "webextension-polyfill-ts";
-import { getBadgeForCleanupType, BadgeInfo } from "../../background/backgroundHelpers";
+import { Cookies, browser, ContextualIdentities } from "webextension-polyfill-ts";
+import { getBadgeForCleanupType, BadgeInfo, getAllCookieStoreIds } from "../../background/backgroundHelpers";
 import { getDomain } from "tldjs";
 import { settings } from "../../lib/settings";
 import { wetLayer } from "wet-layer";
 import { appendPunycode, showAddRuleDialog, getSuggestedRuleExpression } from "../helpers";
+import { isFirefox, browserInfo } from "../../lib/browserInfo";
+
+const supportsFirstPartyIsolation = isFirefox && browserInfo.versionAsNumber >= 59;
 
 interface CookieListCookie {
     badge: BadgeInfo;
@@ -43,7 +46,15 @@ function compareCookieName(a: CookieListCookie, b: CookieListCookie) {
 }
 
 async function getCookieList() {
-    const cookies = await browser.cookies.getAll({});
+    const cookieStores = await getAllCookieStoreIds();
+    const nestedCookies = await Promise.all(cookieStores.map((storeId) => {
+        const details: Cookies.GetAllDetailsType = { storeId };
+        if (supportsFirstPartyIsolation)
+            details.firstPartyDomain = null;
+        return browser.cookies.getAll(details);
+    }));
+    const cookies = ([] as Cookies.Cookie[]).concat(...nestedCookies);
+
     const cookiesByDomain: { [s: string]: CookieListForDomain } = {};
     for (const cookie of cookies) {
         const rawDomain = cookie.domain.startsWith(".") ? cookie.domain.substr(1) : cookie.domain;
@@ -71,10 +82,31 @@ async function getCookieList() {
     return cookiesByDomainList;
 }
 
+let contextualIdentities: { [s: string]: ContextualIdentities.ContextualIdentity } = {};
+
+async function updateContextualIdentities() {
+    contextualIdentities = {};
+    if (browser.contextualIdentities) {
+        try {
+            const list = await browser.contextualIdentities.query({});
+            for (const ci of list)
+                contextualIdentities[ci.cookieStoreId] = ci;
+        } catch (e) {
+            console.error("Can't get storeNames", e);
+        }
+    }
+}
+
 function mapToCookieItem(entry: CookieListCookie) {
     const expires = entry.cookie.session
         ? "On Session End"
         : new Date((entry.cookie.expirationDate || 0) * 1000).toLocaleString() || "?";
+    const contextualIdentity = contextualIdentities[entry.cookie.storeId];
+    const cookieStoreValue = contextualIdentity
+        ? <span class="cookie_list_value" style={`border-bottom: 1px solid ${contextualIdentity.colorCode}`}>
+            {contextualIdentity.name}
+        </span>
+        : <span class="cookie_list_value">{entry.cookie.storeId}</span>;
 
     const cookieAttributes = <ul class="collapsed cookie_attributes">
         <li class="cookie_list_split">
@@ -87,7 +119,7 @@ function mapToCookieItem(entry: CookieListCookie) {
         </li>
         <li class="cookie_list_split">
             <b>Store:</b>
-            <span class="cookie_list_value">{entry.cookie.storeId}</span>
+            {cookieStoreValue}
         </li>
         <li class="cookie_list_split">
             <b>Secure:</b>
@@ -176,7 +208,8 @@ export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
     </Dialog>;
     on(button, "click", () => {
         removeAllChildren(cookieList);
-        getCookieList().then((list) => {
+        getCookieList().then(async (list) => {
+            await updateContextualIdentities();
             for (const byDomain of list)
                 cookieList.appendChild(mapToDomainItem(byDomain));
             filterList();

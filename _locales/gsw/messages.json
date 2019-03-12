@@ -154,6 +154,14 @@
         "message": "Mit däm chasch vo Hand suubermache. Du chasch Uswähle was Gsüberet söll werde.",
         "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
     },
+    "cookie_browser_title": {
+        "message": "Guetzli Navigator",
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+    },
+    "cookie_browser_description": {
+        "message": "Mit dem chasch Du Guetzki inspizierä und eiifach Guetzli spezifische Regelä addirä.",
+        "hash": "918c4ecbf778bb45871133c3fce417da"
+    },
     "define_rules": {
         "message": "Ä neui Reglä definierä:",
         "hash": "958b9c121084b503102f5f7e566a833e"
@@ -171,7 +179,7 @@
         "hash": "338c238d02c3001ea6d21739b8678ec5"
     },
     "tabs_settings_experimental": {
-        "message": "Experimäntel",
+        "message": "Experimentäl",
         "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
     },
     "tabs_this_tab@title": {
@@ -211,7 +219,7 @@
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
     "button_clean_domain": {
-        "message": "Mach diä Domäne suuber",
+        "message": "Mach diä Domäne suuber!",
         "hash": "2e3cc752e235b2a95737ad9113e45bf5"
     },
     "button_import": {
@@ -259,15 +267,15 @@
         "hash": "338c238d02c3001ea6d21739b8678ec5"
     },
     "rules_input@placeholder": {
-        "message": "Suechä oder Addierä",
+        "message": "Suechä oder Addierä..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
     },
     "expression_hint_invalid": {
-        "message": "Ungültigä Ussdruck",
+        "message": "Ungültigä Ussdruck!",
         "hash": "5960bcc4b7e809e74c69cd96049e9245"
     },
     "expression_hint_exists": {
-        "message": "Dä Ussdruck giits scho",
+        "message": "Dä Ussdruck giits scho!",
         "hash": "8171dd015c1bd031c6c7af75d5fa7100"
     },
     "rules_add": {
@@ -305,6 +313,10 @@
     "setting_apply_rules@title": {
         "message": "Regle Awändä",
         "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
+    },
+    "setting_ignore_rules@title": {
+        "message": "Regle Ignorirä",
+        "hash": "ccb8dbed77ececb457ea594439d42146"
     },
     "setting_cookies": {
         "message": "Guetzli",
@@ -422,6 +434,14 @@
         "message": "Logbuech vo dä Domäne",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
+    "settings_cleanable_data": {
+        "message": "Datä zum suubermachä",
+        "hash": "63fe0e7a1fc35e835bc8495abdfbd6fb"
+    },
+    "settings_enable": {
+        "message": "Ermöglichä",
+        "hash": "2212934c2b3d751385bf1c26d91172f3"
+    },
 
     "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
@@ -464,7 +484,7 @@
 
     "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Author\nMade by Santo Pfingsten, © 2017-2019\n\n## Übersetzer gsueächt\n\nWän Du än anderi Spraach gut gnueg chasch um ä neui Übersetzig z mache dän chasch hälfe mit [däre schlauä Web App](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Probläm, Fragä und anderi Rückmäldige \nBittä tuen offeni Pünkt und Afrage für neui Funktionä bii GitHub mäldä: [https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Privatspährä Uussag\n\nDini Privatsphöre isch vo höchschter Wichtigkeit.\nDiä Erwiiterig tuet nöd mee analisierä oder sammlä als das sii bruucht um ihrii Pflicht z'erfüllä. Sii tuet au nöd irgendwälchi Datä irgendwo anä schickä, nöd emal anonym. PUNKT. \n\n## Danksägigä\nDiä Änglischi Übersetzig isch gschribä vo Santo Pfingsten\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "message": "## Author\nMade by Santo Pfingsten, © 2017-2019\n\n## Übersetzer gsueächt\n\nWän Du än anderi Spraach gut gnueg chasch um ä neui Übersetzig z mache dän chasch hälfe mit [däre schlauä Web App](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Probläm, Fragä und anderi Rückmäldige \nBittä tuen offeni Pünkt und Afrage für neui Funktionä bii GitHub mäldä: [https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Privatspährä Uussag\n\nDini Privatsphöre isch vo höchschter Wichtigkeit.\nDiä Erwiiterig tuet nöd mee analisierä oder sammlä als das sii bruucht um ihrii Pflicht z'erfüllä. Sii tuet au nöd irgendwälchi Datä irgendwo anä schickä, nöd emal anonym. PUNKT. \n\n## Danksägigä\nDiä Schwiizerdütschi Übersetzig isch gschriibä wordä vom Benjamin Rosenzweig\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "8b79e24d589555578de474316b748218"
     },
     "tutorial_page": {

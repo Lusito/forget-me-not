@@ -82,6 +82,14 @@
         "message": "Der spezifizierte Regelausdruck besteht bereits.. möchtest du diesen ersetzen?",
         "hash": "74219b377804324016c6fbca36518b25"
     },
+    "cookie_browser_title": {
+        "message": "Cookiebrowser",
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+    },
+    "cookie_browser_description": {
+        "message": "Hiermit kannst du Cookies inspizieren und leicht Cookiespezifische Regeln erstellen.",
+        "hash": "918c4ecbf778bb45871133c3fce417da"
+    },
     "dialog_back": {
         "message": "Zurück",
         "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"

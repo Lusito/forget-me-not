@@ -82,6 +82,18 @@
         "message": "A expressão de regra especificada já existe.. pretende substituí-la?",
         "hash": "74219b377804324016c6fbca36518b25"
     },
+    "cookie_browser_title": {
+        "message": "Navegador de cookies",
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+    },
+    "cookie_browser_description": {
+        "message": "Com isto pode inspecionar cookies e adicionar facilmente regras específicas de cookies.",
+        "hash": "918c4ecbf778bb45871133c3fce417da"
+    },
+    "dialog_back": {
+        "message": "Retroceder",
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
+    },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
     "cleanup_type_never_badge": {
@@ -306,6 +318,10 @@
         "message": "Aplicar regras",
         "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
     },
+    "setting_ignore_rules@title": {
+        "message": "Ignorar regras",
+        "hash": "ccb8dbed77ececb457ea594439d42146"
+    },
     "setting_cookies": {
         "message": "Cookies",
         "hash": "4aef64b30489430071825bcb3db557b6"
@@ -345,6 +361,10 @@
     "setting_service_workers": {
         "message": "Service Workers",
         "hash": "584545acfce5580c7967bc8c366df556"
+    },
+    "setting_cache": {
+        "message": "Cache",
+        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
     },
     "setting_server_bound_certificates": {
         "message": "Certificados vinculados ao servidor",
@@ -417,6 +437,14 @@
     "initial_tab_log": {
         "message": "Registo de domínios",
         "hash": "4e6a1346f00de8119677a55341959bf0"
+    },
+    "settings_cleanable_data": {
+        "message": "Dados limpáveis",
+        "hash": "63fe0e7a1fc35e835bc8495abdfbd6fb"
+    },
+    "settings_enable": {
+        "message": "Ativar",
+        "hash": "2212934c2b3d751385bf1c26d91172f3"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },

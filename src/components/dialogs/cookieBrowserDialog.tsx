@@ -68,7 +68,7 @@ async function getCookieList() {
         if (byDomain) {
             byDomain.cookies.push(mapped);
         } else {
-            cookiesByDomain[rawDomain] = {
+            cookiesByDomain[cookie.domain] = {
                 badge: getBadgeForCleanupType(settings.getCleanupTypeForDomain(rawDomain)),
                 domain: cookie.domain,
                 firstPartyDomain,

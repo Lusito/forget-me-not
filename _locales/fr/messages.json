@@ -43,8 +43,12 @@
         "hash": "f5545c85577b03ed93d451abf748ce8d"
     },
     "reset_dialog_content": {
-        "message": "Cette action n'est pas possible",
+        "message": "Cette action est définitive et ne peut être annulée.",
         "hash": "db630835e0fd63a96fcb2feed83facc3"
+    },
+    "rule_dialog_title": {
+        "message": "Sélectionnez une règle de nettoyage.",
+        "hash": "8b92b69da821db80656274e044e68643"
     },
     "confirm_settings_and_rules": {
         "message": "Paramètres et Règles",
@@ -57,6 +61,18 @@
     "confirm_cancel": {
         "message": "Annuler",
         "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "cookie_browser_title": {
+        "message": "Consultation de cookie",
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+    },
+    "cookie_browser_description": {
+        "message": "Vous permet l'inspection des cookies et l'ajout de règles s'y rapportant.",
+        "hash": "918c4ecbf778bb45871133c3fce417da"
+    },
+    "dialog_back": {
+        "message": "Retour",
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
     },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
@@ -72,11 +88,31 @@
         "message": "Nettoyage en quittant le domaine",
         "hash": "a69a2b082be9de0589a0f807f6be2179"
     },
+    "cleanup_type_instantly_button@title": {
+        "message": "Suspendre le nettoyage immédiat",
+        "hash": "f253ddd17544f84b52a993fe784164e6"
+    },
+    "cleanup_type_create_button": {
+        "message": "Créer la règle",
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Choisir le mode de nettoyage à appliquer",
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
+    },
 
     "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Plateforme non-supportée",
+        "hash": "99286998bff7ecef26245d3858e4fe0f"
+    },
     "perform_manual_cleanup": {
         "message": "Effectuer un nettoyage manuel",
         "hash": "1098090c30d2dc94517833dc3d259a71"
+    },
+    "manual_cleanup_description": {
+        "message": "Vous permet de choisir ce que vous souhaitez nettoyer.",
+        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
     },
     "define_rules": {
         "message": "Définir les règles:",
@@ -122,6 +158,10 @@
         "message": "Nettoyer maintenant !",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
+    "button_clean_domain": {
+        "message": "Nettoyer pour ce nom de domaine !",
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+    },
     "button_import": {
         "message": "Importer..",
         "hash": "0192d8f28f3d837e79a05711e6379e5e"
@@ -151,24 +191,32 @@
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
     "rules_input@placeholder": {
-        "message": "Rechercher ou ajouter..",
+        "message": "Rechercher ou ajouter…",
         "hash": "a0766c32473f97b153fd63a92cadd450"
+    },
+    "expression_hint_invalid": {
+        "message": "La formule est incorrecte !",
+        "hash": "5960bcc4b7e809e74c69cd96049e9245"
+    },
+    "expression_hint_exists": {
+        "message": "Cette formule existe déjà ! ",
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
     },
     "rules_add": {
         "message": "Ajouter",
         "hash": "c30738ff9271a856100751bbca5e5794"
     },
     "help_button@title": {
-        "message": "Lire le fonctionnement des règles, quelles expressions vous pouvez utiliser, les règles expérimentales, et les changements récents de cette extension.",
+        "message": "Lire le fonctionnement des règles, quelles formules vous pouvez employer, les règles expérimentales, et les changements récents de cette extension.",
         "hash": "90c094de68babfe6bfb332fb03538a24"
     },
     "types_of_cleanup@title": {
-        "message": "Lire plus à propos de ce que les cases à cocher incluent.",
+        "message": "Lire plus à propos de ce que ces cases à cocher incluent.",
         "hash": "ba2fe14822b0ddacb1f12d26f543783d"
     },
     "setting_purge_expired_cookies": {
-        "message": "Purger les cookies expirés à chaque nettoyage.",
-        "hash": "1ff8b00b0ca44682a083d91280bcc011"
+        "message": "Purger les cookies expirés à chaque demande de nettoyage.",
+        "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
     },
     "setting_show_update_notification": {
         "message": "Afficher une notification lorsque l'extension est mise à jour.",
@@ -195,7 +243,7 @@
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
     "setting_protect_open_domains": {
-        "message": "Protéger les domaines actuellement ouvert lorsque \"Appliquer les règles\" est coché",
+        "message": "Protéger les domaines actuellement ouverts lorsque \"Appliquer les règles\" est coché",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
     },
     "setting_history": {
@@ -243,7 +291,7 @@
         "hash": "c96674945ffdf9f8da181b05c249d29b"
     },
     "setting_whitelist_no_tld@title": {
-        "message": "Domaines tels que localhost, intranet, etc (sans .com, .net, etc.)",
+        "message": "Domaines tels que localhost, intranet (sans .com, .net,…)",
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "setting_log_rad_enabled": {
@@ -259,11 +307,11 @@
         "hash": "4f7c8a9bcef6c6476565d540dde62998"
     },
     "initial_tab_last_active": {
-        "message": "<Se souvenir>",
+        "message": "<Mémoriser>",
         "hash": "aa5aecbdb436117318ba27e868fe98c8"
     },
     "initial_tab_this_tab": {
-        "message": "Onglet courant",
+        "message": "Onglet actuel",
         "hash": "9e1baccf4de27f703edde7de60b38ee1"
     },
     "initial_tab_rules": {
@@ -275,13 +323,13 @@
         "hash": "9c49db0871c842c3afc2c09b8a957eba"
     },
     "initial_tab_log": {
-        "message": "Réglage domaine",
+        "message": "Historique du domaine",
         "hash": "4e6a1346f00de8119677a55341959bf0"
     },
 
     "__WET_GROUP__4": { "message": "Notifications" },
     "update_notification_title": {
-        "message": "Forget me not a été mis à jour !",
+        "message": "Extension Forget me not mise à jour !",
         "hash": "ee6d409dd42b2f42f153c1a574ca3595"
     },
     "update_notification_message": {
@@ -289,7 +337,7 @@
         "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
     },
     "cookie_cleanup_notification_title": {
-        "message": "$COUNTS\" les cookies ont été supprimés",
+        "message": "$COUNTS\" cookies ont été supprimés",
         "placeholders": {
             "count": { "content": "$1", "example": "4" }
         },
@@ -310,17 +358,17 @@
         "hash": "addde02e14af8336c24777c9b03dc5eb"
     },
     "import_success_close_now": {
-        "message": "Fichier importé avec succès. Vous pouvez maintenant fermer cette fenêtre.",
+        "message": "Fichier de réglages importé avec succès. Vous pouvez maintenant fermer cette fenêtre.",
         "hash": "cd1b4a7131754d680d4a662e29b2516b"
     },
     "import_failure": {
-        "message": "Impossible d'importer le fichier. Vérifiez que le fichier soit valide.",
+        "message": "Échec de l'importation de ce fichier. Ce n'est peut-être pas un fichier de réglages correct.",
         "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
     },
 
     "__WET_GROUP__6": { "message": "Info Pages" },
     "about_page": {
-        "message": "## Auteur\nCréé par Santo Pfingsten, © 2017-2019\n\n## Traductions\n\nSi vous avez des connaissances dans une autre langue, aidez-moi en créant une traduction avec  [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n\n## Problèmes, questions, retours\nMerci de poster dysfonctionnements et suggestions sur GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Déclaration de confidentialité\n\nVotre confidentialité tient de la plus haute importance.\nCette extension n'analyse ou ne collecte aucune données autre que celles nécessaires à l'exécution de sa tache. Elle n'envoie aucune données par le réseau, même anonymement. PERIOD.\n\n## Credits\n* Traduction française réalisée par Benny Hill & djizuss. Correction: Jules Balarate\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "message": "## Auteur\nCréé par Santo Pfingsten, © 2017-2019\n\n## Traductions\n\nSi vous avez des connaissances dans une autre langue, aidez-moi en créant une traduction avec  [this nifty web-app](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n\n## Problèmes, questions, retours\nMerci de poster dysfonctionnements et suggestions sur GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Déclaration de confidentialité\n\nVotre confidentialité tient de la plus haute importance.\nCette extension n'analyse ou ne collecte aucune donnée autre que celles nécessaires à l'exécution de sa tâche. Elle n'envoie aucune données par le réseau, même anonymement. PERIOD.\n\n## Credits\n* Traduction française proposée par Benny Hill & djizuss. Correction: Jules Balarate\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
         "hash": "8b79e24d589555578de474316b748218"
     },
     "experimental_page": {
@@ -328,7 +376,7 @@
         "hash": "b2158f0e30401d015933ecc25c8c6fb6"
     },
     "changelog_page": {
-        "message": "## Journal des changements\n\n### Version 2.1.0 (2019/03/03)\n\n- Further improvements to the user interface.\n- Fix for downloads not being cleared correctly on startup\n- Fix for input field on rule creation.\n- Swiss German translation by BenjaminRosenzeig.\n- Updated italian translation by AlienLogic.\n- Fix for \"Instant\" rule incorrectly blocking in private tabs.\n- Added missing tooltips.\n- Cookie expressions are now shown under the \"Matching Expression\"\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Version 1.0.5 (2018/09/02)\n- Résolu d'un bug concernant l'apparition d'une notification a chaque démarrage.\n\n### Version 1.0.4 (2018/09/02)\n- Evitement d'un bug Firefox, qui ne nettoyait pas l'historique de téléchargement.\n- Evitement d'un bug Firefox, évitant le nettoyage correct des conteneurs de cookies\n- Les sookies Locaux (provenant des sites WEB stockés sur votre machine) peuvent être nettoyés efficacement.\n- Traduction en Français réalisée par des gens sympas.\n- Prise en charge du bouton d'application en direct du traducteur Web-extension.\n- Meilleur support du menu de dépassement de Firefox\n\n### Version 1.0.3 (2018/08/23)\n- Correction d'un bug dans l'analyseur d'expression de règles\n- Traduction (Argentina) espagnol réalisée par [Fabián Pérez](https://www.github.com/thepante)\n- Traduction Suédois réalisée par Jo3yA\n- Traduction Portuguais réalisée par SW1FT\n- Traduction Portuguais (Brésil) réalisée par Victor Bambino\n- Mis a jour traduction Serbe réalisée par  Michael Wolf\n\n### Version 1.0.2 (2018/06/03)\n- Prise en charge de la navigation au clavier et des lecteurs d'écran\n\n### Version 1.0.1 (2018/05/28)\n- Correction de la purge des cookies expirés\n\n### Version 1.0.0 (2018/05/27)\n- Ajout d'une icône et d'une info-bulle différentes en mode répétition.\n- Locaux du haut et du bas sorabe grâce à @milupo.\n- Les utilisateurs peuvent désormais modifier le type de règle appliqué si aucune règle correspondante n'a été trouvée.\n- Prise en charge de la création de règles spécifiques à un cookie nommé\n- Amélioration de la détection des cookies tiers.\n- Correction de bugs avec la suppression des cookies de sous-domaine.\n- Prise en charge améliorée de la première isolation\n- Nouvelle fonctionnalité expérimentale: purge des cookies périmés à chaque nettoyage.\n- Correction de quelques problèmes visuels.\n- Beaucoup d'améliorations du code pour une meilleure stabilité et de meilleures performances!\n- Plus de 100 tests unitaires pour assurer une bonne qualité!\n- Meilleure aide et plus de descriptions.\n- Ajout de la déclaration de confidentialité.\n\n### Version 0.9.1 (2018/04/06)\n- Bug qui ignorait le paramètre \"ne pas notifier\" concernant les mises à jour\n\n### Version 0.8.8 (2018/01/24)\n- Ajout d'un nouveau type de règle noire pour bloquer complètement les cookies.\n- L'isolation de première partie n'empêche plus l'extension de supprimer les cookies (commence à fonctionner avec Firefox 59). Un support amélioré sera bientôt disponible dans une version bêta.\n- Correction: en quittant un domaine, en y entrant de nouveau et en le laissant à nouveau avant l'expiration du délai de nettoyage initial, les cookies seraient supprimés trop tôt.\n- Correction de bug: les notifications pourraient être remplacées trop rapidement pour que l'utilisateur puisse les voir.\n\n### Version 0.8.7 (2017/12/20)\n- La solution de contournement pour l'importation de paramètres ne fonctionne pas correctement dans la fenêtre contextuelle Firefox browserAction.\n- Prise en charge partielle des onglets de conteneur: les cookies fonctionnent, pas le stockage local (Mozilla doit réparer quelque chose en premier)\n- Ajout de la nouvelle règle \"Forget\" (rouge) pour autoriser le remplacement d'autres règles (lisez le tutoriel pour plus de détails).\n- Correction d'un problème avec le nettoyage de démarrage\n- Ajout de tests unitaires\n- Ajout d'une option pour masquer les badges\n- Ajout d'une option pour choisir l'onglet initialement sélectionné\n- Ajout d'une option pour afficher les notifications de suppression de cookies\n- Correction d'un problème sur l'exportation\n\n### Version 0.8.6 (2017/12/06)\n- Changements de traduction, en utilisant [web-ext-translator] (https://www.npmjs.com/package/web-ext-translator)\n- Introduction d'un fichier readme, tutoriel et changelog en extension.\n   - Vous pouvez y accéder via le bouton d'interrogation.\n- Affichage d'une notification lorsque l'extension a été mise à jour (peut être désactivée).\n- Les domaines sans domaine de premier niveau (tels que localhost, intranet, etc.) peuvent désormais être ajoutés à la liste blanche avec une case à cocher.\n- Fonction expérimentale pour bloquer les cookies tiers\n\n### Version 0.8.5 (2017/11/25)\n- Typo corrigé\n- Basculement du type de règle plus lisse\n- Bouton permettant d’ajouter de nouvelles règles (avant de pouvoir ajouter une nouvelle règle en appuyant sur Entrée)\n- Bouton pour obtenir des informations sur les expressions valides\n\n### Version 0.8.4 (2017/11/25)\n- Meilleure compatibilité mobile\n- Correction des cookies incognito enregistrés et supprimés\n\n### Version 0.8.3 (2017/11/24)\n- Désactivé sur les onglets / fenêtres incognito\n- Ajout d'un journal pour voir les domaines des dernières modifications apportées aux cookies\n- Ajout de boutons pour pré-remplir le champ de saisie du filtre avec les domaines ci-dessus et l'onglet actuel\n\n### Version 0.8.2 (2017/11/19)\n- Quelques corrections de bugs, nettoyages\n\n### Version 0.8.0 (2017/11/19)\n- Première version",
+        "message": "## Journal des changements\n\n### Version 2.2.1 (2019/03/13)\n\n- Translations have been updated.\n- A bug in the cookie browser has been fixed.\n\n### Version 2.2.0 (2019/03/12)\n\n- Swiss German translations have been updated.\n- A cookie browser has been added to easily add cookie-specific rules.\n\n### Version 2.1.0 (2019/03/03)\n\n- Further improvements to the user interface.\n- Fix for downloads not being cleared correctly on startup\n- Fix for input field on rule creation.\n- Swiss German translation by BenjaminRosenzeig.\n- Updated italian translation by AlienLogic.\n- Fix for \"Instant\" rule incorrectly blocking in private tabs.\n- Added missing tooltips.\n- Cookie expressions are now shown under the \"Matching Expression\"\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Version 1.0.5 (2018/09/02)\n- Résolu d'un bug concernant l'apparition d'une notification a chaque démarrage.\n\n### Version 1.0.4 (2018/09/02)\n- Evitement d'un bug Firefox, qui ne nettoyait pas l'historique de téléchargement.\n- Evitement d'un bug Firefox, évitant le nettoyage correct des conteneurs de cookies\n- Les sookies Locaux (provenant des sites WEB stockés sur votre machine) peuvent être nettoyés efficacement.\n- Traduction en Français réalisée par des gens sympas.\n- Prise en charge du bouton d'application en direct du traducteur Web-extension.\n- Meilleur support du menu de dépassement de Firefox\n\n### Version 1.0.3 (2018/08/23)\n- Correction d'un bug dans l'analyseur d'expression de règles\n- Traduction (Argentina) espagnol réalisée par [Fabián Pérez](https://www.github.com/thepante)\n- Traduction Suédois réalisée par Jo3yA\n- Traduction Portuguais réalisée par SW1FT\n- Traduction Portuguais (Brésil) réalisée par Victor Bambino\n- Mis a jour traduction Serbe réalisée par  Michael Wolf\n\n### Version 1.0.2 (2018/06/03)\n- Prise en charge de la navigation au clavier et des lecteurs d'écran\n\n### Version 1.0.1 (2018/05/28)\n- Correction de la purge des cookies expirés\n\n### Version 1.0.0 (2018/05/27)\n- Ajout d'une icône et d'une info-bulle différentes en mode répétition.\n- Locaux du haut et du bas sorabe grâce à @milupo.\n- Les utilisateurs peuvent désormais modifier le type de règle appliqué si aucune règle correspondante n'a été trouvée.\n- Prise en charge de la création de règles spécifiques à un cookie nommé\n- Amélioration de la détection des cookies tiers.\n- Correction de bugs avec la suppression des cookies de sous-domaine.\n- Prise en charge améliorée de la première isolation\n- Nouvelle fonctionnalité expérimentale: purge des cookies périmés à chaque nettoyage.\n- Correction de quelques problèmes visuels.\n- Beaucoup d'améliorations du code pour une meilleure stabilité et de meilleures performances!\n- Plus de 100 tests unitaires pour assurer une bonne qualité!\n- Meilleure aide et plus de descriptions.\n- Ajout de la déclaration de confidentialité.\n\n### Version 0.9.1 (2018/04/06)\n- Bug qui ignorait le paramètre \"ne pas notifier\" concernant les mises à jour\n\n### Version 0.8.8 (2018/01/24)\n- Ajout d'un nouveau type de règle noire pour bloquer complètement les cookies.\n- L'isolation de première partie n'empêche plus l'extension de supprimer les cookies (commence à fonctionner avec Firefox 59). Un support amélioré sera bientôt disponible dans une version bêta.\n- Correction: en quittant un domaine, en y entrant de nouveau et en le laissant à nouveau avant l'expiration du délai de nettoyage initial, les cookies seraient supprimés trop tôt.\n- Correction de bug: les notifications pourraient être remplacées trop rapidement pour que l'utilisateur puisse les voir.\n\n### Version 0.8.7 (2017/12/20)\n- La solution de contournement pour l'importation de paramètres ne fonctionne pas correctement dans la fenêtre contextuelle Firefox browserAction.\n- Prise en charge partielle des onglets de conteneur: les cookies fonctionnent, pas le stockage local (Mozilla doit réparer quelque chose en premier)\n- Ajout de la nouvelle règle \"Forget\" (rouge) pour autoriser le remplacement d'autres règles (lisez le tutoriel pour plus de détails).\n- Correction d'un problème avec le nettoyage de démarrage\n- Ajout de tests unitaires\n- Ajout d'une option pour masquer les badges\n- Ajout d'une option pour choisir l'onglet initialement sélectionné\n- Ajout d'une option pour afficher les notifications de suppression de cookies\n- Correction d'un problème sur l'exportation\n\n### Version 0.8.6 (2017/12/06)\n- Changements de traduction, en utilisant [web-ext-translator] (https://www.npmjs.com/package/web-ext-translator)\n- Introduction d'un fichier readme, tutoriel et changelog en extension.\n   - Vous pouvez y accéder via le bouton d'interrogation.\n- Affichage d'une notification lorsque l'extension a été mise à jour (peut être désactivée).\n- Les domaines sans domaine de premier niveau (tels que localhost, intranet, etc.) peuvent désormais être ajoutés à la liste blanche avec une case à cocher.\n- Fonction expérimentale pour bloquer les cookies tiers\n\n### Version 0.8.5 (2017/11/25)\n- Typo corrigé\n- Basculement du type de règle plus lisse\n- Bouton permettant d’ajouter de nouvelles règles (avant de pouvoir ajouter une nouvelle règle en appuyant sur Entrée)\n- Bouton pour obtenir des informations sur les expressions valides\n\n### Version 0.8.4 (2017/11/25)\n- Meilleure compatibilité mobile\n- Correction des cookies incognito enregistrés et supprimés\n\n### Version 0.8.3 (2017/11/24)\n- Désactivé sur les onglets / fenêtres incognito\n- Ajout d'un journal pour voir les domaines des dernières modifications apportées aux cookies\n- Ajout de boutons pour pré-remplir le champ de saisie du filtre avec les domaines ci-dessus et l'onglet actuel\n\n### Version 0.8.2 (2017/11/19)\n- Quelques corrections de bugs, nettoyages\n\n### Version 0.8.0 (2017/11/19)\n- Première version",
         "hash": "6d80282202df95ee011e1ed572a68472"
     },
 

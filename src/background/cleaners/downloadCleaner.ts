@@ -7,8 +7,9 @@
 import { settings } from "../../lib/settings";
 import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
-import { getValidHostname } from "../../shared";
+import { getValidHostname, urlMatchesDomain } from "../../shared";
 import { TabWatcher } from "../tabWatcher";
+import { getDomain } from "tldjs";
 
 export class DownloadCleaner extends Cleaner {
     private readonly tabWatcher: TabWatcher;
@@ -82,5 +83,22 @@ export class DownloadCleaner extends Cleaner {
         settings.set("downloadsToClean", newDownloadsToClean);
         settings.save();
         return urls;
+    }
+
+    public cleanDomainOnLeave(storeId: string, domain: string): void {
+        if (settings.get("domainLeave.enabled") && settings.get("domainLeave.downloads"))
+            this.cleanDomain(storeId, domain);
+    }
+
+    public cleanDomain(storeId: string, domain: string): void {
+        const domainFP = getDomain(domain) || domain;
+        browser.downloads.search({}).then((downloads) => {
+            const filteredItems = downloads.filter((item) => {
+                if (!item.url) return false;
+                return urlMatchesDomain(item.url, domain, domainFP) || (item.referrer ? urlMatchesDomain(item.referrer, domain, domainFP) : false);
+            });
+            const urlsToClean = this.getUrlsToClean(filteredItems, false, true, true);
+            urlsToClean.forEach(this.cleanupUrl.bind(this));
+        });
     }
 }

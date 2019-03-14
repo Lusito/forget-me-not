@@ -7,7 +7,7 @@
 import { settings } from "../../lib/settings";
 import { browser, BrowsingData, History } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
-import { getValidHostname } from "../../shared";
+import { getValidHostname, urlMatchesDomain } from "../../shared";
 import { getDomain } from "tldjs";
 import { TabWatcher } from "../tabWatcher";
 
@@ -46,9 +46,7 @@ export class HistoryCleaner extends Cleaner {
                 const domainFP = getDomain(domain) || domain;
                 browser.history.search({ text: domainFP }).then((items) => {
                     const filteredItems = items.filter((item) => {
-                        if (!item.url) return false;
-                        const hostname = getValidHostname(item.url);
-                        return hostname === domain || getDomain(hostname) === domainFP;
+                        return item.url ? urlMatchesDomain(item.url, domain, domainFP) : false;
                     });
                     const urlsToClean = this.getUrlsToClean(filteredItems, false, true);
                     urlsToClean.forEach((url) => browser.history.deleteUrl({ url }));

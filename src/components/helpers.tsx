@@ -15,11 +15,13 @@ export function getSuggestedRuleExpression(domain: string, cookieName?: string) 
     return domain.startsWith(".") ? `*${domain}` : `*.${domain}`;
 }
 
-export function showAddRuleDialog(expression: string) {
+export function showAddRuleDialog(expression: string, next?: () => void) {
     if (isValidExpression(expression)) {
         function onConfirm(type: CleanupType | false, expression?: string) {
-            if (expression && type !== false)
+            if (expression && type !== false) {
                 settings.setRule(expression, type);
+                next && next();
+            }
         }
         let focusType = settings.getExactCleanupType(expression);
         if (focusType === null)

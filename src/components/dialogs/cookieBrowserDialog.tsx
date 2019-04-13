@@ -99,7 +99,7 @@ async function updateContextualIdentities() {
     }
 }
 
-function mapToCookieItem(entry: CookieListCookie) {
+function mapToCookieItem(entry: CookieListCookie, updateList: () => void) {
     const expires = entry.cookie.session
         ? "On Session End"
         : new Date((entry.cookie.expirationDate || 0) * 1000).toLocaleString() || "?";
@@ -110,7 +110,7 @@ function mapToCookieItem(entry: CookieListCookie) {
         </span>
         : <span class="cookie_list_value">{entry.cookie.storeId}</span>;
 
-    const cookieAttributes = <ul class="collapsed cookie_attributes">
+    const cookieAttributes = <ul class="collapsed cookie_attributes" data-tree-node-id={`cookie-${entry.cookie.name}`}>
         <li class="cookie_list_split">
             <b>Value:</b>
             <span class="cookie_list_value" data-searchable title={entry.cookie.value}>{entry.cookie.value}</span>
@@ -134,7 +134,7 @@ function mapToCookieItem(entry: CookieListCookie) {
     };
 
     function addCookieRule() {
-        showAddRuleDialog(getSuggestedRuleExpression(entry.cookie.domain, entry.cookie.name));
+        showAddRuleDialog(getSuggestedRuleExpression(entry.cookie.domain, entry.cookie.name), updateList);
     }
     const title = wetLayer.getMessage(entry.badge.i18nButton + "@title");
     return <li>
@@ -148,8 +148,9 @@ function mapToCookieItem(entry: CookieListCookie) {
     </li>;
 }
 
-function mapToDomainItem(entry: CookieListForDomain) {
-    const cookiesList = <ul class="collapsed">{entry.cookies.map(mapToCookieItem)}</ul>;
+function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
+    const mapToCookieItemWrapped = (e: CookieListCookie) => mapToCookieItem(e, updateList);
+    const cookiesList = <ul class="collapsed" data-tree-node-id={`domain-${entry.domain}`}>{entry.cookies.map(mapToCookieItemWrapped)}</ul>;
 
     const toggler = <span class="cookie_list_toggle" onClick={toggleCookiesList}>+</span>;
     function toggleCookiesList() {
@@ -158,7 +159,7 @@ function mapToDomainItem(entry: CookieListForDomain) {
     }
 
     function addDomainRule() {
-        showAddRuleDialog(getSuggestedRuleExpression(entry.domain));
+        showAddRuleDialog(getSuggestedRuleExpression(entry.domain), updateList);
     }
     const punified = appendPunycode(entry.domain);
     const title = wetLayer.getMessage(entry.badge.i18nButton + "@title");
@@ -202,14 +203,22 @@ export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
         {cookieList}
         <div class="split_equal split_wrap">{buttons}</div>
     </Dialog>;
-    on(button, "click", () => {
+    function updateList() {
+        const expanded = [...cookieList.querySelectorAll("ul:not(.collapsed)")].map((e) => e.getAttribute("data-tree-node-id"));
         removeAllChildren(cookieList);
         getCookieList().then(async (list) => {
             await updateContextualIdentities();
             for (const byDomain of list)
-                cookieList.appendChild(mapToDomainItem(byDomain));
+                cookieList.appendChild(mapToDomainItem(byDomain, updateList));
             filterList();
+            for (const key of expanded) {
+                const element = cookieList.querySelector(`ul.collapsed[data-tree-node-id='${key}']`);
+                element && element.classList.remove("collapsed");
+            }
         });
+    }
+    on(button, "click", () => {
+        updateList();
         showDialog(dialog, buttons[0]);
     });
     connectSettings(dialog);

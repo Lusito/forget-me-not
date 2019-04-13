@@ -23,7 +23,7 @@ export class TabWatcher implements RequestWatcherListener {
 
     public constructor(listener: TabWatcherListener) {
         this.listener = listener;
-        this.checkDomainLeave = this.checkDomainLeave.bind(this);
+        this.checkDomainLeaveSet = this.checkDomainLeaveSet.bind(this);
 
         browser.tabs.query({}).then((tabs) => {
             for (const tab of tabs)

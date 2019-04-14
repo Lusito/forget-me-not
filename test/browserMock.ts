@@ -12,6 +12,7 @@ import { createSpy, clone, SpyData } from "./testHelpers";
 // tslint:disable-next-line:no-var-requires
 const parseUrl = require("url").parse;
 // @ts-ignore
+// tslint:disable-next-line:function-constructor
 const glob = (function () { return this; }()) || Function("return this")();
 glob.URL = function (url: string) {
     const parsed = parseUrl(url);

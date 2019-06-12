@@ -115,7 +115,7 @@ export class RecentlyAccessedDomains {
     }
 
     private onHeadersReceived(details: WebRequest.OnHeadersReceivedDetailsType) {
-        if (details.tabId >= 0 && !this.incognitoWatcher.hasTab(details.tabId))
+        if (details.tabId >= 0 && !details.incognito && !this.incognitoWatcher.hasTab(details.tabId))
             this.add(getValidHostname(details.url));
     }
 }

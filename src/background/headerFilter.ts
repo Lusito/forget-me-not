@@ -24,7 +24,7 @@ export class HeaderFilter {
     public constructor(tabWatcher: TabWatcher, incognitoWatcher: IncognitoWatcher) {
         this.tabWatcher = tabWatcher;
         this.onHeadersReceived = (details) => {
-            if (details.responseHeaders && !incognitoWatcher.hasTab(details.tabId)) {
+            if (details.responseHeaders && !details.incognito && !incognitoWatcher.hasTab(details.tabId)) {
                 return {
                     responseHeaders: this.filterResponseHeaders(details.responseHeaders, getValidHostname(details.url), details.tabId)
                 };

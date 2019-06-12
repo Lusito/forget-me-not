@@ -46,6 +46,10 @@
         "message": "Esta ação não pode ser desfeita.",
         "hash": "db630835e0fd63a96fcb2feed83facc3"
     },
+    "rule_dialog_expression": {
+        "message": "Expressão:",
+        "hash": "4342463f910507a3f4f1f81716912f1c"
+    },
     "confirm_settings_and_rules": {
         "message": "Configurações & Filtros",
         "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
@@ -54,9 +58,33 @@
         "message": "Configurações Apenas",
         "hash": "47dbae6cf11a5b79c1abae7b56485c18"
     },
+    "confirm_ok": {
+        "message": "OK",
+        "hash": "d2702da8185dd5d533913d767bddc05d"
+    },
     "confirm_cancel": {
         "message": "Cancelar",
         "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "confirm_rule_replace_dialog_title": {
+        "message": "Regra de expressão já existe",
+        "hash": "c75edd105dd87f7b72216c1e32dcf101"
+    },
+    "confirm_rule_replace_dialog_content": {
+        "message": "A regra de expressão especificada já existe. Você quer substituí-la?",
+        "hash": "74219b377804324016c6fbca36518b25"
+    },
+    "cookie_browser_title": {
+        "message": "Navegador de Cookies",
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+    },
+    "cookie_browser_description": {
+        "message": "Com isto você pode inspecionar cookies e facilmente adicionar regras para cookies específicos.",
+        "hash": "918c4ecbf778bb45871133c3fce417da"
+    },
+    "dialog_back": {
+        "message": "Voltar",
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
     },
 
     "__WET_GROUP__2": { "message": "Cleanup Types" },
@@ -85,6 +113,18 @@
     "recently_accessed_domains": {
         "message": "Domínios acessados recentemente:",
         "hash": "53d2a0edc88172044b6b6db0c1996820"
+    },
+    "tabs_settings_general": {
+        "message": "Geral",
+        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
+    },
+    "tabs_settings_cleanup": {
+        "message": "Limpeza",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    },
+    "tabs_settings_experimental": {
+        "message": "Experimental",
+        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
     },
     "tabs_this_tab@title": {
         "message": "Aba Atual",
@@ -122,6 +162,10 @@
         "message": "Limpar Agora!",
         "hash": "9294eae08b1e3bfffede71c2be473b29"
     },
+    "button_clean_domain": {
+        "message": "Limpar este domínio!",
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+    },
     "button_import": {
         "message": "Importar..",
         "hash": "0192d8f28f3d837e79a05711e6379e5e"
@@ -150,13 +194,33 @@
         "message": "Aba Inválida",
         "hash": "d9b046898a69c55df2f0e4f03f9011d6"
     },
+    "rules_column_expression": {
+        "message": "Expressão",
+        "hash": "7fc913b5875670e140f328b8a03ed225"
+    },
+    "rules_column_type": {
+        "message": "Limpeza",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    },
     "rules_input@placeholder": {
         "message": "Procurar ou adicionar..",
         "hash": "a0766c32473f97b153fd63a92cadd450"
     },
+    "expression_hint_invalid": {
+        "message": "Expressão inválida!",
+        "hash": "5960bcc4b7e809e74c69cd96049e9245"
+    },
+    "expression_hint_exists": {
+        "message": "Expressão já existe!",
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
+    },
     "rules_add": {
         "message": "Adicionar",
         "hash": "c30738ff9271a856100751bbca5e5794"
+    },
+    "rules_no_entries": {
+        "message": "Sem entradas",
+        "hash": "5ece1de076b92af71c606feadcc41439"
     },
     "help_button@title": {
         "message": "Ler sobre como filtros funcionam, que expressões você pode usar, funções experimentais e mudanças recentes nesta extensão.",
@@ -225,6 +289,10 @@
     "setting_service_workers": {
         "message": "Service Workers",
         "hash": "584545acfce5580c7967bc8c366df556"
+    },
+    "setting_cache": {
+        "message": "Cache",
+        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
     },
     "setting_server_bound_certificates": {
         "message": "Certificados",

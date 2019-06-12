@@ -1,6 +1,6 @@
 var path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 function recursiveIssuer(m) {
     return m.issuer ? recursiveIssuer(m.issuer) : (m.name || false);
@@ -16,7 +16,7 @@ function cacheGroupFor(name) {
 }
 function cacheGroupsFor(...names) {
     const groups = {};
-    for(const name of names)
+    for (const name of names)
         groups[name + "Styles"] = cacheGroupFor(name);
     return groups;
 }

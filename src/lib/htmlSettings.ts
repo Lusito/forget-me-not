@@ -60,7 +60,7 @@ export function updateFromSettings() {
     }
 }
 
-export function connectSettings(parent: NodeSelector) {
+export function connectSettings(parent: HTMLElement) {
     for (const element of parent.querySelectorAll("input[data-settings-key]"))
         connectInputSetting(element as HTMLInputElement);
     for (const element of parent.querySelectorAll("select[data-settings-key]"))

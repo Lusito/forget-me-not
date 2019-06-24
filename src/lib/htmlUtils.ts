@@ -28,7 +28,7 @@ export function byId(id: string) {
 }
 
 export function on<K extends keyof HTMLElementEventMap>(node: Node, event: K, callback: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any) {
-    node.addEventListener(event, callback);
+    node.addEventListener(event, callback as EventListener);
 }
 
 export function translateElement(element: HTMLElement) {

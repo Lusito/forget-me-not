@@ -13,8 +13,14 @@ import { CleanupType, SettingsKey } from "../lib/settingsSignature";
 import { parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";
 import { IncognitoWatcher } from "./incognitoWatcher";
+import { browserInfo, isFirefox } from "../lib/browserInfo";
 
+const REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"] };
+const LISTENER_OPTIONS: WebRequest.OnHeadersReceivedOptions[] = ["responseHeaders", "blocking"];
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = ["cleanThirdPartyCookies.beforeCreation", "rules", "fallbackRule", "instantly.enabled"];
+
+if (isFirefox && browserInfo.versionAsNumber >= 68)
+    REQUEST_FILTER.incognito = false;
 
 export class HeaderFilter {
     private blockThirdpartyCookies = false;
@@ -77,7 +83,7 @@ export class HeaderFilter {
     private updateSettings() {
         this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
         if (this.blockThirdpartyCookies || settings.get("instantly.enabled") && settings.hasBlockingRule())
-            browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, { urls: ["<all_urls>"] }, ["responseHeaders", "blocking"]);
+            browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, REQUEST_FILTER, LISTENER_OPTIONS);
         else
             browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
     }

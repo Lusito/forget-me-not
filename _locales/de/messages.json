@@ -251,8 +251,8 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "Im Snooze Modus werden folgende Säuberungen verhindert:\n- Säuberung beim Verlassen einer Domäne\n- Säuberungen von Cookies von Dritten.\n\nAlle verpassten Säuberungen werden erneut geplant sobald du den Snooze Modus stoppst.\n\nSchwarze Regeln (\"Instant\") sind vom Snooze-Mode nicht betroffen.",
-        "hash": "dfd24dc7f97580281d58971501628622"
+        "message": "Im Snooze Modus werden folgende Säuberungen verhindert:\n- Säuberung beim Verlassen einer Domäne\n- Säuberungen von Cookies von Dritten.\n- Blockieren von Cookies\n\nAlle verpassten Säuberungen werden erneut geplant sobald du den Snooze Modus stoppst.",
+        "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
     },
     "invalid_tab": {
         "message": "Invalid Tab",

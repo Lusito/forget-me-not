@@ -56,6 +56,10 @@ describe("Header Filter", () => {
             settings.set("cleanThirdPartyCookies.beforeCreation", true);
             headerFilter = new HeaderFilter(tabWatcher, incognitoWatcher);
             assert.isTrue(headerFilter.isEnabled());
+            headerFilter.setSnoozing(true);
+            assert.isFalse(headerFilter.isEnabled());
+            headerFilter.setSnoozing(false);
+            assert.isTrue(headerFilter.isEnabled());
         });
         it("should return true if cleanThirdPartyCookies.beforeCreation was set after creation", (done) => {
             tabWatcher = ensureNotNull(tabWatcher);
@@ -64,6 +68,10 @@ describe("Header Filter", () => {
             settings.set("cleanThirdPartyCookies.beforeCreation", true);
             settings.save().then(doneHandler(() => {
                 headerFilter = ensureNotNull(headerFilter);
+                assert.isTrue(headerFilter.isEnabled());
+                headerFilter.setSnoozing(true);
+                assert.isFalse(headerFilter.isEnabled());
+                headerFilter.setSnoozing(false);
                 assert.isTrue(headerFilter.isEnabled());
             }, done));
         });
@@ -80,6 +88,10 @@ describe("Header Filter", () => {
                 settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
                 headerFilter = new HeaderFilter(tabWatcher, incognitoWatcher);
                 assert.strictEqual(headerFilter.isEnabled(), instantlyEnabled);
+                headerFilter.setSnoozing(true);
+                assert.isFalse(headerFilter.isEnabled());
+                headerFilter.setSnoozing(false);
+                assert.strictEqual(headerFilter.isEnabled(), instantlyEnabled);
             });
             it(`should return ${instantlyEnabled} if an instantly rule was added after creation`, (done) => {
                 tabWatcher = ensureNotNull(tabWatcher);
@@ -88,6 +100,10 @@ describe("Header Filter", () => {
                 settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
                 settings.save().then(doneHandler(() => {
                     headerFilter = ensureNotNull(headerFilter);
+                    assert.strictEqual(headerFilter.isEnabled(), instantlyEnabled);
+                    headerFilter.setSnoozing(true);
+                    assert.isFalse(headerFilter.isEnabled());
+                    headerFilter.setSnoozing(false);
                     assert.strictEqual(headerFilter.isEnabled(), instantlyEnabled);
                 }, done));
             });

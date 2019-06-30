@@ -453,7 +453,7 @@ describe("CookieCleaner", () => {
                 settings.save();
                 ensureNotNull(cleaner).setSnoozing(snoozing);
             });
-            if (!incognito && instantlyEnabled && instantlyCookies) {
+            if (!incognito && instantlyEnabled && instantlyCookies && !snoozing) {
                 it("Should remove blacklisted cookies", (done) => {
                     cleaner = ensureNotNull(cleaner);
                     quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
@@ -470,6 +470,14 @@ describe("CookieCleaner", () => {
                     quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
                     assertRemainingCookieDomains(done, [BLACKLISTED_DOMAIN], COOKIE_STORE_ID);
                 });
+                if (!incognito && instantlyEnabled && instantlyCookies && snoozing) {
+                    it("Should remove blacklisted cookies when snoozing gets disabled", (done) => {
+                        cleaner = ensureNotNull(cleaner);
+                        quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                        ensureNotNull(cleaner).setSnoozing(false);
+                        assertRemainingCookieDomains(done, []);
+                    });
+                }
                 it("Should not remove whitelisted cookies", (done) => {
                     cleaner = ensureNotNull(cleaner);
                     quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");

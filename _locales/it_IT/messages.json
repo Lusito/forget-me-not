@@ -251,7 +251,7 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "In modalità pausa, queste pulizie saranno evitate:\n- Pulizia sui domini dimenticati\n- Pulizia dei cookies di terze parti\n\nTutte le pulizie mancate saranno riprogrammate una volta interrotta la modalità pausa.\n\nLe regole nere (\"Immediatamente\") non sono influenzate da questa modalità.",
+        "message": "In modalità pausa, queste pulizie saranno evitate:\n- Pulizia sui domini dimenticati\n- Pulizia dei cookies di terze parti\n- Blocking of cookies\n\nTutte le pulizie mancate saranno riprogrammate una volta interrotta la modalità pausa.",
         "hash": "dfd24dc7f97580281d58971501628622"
     },
     "invalid_tab": {

@@ -191,7 +191,7 @@
         "message": "Start Snooze"
     },
     "toggle_snooze_description": {
-        "message": "In snooze mode, these cleanups will be prevented:\n- Cleanup on domain leave\n- Cleanup of third-party cookies\n\nAll missed cleanups will be rescheduled once you stop snooze mode.\n\nBlack rules (\"Instantly\") are unaffected by the snooze mode."
+        "message": "In snooze mode, these cleanups will be prevented:\n- Cleanup on domain leave\n- Cleanup of third-party cookies\n- Blocking of cookies\n\nAll missed cleanups will be rescheduled once you stop snooze mode."
     },
     "invalid_tab": {
         "message": "Invalid Tab"

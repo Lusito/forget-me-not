@@ -3,6 +3,13 @@
     width: 100%;
     border-collapse: collapse;
     
+    tbody > tr:nth-child(odd) > td {
+        background: #e6e6e6;
+    }
+    tbody > tr:hover > td {
+        background: rgba(33, 67, 152, 0.3803921568627451);
+    }
+
     th:first-child {
         width: 100%;
     }

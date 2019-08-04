@@ -6,6 +6,15 @@
     border: 1px solid #afafaf;
     margin-bottom: 5px;
 
+    tbody > tr:nth-child(odd) > *:first-child {
+        background: #e6e6e6;
+    }
+    tbody, thead {
+        > tr:hover > *:first-child {
+            background: rgba(33, 67, 152, 0.3803921568627451);
+        }
+    }
+
     th:first-child {
         width: 100%;
     }

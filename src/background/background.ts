@@ -22,6 +22,7 @@ import { CookieCleaner } from "./cleaners/cookieCleaner";
 import { Cleaner } from "./cleaners/cleaner";
 import { HistoryCleaner } from "./cleaners/historyCleaner";
 import { IncognitoWatcher } from "./incognitoWatcher";
+import { TemporaryRuleCleaner } from "./cleaners/temporaryRuleCleaner";
 
 // fixme: make this file unit-testable and add tests
 
@@ -36,6 +37,7 @@ export class Background implements TabWatcherListener {
     private readonly headerFilter: HeaderFilter;
 
     public constructor() {
+        this.cleaners.push(new TemporaryRuleCleaner(this.tabWatcher));
         browser.history && this.cleaners.push(new HistoryCleaner(this.tabWatcher));
         this.cleaners.push(new DownloadCleaner(this.tabWatcher));
         this.cleaners.push(new CookieCleaner(this.tabWatcher, this.incognitoWatcher));
@@ -51,6 +53,7 @@ export class Background implements TabWatcherListener {
     }
 
     public onStartup() {
+        settings.removeTemporaryRules();
         if (settings.get("startup.enabled"))
             this.runCleanup(true);
     }

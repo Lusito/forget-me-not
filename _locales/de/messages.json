@@ -58,6 +58,10 @@
         "message": "Ausdruck:",
         "hash": "4342463f910507a3f4f1f81716912f1c"
     },
+    "rule_dialog_temporary": {
+        "message": "Temporäre Regel: Diese Regel beim Verlassen der Domäne oder Neustart des Browsers entfernen.",
+        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
+    },
     "confirm_settings_and_rules": {
         "message": "Einstellungen & Regeln",
         "hash": "e195409b368c4fbb6d4fa33ae6a52c20"

@@ -8,8 +8,8 @@ import { cleanupTypeForElement } from "../../lib/settings";
 interface RuleButtonProps {
     expression?: string;
     type: CleanupType | null;
-    allowRemove?: boolean;
-    onConfirm: (type: CleanupType, expression: string) => void;
+    temporary?: boolean;
+    onConfirm: (type: CleanupType, expression: string, temporary: boolean) => void;
 }
 
 function updateRuleButton(button: HTMLElement, type: CleanupType | null, translate = false) {
@@ -20,14 +20,14 @@ function updateRuleButton(button: HTMLElement, type: CleanupType | null, transla
     // fixme: aria label
 }
 
-export function RuleButton({ expression, type, onConfirm }: RuleButtonProps) {
-    function onChangeProxy(type: CleanupType, expression?: string) {
+export function RuleButton({ expression, type, temporary, onConfirm }: RuleButtonProps) {
+    function onChangeProxy(type: CleanupType, expression: string, temporary: boolean) {
         updateRuleButton(button, type, true);
-        onConfirm(type, expression || "");
+        onConfirm(type, expression || "", temporary);
     }
 
     function onClick() {
-        <RuleDialog expression={expression} editable={type === null} focusType={cleanupTypeForElement(button)} onConfirm={(type, expression) => type !== false && onChangeProxy(type, expression)} />;
+        <RuleDialog expression={expression} editable={type === null} focusType={cleanupTypeForElement(button)} temporary={temporary || false} onConfirm={(type, expression, temporary) => type !== false && onChangeProxy(type, expression, temporary)} />;
     }
 
     const button = <button onClick={onClick} />;

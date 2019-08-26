@@ -14,6 +14,7 @@ export enum CleanupType {
 export interface RuleDefinition {
     rule: string;
     type: CleanupType;
+    temporary?: true;
 }
 
 export interface SettingsTypeMap {

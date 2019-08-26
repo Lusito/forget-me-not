@@ -20,8 +20,13 @@ export class FrameInfo {
         this.navigating && this.nextHostname && collector.add(this.nextHostname);
     }
 
+    // fixme: add tests
+    public matchRegexFP(regex: RegExp) {
+        return regex.test(this.hostname) || (this.navigating && regex.test(this.nextHostname));
+    }
+
     public matchHostname(hostname: string, checkNext: boolean) {
-        return hostname === this.hostname || checkNext && this.navigating && hostname === this.nextHostname;
+        return hostname === this.hostname || (checkNext && this.navigating && hostname === this.nextHostname);
     }
 
     public matchHostnameFP(hostnameFP: string) {

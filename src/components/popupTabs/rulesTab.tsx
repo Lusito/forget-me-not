@@ -7,8 +7,8 @@ import { RuleTable } from "../ruleTable";
 import { CleanupType } from "../../lib/settingsSignature";
 import { Key } from "ts-keycode-enum";
 import { HelpLink } from "../helpLink";
-import { RuleDialog } from "../dialogs/ruleDialog";
 import { ExpressionHint } from "../expressionHint";
+import { showAddRuleDialog } from "../helpers";
 
 function setFallbackRule(type: CleanupType) {
     settings.set("fallbackRule", type);
@@ -20,19 +20,11 @@ export function RulesTab() {
 
     function addRule() {
         const expression = filterInput.value.trim().toLowerCase();
-        if (expression && isValidExpression(expression) && settings.getExactCleanupType(expression) === null) {
-            function onConfirm(type: CleanupType | false) {
-                if (type !== false) {
-                    settings.setRule(expression, type);
-                    filterInput.value = "";
-                    filterInput.dispatchEvent(new Event("input")); // force hint update
-                }
-                filterInput.focus();
-            }
-            let focusType = settings.getExactCleanupType(expression);
-            if (focusType === null)
-                focusType = CleanupType.NEVER;
-            <RuleDialog expression={expression} focusType={focusType} onConfirm={onConfirm} />;
+        if (expression && isValidExpression(expression) && settings.getExactRuleDefinition(expression) === null) {
+            showAddRuleDialog(expression, () => {
+                filterInput.value = "";
+                filterInput.dispatchEvent(new Event("input")); // force hint update
+            });
         }
     }
 

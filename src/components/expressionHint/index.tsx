@@ -28,7 +28,7 @@ export function ExpressionHint({ input }: ExpressionHintProps) {
         const validExpression = !expression || isValidExpression(expression);
         if (!validExpression)
             updateError(wetLayer.getMessage("expression_hint_invalid"));
-        else if (settings.getExactCleanupType(expression) !== null)
+        else if (settings.getExactRuleDefinition(expression) !== null)
             updateError(wetLayer.getMessage("expression_hint_exists"));
         else
             updateError("");

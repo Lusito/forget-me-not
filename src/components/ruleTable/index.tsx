@@ -34,8 +34,9 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
         if (domainFP !== forDomain)
             expressions.push("*." + forDomain);
         expressions.forEach((expression) => {
-            const isChosen = chosenRulesForDomain.some((r) => r.rule === expression);
-            tbody.appendChild(<RuleTableRow expression={expression} isChosen={isChosen} type={settings.getExactCleanupType(expression)} />);
+            const chosenRule = chosenRulesForDomain.find((r) => r.rule === expression);
+            const temporary = (chosenRule && chosenRule.temporary) || false;
+            tbody.appendChild(<RuleTableRow expression={expression} isChosen={!!chosenRule} type={settings.getExactCleanupType(expression)} temporary={temporary} />);
         });
 
         rules = settings.getRulesForDomain(forDomain).filter((rule) => expressions.indexOf(rule.rule) === -1);
@@ -49,7 +50,7 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
     rules.sort(sortByRule);
     rules.forEach((rule) => {
         const isChosen = chosenRulesForDomain.some((r) => r.rule === rule.rule);
-        tbody.appendChild(<RuleTableRow expression={rule.rule} isChosen={isChosen} type={rule.type} />);
+        tbody.appendChild(<RuleTableRow expression={rule.rule} isChosen={isChosen} type={rule.type} temporary={rule.temporary} />);
     });
 
     translateChildren(tbody);

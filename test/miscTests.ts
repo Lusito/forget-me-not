@@ -113,7 +113,7 @@ describe("Misc functionality", () => {
         });
         it("should return the correct cookie store ids", (done) => {
             getAllCookieStoreIds().then(doneHandler((ids: string[]) => {
-                assert.sameMembers(ids, ["firefox-default", "firefox-private", "cs-1", "cs-2", "cs-4", "ci-1", "ci-2", "ci-4"]);
+                assert.sameMembers(ids, ["cs-1", "cs-2", "cs-4", "ci-1", "ci-2", "ci-4"]);
             }, done));
         });
     });

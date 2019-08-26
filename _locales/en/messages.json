@@ -45,6 +45,9 @@
     "rule_dialog_expression": {
         "message": "Expression:"
     },
+    "rule_dialog_temporary": {
+        "message": "Temporary rule: Remove this rule on domain leave or browser restart."
+    },
     "confirm_settings_and_rules": {
         "message": "Settings & Rules"
     },

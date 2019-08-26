@@ -300,12 +300,18 @@ export class Settings {
     }
 
     // Convenience methods
-    public getExactCleanupType(expression: string) {
+    // fixme: add tests
+    public getExactRuleDefinition(expression: string) {
         for (const crd of this.rules) {
             if (crd.definition.rule === expression)
-                return crd.definition.type;
+                return crd.definition;
         }
         return null;
+    }
+
+    public getExactCleanupType(expression: string) {
+        const definition = this.getExactRuleDefinition(expression);
+        return definition && definition.type;
     }
 
     public getMatchingRules(domain: string, cookieName: string | false = false) {
@@ -388,19 +394,42 @@ export class Settings {
         return [];
     }
 
-    public setRule(expression: string, type: CleanupType) {
+    public setRule(expression: string, type: CleanupType, temporary: boolean) {
         const rules = this.get("rules").slice();
-        const ruleDef = rules.find((r) => r.rule === expression);
+        let ruleDef = rules.find((r) => r.rule === expression);
         if (ruleDef)
             ruleDef.type = type;
+        else {
+            ruleDef = { rule: expression, type };
+            rules.push(ruleDef);
+        }
+        if (temporary)
+            ruleDef.temporary = true;
         else
-            rules.push({ rule: expression, type });
+            delete ruleDef.temporary;
         this.set("rules", rules);
         this.save();
     }
 
     public removeRule(expression: string) {
         const rules = this.get("rules").filter((r) => r.rule !== expression);
+        this.set("rules", rules);
+        this.save();
+    }
+
+    public removeRules(rules: string[]) {
+        const remainingRules = this.get("rules").filter((r) => rules.indexOf(r.rule) === -1);
+        this.set("rules", remainingRules);
+        this.save();
+        this.rebuildRules();
+    }
+
+    public getTemporaryRules() {
+        return this.rules.filter((r) => !!r.definition.temporary);
+    }
+
+    public removeTemporaryRules() {
+        const rules = this.get("rules").filter((r) => !r.temporary);
         this.set("rules", rules);
         this.save();
     }

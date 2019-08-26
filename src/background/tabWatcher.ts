@@ -83,6 +83,16 @@ export class TabWatcher implements RequestWatcherListener {
         return false;
     }
 
+    // fixme: add tests
+    public containsRuleFP(rule: RegExp) {
+        for (const key in this.tabInfos) {
+            const ti = this.tabInfos[key];
+            if (ti.containsRuleFP(rule))
+                return true;
+        }
+        return false;
+    }
+
     private onTabRemoved(tabId: number) {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {

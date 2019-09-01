@@ -50,6 +50,7 @@ export function removeCookie(cookie: Cookies.Cookie) {
 
 export class CookieCleaner extends Cleaner {
     private readonly snoozedThirdpartyCookies: Cookies.Cookie[] = [];
+    private readonly snoozedInstantlyCookies: Cookies.Cookie[] = [];
     private readonly tabWatcher: TabWatcher;
     private readonly incognitoWatcher: IncognitoWatcher;
 
@@ -96,6 +97,12 @@ export class CookieCleaner extends Cleaner {
             for (const cookie of this.snoozedThirdpartyCookies)
                 this.removeCookieIfThirdparty(cookie);
             this.snoozedThirdpartyCookies.length = 0;
+
+            for (const cookie of this.snoozedInstantlyCookies) {
+                if (this.shouldRemoveCookieInstantly(cookie) || this.shouldRemoveThirdPartyCookieInstantly(cookie))
+                    removeCookie(cookie);
+            }
+            this.snoozedInstantlyCookies.length = 0;
         }
     }
 
@@ -106,7 +113,15 @@ export class CookieCleaner extends Cleaner {
         });
     }
 
+    private shouldRemoveThirdPartyCookieInstantly(cookie: Cookies.Cookie) {
+        return settings.get("cleanThirdPartyCookies.beforeCreation") && !this.incognitoWatcher.hasCookieStore(cookie.storeId) && this.isThirdpartyCookie(cookie);
+    }
+
     private shouldRemoveCookieInstantly(cookie: Cookies.Cookie) {
+        // Special case if snoozing: needs to be added to this.snoozedInstantlyCookies
+        if (this.snoozing && this.shouldRemoveThirdPartyCookieInstantly(cookie))
+            return true;
+
         if (!settings.get("instantly.enabled") || !settings.get("instantly.cookies"))
             return false;
         const allowSubDomains = cookie.domain.startsWith(".");
@@ -117,9 +132,12 @@ export class CookieCleaner extends Cleaner {
     private onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
         if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
             // Cookies set by javascript can't be denied, but can be removed instantly.
-            if (this.shouldRemoveCookieInstantly(changeInfo.cookie))
-                removeCookie(changeInfo.cookie);
-            else if (settings.get("cleanThirdPartyCookies.enabled"))
+            if (this.shouldRemoveCookieInstantly(changeInfo.cookie)) {
+                if (this.snoozing)
+                    this.snoozedInstantlyCookies.push(changeInfo.cookie);
+                else
+                    removeCookie(changeInfo.cookie);
+            } else if (settings.get("cleanThirdPartyCookies.enabled"))
                 this.removeCookieIfThirdparty(changeInfo.cookie);
         }
     }

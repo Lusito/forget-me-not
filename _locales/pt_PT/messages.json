@@ -251,7 +251,7 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza ao sair do domínio\n- Limpeza de cookies de terceiros\n\nTodas as limpezas em falta serão remarcadas assim que parar o modo suspensão.\n\nAs regras negras (\"instantaneamente\") não estão afetadas pelo modo suspensão.",
+        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza ao sair do domínio\n- Limpeza de cookies de terceiros\n- Blocking of cookies\n\nTodas as limpezas em falta serão remarcadas assim que parar o modo suspensão.",
         "hash": "dfd24dc7f97580281d58971501628622"
     },
     "invalid_tab": {

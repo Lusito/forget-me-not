@@ -33,6 +33,7 @@ export class Background implements TabWatcherListener {
     // @ts-ignore
     private readonly notificationHandler = new NotificationHandler();
     private readonly cleaners: Cleaner[] = [];
+    private readonly headerFilter: HeaderFilter;
 
     public constructor() {
         browser.history && this.cleaners.push(new HistoryCleaner(this.tabWatcher));
@@ -41,7 +42,7 @@ export class Background implements TabWatcherListener {
         this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
 
         this.updateBadge();
-        new HeaderFilter(this.tabWatcher, this.incognitoWatcher);
+        this.headerFilter = new HeaderFilter(this.tabWatcher, this.incognitoWatcher);
         new RecentlyAccessedDomains(this.incognitoWatcher);
         wetLayer.addListener(() => {
             this.updateBadge();
@@ -150,6 +151,8 @@ export class Background implements TabWatcherListener {
             this.cleanupScheduler[key].setSnoozing(this.snoozing);
 
         this.cleaners.forEach((cleaner) => cleaner.setSnoozing(this.snoozing));
+
+        this.headerFilter.setSnoozing(this.snoozing);
 
         this.updateBrowserAction();
         this.sendSnoozingState();

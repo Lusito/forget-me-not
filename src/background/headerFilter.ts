@@ -23,6 +23,7 @@ if (isFirefox && browserInfo.versionAsNumber >= 68)
     REQUEST_FILTER.incognito = false;
 
 export class HeaderFilter {
+    private snoozing = false;
     private blockThirdpartyCookies = false;
     private readonly tabWatcher: TabWatcher;
     private readonly onHeadersReceived: (details: WebRequest.OnHeadersReceivedDetailsType) => WebRequest.BlockingResponse;
@@ -82,9 +83,14 @@ export class HeaderFilter {
 
     private updateSettings() {
         this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
-        if (this.blockThirdpartyCookies || settings.get("instantly.enabled") && settings.hasBlockingRule())
+        if (!this.snoozing && (this.blockThirdpartyCookies || settings.get("instantly.enabled") && settings.hasBlockingRule()))
             browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, REQUEST_FILTER, LISTENER_OPTIONS);
         else
             browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
+    }
+
+    public setSnoozing(snoozing: boolean) {
+        this.snoozing = snoozing;
+        this.updateSettings();
     }
 }

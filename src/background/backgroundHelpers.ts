@@ -7,6 +7,7 @@
 import { getDomain } from "tldjs";
 import { CleanupType } from "../lib/settingsSignature";
 import { browser } from "webextension-polyfill-ts";
+import { isFirefox } from "../lib/browserInfo";
 
 export function getFirstPartyCookieDomain(domain: string) {
     const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
@@ -83,10 +84,10 @@ export function getBadgeForCleanupType(type: CleanupType) {
 // Workaround for getAllCookieStores returning only active cookie stores.
 // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
 export function getAllCookieStoreIds() {
-    const ids: {[s: string]: boolean} = {
+    const ids: {[s: string]: boolean} = isFirefox ? {
         "firefox-default": true,
         "firefox-private": true
-    };
+    } : {};
     return browser.cookies.getAllCookieStores().then((cookieStores) => {
         for (const store of cookieStores)
             ids[store.id] = true;

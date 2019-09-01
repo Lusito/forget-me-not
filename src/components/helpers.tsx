@@ -17,15 +17,16 @@ export function getSuggestedRuleExpression(domain: string, cookieName?: string) 
 
 export function showAddRuleDialog(expression: string, next?: () => void) {
     if (isValidExpression(expression)) {
-        function onConfirm(type: CleanupType | false, expression?: string) {
+        function onConfirm(type: CleanupType | false, expression: string, temporary: boolean) {
             if (expression && type !== false) {
-                settings.setRule(expression, type);
+                settings.setRule(expression, type, temporary);
                 next && next();
             }
         }
-        let focusType = settings.getExactCleanupType(expression);
-        if (focusType === null)
-            focusType = CleanupType.NEVER;
-        <RuleDialog expression={expression} editable={true} focusType={focusType} onConfirm={onConfirm} />;
+
+        const definition = settings.getExactRuleDefinition(expression);
+        const focusType = definition ? definition.type : CleanupType.NEVER;
+        const temporary = (definition && definition.temporary) || false;
+        <RuleDialog expression={expression} editable={true} focusType={focusType} temporary={temporary} onConfirm={onConfirm} />;
     }
 }

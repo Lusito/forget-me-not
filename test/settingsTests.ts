@@ -432,16 +432,16 @@ describe("Settings", () => {
         it("should save rules", () => {
             const onChangedSpy = createSpy();
             browser.storage.onChanged.addListener(onChangedSpy);
-            settings.setRule("*.com", CleanupType.INSTANTLY);
+            settings.setRule("*.com", CleanupType.INSTANTLY, false);
             onChangedSpy.assertCalls([[{ rules: { newValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }] } }, "local"]]);
             assert.deepEqual(settings.get("rules"), [{ rule: "*.com", type: CleanupType.INSTANTLY }]);
         });
         it("should override existing rules", () => {
-            settings.setRule("*.com", CleanupType.NEVER);
-            settings.setRule("*.de", CleanupType.NEVER);
+            settings.setRule("*.com", CleanupType.NEVER, false);
+            settings.setRule("*.de", CleanupType.NEVER, false);
             const onChangedSpy = createSpy();
             browser.storage.onChanged.addListener(onChangedSpy);
-            settings.setRule("*.com", CleanupType.INSTANTLY);
+            settings.setRule("*.com", CleanupType.INSTANTLY, false);
             onChangedSpy.assertCalls([
                 [{ rules: {
                     newValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }, { rule: "*.de", type: CleanupType.NEVER }],
@@ -454,7 +454,7 @@ describe("Settings", () => {
 
     describe("removeRule", () => {
         it("should save rules", () => {
-            settings.setRule("*.com", CleanupType.INSTANTLY);
+            settings.setRule("*.com", CleanupType.INSTANTLY, false);
             const onChangedSpy = createSpy();
             browser.storage.onChanged.addListener(onChangedSpy);
             settings.removeRule("*.com");
@@ -462,13 +462,54 @@ describe("Settings", () => {
             assert.deepEqual(settings.get("rules"), []);
         });
         it("should keep other rules", () => {
-            settings.setRule("*.com", CleanupType.INSTANTLY);
-            settings.setRule("*.de", CleanupType.NEVER);
+            settings.setRule("*.com", CleanupType.INSTANTLY, false);
+            settings.setRule("*.de", CleanupType.NEVER, false);
             const onChangedSpy = createSpy();
             browser.storage.onChanged.addListener(onChangedSpy);
             settings.removeRule("*.com");
             onChangedSpy.assertCalls([[{ rules: { newValue: [{ rule: "*.de", type: CleanupType.NEVER }], oldValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }, { rule: "*.de", type: CleanupType.NEVER }] } }, "local"]]);
             assert.deepEqual(settings.get("rules"), [{ rule: "*.de", type: CleanupType.NEVER }]);
+        });
+    });
+
+    describe("removeRules", () => {
+        it("should save rules", () => {
+            settings.setRule("*.com", CleanupType.INSTANTLY, false);
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.removeRules(["*.com"]);
+            onChangedSpy.assertCalls([[{ rules: { newValue: [], oldValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }] } }, "local"]]);
+            assert.deepEqual(settings.get("rules"), []);
+        });
+        it("should keep other rules", () => {
+            settings.setRule("*.com", CleanupType.INSTANTLY, false);
+            settings.setRule("*.de", CleanupType.NEVER, false);
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.removeRules(["*.com"]);
+            onChangedSpy.assertCalls([[{ rules: { newValue: [{ rule: "*.de", type: CleanupType.NEVER }], oldValue: [{ rule: "*.com", type: CleanupType.INSTANTLY }, { rule: "*.de", type: CleanupType.NEVER }] } }, "local"]]);
+            assert.deepEqual(settings.get("rules"), [{ rule: "*.de", type: CleanupType.NEVER }]);
+        });
+    });
+
+    describe("getTemporaryRules", () => {
+        it("should get only temporary rules", () => {
+            settings.setRule("*.com", CleanupType.INSTANTLY, true);
+            settings.setRule("*.de", CleanupType.INSTANTLY, false);
+            assert.deepEqual(settings.getTemporaryRules().map((r) => r.definition), [{ rule: "*.com", type: CleanupType.INSTANTLY, temporary: true }]);
+        });
+    });
+
+    describe("removeTemporaryRules", () => {
+        it("should remove only temporary rules", () => {
+            settings.setRule("*.com", CleanupType.INSTANTLY, true);
+            settings.setRule("*.de", CleanupType.INSTANTLY, false);
+            const onChangedSpy = createSpy();
+            browser.storage.onChanged.addListener(onChangedSpy);
+            settings.removeTemporaryRules();
+            onChangedSpy.assertCalls([[{ rules: { newValue: [{ rule: "*.de", type: CleanupType.INSTANTLY }], oldValue: [{ rule: "*.com", type: CleanupType.INSTANTLY, temporary: true }, { rule: "*.de", type: CleanupType.INSTANTLY }] } }, "local"]]);
+            assert.deepEqual(settings.get("rules"), [{ rule: "*.de", type: CleanupType.INSTANTLY }]);
+            assert.deepEqual(settings.getTemporaryRules(), []);
         });
     });
 });

@@ -11,6 +11,7 @@ import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature, RuleDefinition, CleanupType } from "./settingsSignature";
 import { browser, Storage } from "webextension-polyfill-ts";
 import { getRegExForRule } from "./regexp";
+import migrateSettings, { manifestVersion } from "./settingsMigrations";
 
 type Callback = () => void;
 
@@ -20,7 +21,7 @@ export type SettingsMap = { [s: string]: SettingsValue };
 export const localStorageDefault: boolean = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 58);
 
 export const defaultSettings: SettingsMap = {
-    "version": "2.0.0",
+    "version": manifestVersion,
     "showUpdateNotification": true,
     "showCookieRemovalNotification": false,
     "rules": [],
@@ -190,7 +191,7 @@ export class Settings {
         });
     }
 
-    private rebuildRules() {
+    public rebuildRules() {
         this.rules = [];
         this.cookieRules = [];
         const rules = this.get("rules");
@@ -231,13 +232,7 @@ export class Settings {
     }
 
     public performUpgrade(previousVersion: string) {
-        const [major] = previousVersion.split(".").map((i) => parseInt(i));
-        if (isNaN(major) || major < 2) {
-            if (this.map.hasOwnProperty("domainLeave.delay"))
-                this.set("domainLeave.delay", Math.round((this.map["domainLeave.delay"] as number) * 60));
-            if (this.map.hasOwnProperty("cleanThirdPartyCookies.delay"))
-                this.set("cleanThirdPartyCookies.delay", Math.round((this.map["cleanThirdPartyCookies.delay"] as number) * 60));
-        }
+        migrateSettings(previousVersion, this.map);
     }
 
     public setAll(json: any) {

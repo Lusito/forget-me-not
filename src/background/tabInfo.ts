@@ -19,7 +19,7 @@ export class TabInfo {
     private readonly frameInfos: { [s: string]: FrameInfo } = {};
     private readonly checkDomainLeave: (cookieStoreId: string, hostnames: Set<string>) => void;
     private lastDeadFrameCheck = 0;
-    private scheduledDeadFrameCheck = 0;
+    private scheduledDeadFrameCheck: ReturnType<typeof setTimeout> | null = null;
 
     public constructor(tabId: number, hostname: string, cookieStoreId: string, checkDomainLeave: (cookieStoreId: string, hostnames: Set<string>) => void) {
         this.tabId = tabId;
@@ -30,7 +30,7 @@ export class TabInfo {
     }
 
     private checkDeadFrames() {
-        this.scheduledDeadFrameCheck = 0;
+        this.scheduledDeadFrameCheck = null;
         this.lastDeadFrameCheck = Date.now();
         const allFramesIdle = this.allFramesIdle();
         Promise.all(Object.getOwnPropertyNames(this.frameInfos)

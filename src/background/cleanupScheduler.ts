@@ -14,7 +14,7 @@ export class CleanupScheduler {
     private delayTime: number = 0;
     private enabled: boolean = false;
     private readonly handler: (domain: string) => void;
-    private domainTimeouts: { [s: string]: number } = {};
+    private domainTimeouts: { [s: string]: ReturnType<typeof setTimeout> } = {};
     private snoozing: boolean;
     private readonly snoozedDomains: { [s: string]: boolean } = {};
 

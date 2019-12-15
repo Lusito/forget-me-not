@@ -6,7 +6,7 @@
         "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
     },
     "extensionDescription": {
-        "message": "Nettoyez les données des sites, conservez celles qui vous intéressent",
+        "message": "Nettoyez les données du navigateur de recherches, conservez celles qui vous intéressent",
         "description": "Description of the extension.",
         "hash": "8138b17e7f1daceffca0d19015bb86e7"
     },
@@ -58,6 +58,10 @@
         "message": "Expression :",
         "hash": "4342463f910507a3f4f1f81716912f1c"
     },
+    "rule_dialog_temporary": {
+        "message": "Règle temporaire : Retirer cette règle a la sortie du domaine ou suite au redémarrage du navigateur.",
+        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
+    },
     "confirm_settings_and_rules": {
         "message": "Paramètres et Règles",
         "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
@@ -79,15 +83,15 @@
         "hash": "c75edd105dd87f7b72216c1e32dcf101"
     },
     "confirm_rule_replace_dialog_content": {
-        "message": "L'expression de règle spécifiée existe déjà… voulez-vous remplacer l'existante ?",
+        "message": "L'expression de règle spécifiée existe déjà… Voulez-vous la remplacer ?",
         "hash": "74219b377804324016c6fbca36518b25"
     },
     "cookie_browser_title": {
-        "message": "Consultation de cookie",
+        "message": "Explorateur de témoin",
         "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
     },
     "cookie_browser_description": {
-        "message": "Vous permet l'inspection des cookies et l'ajout de règles s'y rapportant.",
+        "message": "Avec ceci vous pouvez inspecter les cookies et facilement ajouter les règles s'y rapportant.",
         "hash": "918c4ecbf778bb45871133c3fce417da"
     },
     "dialog_back": {
@@ -137,11 +141,11 @@
         "hash": "43165bb2fb785fea90fb86352ea3ea8c"
     },
     "cleanup_type_instantly_button": {
-        "message": "*I*mmédiatement",
+        "message": "*I*nstantanément",
         "hash": "62610f955f62f7701a06a80ff04e1e1b"
     },
     "cleanup_type_instantly_button@title": {
-        "message": "Suspendre le nettoyage immédiat",
+        "message": "Empêcher/Retirer à la création",
         "hash": "f253ddd17544f84b52a993fe784164e6"
     },
     "cleanup_type_create_button": {
@@ -163,7 +167,7 @@
         "hash": "1098090c30d2dc94517833dc3d259a71"
     },
     "manual_cleanup_description": {
-        "message": "Vous permet de choisir ce que vous souhaitez nettoyer.",
+        "message": "Avec cela vous pouvez lancer le nettoyage manuel. Vous allez être en mesure de choisir ce que vous nettoyez.",
         "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
     },
     "define_rules": {
@@ -251,7 +255,7 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "En mode silencieux, ces nettoyages seront évités :\n- Nettoyage à la sortie d'un domaine\n- Nettoyage des cookies tiers\n- Blocage des cookies\n\nTous les nettoyages manqués seront effectués lorsque vous serez sortis du mode silencieux.",
+        "message": "En mode silencieux, ces nettoyages seront évités :\n- Nettoyage à la sortie d'un domaine\n- Nettoyage des témoins tiers\n- Blocage des témoins\n\nTous les nettoyages manqués seront rééchelonnés a l'arrêt du mode silencieux.",
         "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
     },
     "invalid_tab": {
@@ -323,7 +327,7 @@
         "hash": "ccb8dbed77ececb457ea594439d42146"
     },
     "setting_cookies": {
-        "message": "Cookies",
+        "message": "Témoins",
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
     "setting_local_storage": {
@@ -331,7 +335,7 @@
         "hash": "d57ee1024a950e1341482d9240d0b630"
     },
     "setting_protect_open_domains": {
-        "message": "Protéger les domaines actuellement ouverts lorsque « Appliquer les règles » est coché",
+        "message": "Protéger les domaines actuellement ouverts si « Appliquer les règles » est coché",
         "hash": "c3d70903d8398a33b99e1711f546ca19"
     },
     "setting_history": {
@@ -355,7 +359,7 @@
         "hash": "335f3924c55823b7be5b261a240883bf"
     },
     "setting_plugin_data": {
-        "message": "Données de plugin",
+        "message": "Données de plugiciel",
         "hash": "436905ccbdfaaacb1aec25f512584e36"
     },
     "setting_service_workers": {
@@ -379,11 +383,11 @@
         "hash": "4f52d0e15398d35039f73e8a04275ae9"
     },
     "setting_remove_thirdparty": {
-        "message": "Supprimer les cookies tiers à leur création :",
+        "message": "Supprimer les témoins tiers aussitôt créés :",
         "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Refuser les cookies tiers",
+        "message": "Refuser les témoins tiers",
         "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld": {
@@ -395,7 +399,7 @@
         "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
     },
     "setting_whitelist_file_system": {
-        "message": "Ne jamais lancer de nettoyage sur les fichiers de votre ordinateur",
+        "message": "Ne jamais lancer de nettoyage sur les fichiers provenant de votre ordinateur",
         "hash": "511a3b5151d821503759721ca9d7b1c1"
     },
     "settings_fallback_rule": {
@@ -411,7 +415,7 @@
         "hash": "3c037e9a79f552e29a4d50714669c7e3"
     },
     "setting_experimental_info": {
-        "message": "Ce sont des fonctionnalités expérimentales. Apprenez-en plus sur [ici](readme.html#experimental).",
+        "message": "Ce sont des fonctionnalités expérimentales. Lisez en plus sur eux [ici](readme.html#experimental).",
         "hash": "9a633b49e2375b929463c1ce49295f58"
     },
     "setting_initialTab": {

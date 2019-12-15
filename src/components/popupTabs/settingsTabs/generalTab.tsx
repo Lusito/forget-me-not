@@ -25,6 +25,8 @@ function onImport() {
 function onExport() {
     const exported = settings.getAll();
     EXPORT_IGNORE_KEYS.forEach((key) => delete exported[key]);
+    // Remove temporary rules
+    exported.rules = exported.rules.filter((rule) => !rule.temporary);
     saveJSONFile(exported, "forget-me-not-settings.json");
 }
 

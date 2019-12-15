@@ -6,7 +6,7 @@
 
 export default class DelayedExecution {
     private callback: () => void;
-    private instance: number | null = null;
+    private instance: ReturnType<typeof setTimeout> | null = null;
 
     constructor(callback: () => void) {
         this.callback = callback;

@@ -1,0 +1,496 @@
+{
+    "__WET_GROUP__0": { "message": "Branding" },
+    "extensionName": {
+        "message": "Forget Me Not - Hapus kuki & data lainnya",
+        "description": "Name of the extension.",
+        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+    },
+    "extensionDescription": {
+        "message": "Membuat peramban menghapus data situs, kecuali data yang ingin anda simpan.",
+        "description": "Description of the extension.",
+        "hash": "8138b17e7f1daceffca0d19015bb86e7"
+    },
+    "actionTitle": {
+        "message": "Forget Me Not",
+        "description": "Action button title",
+        "hash": "283721a4ca7095dd59b153aa55ae6f69"
+    },
+    "actionTitleSnooze": {
+        "message": "Forget Me Not (nonaktif sementara)",
+        "description": "Action button title during snooze",
+        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+    },
+    "logo@title": {
+        "message": "Forget Me Not",
+        "hash": "283721a4ca7095dd59b153aa55ae6f69"
+    },
+
+    "__WET_GROUP__1": { "message": "Dialogs" },
+    "alert_ok": {
+        "message": "OKE",
+        "hash": "d2702da8185dd5d533913d767bddc05d"
+    },
+    "prompt_ok": {
+        "message": "OKE",
+        "hash": "d2702da8185dd5d533913d767bddc05d"
+    },
+    "prompt_cancel": {
+        "message": "Batal",
+        "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "reset_dialog_title": {
+        "message": "Setel Ulang Pengaturan",
+        "hash": "f5545c85577b03ed93d451abf748ce8d"
+    },
+    "reset_dialog_content": {
+        "message": "Ini tidak bisa diurungkan.",
+        "hash": "db630835e0fd63a96fcb2feed83facc3"
+    },
+    "rule_dialog_title": {
+        "message": "Pilih aturan penghapusan",
+        "hash": "8b92b69da821db80656274e044e68643"
+    },
+    "rule_dialog_content": {
+        "message": "- **T**idak: Tidak pernah dihapus.\n- **M**ulai: Hanya hapus saat memulai peramban.\n- **P**ergi: Hapus saat meninggalkan domain dan saat memulai peramban.\n- **I**nstan: Cegah data diterapkan, jika memungkinkan. Jika tidak, bertindak seperti `Pergi`.\n\n**\\*** Agar `Pergi` dan `Mulai` bisa bekerja, opsi penghapusan terkait harus diaktifkan. Beberapa limitasi mungkin diterapkan karena keterbatasan di dalam API Web-Extension. [Baca selengkapnya](readme.html#tutorial)",
+        "hash": "bb88166ccd6ce8e41eb96328204fb401"
+    },
+    "rule_dialog_expression": {
+        "message": "Ekspresi:",
+        "hash": "4342463f910507a3f4f1f81716912f1c"
+    },
+    "rule_dialog_temporary": {
+        "message": "Aturan sementara: Hapus aturan ini saat meninggalkan domain atau peramban dimulai ulang.",
+        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
+    },
+    "confirm_settings_and_rules": {
+        "message": "Pengaturan & Aturan",
+        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
+    },
+    "confirm_settings_only": {
+        "message": "Hanya Pengaturan",
+        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
+    },
+    "confirm_ok": {
+        "message": "OKE",
+        "hash": "d2702da8185dd5d533913d767bddc05d"
+    },
+    "confirm_cancel": {
+        "message": "Batal",
+        "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "confirm_rule_replace_dialog_title": {
+        "message": "Ekspresi aturan sudah ada",
+        "hash": "c75edd105dd87f7b72216c1e32dcf101"
+    },
+    "confirm_rule_replace_dialog_content": {
+        "message": "Ekspresi aturan yang anda masukkan sudah ada.. apakah anda ingin menggantinya?",
+        "hash": "74219b377804324016c6fbca36518b25"
+    },
+    "cookie_browser_title": {
+        "message": "Peramban Kuki",
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+    },
+    "cookie_browser_description": {
+        "message": "Dengan alat ini anda bisa memeriksa kuki dan dengan mudah menambahkan aturan spesifik kuki.",
+        "hash": "918c4ecbf778bb45871133c3fce417da"
+    },
+    "dialog_back": {
+        "message": "Kembali",
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
+    },
+
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_badge": {
+        "message": "T",
+        "hash": "365345324a710f7b5f2824f1da013f2d"
+    },
+    "cleanup_type_never_button": {
+        "message": "*T*idak",
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
+    },
+    "cleanup_type_never_button@title": {
+        "message": "Tidak pernah dihapus",
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
+    },
+    "cleanup_type_startup_badge": {
+        "message": "M",
+        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
+    },
+    "cleanup_type_startup_button": {
+        "message": "*M*ulai",
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
+    },
+    "cleanup_type_startup_button@title": {
+        "message": "Hapus saat memulai peramban",
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
+    },
+    "cleanup_type_leave_badge": {
+        "message": "P",
+        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
+    },
+    "cleanup_type_leave_button": {
+        "message": "*P*ergi",
+        "hash": "474d0269f9757e726e5d91f684c33033"
+    },
+    "cleanup_type_leave_button@title": {
+        "message": "Hapus saat meninggalkan domain",
+        "hash": "a69a2b082be9de0589a0f807f6be2179"
+    },
+    "cleanup_type_instantly_badge": {
+        "message": "I",
+        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
+    },
+    "cleanup_type_instantly_button": {
+        "message": "*I*nstan",
+        "hash": "62610f955f62f7701a06a80ff04e1e1b"
+    },
+    "cleanup_type_instantly_button@title": {
+        "message": "Blokir/hapus saat dibuat",
+        "hash": "f253ddd17544f84b52a993fe784164e6"
+    },
+    "cleanup_type_create_button": {
+        "message": "Buat Aturan",
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Pilih tipe penghapusan untuk diterapkan",
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
+    },
+
+    "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Tidak didukung di platform ini.",
+        "hash": "99286998bff7ecef26245d3858e4fe0f"
+    },
+    "perform_manual_cleanup": {
+        "message": "Jalankan penghapusan manual",
+        "hash": "1098090c30d2dc94517833dc3d259a71"
+    },
+    "manual_cleanup_description": {
+        "message": "Dengan fitur ini anda bisa menjalankan penghapusan secara manual. Anda bisa memilih apa yang ingin anda hapus.",
+        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
+    },
+    "define_rules": {
+        "message": "Tetapkan aturan:",
+        "hash": "958b9c121084b503102f5f7e566a833e"
+    },
+    "recently_accessed_domains": {
+        "message": "Domain yang baru dikunjungi:",
+        "hash": "53d2a0edc88172044b6b6db0c1996820"
+    },
+    "tabs_settings_general": {
+        "message": "Umum",
+        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
+    },
+    "tabs_settings_cleanup": {
+        "message": "Hapus",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    },
+    "tabs_settings_experimental": {
+        "message": "Eksperimental",
+        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
+    },
+    "tabs_this_tab@title": {
+        "message": "Tab Saat Ini",
+        "hash": "9e1baccf4de27f703edde7de60b38ee1"
+    },
+    "tabs_rules@title": {
+        "message": "Tetapkan Aturan",
+        "hash": "21d4563d916a5e113022379778156fff"
+    },
+    "tabs_settings@title": {
+        "message": "Pengaturan",
+        "hash": "9c49db0871c842c3afc2c09b8a957eba"
+    },
+    "tabs_log@title": {
+        "message": "Log Domain",
+        "hash": "4e6a1346f00de8119677a55341959bf0"
+    },
+    "tabs_about@title": {
+        "message": "Tentang Forget Me Not",
+        "hash": "c7f0b61c0416534e0a666f03327552b3"
+    },
+    "tabs_tutorial@title": {
+        "message": "Panduan Awal",
+        "hash": "890626624db50efe177837d959c3a8f4"
+    },
+    "tabs_experimental@title": {
+        "message": "Fitur Eksperimental",
+        "hash": "f349bbd753db24b2c15a159a227bd115"
+    },
+    "tabs_changelog@title": {
+        "message": "Catatan Perubahan",
+        "hash": "d1f539e046abe83e76dcf2163f9a143c"
+    },
+    "button_clean_now": {
+        "message": "Hapus Sekarang!",
+        "hash": "9294eae08b1e3bfffede71c2be473b29"
+    },
+    "button_clean_domain": {
+        "message": "Hapus domain ini!",
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+    },
+    "button_import": {
+        "message": "Impor..",
+        "hash": "0192d8f28f3d837e79a05711e6379e5e"
+    },
+    "button_export": {
+        "message": "Ekspor..",
+        "hash": "46a378d64766cc2c8491cd13b018657f"
+    },
+    "button_reset": {
+        "message": "Kembalikan ke default",
+        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+    },
+    "button_log_add_rule": {
+        "message": "+ Tambah Aturan",
+        "hash": "28421d68b672702c44a611f9e741e4d2"
+    },
+    "button_toggle_snooze_true": {
+        "message": "Setop Snooze",
+        "hash": "71669281f5e594169489a032087e7b3f"
+    },
+    "button_toggle_snooze_false": {
+        "message": "Mulai Snooze",
+        "hash": "7a99ea84ba7341049328d104122639a8"
+    },
+    "toggle_snooze_description": {
+        "message": "Dalam mode snooze, tindakan berikut akan dicegah:\n- Menghapus saat meninggalkan domain\n- Menghapus kuki pihak-ketiga\n- Memblokir kuki\n\nSemua tindakan yang dicegah akan dijadwalkan ulang setelah anda menonaktifkan mode snooze.",
+        "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
+    },
+    "invalid_tab": {
+        "message": "Tab Tidak Valid",
+        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
+    },
+    "rules_column_expression": {
+        "message": "Ekspresi",
+        "hash": "7fc913b5875670e140f328b8a03ed225"
+    },
+    "rules_column_matching_expression": {
+        "message": "Ekspresi yang Cocok",
+        "hash": "dcb63b62695c11401c78d9ea01eee3de"
+    },
+    "rules_column_type": {
+        "message": "Hapus",
+        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    },
+    "rules_input@placeholder": {
+        "message": "Cari atau tambah..",
+        "hash": "a0766c32473f97b153fd63a92cadd450"
+    },
+    "expression_hint_invalid": {
+        "message": "Ekspresi tidak valid!",
+        "hash": "5960bcc4b7e809e74c69cd96049e9245"
+    },
+    "expression_hint_exists": {
+        "message": "Ekspresi sudah ada!",
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
+    },
+    "rules_add": {
+        "message": "Tambah",
+        "hash": "c30738ff9271a856100751bbca5e5794"
+    },
+    "rules_no_entries": {
+        "message": "Tidak ada entri",
+        "hash": "5ece1de076b92af71c606feadcc41439"
+    },
+    "help_button@title": {
+        "message": "Baca tentang bagaimana aturan bekerja, ekspresi apa yang bisa anda gunakan, fitur eksperimental, dan perubahan terbaru ekstensi ini.",
+        "hash": "90c094de68babfe6bfb332fb03538a24"
+    },
+    "types_of_cleanup@title": {
+        "message": "Baca tentang apa yang dihapus oleh kotak centang ini.",
+        "hash": "ba2fe14822b0ddacb1f12d26f543783d"
+    },
+    "setting_purge_expired_cookies": {
+        "message": "Buang kuki yang kedaluwarsa setiap proses penghapusan terjadi.",
+        "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
+    },
+    "setting_show_update_notification": {
+        "message": "Tampilkan notifikasi saat ekstensi diperbarui.",
+        "hash": "b09faefa5c53650a8e8d549be96e09a6"
+    },
+    "setting_show_cookie_removal_notification": {
+        "message": "Tampilkan notifikasi saat kuki telah dihapus.",
+        "hash": "5d31d92f2c4eb88af04bf02b9078d058"
+    },
+    "setting_show_badge": {
+        "message": "Tampilkan aturan yang sesuai sebagai lencana pada tombol bilah alat",
+        "hash": "fcc8735498ed21670a55314e40bd5b23"
+    },
+    "setting_apply_rules@title": {
+        "message": "Terapkan Aturan",
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
+    },
+    "setting_ignore_rules@title": {
+        "message": "Abaikan Aturan",
+        "hash": "ccb8dbed77ececb457ea594439d42146"
+    },
+    "setting_cookies": {
+        "message": "Kuki",
+        "hash": "4aef64b30489430071825bcb3db557b6"
+    },
+    "setting_local_storage": {
+        "message": "Penyimpanan Lokal",
+        "hash": "d57ee1024a950e1341482d9240d0b630"
+    },
+    "setting_protect_open_domains": {
+        "message": "Lindungi domain yang terbuka saat ini jika \"Terapkan Aturan\" dicentang",
+        "hash": "c3d70903d8398a33b99e1711f546ca19"
+    },
+    "setting_history": {
+        "message": "Riwayat",
+        "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
+    },
+    "setting_downloads": {
+        "message": "Riwayat Unduhan",
+        "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116"
+    },
+    "setting_form_data": {
+        "message": "Data Formulir",
+        "hash": "b5418babb2bbffd7d4e8275b83770564"
+    },
+    "setting_passwords": {
+        "message": "Sandi",
+        "hash": "a40f3ee19854cd8645e750f118af3dcd"
+    },
+    "setting_plugin_data": {
+        "message": "Data Plugin",
+        "hash": "436905ccbdfaaacb1aec25f512584e36"
+    },
+    "setting_cache": {
+        "message": "Tembolok",
+        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
+    },
+    "setting_delay_domain_leave_cleanup_in_seconds": {
+        "message": "Tunda menghapus setelah meninggalkan domain dalam detik:",
+        "hash": "078f159c3a6f33936199104b956d77a7"
+    },
+    "setting_delay_in_seconds": {
+        "message": "Tunda dalam detik:",
+        "hash": "4f52d0e15398d35039f73e8a04275ae9"
+    },
+    "setting_remove_thirdparty": {
+        "message": "Buang Kuki Pihak-Ketiga saat dibuat:",
+        "hash": "2d8b645390f60f6bb1777fbf6004d109"
+    },
+    "setting_thirdparty_before_creation": {
+        "message": "Tolak Kuki Pihak-Ketiga",
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
+    },
+    "setting_whitelist_no_tld": {
+        "message": "Jangan pernah hapus domain tanpa Top Level Domain",
+        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
+    },
+    "setting_whitelist_no_tld@title": {
+        "message": "Domain seperti localhost, intranet, dll. (tanpa .com, .net, dll.)",
+        "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
+    },
+    "setting_whitelist_file_system": {
+        "message": "Jangan pernah hapus berkas yang berasal dari komputer anda",
+        "hash": "511a3b5151d821503759721ca9d7b1c1"
+    },
+    "settings_fallback_rule": {
+        "message": "Hapus jika tidak ada ekspresi yang cocok (default: Pergi):",
+        "hash": "144b6e44fcfc2accebf07df655af7bea"
+    },
+    "setting_log_rad_enabled": {
+        "message": "Log domain yang baru saja diakses.",
+        "hash": "3b8f9710163140ee92e5924c8f7bdbca"
+    },
+    "setting_log_rad_limit": {
+        "message": "Batasi ke:",
+        "hash": "3c037e9a79f552e29a4d50714669c7e3"
+    },
+    "setting_experimental_info": {
+        "message": "Ini adalah fitur eksperimental. Pelajari lebih lanjut [di sini](readme.html#experimental).",
+        "hash": "9a633b49e2375b929463c1ce49295f58"
+    },
+    "setting_initialTab": {
+        "message": "Tab yang aktif saat membuka popup ini:",
+        "hash": "4f7c8a9bcef6c6476565d540dde62998"
+    },
+    "initial_tab_last_active": {
+        "message": "<Ingat>",
+        "hash": "aa5aecbdb436117318ba27e868fe98c8"
+    },
+    "initial_tab_this_tab": {
+        "message": "Tab Saat Ini",
+        "hash": "9e1baccf4de27f703edde7de60b38ee1"
+    },
+    "initial_tab_rules": {
+        "message": "Aturan",
+        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
+    },
+    "initial_tab_settings": {
+        "message": "Pengaturan",
+        "hash": "9c49db0871c842c3afc2c09b8a957eba"
+    },
+    "initial_tab_log": {
+        "message": "Log Domain",
+        "hash": "4e6a1346f00de8119677a55341959bf0"
+    },
+    "settings_cleanable_data": {
+        "message": "Data Penghapusan",
+        "hash": "63fe0e7a1fc35e835bc8495abdfbd6fb"
+    },
+    "settings_enable": {
+        "message": "Aktif",
+        "hash": "2212934c2b3d751385bf1c26d91172f3"
+    },
+
+    "__WET_GROUP__4": { "message": "Notifications" },
+    "update_notification_title": {
+        "message": "Forget Me Not telah diperbarui!",
+        "hash": "ee6d409dd42b2f42f153c1a574ca3595"
+    },
+    "update_notification_message": {
+        "message": "Klik di sini untuk melihat yang baru.",
+        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
+    },
+    "cookie_cleanup_notification_title": {
+        "message": "$COUNT$ kuki telah dihapus",
+        "placeholders": {
+            "count": { "content": "$1", "example": "4" }
+        },
+        "hash": "858abd3673bf284d100dba19e3034e71"
+    },
+    "cookie_cleanup_notification_line": {
+        "message": "$DOMAIN$: $COUNT$ kuki",
+        "placeholders": {
+            "domain": { "content": "$1", "example": "www.google.com" },
+            "count": { "content": "$2", "example": "4" }
+        },
+        "hash": "194b196ae9df5827b482babe5caebd69"
+    },
+
+    "__WET_GROUP__5": { "message": "Import Dialog" },
+    "import_by_drop_or_click": {
+        "message": "Impor pengaturan dengan cara menjatuhkan berkas yang telah diekspor di dalam area ini atau klik dimanapun untuk memilih berkas tersebut.",
+        "hash": "addde02e14af8336c24777c9b03dc5eb"
+    },
+    "import_success_close_now": {
+        "message": "Pengaturan berhasil diekspor. Anda bisa menutup jendela ini sekarang.",
+        "hash": "cd1b4a7131754d680d4a662e29b2516b"
+    },
+    "import_failure": {
+        "message": "Tidak bisa mengimpor berkas. Periksa apakah berkas adalah berkas pengaturan yang valid.",
+        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
+    },
+
+    "__WET_GROUP__6": { "message": "Info Pages" },
+    "about_page": {
+        "message": "## Pengembang\nDibuat oleh Santo Pfingsten, © 2017-2019\n\n## Penerjemahan\n\nJika anda memahami bahasa lain dengan sangat baik, anda bisa membantu menerjemahkan pengaya ini menggunakan [web-app ini](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n\n## Masalah, pertanyaan dan umpanbalik lainnya\nSilakan laporkan masalah dan permintaan fitur di GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Kebijakan Privasi\n\nPrivasi anda adalah yang paling penting.\nEkstensi tidak menganalisa atau mengumpulkan apapun diluar yang diperlukan untuk dapat bekerja sesuai dengan fungsinya. Tidak mengirim data apapun kemanapun, secara anonim sekalipun. TITIK.\n\n## Kredit\n* Terjemahan bahasa Indonesia oleh zmni\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Desain oleh Vexels.com\n* Ikon dibuat oleh [Google](https://www.flaticon.com/authors/google \"Google\")  dari [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") dengan lisensi [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
+        "hash": "8b79e24d589555578de474316b748218"
+    },
+    "tutorial_page": {
+        "message": "# Pandual Awal\n\n## Pengaturan Firefox\nCatatan, ekstensi ini tidak memiliki akses ke pengaturan Firefox anda, jadi semua pengaturan kuki yang anda buat di dalam firefox akan digabung dengan ekstensi ini.\n\nJika anda mengatur firefox untuk menolak semua kuki, ekstensi ini tidak akan  this extension will have no cookies to work with.\n\n## Tipe Penghapusan\nAnda bisa mengatur aturan penghapusan sesuai dengan domain tertentu (nama hos dari situs web, seperti *google.com*). Tipe penghapusan yang dimungkinkan:\n\n- **Tidak**: Tidak akan pernah menghapus domain yang cocok dengan aturan ini.\n- **Mulai**: Penghapusan akan berjalan saat memulai peramban.\n- **Pergi**: Penghapusan akan berjalan saat anda meninggalkan domain (dengan memasukkan yang baru ke dalam bilah url atau menutup tab)\n- **Instan**: Jika memungkinkan, ekstensi akan mencegah kuki diset oleh peramban. Atau, kuki akan langsung dihapus secara instan.\n\nJika ada beberapa aturan yang cocok dengan domain, aturan yang paling penting yang akan diterapkan. Urutannya sebagai berikut: `Instan > Pergi > Tidak > Mulai`.\n\nJika tidak ada aturan yang cocok dengan domain, aturan bawaan akan digunakan.\n\n\n## Enspresi yang valid\n- Semua nama hos (mis. www.google.com) adalah ekspresi yang valid.\n- Tanda bintang (*) bisa digunakan sebagai placeholder segmen (mis. *.google.com atau www.\\\\*.com).\n\n### Ekspresi spesifik kuki\nAnda bisa membuat aturan kombinasi antara nama kuki dan nama hos domain.\n- Contoh: `namakuki@*.google.com`\n- `namakuki` bisa semua nama kuki yang valid.\n- Aturan yang sama, seperti di atas, diterapkan untuk bagian spesifik domain disebelah kanan setelah tanda `@`.\n- Aturan spesifik kuki selalu lebih penting dari aturan normal.\n\n## Kuki pihak ketiga\n- Ketika kuki diset tanpa ada kaitan dengan domain dalam tab yang sedang aktif, kuki tersebut adalah kuki pihak ketiga.\n- Penelitian telah dilakukan untuk meningkatkan metode ini.\n\n## Mode Snooze\n\nDengan \\\"Mode Snooze\\\", anda bisa sementara menonaktifkan penghapusan otomatis. Arahkan kursor ke ikon untuk instruksi lebih lanjut (atau klik ikon tersebut jika anda menggunakan android).\n\n## Tipe data yang dihapus\n\nAnda bisa memilih jenis data yang ingin anda hapus:\n- **Kuki**: Kuki HTTP normal. (Kuki flash masuk dalam kategori \\\"Data Plugin\\\").\n- **Penyimpanan Lokal** dan **Indexed DB**: Situs web bisa menyimpan data di dalam peramban anda untuk mengaktifkan fitur tertentu atau untuk mengingat sesuatu saat kunjungan berikutnya.\nTerkadang Firefox menyebut *Indexed DB* sebagai \\\"Penyimpanan\\\", jadi jika Firefox memberitahu anda bahwa youtube.com menggunakan beberapa MB dari Penyimpanan, mungkin maksudnya adalah *Indexed DB*.\n- **Riwayat**: Berisi catatan semua situs web yang pernah anda kunjungi.\n- **Riwayat Unduhan**: Berisi riwayat unduhan anda. Menghapus unduhan tidak akan menghapus berkas yang sudah disimpan di dalam komputer anda.\n- **Data Formulir**: Informasi yang anda masukkan di dalam (sebagai contoh) formulir kontak atau pembelian. Tergantung pengaturan anda, informasi ini mungkin telah disimpan, untuk mempermudah anda memasukkannya kembali.\n- **Sandi**: Anda mungkin mengatur firefox untuk mengingat sandi situs tertentu. Pilih ini untuk menghapusnya.\n- **Data Plugin**: Plugin (bukan pengaya/web-extensions) seperti Adobe Flash atau Acrobat Reader mungkin menyimpan data seperti kuki Flash atau informasi & pengaturan lainnya.\n- **Service Workers**: Service Workers adalah cara yan gmemungkinkan situs web digunakan secara luring dan juga membantu mempercepat pemuatan aplikasi berbasis web.\n- **Server Bound Certificates**: Jika anda menambahkan sertifikat untuk akses ke server tertentu, maka opsi ini akan menghapusnya.",
+        "hash": "fa76812642094820f63991db6592eeaf"
+    },
+    "experimental_page": {
+        "message": "## Fitur Eksperimental\n\n- Seiring berjalannya waktu akan ada fitur baru yang ditandai sebagai eksperimental.\n- Akan dinonaktifkan secara bawaan dan harus diaktifkan secara manual.\n- Fitur ini digunakan untuk mengevaluasi cara baru untuk meningkatkan ekstensi.\n- Bisa tidak stabil atau performa yang buruk.\n- Jika anda memiliki masalah, coba matikan fitur ini.\n- Silakan kirim umpanbalik dan laporan bug di [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Eksperimen yang saat ini sedang aktif:\n- **Buang Kuki Kedaluwarsa**:  \nSetiap proses penghapusan dijalankan, kuki yang tanggal kedaluwarsanya lebih lama dari tanggal saat ini akan dihapus mengabaikan aturan yang telah dibuat. Secara normal Firefox hanya menghapus kuki yang kedaluwarsa setelah mencapai batasan tertentu. Kuki tersebut tidak akan dikirim ke situs web, tetapi masih tetap tersimpan di dalam peraman. Opsi ini membantu menghapusnya.\n- **Tolak Kuki Pihak-Ketiga**:  \nJika diaktifkan, setiap kunjungan situs web akan dicegat untuk menghapus kuki dari domain yang tidak terkait dengan domain yang ada di dalam tab yang sedang aktif dan tidak dilindungi oleh aturan. Kuki ini tidak akan pernah diset ke dalam peramban.\n\nSilakan sampaikan umpanbalik pengalaman anda menggunakan eksperimen ini, sehingga saya bisa memutuskan apakah perlu menambahkan fitur tersebut secara permanen atau tidak.",
+        "hash": "bd877a339269825e5ace6407fc19cb45"
+    },
+
+    "__WET_LOCALE__": { "message": "id" }
+}

@@ -55,6 +55,7 @@ export function quickHeadersReceivedDetails(url: string, tabId: number, response
         frameId: 0,
         parentFrameId: -1,
         type: "main_frame",
+        thirdParty: false,
         timeStamp: Date.now(),
         statusLine: "HTTP/0.9 200 OK",
         statusCode: 200
@@ -70,6 +71,7 @@ export function quickBeforeRedirectDetails(url: string, redirectUrl: string, tab
         parentFrameId: -1,
         tabId,
         type: frameId === 0 ? "main_frame" : "sub_frame",
+        thirdParty: false,
         timeStamp: -1,
         fromCache: false,
         statusCode: 200,

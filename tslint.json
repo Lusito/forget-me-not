@@ -1,6 +1,7 @@
 {
     "extends": "tslint:latest",
     "rules": {
+        "array-type": false,
         "quotemark": [true, "double", "avoid-template"],
         "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
         "ordered-imports": false,

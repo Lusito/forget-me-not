@@ -87,7 +87,7 @@
         "hash": "74219b377804324016c6fbca36518b25"
     },
     "cookie_browser_title": {
-        "message": "Explorateur de témoin",
+        "message": "Explorateur de cookies",
         "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
     },
     "cookie_browser_description": {
@@ -255,7 +255,7 @@
         "hash": "7a99ea84ba7341049328d104122639a8"
     },
     "toggle_snooze_description": {
-        "message": "En mode silencieux, ces nettoyages seront évités :\n- Nettoyage à la sortie d'un domaine\n- Nettoyage des témoins tiers\n- Blocage des témoins\n\nTous les nettoyages manqués seront rééchelonnés a l'arrêt du mode silencieux.",
+        "message": "En mode silencieux, ces nettoyages seront évités :\n- Nettoyage à la sortie d'un domaine\n- Nettoyage des cookies tiers\n- Blocage des cookies\n\nTous les nettoyages manqués seront rééchelonnés a l'arrêt du mode silencieux.",
         "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
     },
     "invalid_tab": {
@@ -327,7 +327,7 @@
         "hash": "ccb8dbed77ececb457ea594439d42146"
     },
     "setting_cookies": {
-        "message": "Témoins",
+        "message": "Cookies",
         "hash": "4aef64b30489430071825bcb3db557b6"
     },
     "setting_local_storage": {
@@ -359,7 +359,7 @@
         "hash": "335f3924c55823b7be5b261a240883bf"
     },
     "setting_plugin_data": {
-        "message": "Données de plugiciel",
+        "message": "Données des plugins",
         "hash": "436905ccbdfaaacb1aec25f512584e36"
     },
     "setting_service_workers": {
@@ -383,11 +383,11 @@
         "hash": "4f52d0e15398d35039f73e8a04275ae9"
     },
     "setting_remove_thirdparty": {
-        "message": "Supprimer les témoins tiers aussitôt créés :",
+        "message": "Supprimer les cookies tiers aussitôt créés :",
         "hash": "2d8b645390f60f6bb1777fbf6004d109"
     },
     "setting_thirdparty_before_creation": {
-        "message": "Refuser les témoins tiers",
+        "message": "Refuser les cookies tiers",
         "hash": "29d565d6a25a71892d493a5d6be5fa2c"
     },
     "setting_whitelist_no_tld": {

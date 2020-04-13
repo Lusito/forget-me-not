@@ -20,62 +20,62 @@ export class LocalStorageCleaner extends Cleaner {
         this.tabWatcher = tabWatcher;
     }
 
-    public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
+    public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
         if (typeSet.localStorage && removeLocalStorageByHostname) {
             const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
             if (settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
                 typeSet.localStorage = false;
-                getAllCookieStoreIds().then((ids) => {
-                    const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
-                    for (const id of ids)
-                        this.cleanDomains(id, hostnames);
-                    this.removeFromDomainsToClean(hostnames);
-                });
+                const ids = await getAllCookieStoreIds();
+                const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
+                await Promise.all([
+                    ...ids.map((id) => this.cleanDomains(id, hostnames)),
+                    this.removeFromDomainsToClean(hostnames)
+                ]);
             } else {
                 settings.set("domainsToClean", {});
-                settings.save();
+                await settings.save();
             }
         }
     }
 
-    public cleanDomainOnLeave(storeId: string, domain: string): void {
+    public async cleanDomainOnLeave(storeId: string, domain: string) {
         if (settings.get("domainLeave.enabled") && settings.get("domainLeave.localStorage") && !this.isLocalStorageProtected(storeId, domain))
-            this.cleanDomain(storeId, domain);
+            await this.cleanDomain(storeId, domain);
     }
 
-    public cleanDomain(storeId: string, domain: string): void {
+    public async cleanDomain(storeId: string, domain: string) {
         const domains = [domain];
-        this.cleanDomains(storeId, domains);
-        this.removeFromDomainsToClean(domains);
+        await this.cleanDomains(storeId, domains);
+        await this.removeFromDomainsToClean(domains);
     }
 
-    private removeFromDomainsToClean(hostnames: string[]) {
+    private async removeFromDomainsToClean(hostnames: string[]) {
         const domainsToClean = { ...settings.get("domainsToClean") };
         for (const hostname of hostnames) {
             if (!this.tabWatcher.containsDomain(hostname))
                 delete domainsToClean[hostname];
         }
         settings.set("domainsToClean", domainsToClean);
-        settings.save();
+        await settings.save();
     }
 
-    public cleanDomains(storeId: string, hostnames: string[]) {
+    public async cleanDomains(storeId: string, hostnames: string[]) {
         // Fixme: use cookieStoreId when it's supported by firefox
         if (removeLocalStorageByHostname) {
-            browser.browsingData.remove({
+            await browser.browsingData.remove({
                 originTypes: { unprotectedWeb: true },
                 hostnames
             }, { localStorage: true });
         }
     }
 
-    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean): boolean {
+    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
         if (protectOpenDomains && this.tabWatcher.containsDomain(domain))
             return true;
         return settings.isDomainProtected(domain, ignoreStartupType);
     }
 
-    private getDomainsToClean(ignoreStartupType: boolean, protectOpenDomains: boolean): string[] {
+    private getDomainsToClean(ignoreStartupType: boolean, protectOpenDomains: boolean) {
         const domainsToClean = settings.get("domainsToClean");
         const result = [];
         for (const domain in domainsToClean) {
@@ -85,7 +85,7 @@ export class LocalStorageCleaner extends Cleaner {
         return result;
     }
 
-    public isLocalStorageProtected(storeId: string, domain: string): boolean {
+    public isLocalStorageProtected(storeId: string, domain: string) {
         if (this.tabWatcher.cookieStoreContainsDomain(storeId, domain, true))
             return true;
         const type = settings.getCleanupTypeForDomain(domain);

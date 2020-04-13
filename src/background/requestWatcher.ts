@@ -21,25 +21,25 @@ export class RequestWatcher {
     public constructor(listener: RequestWatcherListener) {
         this.listener = listener;
 
-        browser.webNavigation.onBeforeNavigate.addListener(this.onBeforeNavigate = this.onBeforeNavigate.bind(this));
-        browser.webNavigation.onCommitted.addListener(this.onCommitted = this.onCommitted.bind(this));
-        browser.webNavigation.onCompleted.addListener(this.onCompleted = this.onCompleted.bind(this));
-        browser.webRequest.onBeforeRedirect.addListener(this.onBeforeRedirect = this.onBeforeRedirect.bind(this), WEB_REQUEST_FILTER);
+        browser.webNavigation.onBeforeNavigate.addListener(this.onBeforeNavigate);
+        browser.webNavigation.onCommitted.addListener(this.onCommitted);
+        browser.webNavigation.onCompleted.addListener(this.onCompleted);
+        browser.webRequest.onBeforeRedirect.addListener(this.onBeforeRedirect, WEB_REQUEST_FILTER);
     }
 
-    private onBeforeNavigate(details: WebNavigation.OnBeforeNavigateDetailsType) {
+    private onBeforeNavigate = (details: WebNavigation.OnBeforeNavigateDetailsType) => {
         this.listener.prepareNavigation(details.tabId, details.frameId, getValidHostname(details.url));
     }
 
-    private onCommitted(details: WebNavigation.OnCommittedDetailsType) {
+    private onCommitted = (details: WebNavigation.OnCommittedDetailsType) => {
         this.listener.commitNavigation(details.tabId, details.frameId, getValidHostname(details.url));
     }
 
-    private onCompleted(details: WebNavigation.OnCompletedDetailsType) {
+    private onCompleted = (details: WebNavigation.OnCompletedDetailsType) => {
         this.listener.completeNavigation(details.tabId, details.frameId);
     }
 
-    private onBeforeRedirect(details: WebRequest.OnBeforeRedirectDetailsType) {
+    private onBeforeRedirect = (details: WebRequest.OnBeforeRedirectDetailsType) => {
         this.listener.prepareNavigation(details.tabId, details.frameId, getValidHostname(details.redirectUrl));
     }
 }

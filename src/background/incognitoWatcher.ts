@@ -12,22 +12,20 @@ export class IncognitoWatcher {
     private tabs = new Set<number>();
 
     public constructor() {
-        this.onCreated = this.onCreated.bind(this);
-        this.onRemoved = this.onRemoved.bind(this);
         browser.tabs.query({}).then((tabs) => tabs.forEach(this.onCreated));
 
         browser.tabs.onRemoved.addListener(this.onRemoved);
         browser.tabs.onCreated.addListener(this.onCreated);
     }
 
-    private onCreated (tab: Tabs.Tab) {
+    private onCreated = (tab: Tabs.Tab) => {
         if (tab.id && tab.incognito) {
             this.tabs.add(tab.id);
             this.cookieStores.add(tab.cookieStoreId || DEFAULT_COOKIE_STORE_ID);
         }
     }
 
-    private onRemoved (tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) {
+    private onRemoved = (tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => {
         this.tabs.delete(tabId);
     }
 

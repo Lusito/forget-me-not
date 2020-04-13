@@ -18,14 +18,14 @@ export class TemporaryRuleCleaner extends Cleaner {
         this.tabWatcher = tabWatcher;
     }
 
-    public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
+    public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
         // done in background.ts
     }
 
-    public cleanDomainOnLeave(storeId: string, domain: string): void {
+    public async cleanDomainOnLeave(storeId: string, domain: string) {
         const temporaryRules = settings.getTemporaryRules();
         const rulesToRemove = temporaryRules.filter((rule) => !this.tabWatcher.containsRuleFP(rule.regex)).map((rule) => rule.definition.rule);
         if (rulesToRemove.length)
-            settings.removeRules(rulesToRemove);
+            await settings.removeRules(rulesToRemove);
     }
 }

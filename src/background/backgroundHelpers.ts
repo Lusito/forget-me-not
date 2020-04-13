@@ -83,20 +83,20 @@ export function getBadgeForCleanupType(type: CleanupType) {
 
 // Workaround for getAllCookieStores returning only active cookie stores.
 // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
-export function getAllCookieStoreIds() {
+export async function getAllCookieStoreIds() {
     const ids: {[s: string]: boolean} = isFirefox ? {
         "firefox-default": true,
         "firefox-private": true
     } : {};
-    return browser.cookies.getAllCookieStores().then((cookieStores) => {
-        for (const store of cookieStores)
-            ids[store.id] = true;
-        if (browser.contextualIdentities)
-            return browser.contextualIdentities.query({});
-        return [];
-    }).then((contextualIdentities) => {
+    const cookieStores = await browser.cookies.getAllCookieStores();
+
+    for (const store of cookieStores)
+        ids[store.id] = true;
+
+    if (browser.contextualIdentities) {
+        const contextualIdentities = await browser.contextualIdentities.query({});
         for (const ci of contextualIdentities)
             ids[ci.cookieStoreId] = true;
-        return Object.getOwnPropertyNames(ids);
-    });
+    }
+    return Object.getOwnPropertyNames(ids);
 }

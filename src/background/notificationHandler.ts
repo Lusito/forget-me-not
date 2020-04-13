@@ -25,17 +25,16 @@ export class NotificationHandler {
     private updateOnStart = false;
 
     public constructor() {
-        this.onNotificationClosed = this.onNotificationClosed.bind(this);
         browser.notifications.onClosed.addListener(this.onNotificationClosed);
 
         this.enabled = settings.get("showCookieRemovalNotification");
         messageUtil.receive("settingsChanged", () => {
             this.enabled = settings.get("showCookieRemovalNotification");
         });
-        messageUtil.receive("cookieRemoved", this.onCookieRemoved.bind(this));
+        messageUtil.receive("cookieRemoved", this.onCookieRemoved);
     }
 
-    private onNotificationClosed(id: string) {
+    private onNotificationClosed = (id: string) => {
         this.starting = false;
         this.removalCountsByDomain = {};
         this.delayClearNotification.cancel();
@@ -47,7 +46,7 @@ export class NotificationHandler {
         this.removalCountsByDomain = {};
     }
 
-    private showNotification() {
+    private async showNotification() {
         if (this.starting) {
             this.updateOnStart = true;
             return;
@@ -61,20 +60,21 @@ export class NotificationHandler {
         }
         this.starting = true;
         this.updateOnStart = false;
-        browser.notifications.create(COOKIE_CLEANUP_NOTIFICATION_ID, {
+        this.delayClearNotification.restart(CLEAR_NOTIFICATION_TIME);
+
+        await browser.notifications.create(COOKIE_CLEANUP_NOTIFICATION_ID, {
             type: "basic",
             iconUrl: browser.extension.getURL("icons/icon96.png"),
             title: wetLayer.getMessage("cookie_cleanup_notification_title", totalCount.toString()),
             message: lines.join("\n")
-        }).then((s) => {
-            this.starting = false;
-            if (this.updateOnStart)
-                this.delayNotification.restart(DELAY_NOTIFICATION_UPDATE_ON_START);
         });
-        this.delayClearNotification.restart(CLEAR_NOTIFICATION_TIME);
+
+        this.starting = false;
+        if (this.updateOnStart)
+            this.delayNotification.restart(DELAY_NOTIFICATION_UPDATE_ON_START);
     }
 
-    private onCookieRemoved(domain: string) {
+    private onCookieRemoved = (domain: string) => {
         if (this.enabled) {
             this.removalCountsByDomain[domain] = (this.removalCountsByDomain[domain] || 0) + 1;
             this.delayNotification.restart(DELAY_NOTIFICATION);

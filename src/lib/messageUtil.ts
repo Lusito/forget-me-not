@@ -48,6 +48,7 @@ export const messageUtil = {
         if (callback)
             promise.then(callback);
         promise.catch(noop);
+        return promise;
     },
     sendSelf(name: string, params: any) {
         if (callbacksMap) {

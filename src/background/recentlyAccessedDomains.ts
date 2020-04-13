@@ -35,9 +35,7 @@ export class RecentlyAccessedDomains {
                 messageUtil.send("onRecentlyAccessedDomains", this.get());
             }
         });
-        this.onHeadersReceived = this.onHeadersReceived.bind(this);
-        this.onCookieChanged = this.onCookieChanged.bind(this);
-        settings.onReady(this.applySettings.bind(this));
+        settings.onReady(this.applySettings);
     }
 
     private addListeners() {
@@ -58,7 +56,7 @@ export class RecentlyAccessedDomains {
         return this.limit;
     }
 
-    private applySettings() {
+    private applySettings = () => {
         const enabled = settings.get("logRAD.enabled");
         if (this.enabled !== enabled) {
             this.enabled = enabled;
@@ -77,7 +75,7 @@ export class RecentlyAccessedDomains {
             this.domains.length = limit;
     }
 
-    public get(): CookieDomainInfo[] {
+    public get() {
         const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
             const badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(domain));
@@ -105,7 +103,7 @@ export class RecentlyAccessedDomains {
         }
     }
 
-    private onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
+    private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
         if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
             let domain = changeInfo.cookie.domain;
             if (domain.startsWith("."))
@@ -114,7 +112,7 @@ export class RecentlyAccessedDomains {
         }
     }
 
-    private onHeadersReceived(details: WebRequest.OnHeadersReceivedDetailsType) {
+    private onHeadersReceived = (details: WebRequest.OnHeadersReceivedDetailsType) => {
         if (details.tabId >= 0 && !details.incognito && !this.incognitoWatcher.hasTab(details.tabId))
             this.add(getValidHostname(details.url));
     }

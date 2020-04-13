@@ -23,14 +23,13 @@ export class TabWatcher implements RequestWatcherListener {
 
     public constructor(listener: TabWatcherListener) {
         this.listener = listener;
-        this.checkDomainLeaveSet = this.checkDomainLeaveSet.bind(this);
 
         browser.tabs.query({}).then((tabs) => {
             for (const tab of tabs)
                 this.onTabCreated(tab);
 
-            browser.tabs.onRemoved.addListener(this.onTabRemoved = this.onTabRemoved.bind(this));
-            browser.tabs.onCreated.addListener(this.onTabCreated = this.onTabCreated.bind(this));
+            browser.tabs.onRemoved.addListener(this.onTabRemoved);
+            browser.tabs.onCreated.addListener(this.onTabCreated);
 
             new RequestWatcher(this);
         });
@@ -49,9 +48,10 @@ export class TabWatcher implements RequestWatcherListener {
         }
     }
 
-    public completeNavigation(tabId: number, frameId: number) {
+    public async completeNavigation(tabId: number, frameId: number) {
         const tabInfo = this.tabInfos[tabId];
-        tabInfo && tabInfo.scheduleDeadFramesCheck();
+        if (tabInfo)
+            await tabInfo.scheduleDeadFramesCheck();
     }
 
     private checkDomainEnter(cookieStoreId: string, hostname: string) {
@@ -59,7 +59,7 @@ export class TabWatcher implements RequestWatcherListener {
             this.listener.onDomainEnter(cookieStoreId, hostname);
     }
 
-    private checkDomainLeaveSet(cookieStoreId: string, hostnames: Set<string>) {
+    private checkDomainLeaveSet = (cookieStoreId: string, hostnames: Set<string>) => {
         for (const hostname of hostnames)
             hostname && this.checkDomainLeave(cookieStoreId, hostname);
     }
@@ -93,7 +93,7 @@ export class TabWatcher implements RequestWatcherListener {
         return false;
     }
 
-    private onTabRemoved(tabId: number) {
+    private onTabRemoved = (tabId: number) => {
         const tabInfo = this.tabInfos[tabId];
         if (tabInfo) {
             delete this.tabInfos[tabId];
@@ -107,7 +107,7 @@ export class TabWatcher implements RequestWatcherListener {
         }
     }
 
-    private onTabCreated(tab: Tabs.Tab) {
+    private onTabCreated = (tab: Tabs.Tab) => {
         if (tab.id && !tab.incognito) {
             const cookieStoreId = tab.cookieStoreId || DEFAULT_COOKIE_STORE_ID;
             const hostname = tab.url ? getValidHostname(tab.url) : "";

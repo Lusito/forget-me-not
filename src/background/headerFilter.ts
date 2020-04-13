@@ -83,10 +83,13 @@ export class HeaderFilter {
 
     private updateSettings() {
         this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
-        if (!this.snoozing && (this.blockThirdpartyCookies || settings.get("instantly.enabled") && settings.hasBlockingRule()))
-            browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, REQUEST_FILTER, LISTENER_OPTIONS);
-        else
-            browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
+        const enable = !this.snoozing && (this.blockThirdpartyCookies || settings.get("instantly.enabled") && settings.hasBlockingRule());
+        if (enable !== this.isEnabled()) {
+            if (enable)
+                browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, REQUEST_FILTER, LISTENER_OPTIONS);
+            else
+                browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
+        }
     }
 
     public setSnoozing(snoozing: boolean) {

@@ -203,19 +203,18 @@ export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
         {cookieList}
         <div class="split_equal split_wrap">{buttons}</div>
     </Dialog>;
-    function updateList() {
+    async function updateList() {
         const expanded = [...cookieList.querySelectorAll("ul:not(.collapsed)")].map((e) => e.getAttribute("data-tree-node-id"));
         removeAllChildren(cookieList);
-        getCookieList().then(async (list) => {
-            await updateContextualIdentities();
-            for (const byDomain of list)
-                cookieList.appendChild(mapToDomainItem(byDomain, updateList));
-            filterList();
-            for (const key of expanded) {
-                const element = cookieList.querySelector(`ul.collapsed[data-tree-node-id='${key}']`);
-                element && element.classList.remove("collapsed");
-            }
-        });
+        const list = await getCookieList();
+        await updateContextualIdentities();
+        for (const byDomain of list)
+            cookieList.appendChild(mapToDomainItem(byDomain, updateList));
+        filterList();
+        for (const key of expanded) {
+            const element = cookieList.querySelector(`ul.collapsed[data-tree-node-id='${key}']`);
+            element && element.classList.remove("collapsed");
+        }
     }
     on(button, "click", () => {
         updateList();

@@ -4,13 +4,8 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { assert } from "chai";
-
 // FIXME:
 describe("DownloadCleaner", () => {
-    it("should have tests", () => {
-        assert.isTrue(false);
-    });
     // browser.downloads.onCreated:
     // - create download
     // - if instantly enabled and instantly downloads enabled and domain for url (otherwise nothing)

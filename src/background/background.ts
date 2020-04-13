@@ -52,21 +52,21 @@ export class Background implements TabWatcherListener {
         });
     }
 
-    public onStartup() {
-        settings.removeTemporaryRules();
+    public async onStartup() {
+        await settings.removeTemporaryRules();
         if (settings.get("startup.enabled"))
-            this.runCleanup(true);
+            await this.runCleanup(true);
     }
 
-    public cleanUrlNow(config: CleanUrlNowConfig) {
-        this.cleaners.forEach((cleaner) => cleaner.cleanDomain(config.cookieStoreId, config.hostname));
+    public async cleanUrlNow(config: CleanUrlNowConfig) {
+        await Promise.all(this.cleaners.map((cleaner) => cleaner.cleanDomain(config.cookieStoreId, config.hostname)));
     }
 
-    public cleanAllNow() {
-        this.runCleanup(false);
+    public async cleanAllNow() {
+        await this.runCleanup(false);
     }
 
-    private runCleanup(startup: boolean) {
+    private async runCleanup(startup: boolean) {
         const typeSet: BrowsingData.DataTypeSet = {
             localStorage: settings.get(startup ? "startup.localStorage" : "cleanAll.localStorage"),
             cookies: settings.get(startup ? "startup.cookies" : "cleanAll.cookies"),
@@ -81,48 +81,46 @@ export class Background implements TabWatcherListener {
             cache: settings.get(startup ? "startup.cache" : "cleanAll.cache")
         };
 
-        this.cleaners.forEach((cleaner) => cleaner.clean(typeSet, startup));
-
-        browser.browsingData.remove({ originTypes: { unprotectedWeb: true } }, typeSet);
+        await Promise.all(this.cleaners.map((cleaner) => cleaner.clean(typeSet, startup)));
+        await browser.browsingData.remove({ originTypes: { unprotectedWeb: true } }, typeSet);
     }
 
-    private getCleanupScheduler(id?: string): CleanupScheduler {
+    private getCleanupScheduler(id?: string) {
         if (!id)
             id = DEFAULT_COOKIE_STORE_ID;
         let scheduler = this.cleanupScheduler[id];
         if (!scheduler) {
             const storeId = id;
-            scheduler = this.cleanupScheduler[id] = new CleanupScheduler((domain) => {
-                this.cleaners.forEach((cleaner) => cleaner.cleanDomainOnLeave(storeId, domain));
+            scheduler = this.cleanupScheduler[id] = new CleanupScheduler(async (domain) => {
+                await Promise.all(this.cleaners.map((cleaner) => cleaner.cleanDomainOnLeave(storeId, domain)));
             }, this.snoozing);
         }
         return scheduler;
     }
 
-    public updateBadge() {
-        browser.tabs.query({ active: true }).then((tabs) => {
-            for (const tab of tabs) {
-                if (tab && tab.url && !tab.incognito) {
-                    let badge = badges.none;
-                    const hostname = getValidHostname(tab.url);
-                    if (hostname)
-                        badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(hostname));
-                    let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
-                    if (!settings.get("showBadge"))
-                        text = "";
-                    if (browser.browserAction.setBadgeText)
-                        browser.browserAction.setBadgeText({ text, tabId: tab.id });
-                    if (browser.browserAction.setBadgeBackgroundColor)
-                        browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
-                    browser.browserAction.enable(tab.id);
-                } else {
-                    browser.browserAction.disable(tab.id);
-                }
+    public async updateBadge() {
+        const tabs = await browser.tabs.query({ active: true });
+        for (const tab of tabs) {
+            if (tab && tab.url && !tab.incognito) {
+                let badge = badges.none;
+                const hostname = getValidHostname(tab.url);
+                if (hostname)
+                    badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(hostname));
+                let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
+                if (!settings.get("showBadge"))
+                    text = "";
+                if (browser.browserAction.setBadgeText)
+                    browser.browserAction.setBadgeText({ text, tabId: tab.id });
+                if (browser.browserAction.setBadgeBackgroundColor)
+                    browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
+                browser.browserAction.enable(tab.id);
+            } else {
+                browser.browserAction.disable(tab.id);
             }
-        });
+        }
     }
 
-    public onDomainEnter(cookieStoreId: string, hostname: string): void {
+    public onDomainEnter(cookieStoreId: string, hostname: string) {
         if (removeLocalStorageByHostname && !this.incognitoWatcher.hasCookieStore(cookieStoreId)) {
             const domainsToClean = { ...settings.get("domainsToClean") };
             domainsToClean[hostname] = true;
@@ -131,7 +129,7 @@ export class Background implements TabWatcherListener {
         }
     }
 
-    public onDomainLeave(cookieStoreId: string, hostname: string): void {
+    public onDomainLeave(cookieStoreId: string, hostname: string) {
         this.getCleanupScheduler(cookieStoreId).schedule(hostname);
     }
 
@@ -148,17 +146,18 @@ export class Background implements TabWatcherListener {
         });
     }
 
-    public toggleSnoozingState() {
+    public async toggleSnoozingState() {
         this.snoozing = !this.snoozing;
         for (const key in this.cleanupScheduler)
             this.cleanupScheduler[key].setSnoozing(this.snoozing);
 
-        this.cleaners.forEach((cleaner) => cleaner.setSnoozing(this.snoozing));
+        const promise = Promise.all(this.cleaners.map((cleaner) => cleaner.setSnoozing(this.snoozing)));
 
         this.headerFilter.setSnoozing(this.snoozing);
 
         this.updateBrowserAction();
         this.sendSnoozingState();
+        await promise;
     }
 
     public sendSnoozingState() {

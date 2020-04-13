@@ -16,10 +16,10 @@ export class DownloadCleaner extends Cleaner {
     public constructor(tabWatcher: TabWatcher) {
         super();
         this.tabWatcher = tabWatcher;
-        browser.downloads.onCreated.addListener(this.onCreated.bind(this));
+        browser.downloads.onCreated.addListener(this.onCreated);
     }
 
-    private onCreated({ url, incognito }: Downloads.DownloadItem) {
+    private onCreated = ({ url, incognito }: Downloads.DownloadItem) => {
         const domain = getValidHostname(url);
         if (domain) {
             if (settings.get("instantly.enabled") && settings.get("instantly.downloads")) {
@@ -38,33 +38,34 @@ export class DownloadCleaner extends Cleaner {
         }
     }
 
-    private cleanupUrl(url: string) {
-        browser.downloads.erase({ url });
+    private async cleanupUrl(url: string) {
+        const promises: Promise<any>[] = [browser.downloads.erase({ url })];
         // Firefox Android doesn't support history API yet
-        browser.history && browser.history.deleteUrl({ url });
+        if (browser.history)
+            promises.push(browser.history.deleteUrl({ url }));
+        await Promise.all(promises);
     }
 
-    public clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
+    public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
         const applyRules = settings.get(startup ? "startup.downloads.applyRules" : "cleanAll.downloads.applyRules");
         if (typeSet.downloads && (applyRules || !typeSet.history)) {
             // Need to manually clear downloads from history before cleaning downloads, as otherwise the history entries will remain on firefox.
             // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1380445
             typeSet.downloads = false;
-            browser.downloads.search({}).then((downloads) => {
-                const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
-                const urlsToClean = this.getUrlsToClean(downloads, startup, protectOpenDomains, applyRules);
-                urlsToClean.forEach(this.cleanupUrl.bind(this));
-            });
+            const downloads = await browser.downloads.search({});
+            const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
+            const urlsToClean = this.getUrlsToClean(downloads, startup, protectOpenDomains, applyRules);
+            await Promise.all(urlsToClean.map((url) => this.cleanupUrl(url)));
         }
     }
 
-    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean): boolean {
+    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
         if (protectOpenDomains && this.tabWatcher.containsDomain(domain))
             return true;
         return settings.isDomainProtected(domain, ignoreStartupType);
     }
 
-    private getUrlsToClean(downloads: Downloads.DownloadItem[], startup: boolean, protectOpenDomains: boolean, applyRules: boolean): string[] {
+    private getUrlsToClean(downloads: Downloads.DownloadItem[], startup: boolean, protectOpenDomains: boolean, applyRules: boolean) {
         const downloadsToClean = { ...settings.get("downloadsToClean") };
         downloads.forEach((d) => downloadsToClean[d.url] = true);
 

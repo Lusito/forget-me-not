@@ -12,12 +12,12 @@ export abstract class Cleaner {
     /**
      * Manual cleanup or startup cleanup
      */
-    public abstract clean(typeSet: BrowsingData.DataTypeSet, startup: boolean): void;
+    public abstract clean(typeSet: BrowsingData.DataTypeSet, startup: boolean): Promise<void>;
 
     /**
      * Clean domain on leave
      */
-    public cleanDomainOnLeave(storeId: string, domain: string): void {
+    public async cleanDomainOnLeave(storeId: string, domain: string) {
         // Do nothing by default
     }
 
@@ -25,11 +25,11 @@ export abstract class Cleaner {
      * Clean domain upon button press
      * Todo: maybe allow cleaning for all stores?
      */
-    public cleanDomain(storeId: string, domain: string): void {
+    public async cleanDomain(storeId: string, domain: string) {
         // Do nothing by default
     }
 
-    public setSnoozing(snoozing: boolean): void {
+    public async setSnoozing(snoozing: boolean) {
         this.snoozing = snoozing;
     }
 }

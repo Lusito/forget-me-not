@@ -7,7 +7,7 @@
 import { browser } from "webextension-polyfill-ts";
 import { FrameInfo } from "./frameInfo";
 
-const MIN_DEAD_FRAME_CHECK_INTERVAL = 1000;
+export const MIN_DEAD_FRAME_CHECK_INTERVAL = 1000;
 
 function frameDead(tabId: number, frameId: number) {
     return browser.tabs.executeScript(tabId, { frameId, code: "1" }).then(() => null).catch(() => frameId);
@@ -26,44 +26,42 @@ export class TabInfo {
         this.cookieStoreId = cookieStoreId;
         this.getFrameInfo(0).commitNavigation(hostname);
         this.checkDomainLeave = checkDomainLeave;
-        this.checkDeadFrames = this.checkDeadFrames.bind(this);
     }
 
-    private checkDeadFrames() {
+    private checkDeadFrames = async() => {
         this.scheduledDeadFrameCheck = null;
         this.lastDeadFrameCheck = Date.now();
         const allFramesIdle = this.allFramesIdle();
-        Promise.all(Object.getOwnPropertyNames(this.frameInfos)
+        const frameIds = await Promise.all(Object.getOwnPropertyNames(this.frameInfos)
             .filter((key) => key !== "0" && this.frameInfos[key].isIdle())
             .map((key) => parseInt(key))
             .map((id) => (frameDead(this.tabId, id)))
-        ).then((frameIds) => {
-            if (frameIds.length) {
-                const deadFrameHostnames = new Set<string>();
-                const deadFrameIds = frameIds.filter((id) => id !== null) as number[];
-                for (const frameId of deadFrameIds) {
-                    const frameInfo = this.frameInfos[frameId];
-                    if (frameInfo) {
-                        delete this.frameInfos[frameId];
-                        frameInfo.collectHostnames(deadFrameHostnames);
-                    } else {
-                        console.warn("frame info not found: " + frameId);
-                    }
+        );
+        if (frameIds.length) {
+            const deadFrameHostnames = new Set<string>();
+            const deadFrameIds = frameIds.filter((id) => id !== null) as number[];
+            for (const frameId of deadFrameIds) {
+                const frameInfo = this.frameInfos[frameId];
+                if (frameInfo) {
+                    delete this.frameInfos[frameId];
+                    frameInfo.collectHostnames(deadFrameHostnames);
+                } else {
+                    console.warn("frame info not found: " + frameId);
                 }
-                if (deadFrameHostnames.size)
-                    this.checkDomainLeave(this.cookieStoreId, deadFrameHostnames);
             }
-            if (!allFramesIdle)
-                this.scheduleDeadFramesCheck();
-        });
+            if (deadFrameHostnames.size)
+                this.checkDomainLeave(this.cookieStoreId, deadFrameHostnames);
+        }
+        if (!allFramesIdle)
+            await this.scheduleDeadFramesCheck();
     }
 
-    public scheduleDeadFramesCheck() {
+    public async scheduleDeadFramesCheck() {
         if (!this.scheduledDeadFrameCheck) {
             // Fixme: also call for the active tab every once in a while
             const delta = Date.now() - this.lastDeadFrameCheck;
             if (delta > MIN_DEAD_FRAME_CHECK_INTERVAL)
-                this.checkDeadFrames();
+                await this.checkDeadFrames();
             else
                 this.scheduledDeadFrameCheck = setTimeout(this.checkDeadFrames, MIN_DEAD_FRAME_CHECK_INTERVAL - delta);
         }

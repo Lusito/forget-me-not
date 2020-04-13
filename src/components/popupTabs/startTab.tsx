@@ -31,25 +31,24 @@ class StartTabManager {
         this.cleanButton.style.display = "none";
     }
 
-    private initCurrentTab() {
-        browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-            const tab = tabs.length && tabs[0];
-            if (tab && tab.url && !tab.incognito) {
-                const hostname = getValidHostname(tab.url);
-                if (!hostname) {
-                    this.setInvalidTab();
-                } else {
-                    this.hostname = hostname;
-                    this.setCurrentTabLabel(hostname);
-                    on(this.cleanButton, "click", () => {
-                        messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
-                    });
-                    this.ruleTableContainer.appendChild(<RuleTable forDomain={hostname} headerI18n="rules_column_matching_expression" />);
-                }
-            } else {
+    private async initCurrentTab() {
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        const tab = tabs.length && tabs[0];
+        if (tab && tab.url && !tab.incognito) {
+            const hostname = getValidHostname(tab.url);
+            if (!hostname) {
                 this.setInvalidTab();
+            } else {
+                this.hostname = hostname;
+                this.setCurrentTabLabel(hostname);
+                on(this.cleanButton, "click", () => {
+                    messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
+                });
+                this.ruleTableContainer.appendChild(<RuleTable forDomain={hostname} headerI18n="rules_column_matching_expression" />);
             }
-        });
+        } else {
+            this.setInvalidTab();
+        }
     }
 }
 

@@ -13,7 +13,7 @@ export interface BrowserInfo {
     mobile: boolean;
 }
 
-export const isNodeTest = typeof window === "undefined";
+export const isNodeTest = process.env.JEST_WORKER_ID !== undefined;
 
 function createBrowserInfo(): BrowserInfo {
     // if not in a browser, assume we're in a test

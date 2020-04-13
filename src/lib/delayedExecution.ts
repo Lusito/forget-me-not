@@ -10,7 +10,6 @@ export default class DelayedExecution {
 
     constructor(callback: () => void) {
         this.callback = callback;
-        this.execute = this.execute.bind(this);
     }
 
     public restart(ms: number) {
@@ -18,7 +17,7 @@ export default class DelayedExecution {
         this.instance = setTimeout(this.execute, ms);
     }
 
-    public execute() {
+    public execute = () => {
         this.cancel();
         this.callback();
     }

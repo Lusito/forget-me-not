@@ -5,7 +5,7 @@
  */
 
 import { browser, WebRequest } from "webextension-polyfill-ts";
-import { removeCookie } from "../src/background/cleaners/cookieCleaner";
+import { removeCookie } from "../background/cleaners/cookieCleaner";
 
 export function quickCookieDomainInfo(domain: string, type: "never" | "startup" | "leave" | "instantly") {
     const className = `cleanup_type_${type}`;
@@ -17,7 +17,7 @@ export function quickCookieDomainInfo(domain: string, type: "never" | "startup" 
     };
 }
 
-export function quickSetCookie(domain: string, name: string, value: string, path: string, storeId: string, firstPartyDomain: string) {
+export function quickSetCookie(domain: string, name: string, value: string, path: string, storeId: string, firstPartyDomain: string, secure = false) {
     return browser.cookies.set({
         url: "mock",
         name,
@@ -25,7 +25,8 @@ export function quickSetCookie(domain: string, name: string, value: string, path
         domain,
         path,
         storeId,
-        firstPartyDomain
+        firstPartyDomain,
+        secure
     });
 }
 

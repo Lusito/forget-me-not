@@ -169,26 +169,24 @@ export class Settings {
     public constructor() {
         this.storage = browser.storage.local;
         this.load();
-        this.load = this.load.bind(this);
         browser.storage.onChanged.addListener(this.load);
     }
 
-    public load(changes?: { [key: string]: Storage.StorageChange }) {
-        this.storage.get(null).then((map) => {
-            this.map = map;
-            const changedKeys = Object.getOwnPropertyNames(changes || map);
-            if (changedKeys.indexOf("rules") >= 0)
-                this.rebuildRules();
-            if (this.readyCallbacks) {
-                for (const callback of this.readyCallbacks)
-                    callback();
-                this.readyCallbacks = null;
-            }
-            if (typeof (messageUtil) !== "undefined") {
-                messageUtil.send("settingsChanged", changedKeys); // to other background scripts
-                messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
-            }
-        });
+    public load = async (changes?: { [key: string]: Storage.StorageChange }) => {
+        const map = await this.storage.get(null);
+        this.map = map;
+        const changedKeys = Object.getOwnPropertyNames(changes || map);
+        if (changedKeys.indexOf("rules") >= 0)
+            this.rebuildRules();
+        if (this.readyCallbacks) {
+            for (const callback of this.readyCallbacks)
+                callback();
+            this.readyCallbacks = null;
+        }
+        if (typeof (messageUtil) !== "undefined") {
+            await messageUtil.send("settingsChanged", changedKeys); // to other background scripts
+            messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
+        }
     }
 
     public rebuildRules() {
@@ -213,8 +211,8 @@ export class Settings {
         }
     }
 
-    public save() {
-        return this.storage.set(this.map);
+    public async save() {
+        await this.storage.set(this.map);
     }
 
     public onReady(callback: Callback) {
@@ -224,11 +222,11 @@ export class Settings {
             callback();
     }
 
-    public restoreDefaults() {
+    public async restoreDefaults() {
         this.map = {};
         this.storage.clear();
         this.rebuildRules();
-        this.save();
+        await this.save();
     }
 
     public performUpgrade(previousVersion: string) {
@@ -282,7 +280,7 @@ export class Settings {
         return result as SettingsSignature;
     }
 
-    public get<K extends keyof SettingsTypeMap>(key: K): SettingsTypeMap[K] {
+    public get<K extends keyof SettingsTypeMap>(key: K) {
         if (this.map.hasOwnProperty(key))
             return this.map[key] as SettingsTypeMap[K];
         return defaultSettings[key] as SettingsTypeMap[K];
@@ -389,7 +387,7 @@ export class Settings {
         return [];
     }
 
-    public setRule(expression: string, type: CleanupType, temporary: boolean) {
+    public async setRule(expression: string, type: CleanupType, temporary: boolean) {
         const rules = this.get("rules").slice();
         let ruleDef = rules.find((r) => r.rule === expression);
         if (ruleDef)
@@ -403,19 +401,19 @@ export class Settings {
         else
             delete ruleDef.temporary;
         this.set("rules", rules);
-        this.save();
+        await this.save();
     }
 
-    public removeRule(expression: string) {
+    public async removeRule(expression: string) {
         const rules = this.get("rules").filter((r) => r.rule !== expression);
         this.set("rules", rules);
-        this.save();
+        await this.save();
     }
 
-    public removeRules(rules: string[]) {
+    public async removeRules(rules: string[]) {
         const remainingRules = this.get("rules").filter((r) => rules.indexOf(r.rule) === -1);
         this.set("rules", remainingRules);
-        this.save();
+        await this.save();
         this.rebuildRules();
     }
 
@@ -423,10 +421,10 @@ export class Settings {
         return this.rules.filter((r) => !!r.definition.temporary);
     }
 
-    public removeTemporaryRules() {
+    public async removeTemporaryRules() {
         const rules = this.get("rules").filter((r) => !r.temporary);
         this.set("rules", rules);
-        this.save();
+        await this.save();
     }
 }
 export const settings = new Settings();

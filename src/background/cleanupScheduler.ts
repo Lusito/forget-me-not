@@ -13,12 +13,12 @@ const DOMAIN_LEAVE_SETTINGS_KEYS = ["domainLeave.enabled", "domainLeave.delay"];
 export class CleanupScheduler {
     private delayTime: number = 0;
     private enabled: boolean = false;
-    private readonly handler: (domain: string) => void;
+    private readonly handler: (domain: string) => Promise<void>;
     private domainTimeouts: { [s: string]: ReturnType<typeof setTimeout> } = {};
     private snoozing: boolean;
     private readonly snoozedDomains: { [s: string]: boolean } = {};
 
-    public constructor(handler: (domain: string) => void, snoozing: boolean) {
+    public constructor(handler: (domain: string) => Promise<void>, snoozing: boolean) {
         this.snoozing = snoozing;
         this.handler = handler;
 
@@ -49,7 +49,7 @@ export class CleanupScheduler {
         }
     }
 
-    public schedule(domain: string) {
+    public async schedule(domain: string) {
         if (!this.enabled)
             return;
 
@@ -60,7 +60,7 @@ export class CleanupScheduler {
         if (this.snoozing)
             this.snoozedDomains[domain] = true;
         else if (this.delayTime <= 0)
-            this.handler(domain);
+            await this.handler(domain);
         else {
             this.domainTimeouts[domain] = setTimeout(() => {
                 if (this.enabled) {

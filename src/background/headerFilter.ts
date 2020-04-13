@@ -9,7 +9,7 @@ import { browser, WebRequest } from "webextension-polyfill-ts";
 import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import { TabWatcher } from "./tabWatcher";
-import { getValidHostname } from "../shared";
+import { getValidHostname } from "../lib/shared";
 import { CleanupType, SettingsKey } from "../lib/settingsSignature";
 import { parseSetCookieHeader } from "./backgroundHelpers";
 import { someItemsMatch } from "./backgroundShared";

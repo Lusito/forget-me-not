@@ -6,6 +6,7 @@ import { HelpLink } from "../../helpLink";
 import "./style.scss";
 import { browserInfo } from "../../../lib/browserInfo";
 import { SettingsKey } from "../../../lib/settingsSignature";
+import icons from "../../../icons";
 
 type CleanupRow = [string, SettingsKey, SettingsKey | null, SettingsKey | null, SettingsKey | null, SettingsKey | null];
 // prettier-ignore
@@ -82,16 +83,16 @@ export function CleanupTab() {
     const legend = browserInfo.mobile && (
         <ul class="settings_legend">
             <li>
-                <img src="../icons/tabs/power.svg" /> <span data-i18n="cleanup_type_startup_button@title" />
+                <img src={icons.power} /> <span data-i18n="cleanup_type_startup_button@title" />
             </li>
             <li>
-                <img src="../icons/tabs/shield.svg" /> <span data-i18n="setting_apply_rules@title" />
+                <img src={icons.shield} /> <span data-i18n="setting_apply_rules@title" />
             </li>
             <li>
-                <img src="../icons/tabs/exit.svg" /> <span data-i18n="cleanup_type_leave_button@title" />
+                <img src={icons.exit} /> <span data-i18n="cleanup_type_leave_button@title" />
             </li>
             <li>
-                <img src="../icons/tabs/stop.svg" /> <span data-i18n="cleanup_type_instantly_button@title" />
+                <img src={icons.stop} /> <span data-i18n="cleanup_type_instantly_button@title" />
             </li>
             <li>
                 <b class="unsupported_checkbox">X</b> <span data-i18n="settings_unsupported_checkbox@title" />
@@ -113,7 +114,7 @@ export function CleanupTab() {
                             <span data-i18n="cleanup_type_startup_badge" />
                         </th>
                         <th class="cleanup_type_startup">
-                            <img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" />
+                            <img src={icons.shieldWhite} data-i18n="setting_apply_rules?title" />
                         </th>
                         <th class="cleanup_type_leave" data-i18n="cleanup_type_leave_button?title">
                             <span data-i18n="cleanup_type_leave_badge" />
@@ -122,7 +123,7 @@ export function CleanupTab() {
                             <span data-i18n="cleanup_type_instantly_badge" />
                         </th>
                         <th class="cleanup_type_instantly">
-                            <img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" />
+                            <img src={icons.shieldWhite} data-i18n="setting_apply_rules?title" />
                         </th>
                     </tr>
                     <tr>

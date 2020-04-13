@@ -54,7 +54,7 @@ class TabContainerManager {
         this.tabs = this.panels.map((panel, index) => {
             const className = panel.classList.contains("active") ? "active" : "";
             const { i18n, name, icon } = panel.dataset;
-            const style = icon ? `background-image: url('../icons/tabs/${icon}');` : "";
+            const style = icon ? `background-image: url('${icon}');` : "";
             panel.removeAttribute("data-i18n");
 
             return (

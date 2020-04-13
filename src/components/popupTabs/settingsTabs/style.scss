@@ -1,5 +1,3 @@
-@import "../../../styles/variables";
-
 .settings_table {
     width: 100%;
     border-collapse: collapse;
@@ -52,7 +50,7 @@
         input[type="checkbox"] {
             + span:before {
                 content: "";
-                background: url("../icons/tabs/shield_white.svg");
+                background: url("../../../icons/shield_white.svg");
             }
             + span:before {
                 box-shadow: none;
@@ -65,7 +63,7 @@
         }
         input[type="checkbox"]:not(:disabled) {
             &:not(:checked) + span:before {
-                background: url("../icons/tabs/no_shield_white.svg");
+                background: url("../../../icons/no_shield_white.svg");
             }
             &:focus,
             &:hover {

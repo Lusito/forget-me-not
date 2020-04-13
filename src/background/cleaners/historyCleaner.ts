@@ -9,7 +9,7 @@ import { getDomain } from "tldjs";
 
 import { settings } from "../../lib/settings";
 import { Cleaner } from "./cleaner";
-import { getValidHostname } from "../../shared";
+import { getValidHostname } from "../../lib/shared";
 import { TabWatcher } from "../tabWatcher";
 
 export class HistoryCleaner extends Cleaner {

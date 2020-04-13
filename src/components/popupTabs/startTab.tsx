@@ -1,10 +1,10 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
-import * as punycode from "punycode";
+import punycode from "punycode";
 import { browser } from "webextension-polyfill-ts";
 
 import { messageUtil } from "../../lib/messageUtil";
-import { getValidHostname } from "../../shared";
+import { getValidHostname } from "../../lib/shared";
 import { on } from "../../lib/htmlUtils";
 import { RuleTable } from "../ruleTable";
 

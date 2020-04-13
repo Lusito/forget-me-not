@@ -1,273 +1,273 @@
 {
-    "__WET_GROUP__0": { "message": "Branding" },
-    "extensionName": {
-        "message": "Forget Me Not - Unohda evästeet ja muut tiedot",
-        "description": "Name of the extension.",
-        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
-    },
-    "extensionDescription": {
-        "message": "Aseta selain unohtamaan sivustojen tiedot, poislukien haluamasi säästettävät.",
-        "description": "Description of the extension.",
-        "hash": "8138b17e7f1daceffca0d19015bb86e7"
-    },
-    "actionTitle": {
-        "message": "Forget Me Not",
-        "description": "Action button title",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
-    "actionTitleSnooze": {
-        "message": "Forget Me Not (hetkellisesti pois päältä)",
-        "description": "Action button title during snooze",
-        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
-    },
-    "logo@title": {
-        "message": "Forget Me Not",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
+  "__WET_GROUP__0": { "message": "Branding" },
+  "extensionName": {
+    "message": "Forget Me Not - Unohda evästeet ja muut tiedot",
+    "description": "Name of the extension.",
+    "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+  },
+  "extensionDescription": {
+    "message": "Aseta selain unohtamaan sivustojen tiedot, poislukien haluamasi säästettävät.",
+    "description": "Description of the extension.",
+    "hash": "8138b17e7f1daceffca0d19015bb86e7"
+  },
+  "actionTitle": {
+    "message": "Forget Me Not",
+    "description": "Action button title",
+    "hash": "283721a4ca7095dd59b153aa55ae6f69"
+  },
+  "actionTitleSnooze": {
+    "message": "Forget Me Not (hetkellisesti pois päältä)",
+    "description": "Action button title during snooze",
+    "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+  },
+  "logo@title": {
+    "message": "Forget Me Not",
+    "hash": "283721a4ca7095dd59b153aa55ae6f69"
+  },
 
-    "__WET_GROUP__1": { "message": "Dialogs" },
-    "alert_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_cancel": {
-        "message": "Peruuta",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "reset_dialog_title": {
-        "message": "Nollaa asetukset",
-        "hash": "f5545c85577b03ed93d451abf748ce8d"
-    },
-    "reset_dialog_content": {
-        "message": "Tätä ei voi palauttaa.",
-        "hash": "db630835e0fd63a96fcb2feed83facc3"
-    },
-    "rule_dialog_title": {
-        "message": "Valitse siivoussääntö",
-        "hash": "8b92b69da821db80656274e044e68643"
-    },
-    "rule_dialog_content": {
-        "message": "- **E**i koskaan: Ei siivousta.\n- **K**äynnistyksessä: Siivoa vain selaimen käynnistyessä.\n- **P**oistuttaessa: Siivoa vain poustuessa domainista tai avatessa selainta.\n**V**älittömästi: Estä tietojen tallennus jos mahdollista, muuten `Poituttaessa`.\n\n**\\** Jotta `Poistuttaessa` ja `Käynnistyksessä` toimusi, on määrätty asetus tulee olla valittuna. Jotkin rajoitukset saattavat vaikuttaa lisäosan APIssa. [Lue lisää](readme.html#tutorial)",
-        "hash": "bb88166ccd6ce8e41eb96328204fb401"
-    },
-    "rule_dialog_expression": {
-        "message": "Vaikutus:",
-        "hash": "4342463f910507a3f4f1f81716912f1c"
-    },
-    "rule_dialog_temporary": {
-        "message": "Väliaikaunen sääntö: Poustuu poistuttaessa domainista tai selaimesta.",
-        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
-    },
-    "confirm_settings_and_rules": {
-        "message": "Asetukset & Säännöt",
-        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
-    },
-    "confirm_settings_only": {
-        "message": "Vain asetukset",
-        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
-    },
-    "confirm_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "confirm_cancel": {
-        "message": "Peruuta",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "confirm_rule_replace_dialog_title": {
-        "message": "Sääntö on jo olemassa",
-        "hash": "c75edd105dd87f7b72216c1e32dcf101"
-    },
-    "confirm_rule_replace_dialog_content": {
-        "message": "Sääntö on jo olemassa.. Haluatko korvata sen?",
-        "hash": "74219b377804324016c6fbca36518b25"
-    },
-    "cookie_browser_title": {
-        "message": "Evästeet Selain",
-        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
-    },
-    "cookie_browser_description": {
-        "message": "Tässä voit tutkia evästeitä ja asettaa helposti evästekohtaisia sääntöjä.",
-        "hash": "918c4ecbf778bb45871133c3fce417da"
-    },
-    "dialog_back": {
-        "message": "Takaisin",
-        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
-    },
+  "__WET_GROUP__1": { "message": "Dialogs" },
+  "alert_ok": {
+    "message": "OK",
+    "hash": "d2702da8185dd5d533913d767bddc05d"
+  },
+  "prompt_ok": {
+    "message": "OK",
+    "hash": "d2702da8185dd5d533913d767bddc05d"
+  },
+  "prompt_cancel": {
+    "message": "Peruuta",
+    "hash": "17aa19f18a894459ab6ff21156e8a341"
+  },
+  "reset_dialog_title": {
+    "message": "Nollaa asetukset",
+    "hash": "f5545c85577b03ed93d451abf748ce8d"
+  },
+  "reset_dialog_content": {
+    "message": "Tätä ei voi palauttaa.",
+    "hash": "db630835e0fd63a96fcb2feed83facc3"
+  },
+  "rule_dialog_title": {
+    "message": "Valitse siivoussääntö",
+    "hash": "8b92b69da821db80656274e044e68643"
+  },
+  "rule_dialog_content": {
+    "message": "- **E**i koskaan: Ei siivousta.\n- **K**äynnistyksessä: Siivoa vain selaimen käynnistyessä.\n- **P**oistuttaessa: Siivoa vain poustuessa domainista tai avatessa selainta.\n**V**älittömästi: Estä tietojen tallennus jos mahdollista, muuten `Poituttaessa`.\n\n**\\** Jotta `Poistuttaessa` ja `Käynnistyksessä` toimusi, on määrätty asetus tulee olla valittuna. Jotkin rajoitukset saattavat vaikuttaa lisäosan APIssa. [Lue lisää](readme.html#tutorial)",
+    "hash": "bb88166ccd6ce8e41eb96328204fb401"
+  },
+  "rule_dialog_expression": {
+    "message": "Vaikutus:",
+    "hash": "4342463f910507a3f4f1f81716912f1c"
+  },
+  "rule_dialog_temporary": {
+    "message": "Väliaikaunen sääntö: Poustuu poistuttaessa domainista tai selaimesta.",
+    "hash": "00d6f1e3f3b10031b36d0658810e84d6"
+  },
+  "confirm_settings_and_rules": {
+    "message": "Asetukset & Säännöt",
+    "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
+  },
+  "confirm_settings_only": {
+    "message": "Vain asetukset",
+    "hash": "47dbae6cf11a5b79c1abae7b56485c18"
+  },
+  "confirm_ok": {
+    "message": "OK",
+    "hash": "d2702da8185dd5d533913d767bddc05d"
+  },
+  "confirm_cancel": {
+    "message": "Peruuta",
+    "hash": "17aa19f18a894459ab6ff21156e8a341"
+  },
+  "confirm_rule_replace_dialog_title": {
+    "message": "Sääntö on jo olemassa",
+    "hash": "c75edd105dd87f7b72216c1e32dcf101"
+  },
+  "confirm_rule_replace_dialog_content": {
+    "message": "Sääntö on jo olemassa.. Haluatko korvata sen?",
+    "hash": "74219b377804324016c6fbca36518b25"
+  },
+  "cookie_browser_title": {
+    "message": "Evästeet Selain",
+    "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+  },
+  "cookie_browser_description": {
+    "message": "Tässä voit tutkia evästeitä ja asettaa helposti evästekohtaisia sääntöjä.",
+    "hash": "918c4ecbf778bb45871133c3fce417da"
+  },
+  "dialog_back": {
+    "message": "Takaisin",
+    "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
+  },
 
-    "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "E",
-        "hash": "365345324a710f7b5f2824f1da013f2d"
-    },
-    "cleanup_type_never_button": {
-        "message": "*E*i koskaan",
-        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
-    },
-    "cleanup_type_never_button@title": {
-        "message": "Ei siivousta",
-        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "K",
-        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
-    },
-    "cleanup_type_startup_button": {
-        "message": "*K*äynnistyksessä",
-        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
-    },
-    "cleanup_type_startup_button@title": {
-        "message": "Siivous selaimen käynnistyessä",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "cleanup_type_leave_badge": {
-        "message": "P",
-        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
-    },
-    "cleanup_type_leave_button": {
-        "message": "*P*oistuessa",
-        "hash": "474d0269f9757e726e5d91f684c33033"
-    },
-    "cleanup_type_leave_button@title": {
-        "message": "Siivoa poustuessa domainista",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "cleanup_type_instantly_badge": {
-        "message": "V",
-        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "*V*älittömästi",
-        "hash": "62610f955f62f7701a06a80ff04e1e1b"
-    },
-    "cleanup_type_instantly_button@title": {
-        "message": "Estä/poista luotaessa",
-        "hash": "f253ddd17544f84b52a993fe784164e6"
-    },
-    "cleanup_type_create_button": {
-        "message": "Luo sääntö",
-        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
-    },
-    "cleanup_type_create_button@title": {
-        "message": "Valitse tyyppi hyväksyttäväksi",
-        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
-    },
+  "__WET_GROUP__2": { "message": "Cleanup Types" },
+  "cleanup_type_never_badge": {
+    "message": "E",
+    "hash": "365345324a710f7b5f2824f1da013f2d"
+  },
+  "cleanup_type_never_button": {
+    "message": "*E*i koskaan",
+    "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
+  },
+  "cleanup_type_never_button@title": {
+    "message": "Ei siivousta",
+    "hash": "afc3c0c6f3ae62b193abe67827fe8562"
+  },
+  "cleanup_type_startup_badge": {
+    "message": "K",
+    "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
+  },
+  "cleanup_type_startup_button": {
+    "message": "*K*äynnistyksessä",
+    "hash": "a828be5a7de52d416d9ace00bc40fd3a"
+  },
+  "cleanup_type_startup_button@title": {
+    "message": "Siivous selaimen käynnistyessä",
+    "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
+  },
+  "cleanup_type_leave_badge": {
+    "message": "P",
+    "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
+  },
+  "cleanup_type_leave_button": {
+    "message": "*P*oistuessa",
+    "hash": "474d0269f9757e726e5d91f684c33033"
+  },
+  "cleanup_type_leave_button@title": {
+    "message": "Siivoa poustuessa domainista",
+    "hash": "a69a2b082be9de0589a0f807f6be2179"
+  },
+  "cleanup_type_instantly_badge": {
+    "message": "V",
+    "hash": "43165bb2fb785fea90fb86352ea3ea8c"
+  },
+  "cleanup_type_instantly_button": {
+    "message": "*V*älittömästi",
+    "hash": "62610f955f62f7701a06a80ff04e1e1b"
+  },
+  "cleanup_type_instantly_button@title": {
+    "message": "Estä/poista luotaessa",
+    "hash": "f253ddd17544f84b52a993fe784164e6"
+  },
+  "cleanup_type_create_button": {
+    "message": "Luo sääntö",
+    "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+  },
+  "cleanup_type_create_button@title": {
+    "message": "Valitse tyyppi hyväksyttäväksi",
+    "hash": "8f2e26691bb8f0096850c14fa831ca5d"
+  },
 
-    "__WET_GROUP__3": { "message": "Settings" },
-    "settings_unsupported_checkbox@title": {
-        "message": "Ei tuettu tässä laitteessa",
-        "hash": "99286998bff7ecef26245d3858e4fe0f"
-    },
-    "perform_manual_cleanup": {
-        "message": "Suorita manuaalisiivous",
-        "hash": "1098090c30d2dc94517833dc3d259a71"
-    },
-    "manual_cleanup_description": {
-        "message": "Tällä voit suorittaa siivouksen itse. Voit valita mitä poistetaan.",
-        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
-    },
-    "define_rules": {
-        "message": "Määrittele säännöt",
-        "hash": "958b9c121084b503102f5f7e566a833e"
-    },
-    "recently_accessed_domains": {
-        "message": "Viimeisimmät lisätyt domainit:",
-        "hash": "53d2a0edc88172044b6b6db0c1996820"
-    },
-    "tabs_settings_general": {
-        "message": "Yleiset",
-        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
-    },
-    "tabs_settings_cleanup": {
-        "message": "Siivous",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
-    "tabs_settings_experimental": {
-        "message": "Kokeellinen",
-        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
-    },
-    "tabs_this_tab@title": {
-        "message": "Nykyinen välilehti",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_rules@title": {
-        "message": "Määrittele säännöt",
-        "hash": "21d4563d916a5e113022379778156fff"
-    },
-    "tabs_settings@title": {
-        "message": "Asetukset",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_log@title": {
-        "message": "Domainin loki",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "tabs_about@title": {
-        "message": "Tietoja: Forget Me Not",
-        "hash": "c7f0b61c0416534e0a666f03327552b3"
-    },
-    "tabs_tutorial@title": {
-        "message": "Ohjeiden tutoriaali",
-        "hash": "890626624db50efe177837d959c3a8f4"
-    },
-    "tabs_experimental@title": {
-        "message": "Kokeelliset Ominaisuudet",
-        "hash": "f349bbd753db24b2c15a159a227bd115"
-    },
-    "tabs_changelog@title": {
-        "message": "Muutosloki",
-        "hash": "d1f539e046abe83e76dcf2163f9a143c"
-    },
-    "button_clean_now": {
-        "message": "Siivoa nyt!",
-        "hash": "9294eae08b1e3bfffede71c2be473b29"
-    },
-    "button_clean_domain": {
-        "message": "Siivoa tämä domain!",
-        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
-    },
-    "button_import": {
-        "message": "Tuo..",
-        "hash": "0192d8f28f3d837e79a05711e6379e5e"
-    },
-    "button_export": {
-        "message": "Vie..",
-        "hash": "46a378d64766cc2c8491cd13b018657f"
-    },
-    "button_reset": {
-        "message": "Palauta oletukset",
-        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
-    },
-    "button_log_add_rule": {
-        "message": "+ Lisää Sääntö",
-        "hash": "28421d68b672702c44a611f9e741e4d2"
-    },
-    "button_toggle_snooze_true": {
-        "message": "Pysäytä Unitila",
-        "hash": "71669281f5e594169489a032087e7b3f"
-    },
-    "button_toggle_snooze_false": {
-        "message": "Aloita Unitila",
-        "hash": "7a99ea84ba7341049328d104122639a8"
-    },
-    "toggle_snooze_description": {
-        "message": "Unitilassa, nämä siivoukset estetään:\n- Siivous domainista poistuessa\n- 3. osapuolen evästeiden siivous\n- Evästeiden esto\n\nKaikki ohitetut siivoukset tehdään poistuessasi Unitilasta.",
-        "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
-    },
-    "invalid_tab": {
-        "message": "Virheellinen Välilehti",
-        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
+  "__WET_GROUP__3": { "message": "Settings" },
+  "settings_unsupported_checkbox@title": {
+    "message": "Ei tuettu tässä laitteessa",
+    "hash": "99286998bff7ecef26245d3858e4fe0f"
+  },
+  "perform_manual_cleanup": {
+    "message": "Suorita manuaalisiivous",
+    "hash": "1098090c30d2dc94517833dc3d259a71"
+  },
+  "manual_cleanup_description": {
+    "message": "Tällä voit suorittaa siivouksen itse. Voit valita mitä poistetaan.",
+    "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
+  },
+  "define_rules": {
+    "message": "Määrittele säännöt",
+    "hash": "958b9c121084b503102f5f7e566a833e"
+  },
+  "recently_accessed_domains": {
+    "message": "Viimeisimmät lisätyt domainit:",
+    "hash": "53d2a0edc88172044b6b6db0c1996820"
+  },
+  "tabs_settings_general": {
+    "message": "Yleiset",
+    "hash": "e90d858c95232c95e34b4bb2f25b69e4"
+  },
+  "tabs_settings_cleanup": {
+    "message": "Siivous",
+    "hash": "338c238d02c3001ea6d21739b8678ec5"
+  },
+  "tabs_settings_experimental": {
+    "message": "Kokeellinen",
+    "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
+  },
+  "tabs_this_tab@title": {
+    "message": "Nykyinen välilehti",
+    "hash": "9e1baccf4de27f703edde7de60b38ee1"
+  },
+  "tabs_rules@title": {
+    "message": "Määrittele säännöt",
+    "hash": "21d4563d916a5e113022379778156fff"
+  },
+  "tabs_settings@title": {
+    "message": "Asetukset",
+    "hash": "9c49db0871c842c3afc2c09b8a957eba"
+  },
+  "tabs_log@title": {
+    "message": "Domainin loki",
+    "hash": "4e6a1346f00de8119677a55341959bf0"
+  },
+  "tabs_about@title": {
+    "message": "Tietoja: Forget Me Not",
+    "hash": "c7f0b61c0416534e0a666f03327552b3"
+  },
+  "tabs_tutorial@title": {
+    "message": "Ohjeiden tutoriaali",
+    "hash": "890626624db50efe177837d959c3a8f4"
+  },
+  "tabs_experimental@title": {
+    "message": "Kokeelliset Ominaisuudet",
+    "hash": "f349bbd753db24b2c15a159a227bd115"
+  },
+  "tabs_changelog@title": {
+    "message": "Muutosloki",
+    "hash": "d1f539e046abe83e76dcf2163f9a143c"
+  },
+  "button_clean_now": {
+    "message": "Siivoa nyt!",
+    "hash": "9294eae08b1e3bfffede71c2be473b29"
+  },
+  "button_clean_domain": {
+    "message": "Siivoa tämä domain!",
+    "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+  },
+  "button_import": {
+    "message": "Tuo..",
+    "hash": "0192d8f28f3d837e79a05711e6379e5e"
+  },
+  "button_export": {
+    "message": "Vie..",
+    "hash": "46a378d64766cc2c8491cd13b018657f"
+  },
+  "button_reset": {
+    "message": "Palauta oletukset",
+    "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+  },
+  "button_log_add_rule": {
+    "message": "+ Lisää Sääntö",
+    "hash": "28421d68b672702c44a611f9e741e4d2"
+  },
+  "button_toggle_snooze_true": {
+    "message": "Pysäytä Unitila",
+    "hash": "71669281f5e594169489a032087e7b3f"
+  },
+  "button_toggle_snooze_false": {
+    "message": "Aloita Unitila",
+    "hash": "7a99ea84ba7341049328d104122639a8"
+  },
+  "toggle_snooze_description": {
+    "message": "Unitilassa, nämä siivoukset estetään:\n- Siivous domainista poistuessa\n- 3. osapuolen evästeiden siivous\n- Evästeiden esto\n\nKaikki ohitetut siivoukset tehdään poistuessasi Unitilasta.",
+    "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
+  },
+  "invalid_tab": {
+    "message": "Virheellinen Välilehti",
+    "hash": "d9b046898a69c55df2f0e4f03f9011d6"
+  },
 
-    "__WET_GROUP__4": { "message": "Notifications" },
+  "__WET_GROUP__4": { "message": "Notifications" },
 
-    "__WET_GROUP__5": { "message": "Import Dialog" },
+  "__WET_GROUP__5": { "message": "Import Dialog" },
 
-    "__WET_GROUP__6": { "message": "Info Pages" },
+  "__WET_GROUP__6": { "message": "Info Pages" },
 
-    "__WET_LOCALE__": { "message": "fi" }
+  "__WET_LOCALE__": { "message": "fi" }
 }

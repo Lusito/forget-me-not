@@ -6,7 +6,7 @@
 
 import { browser, Tabs } from "webextension-polyfill-ts";
 
-import { DEFAULT_COOKIE_STORE_ID } from "../shared";
+import { DEFAULT_COOKIE_STORE_ID } from "../lib/shared";
 
 export class IncognitoWatcher {
     private cookieStores = new Set<string>();

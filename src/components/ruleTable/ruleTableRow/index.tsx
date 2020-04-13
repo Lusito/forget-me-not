@@ -1,5 +1,5 @@
 import { h } from "tsx-dom";
-import * as punycode from "punycode";
+import punycode from "punycode";
 
 import { CleanupType } from "../../../lib/settingsSignature";
 import { RuleButton } from "../../ruleButton";

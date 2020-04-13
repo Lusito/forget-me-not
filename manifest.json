@@ -28,7 +28,7 @@
       "96": "icons/icon96.png",
       "128": "icons/icon128.png"
     },
-    "default_popup": "views/popup.html",
+    "default_popup": "dist/popup.html",
     "default_title": "__MSG_actionTitle__"
   },
   "background": {

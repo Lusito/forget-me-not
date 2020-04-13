@@ -1,413 +1,413 @@
 {
-    "__WET_GROUP__0": { "message": "Branding" },
-    "extensionName": {
-        "message": "من را فراموش نکن - کوکی ها و بقیه داده ها را فراموش کن",
-        "description": "Name of the extension.",
-        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
-    },
-    "extensionDescription": {
-        "message": "مرورگر وب خودتون را مجبور کنید که داده های وب سایت را از یاد ببره, مگر داده هایی که خودتون میخواین نگه دارین.",
-        "description": "Description of the extension.",
-        "hash": "8138b17e7f1daceffca0d19015bb86e7"
-    },
-    "actionTitle": {
-        "message": "من را فراموش نکن",
-        "description": "Action button title",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
-    "actionTitleSnooze": {
-        "message": "من را فراموش نکن (موقتا غیر فعال شد)",
-        "description": "Action button title during snooze",
-        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
-    },
-    "logo@title": {
-        "message": "من را فراموش نکن",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
+  "__WET_GROUP__0": { "message": "Branding" },
+  "extensionName": {
+    "message": "من را فراموش نکن - کوکی ها و بقیه داده ها را فراموش کن",
+    "description": "Name of the extension.",
+    "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+  },
+  "extensionDescription": {
+    "message": "مرورگر وب خودتون را مجبور کنید که داده های وب سایت را از یاد ببره, مگر داده هایی که خودتون میخواین نگه دارین.",
+    "description": "Description of the extension.",
+    "hash": "8138b17e7f1daceffca0d19015bb86e7"
+  },
+  "actionTitle": {
+    "message": "من را فراموش نکن",
+    "description": "Action button title",
+    "hash": "283721a4ca7095dd59b153aa55ae6f69"
+  },
+  "actionTitleSnooze": {
+    "message": "من را فراموش نکن (موقتا غیر فعال شد)",
+    "description": "Action button title during snooze",
+    "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+  },
+  "logo@title": {
+    "message": "من را فراموش نکن",
+    "hash": "283721a4ca7095dd59b153aa55ae6f69"
+  },
 
-    "__WET_GROUP__1": { "message": "Dialogs" },
-    "alert_ok": {
-        "message": "حله",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_ok": {
-        "message": "حله",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_cancel": {
-        "message": "لغو",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "reset_dialog_title": {
-        "message": "راه اندازی مجدد تنظیمات",
-        "hash": "f5545c85577b03ed93d451abf748ce8d"
-    },
-    "reset_dialog_content": {
-        "message": "این عمل قابل برگشت نیست",
-        "hash": "db630835e0fd63a96fcb2feed83facc3"
-    },
-    "rule_dialog_title": {
-        "message": "یک قانون نظافت انتخاب کنید",
-        "hash": "8b92b69da821db80656274e044e68643"
-    },
-    "rule_dialog_content": {
-        "message": "- **هرگز**: بدون نظافت.\n- **در زمان راه اندازی**: نظافت, فقط زمانی که مرورگر راه اندازی شد.\n- **در زمان ترک**: نظافت در طی ترک دامنه و بستن مرورگر انجام شود.\n- **در لحظه**: از ذخیره داده ها, در صورت امکان ممانعت شود. در غیر این صورت مثل **در زمان ترک** عمل کن.\n\n**/** برای کار کردن `در زمان ترک` و `در زمان راه اندازی`, تنظیمات متناظر برای نظافت نیز بایند فعال شوند. برخی محدودیت ها ممکن است به خاطر شرایط API افزونه های مرورگر اعمال شوند. [بیشتر بخوانید](readme.html#tutorial)",
-        "hash": "bb88166ccd6ce8e41eb96328204fb401"
-    },
-    "rule_dialog_expression": {
-        "message": "حالت:",
-        "hash": "4342463f910507a3f4f1f81716912f1c"
-    },
-    "rule_dialog_temporary": {
-        "message": "قانون موقت: این قانون را برای **ترک دامنه** یا **راه اندازی مجدد** مرورگر غیر فعال کنید",
-        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
-    },
-    "confirm_settings_and_rules": {
-        "message": "تنظیمات و قوانین",
-        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
-    },
-    "confirm_settings_only": {
-        "message": "فقط تنظیمات",
-        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
-    },
-    "confirm_ok": {
-        "message": "حله",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "confirm_cancel": {
-        "message": "لغو",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "confirm_rule_replace_dialog_title": {
-        "message": "قوانین حالت از قبل وجود دارند",
-        "hash": "c75edd105dd87f7b72216c1e32dcf101"
-    },
-    "confirm_rule_replace_dialog_content": {
-        "message": "قانون حالت مشخص شده از قبل وجود دارد.. آیا میخواهید آن را تغییر دهید؟",
-        "hash": "74219b377804324016c6fbca36518b25"
-    },
-    "cookie_browser_title": {
-        "message": "مرورگر کوکی ها",
-        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
-    },
-    "cookie_browser_description": {
-        "message": "به کمک این ابزار میتوانید کوکی ها را بررسی کنید و قوانین مربوط به آنها را به سادگی اضافه کنید.",
-        "hash": "918c4ecbf778bb45871133c3fce417da"
-    },
-    "dialog_back": {
-        "message": "بازگشت",
-        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
-    },
+  "__WET_GROUP__1": { "message": "Dialogs" },
+  "alert_ok": {
+    "message": "حله",
+    "hash": "d2702da8185dd5d533913d767bddc05d"
+  },
+  "prompt_ok": {
+    "message": "حله",
+    "hash": "d2702da8185dd5d533913d767bddc05d"
+  },
+  "prompt_cancel": {
+    "message": "لغو",
+    "hash": "17aa19f18a894459ab6ff21156e8a341"
+  },
+  "reset_dialog_title": {
+    "message": "راه اندازی مجدد تنظیمات",
+    "hash": "f5545c85577b03ed93d451abf748ce8d"
+  },
+  "reset_dialog_content": {
+    "message": "این عمل قابل برگشت نیست",
+    "hash": "db630835e0fd63a96fcb2feed83facc3"
+  },
+  "rule_dialog_title": {
+    "message": "یک قانون نظافت انتخاب کنید",
+    "hash": "8b92b69da821db80656274e044e68643"
+  },
+  "rule_dialog_content": {
+    "message": "- **هرگز**: بدون نظافت.\n- **در زمان راه اندازی**: نظافت, فقط زمانی که مرورگر راه اندازی شد.\n- **در زمان ترک**: نظافت در طی ترک دامنه و بستن مرورگر انجام شود.\n- **در لحظه**: از ذخیره داده ها, در صورت امکان ممانعت شود. در غیر این صورت مثل **در زمان ترک** عمل کن.\n\n**/** برای کار کردن `در زمان ترک` و `در زمان راه اندازی`, تنظیمات متناظر برای نظافت نیز بایند فعال شوند. برخی محدودیت ها ممکن است به خاطر شرایط API افزونه های مرورگر اعمال شوند. [بیشتر بخوانید](readme.html#tutorial)",
+    "hash": "bb88166ccd6ce8e41eb96328204fb401"
+  },
+  "rule_dialog_expression": {
+    "message": "حالت:",
+    "hash": "4342463f910507a3f4f1f81716912f1c"
+  },
+  "rule_dialog_temporary": {
+    "message": "قانون موقت: این قانون را برای **ترک دامنه** یا **راه اندازی مجدد** مرورگر غیر فعال کنید",
+    "hash": "00d6f1e3f3b10031b36d0658810e84d6"
+  },
+  "confirm_settings_and_rules": {
+    "message": "تنظیمات و قوانین",
+    "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
+  },
+  "confirm_settings_only": {
+    "message": "فقط تنظیمات",
+    "hash": "47dbae6cf11a5b79c1abae7b56485c18"
+  },
+  "confirm_ok": {
+    "message": "حله",
+    "hash": "d2702da8185dd5d533913d767bddc05d"
+  },
+  "confirm_cancel": {
+    "message": "لغو",
+    "hash": "17aa19f18a894459ab6ff21156e8a341"
+  },
+  "confirm_rule_replace_dialog_title": {
+    "message": "قوانین حالت از قبل وجود دارند",
+    "hash": "c75edd105dd87f7b72216c1e32dcf101"
+  },
+  "confirm_rule_replace_dialog_content": {
+    "message": "قانون حالت مشخص شده از قبل وجود دارد.. آیا میخواهید آن را تغییر دهید؟",
+    "hash": "74219b377804324016c6fbca36518b25"
+  },
+  "cookie_browser_title": {
+    "message": "مرورگر کوکی ها",
+    "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
+  },
+  "cookie_browser_description": {
+    "message": "به کمک این ابزار میتوانید کوکی ها را بررسی کنید و قوانین مربوط به آنها را به سادگی اضافه کنید.",
+    "hash": "918c4ecbf778bb45871133c3fce417da"
+  },
+  "dialog_back": {
+    "message": "بازگشت",
+    "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
+  },
 
-    "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "ه",
-        "hash": "365345324a710f7b5f2824f1da013f2d"
-    },
-    "cleanup_type_never_button": {
-        "message": "*هرگز*",
-        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
-    },
-    "cleanup_type_never_button@title": {
-        "message": "بدون نظافت",
-        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "ر",
-        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
-    },
-    "cleanup_type_startup_button": {
-        "message": "*در زمان راه اندازی*",
-        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
-    },
-    "cleanup_type_startup_button@title": {
-        "message": "نظافت در زمان راه اندازی مجدد مرورگر",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "cleanup_type_leave_badge": {
-        "message": "ت",
-        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
-    },
-    "cleanup_type_leave_button": {
-        "message": "*در زمان ترک*",
-        "hash": "474d0269f9757e726e5d91f684c33033"
-    },
-    "cleanup_type_leave_button@title": {
-        "message": "نظافت در زمان ترک دامنه",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "cleanup_type_instantly_badge": {
-        "message": "د",
-        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "*در لحظه*",
-        "hash": "62610f955f62f7701a06a80ff04e1e1b"
-    },
-    "cleanup_type_instantly_button@title": {
-        "message": "قفل/حذف کردن در زمان ایجاد",
-        "hash": "f253ddd17544f84b52a993fe784164e6"
-    },
-    "cleanup_type_create_button": {
-        "message": "ساختن قانون",
-        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
-    },
-    "cleanup_type_create_button@title": {
-        "message": "نوع نظافت را برای اعمال انتخاب کنید",
-        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
-    },
+  "__WET_GROUP__2": { "message": "Cleanup Types" },
+  "cleanup_type_never_badge": {
+    "message": "ه",
+    "hash": "365345324a710f7b5f2824f1da013f2d"
+  },
+  "cleanup_type_never_button": {
+    "message": "*هرگز*",
+    "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
+  },
+  "cleanup_type_never_button@title": {
+    "message": "بدون نظافت",
+    "hash": "afc3c0c6f3ae62b193abe67827fe8562"
+  },
+  "cleanup_type_startup_badge": {
+    "message": "ر",
+    "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
+  },
+  "cleanup_type_startup_button": {
+    "message": "*در زمان راه اندازی*",
+    "hash": "a828be5a7de52d416d9ace00bc40fd3a"
+  },
+  "cleanup_type_startup_button@title": {
+    "message": "نظافت در زمان راه اندازی مجدد مرورگر",
+    "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
+  },
+  "cleanup_type_leave_badge": {
+    "message": "ت",
+    "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
+  },
+  "cleanup_type_leave_button": {
+    "message": "*در زمان ترک*",
+    "hash": "474d0269f9757e726e5d91f684c33033"
+  },
+  "cleanup_type_leave_button@title": {
+    "message": "نظافت در زمان ترک دامنه",
+    "hash": "a69a2b082be9de0589a0f807f6be2179"
+  },
+  "cleanup_type_instantly_badge": {
+    "message": "د",
+    "hash": "43165bb2fb785fea90fb86352ea3ea8c"
+  },
+  "cleanup_type_instantly_button": {
+    "message": "*در لحظه*",
+    "hash": "62610f955f62f7701a06a80ff04e1e1b"
+  },
+  "cleanup_type_instantly_button@title": {
+    "message": "قفل/حذف کردن در زمان ایجاد",
+    "hash": "f253ddd17544f84b52a993fe784164e6"
+  },
+  "cleanup_type_create_button": {
+    "message": "ساختن قانون",
+    "hash": "913e8b0d4ccb47df0b1a1780c709f857"
+  },
+  "cleanup_type_create_button@title": {
+    "message": "نوع نظافت را برای اعمال انتخاب کنید",
+    "hash": "8f2e26691bb8f0096850c14fa831ca5d"
+  },
 
-    "__WET_GROUP__3": { "message": "Settings" },
-    "settings_unsupported_checkbox@title": {
-        "message": "روی این پلتفرم پشتیبانی نمیشود.",
-        "hash": "99286998bff7ecef26245d3858e4fe0f"
-    },
-    "perform_manual_cleanup": {
-        "message": "اجرای نظافت دستی",
-        "hash": "1098090c30d2dc94517833dc3d259a71"
-    },
-    "manual_cleanup_description": {
-        "message": "به کمک این ابزار میتونید یک نظافت دستی را اجرا کنید. میتونید انتخاب کنید که چی پاک بشه.",
-        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
-    },
-    "define_rules": {
-        "message": "تعریف قانون:",
-        "hash": "958b9c121084b503102f5f7e566a833e"
-    },
-    "recently_accessed_domains": {
-        "message": "دامنه هایی که اخیرا باز شدند:",
-        "hash": "53d2a0edc88172044b6b6db0c1996820"
-    },
-    "tabs_settings_general": {
-        "message": "کلی",
-        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
-    },
-    "tabs_settings_cleanup": {
-        "message": "نظافت",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
-    "tabs_settings_experimental": {
-        "message": "آزمایشی",
-        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
-    },
-    "tabs_this_tab@title": {
-        "message": "تب فعلی",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_rules@title": {
-        "message": "تعریف قانون",
-        "hash": "21d4563d916a5e113022379778156fff"
-    },
-    "tabs_settings@title": {
-        "message": "تنظیمات",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_log@title": {
-        "message": "گزارش دامنه",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "tabs_about@title": {
-        "message": "درباره من را فراموش نکن",
-        "hash": "c7f0b61c0416534e0a666f03327552b3"
-    },
-    "tabs_tutorial@title": {
-        "message": "آموزش مقدماتی",
-        "hash": "890626624db50efe177837d959c3a8f4"
-    },
-    "tabs_experimental@title": {
-        "message": "قابلیت های آزمایشی",
-        "hash": "f349bbd753db24b2c15a159a227bd115"
-    },
-    "tabs_changelog@title": {
-        "message": "گزارش تغییرات",
-        "hash": "d1f539e046abe83e76dcf2163f9a143c"
-    },
-    "button_clean_now": {
-        "message": "پاک کن!",
-        "hash": "9294eae08b1e3bfffede71c2be473b29"
-    },
-    "button_clean_domain": {
-        "message": "این دامنه را پاک کن!",
-        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
-    },
-    "button_import": {
-        "message": "وارد کن..",
-        "hash": "0192d8f28f3d837e79a05711e6379e5e"
-    },
-    "button_export": {
-        "message": "صادر کن..",
-        "hash": "46a378d64766cc2c8491cd13b018657f"
-    },
-    "button_reset": {
-        "message": "برگردون به حالت پیش فزض",
-        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
-    },
-    "button_log_add_rule": {
-        "message": "+ اضافه کردن قانون",
-        "hash": "28421d68b672702c44a611f9e741e4d2"
-    },
-    "button_toggle_snooze_true": {
-        "message": "بیدار شو",
-        "hash": "71669281f5e594169489a032087e7b3f"
-    },
-    "button_toggle_snooze_false": {
-        "message": "بخواب",
-        "hash": "7a99ea84ba7341049328d104122639a8"
-    },
-    "toggle_snooze_description": {
-        "message": "در حالت خواب, از این نظافت ها جلوگیری میشه:\n- نظافت در زمان ترک دامنه\n- نظافت کوکی های شخص ثالث\n- قفل کردن کوکی ها\n\nتمام نظافت های انجام نشده بعد از بیدار شدن دوباره برای اجرا برنامه ریزی میشن.",
-        "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
-    },
-    "invalid_tab": {
-        "message": "تب نامعتبر",
-        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_column_expression": {
-        "message": "حالت",
-        "hash": "7fc913b5875670e140f328b8a03ed225"
-    },
-    "rules_column_matching_expression": {
-        "message": "حالت همخوان",
-        "hash": "dcb63b62695c11401c78d9ea01eee3de"
-    },
-    "rules_column_type": {
-        "message": "نظافت",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
-    "rules_input@placeholder": {
-        "message": "جستجو و افزودن..",
-        "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "expression_hint_invalid": {
-        "message": "حالت نامعتبر",
-        "hash": "5960bcc4b7e809e74c69cd96049e9245"
-    },
-    "expression_hint_exists": {
-        "message": "حالت از قبل وجود دارد!",
-        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
-    },
-    "rules_add": {
-        "message": "افزودن",
-        "hash": "c30738ff9271a856100751bbca5e5794"
-    },
-    "rules_no_entries": {
-        "message": "بدون داده",
-        "hash": "5ece1de076b92af71c606feadcc41439"
-    },
-    "help_button@title": {
-        "message": "درباره چگونگی عملکرد قوانین بخون, اینکه از چه حالت هایی میتونی استفاده کنی, قابلیت های آزمایش کدومند و تغییرات اخیر این افزونه چین.",
-        "hash": "90c094de68babfe6bfb332fb03538a24"
-    },
-    "types_of_cleanup@title": {
-        "message": "درمورد اینکه واقعا این checkbox ها چی هستن بیشتر بخون.",
-        "hash": "ba2fe14822b0ddacb1f12d26f543783d"
-    },
-    "setting_purge_expired_cookies": {
-        "message": "تمام کوکی های منقضی را هر وقت که یه نظافت انجام میشه پاک کن.",
-        "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
-    },
-    "setting_show_update_notification": {
-        "message": "وقتی یه افزونه آپدیت میشه یه نوتیفیکیشن نشون بده.",
-        "hash": "b09faefa5c53650a8e8d549be96e09a6"
-    },
-    "setting_show_cookie_removal_notification": {
-        "message": "وقتی یه کوکی پاک میشه یه نوتیفیکیشن نشون بده.",
-        "hash": "5d31d92f2c4eb88af04bf02b9078d058"
-    },
-    "setting_show_badge": {
-        "message": "یه قانون متناظر را به صورت مدال روی دکمه نوار ابزار نشون بده.",
-        "hash": "fcc8735498ed21670a55314e40bd5b23"
-    },
-    "setting_apply_rules@title": {
-        "message": "اعمال قوانین",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
-    "setting_ignore_rules@title": {
-        "message": "صرفنظر از قوانین",
-        "hash": "ccb8dbed77ececb457ea594439d42146"
-    },
-    "setting_cookies": {
-        "message": "کوکی ها",
-        "hash": "4aef64b30489430071825bcb3db557b6"
-    },
-    "setting_local_storage": {
-        "message": "حافظه محلی",
-        "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_protect_open_domains": {
-        "message": "از دامنه فعلی در صورتی که \"اعمال قوانین\" انتخاب شده محافظت کن.",
-        "hash": "c3d70903d8398a33b99e1711f546ca19"
-    },
-    "setting_history": {
-        "message": "تاریخچه",
-        "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
-    },
-    "setting_downloads": {
-        "message": "دانلود تاریخچه",
-        "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116"
-    },
-    "setting_form_data": {
-        "message": "از داده",
-        "hash": "b5418babb2bbffd7d4e8275b83770564"
-    },
-    "setting_passwords": {
-        "message": "رمزها",
-        "hash": "a40f3ee19854cd8645e750f118af3dcd"
-    },
-    "setting_indexed_db": {
-        "message": "دیتابیس شاخص دار",
-        "hash": "335f3924c55823b7be5b261a240883bf"
-    },
-    "setting_plugin_data": {
-        "message": "داده های پلاگین",
-        "hash": "436905ccbdfaaacb1aec25f512584e36"
-    },
-    "setting_service_workers": {
-        "message": "کارگرهای سرویس",
-        "hash": "584545acfce5580c7967bc8c366df556"
-    },
-    "setting_cache": {
-        "message": "کش",
-        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
-    },
-    "setting_server_bound_certificates": {
-        "message": "تصدیق هویت محدود به سرور",
-        "hash": "0dfdb1326c1206379e7866da9c9bbf11"
-    },
-    "setting_delay_domain_leave_cleanup_in_seconds": {
-        "message": "برای نظافت اطلاعات دامنه, بعد از ترک, مدتی صبر کن (به ثانیه):",
-        "hash": "078f159c3a6f33936199104b956d77a7"
-    },
-    "setting_delay_in_seconds": {
-        "message": "تاخیر به ثانیه:",
-        "hash": "4f52d0e15398d35039f73e8a04275ae9"
-    },
-    "setting_remove_thirdparty": {
-        "message": "کوکی های شخص ثالث را در زمان ایجاد خذف کن:",
-        "hash": "2d8b645390f60f6bb1777fbf6004d109"
-    },
-    "setting_thirdparty_before_creation": {
-        "message": "کوکی های شخص ثالث را رد کن",
-        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
-    },
-    "setting_whitelist_no_tld": {
-        "message": "هرگز یک دامنه هایی که از یه دامنه بالاتری نمیاند را پاک نکن",
-        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
-    },
-    "setting_whitelist_no_tld@title": {
-        "message": "دامنه های مثل localhost, اینترانت و غیره.\n(بدون com. یا net. و غیره)",
-        "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "setting_whitelist_file_system": {
-        "message": "هرگز نظافت روی فایل های کامپیوترم انجام نشه.",
-        "hash": "511a3b5151d821503759721ca9d7b1c1"
-    },
+  "__WET_GROUP__3": { "message": "Settings" },
+  "settings_unsupported_checkbox@title": {
+    "message": "روی این پلتفرم پشتیبانی نمیشود.",
+    "hash": "99286998bff7ecef26245d3858e4fe0f"
+  },
+  "perform_manual_cleanup": {
+    "message": "اجرای نظافت دستی",
+    "hash": "1098090c30d2dc94517833dc3d259a71"
+  },
+  "manual_cleanup_description": {
+    "message": "به کمک این ابزار میتونید یک نظافت دستی را اجرا کنید. میتونید انتخاب کنید که چی پاک بشه.",
+    "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
+  },
+  "define_rules": {
+    "message": "تعریف قانون:",
+    "hash": "958b9c121084b503102f5f7e566a833e"
+  },
+  "recently_accessed_domains": {
+    "message": "دامنه هایی که اخیرا باز شدند:",
+    "hash": "53d2a0edc88172044b6b6db0c1996820"
+  },
+  "tabs_settings_general": {
+    "message": "کلی",
+    "hash": "e90d858c95232c95e34b4bb2f25b69e4"
+  },
+  "tabs_settings_cleanup": {
+    "message": "نظافت",
+    "hash": "338c238d02c3001ea6d21739b8678ec5"
+  },
+  "tabs_settings_experimental": {
+    "message": "آزمایشی",
+    "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
+  },
+  "tabs_this_tab@title": {
+    "message": "تب فعلی",
+    "hash": "9e1baccf4de27f703edde7de60b38ee1"
+  },
+  "tabs_rules@title": {
+    "message": "تعریف قانون",
+    "hash": "21d4563d916a5e113022379778156fff"
+  },
+  "tabs_settings@title": {
+    "message": "تنظیمات",
+    "hash": "9c49db0871c842c3afc2c09b8a957eba"
+  },
+  "tabs_log@title": {
+    "message": "گزارش دامنه",
+    "hash": "4e6a1346f00de8119677a55341959bf0"
+  },
+  "tabs_about@title": {
+    "message": "درباره من را فراموش نکن",
+    "hash": "c7f0b61c0416534e0a666f03327552b3"
+  },
+  "tabs_tutorial@title": {
+    "message": "آموزش مقدماتی",
+    "hash": "890626624db50efe177837d959c3a8f4"
+  },
+  "tabs_experimental@title": {
+    "message": "قابلیت های آزمایشی",
+    "hash": "f349bbd753db24b2c15a159a227bd115"
+  },
+  "tabs_changelog@title": {
+    "message": "گزارش تغییرات",
+    "hash": "d1f539e046abe83e76dcf2163f9a143c"
+  },
+  "button_clean_now": {
+    "message": "پاک کن!",
+    "hash": "9294eae08b1e3bfffede71c2be473b29"
+  },
+  "button_clean_domain": {
+    "message": "این دامنه را پاک کن!",
+    "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+  },
+  "button_import": {
+    "message": "وارد کن..",
+    "hash": "0192d8f28f3d837e79a05711e6379e5e"
+  },
+  "button_export": {
+    "message": "صادر کن..",
+    "hash": "46a378d64766cc2c8491cd13b018657f"
+  },
+  "button_reset": {
+    "message": "برگردون به حالت پیش فزض",
+    "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+  },
+  "button_log_add_rule": {
+    "message": "+ اضافه کردن قانون",
+    "hash": "28421d68b672702c44a611f9e741e4d2"
+  },
+  "button_toggle_snooze_true": {
+    "message": "بیدار شو",
+    "hash": "71669281f5e594169489a032087e7b3f"
+  },
+  "button_toggle_snooze_false": {
+    "message": "بخواب",
+    "hash": "7a99ea84ba7341049328d104122639a8"
+  },
+  "toggle_snooze_description": {
+    "message": "در حالت خواب, از این نظافت ها جلوگیری میشه:\n- نظافت در زمان ترک دامنه\n- نظافت کوکی های شخص ثالث\n- قفل کردن کوکی ها\n\nتمام نظافت های انجام نشده بعد از بیدار شدن دوباره برای اجرا برنامه ریزی میشن.",
+    "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
+  },
+  "invalid_tab": {
+    "message": "تب نامعتبر",
+    "hash": "d9b046898a69c55df2f0e4f03f9011d6"
+  },
+  "rules_column_expression": {
+    "message": "حالت",
+    "hash": "7fc913b5875670e140f328b8a03ed225"
+  },
+  "rules_column_matching_expression": {
+    "message": "حالت همخوان",
+    "hash": "dcb63b62695c11401c78d9ea01eee3de"
+  },
+  "rules_column_type": {
+    "message": "نظافت",
+    "hash": "338c238d02c3001ea6d21739b8678ec5"
+  },
+  "rules_input@placeholder": {
+    "message": "جستجو و افزودن..",
+    "hash": "a0766c32473f97b153fd63a92cadd450"
+  },
+  "expression_hint_invalid": {
+    "message": "حالت نامعتبر",
+    "hash": "5960bcc4b7e809e74c69cd96049e9245"
+  },
+  "expression_hint_exists": {
+    "message": "حالت از قبل وجود دارد!",
+    "hash": "8171dd015c1bd031c6c7af75d5fa7100"
+  },
+  "rules_add": {
+    "message": "افزودن",
+    "hash": "c30738ff9271a856100751bbca5e5794"
+  },
+  "rules_no_entries": {
+    "message": "بدون داده",
+    "hash": "5ece1de076b92af71c606feadcc41439"
+  },
+  "help_button@title": {
+    "message": "درباره چگونگی عملکرد قوانین بخون, اینکه از چه حالت هایی میتونی استفاده کنی, قابلیت های آزمایش کدومند و تغییرات اخیر این افزونه چین.",
+    "hash": "90c094de68babfe6bfb332fb03538a24"
+  },
+  "types_of_cleanup@title": {
+    "message": "درمورد اینکه واقعا این checkbox ها چی هستن بیشتر بخون.",
+    "hash": "ba2fe14822b0ddacb1f12d26f543783d"
+  },
+  "setting_purge_expired_cookies": {
+    "message": "تمام کوکی های منقضی را هر وقت که یه نظافت انجام میشه پاک کن.",
+    "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
+  },
+  "setting_show_update_notification": {
+    "message": "وقتی یه افزونه آپدیت میشه یه نوتیفیکیشن نشون بده.",
+    "hash": "b09faefa5c53650a8e8d549be96e09a6"
+  },
+  "setting_show_cookie_removal_notification": {
+    "message": "وقتی یه کوکی پاک میشه یه نوتیفیکیشن نشون بده.",
+    "hash": "5d31d92f2c4eb88af04bf02b9078d058"
+  },
+  "setting_show_badge": {
+    "message": "یه قانون متناظر را به صورت مدال روی دکمه نوار ابزار نشون بده.",
+    "hash": "fcc8735498ed21670a55314e40bd5b23"
+  },
+  "setting_apply_rules@title": {
+    "message": "اعمال قوانین",
+    "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
+  },
+  "setting_ignore_rules@title": {
+    "message": "صرفنظر از قوانین",
+    "hash": "ccb8dbed77ececb457ea594439d42146"
+  },
+  "setting_cookies": {
+    "message": "کوکی ها",
+    "hash": "4aef64b30489430071825bcb3db557b6"
+  },
+  "setting_local_storage": {
+    "message": "حافظه محلی",
+    "hash": "d57ee1024a950e1341482d9240d0b630"
+  },
+  "setting_protect_open_domains": {
+    "message": "از دامنه فعلی در صورتی که \"اعمال قوانین\" انتخاب شده محافظت کن.",
+    "hash": "c3d70903d8398a33b99e1711f546ca19"
+  },
+  "setting_history": {
+    "message": "تاریخچه",
+    "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
+  },
+  "setting_downloads": {
+    "message": "دانلود تاریخچه",
+    "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116"
+  },
+  "setting_form_data": {
+    "message": "از داده",
+    "hash": "b5418babb2bbffd7d4e8275b83770564"
+  },
+  "setting_passwords": {
+    "message": "رمزها",
+    "hash": "a40f3ee19854cd8645e750f118af3dcd"
+  },
+  "setting_indexed_db": {
+    "message": "دیتابیس شاخص دار",
+    "hash": "335f3924c55823b7be5b261a240883bf"
+  },
+  "setting_plugin_data": {
+    "message": "داده های پلاگین",
+    "hash": "436905ccbdfaaacb1aec25f512584e36"
+  },
+  "setting_service_workers": {
+    "message": "کارگرهای سرویس",
+    "hash": "584545acfce5580c7967bc8c366df556"
+  },
+  "setting_cache": {
+    "message": "کش",
+    "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
+  },
+  "setting_server_bound_certificates": {
+    "message": "تصدیق هویت محدود به سرور",
+    "hash": "0dfdb1326c1206379e7866da9c9bbf11"
+  },
+  "setting_delay_domain_leave_cleanup_in_seconds": {
+    "message": "برای نظافت اطلاعات دامنه, بعد از ترک, مدتی صبر کن (به ثانیه):",
+    "hash": "078f159c3a6f33936199104b956d77a7"
+  },
+  "setting_delay_in_seconds": {
+    "message": "تاخیر به ثانیه:",
+    "hash": "4f52d0e15398d35039f73e8a04275ae9"
+  },
+  "setting_remove_thirdparty": {
+    "message": "کوکی های شخص ثالث را در زمان ایجاد خذف کن:",
+    "hash": "2d8b645390f60f6bb1777fbf6004d109"
+  },
+  "setting_thirdparty_before_creation": {
+    "message": "کوکی های شخص ثالث را رد کن",
+    "hash": "29d565d6a25a71892d493a5d6be5fa2c"
+  },
+  "setting_whitelist_no_tld": {
+    "message": "هرگز یک دامنه هایی که از یه دامنه بالاتری نمیاند را پاک نکن",
+    "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
+  },
+  "setting_whitelist_no_tld@title": {
+    "message": "دامنه های مثل localhost, اینترانت و غیره.\n(بدون com. یا net. و غیره)",
+    "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
+  },
+  "setting_whitelist_file_system": {
+    "message": "هرگز نظافت روی فایل های کامپیوترم انجام نشه.",
+    "hash": "511a3b5151d821503759721ca9d7b1c1"
+  },
 
-    "__WET_GROUP__4": { "message": "Notifications" },
+  "__WET_GROUP__4": { "message": "Notifications" },
 
-    "__WET_GROUP__5": { "message": "Import Dialog" },
+  "__WET_GROUP__5": { "message": "Import Dialog" },
 
-    "__WET_GROUP__6": { "message": "Info Pages" },
+  "__WET_GROUP__6": { "message": "Info Pages" },
 
-    "__WET_LOCALE__": { "message": "fa" }
+  "__WET_LOCALE__": { "message": "fa" }
 }

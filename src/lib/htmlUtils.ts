@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import * as MarkdownIt from "markdown-it";
+import MarkdownIt from "markdown-it";
 import { browser } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 

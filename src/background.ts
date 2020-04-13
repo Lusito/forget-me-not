@@ -7,12 +7,12 @@
 import { browser } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 
-import { messageUtil } from "../lib/messageUtil";
-import { settings } from "../lib/settings";
-import { loadJSONFile } from "../lib/fileHelper";
-import { Background, CleanUrlNowConfig } from "./background";
-import { someItemsMatch } from "./backgroundShared";
-import { manifestVersion } from "../lib/settingsMigrations";
+import { messageUtil } from "./lib/messageUtil";
+import { settings } from "./lib/settings";
+import { loadJSONFile } from "./lib/fileHelper";
+import { Background, CleanUrlNowConfig } from "./background/background";
+import { someItemsMatch } from "./background/backgroundShared";
+import { manifestVersion } from "./lib/settingsMigrations";
 
 const UPDATE_NOTIFICATION_ID = "UpdateNotification";
 const BADGE_SETTINGS_KEYS = ["rules", "fallbackRule", "whitelistNoTLD", "whitelistFileSystem", "showBadge"];
@@ -47,7 +47,7 @@ settings.onReady(() => {
         if (id === UPDATE_NOTIFICATION_ID) {
             browser.tabs.create({
                 active: true,
-                url: `${browser.runtime.getURL("views/readme.html")}#changelog`,
+                url: `${browser.runtime.getURL("dist/readme.html")}#changelog`,
             });
         }
     });

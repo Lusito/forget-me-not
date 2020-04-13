@@ -8,7 +8,7 @@ import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
 
 import { settings } from "../../lib/settings";
 import { Cleaner } from "./cleaner";
-import { getValidHostname } from "../../shared";
+import { getValidHostname } from "../../lib/shared";
 import { TabWatcher } from "../tabWatcher";
 
 export class DownloadCleaner extends Cleaner {

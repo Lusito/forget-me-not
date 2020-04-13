@@ -3,9 +3,6 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
-@import "../../styles/input";
-@import "../../styles/variables";
-@import "../../styles/base";
 
 .top_margin {
     margin-top: 10px;
@@ -124,10 +121,10 @@ span.cleanup_type_instantly {
         }
     }
     .cookie_browser_button {
-        background-image: url("../icons/tabs/library.svg");
+        background-image: url("../../icons/library.svg");
     }
     .manual_cleanup_button {
-        background-image: url("../icons/tabs/delete.svg");
+        background-image: url("../../icons/trash.svg");
     }
 }
 

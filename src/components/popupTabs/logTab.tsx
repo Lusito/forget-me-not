@@ -4,7 +4,7 @@ import { wetLayer } from "wet-layer";
 import { SettingsCheckbox } from "../settingsCheckbox";
 import { SettingsNumber } from "../settingsNumber";
 import { messageUtil } from "../../lib/messageUtil";
-import { CookieDomainInfo } from "../../shared";
+import { CookieDomainInfo } from "../../lib/shared";
 import { removeAllChildren } from "../../lib/htmlUtils";
 import "./style.scss";
 import { appendPunycode, getSuggestedRuleExpression, showAddRuleDialog } from "../helpers";

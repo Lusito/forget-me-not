@@ -7,7 +7,7 @@
 import { browser, Cookies, WebRequest } from "webextension-polyfill-ts";
 
 import { messageUtil } from "../lib/messageUtil";
-import { CookieDomainInfo, getValidHostname } from "../shared";
+import { CookieDomainInfo, getValidHostname } from "../lib/shared";
 import { getBadgeForCleanupType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
 import { someItemsMatch } from "./backgroundShared";

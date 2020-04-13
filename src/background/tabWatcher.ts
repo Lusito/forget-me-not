@@ -6,7 +6,7 @@
 
 import { browser, Tabs } from "webextension-polyfill-ts";
 
-import { getValidHostname, DEFAULT_COOKIE_STORE_ID } from "../shared";
+import { getValidHostname, DEFAULT_COOKIE_STORE_ID } from "../lib/shared";
 import { getFirstPartyCookieDomain } from "./backgroundHelpers";
 import { RequestWatcher, RequestWatcherListener } from "./requestWatcher";
 import { TabInfo } from "./tabInfo";

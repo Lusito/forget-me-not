@@ -13,7 +13,7 @@ import { removeLocalStorageByHostname } from "./backgroundShared";
 import { TabWatcher, TabWatcherListener } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { HeaderFilter } from "./headerFilter";
-import { getValidHostname, DEFAULT_COOKIE_STORE_ID } from "../shared";
+import { getValidHostname, DEFAULT_COOKIE_STORE_ID } from "../lib/shared";
 import { getBadgeForCleanupType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
 import { CleanupScheduler } from "./cleanupScheduler";

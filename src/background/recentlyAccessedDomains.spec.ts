@@ -14,7 +14,7 @@ import {
     quickHeadersReceivedDetails,
     quickCookieDomainInfo,
 } from "../testUtils/quickHelpers";
-import { CookieDomainInfo } from "../shared";
+import { CookieDomainInfo } from "../lib/shared";
 
 const COOKIE_STORE_ID = "mock";
 const INCOGNITO_COOKIE_STORE_ID = "mock-incognito";

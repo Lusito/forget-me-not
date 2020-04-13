@@ -6,7 +6,7 @@
 
 import { browser, WebRequest, WebNavigation } from "webextension-polyfill-ts";
 
-import { getValidHostname } from "../shared";
+import { getValidHostname } from "../lib/shared";
 
 const WEB_REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] };
 

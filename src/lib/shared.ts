@@ -1,4 +1,4 @@
-import { isFirefox } from "./lib/browserInfo";
+import { isFirefox } from "./browserInfo";
 
 /**
  * License: zlib/libpng

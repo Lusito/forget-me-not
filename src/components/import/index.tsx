@@ -6,6 +6,7 @@
 
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
+import "typeface-open-sans";
 
 import { settings } from "../../lib/settings";
 import { on } from "../../lib/htmlUtils";

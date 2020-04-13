@@ -8,6 +8,7 @@ import { connectSettings } from "../../lib/htmlSettings";
 import { browserInfo } from "../../lib/browserInfo";
 import { messageUtil } from "../../lib/messageUtil";
 import { SettingsKey } from "../../lib/settingsSignature";
+import icons from "../../icons";
 
 interface CleanDialogProps {
     button: HTMLElement;
@@ -63,10 +64,10 @@ export function CleanDialog({ button }: CleanDialogProps) {
     const legend = browserInfo.mobile && (
         <ul class="settings_legend">
             <li>
-                <img src="../icons/tabs/delete.svg" /> <span data-i18n="perform_manual_cleanup" />
+                <img src={icons.trash} /> <span data-i18n="perform_manual_cleanup" />
             </li>
             <li>
-                <img src="../icons/tabs/shield.svg" /> <span data-i18n="setting_apply_rules@title" />
+                <img src={icons.shield} /> <span data-i18n="setting_apply_rules@title" />
             </li>
             <li>
                 <b class="unsupported_checkbox">X</b> <span data-i18n="settings_unsupported_checkbox@title" />
@@ -86,10 +87,10 @@ export function CleanDialog({ button }: CleanDialogProps) {
                                 <HelpLink i18n="types_of_cleanup?title" href="readme.html#tutorial" />
                             </th>
                             <th class="cleanup_type_manual">
-                                <img src="../icons/tabs/delete_white.svg" />
+                                <img src={icons.trashWhite} />
                             </th>
                             <th class="cleanup_type_manual">
-                                <img src="../icons/tabs/shield_white.svg" data-i18n="setting_apply_rules?title" />
+                                <img src={icons.shieldWhite} data-i18n="setting_apply_rules?title" />
                             </th>
                         </tr>
                     </thead>

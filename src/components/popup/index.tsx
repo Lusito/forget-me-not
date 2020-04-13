@@ -6,6 +6,7 @@
 
 import { wetLayer } from "wet-layer";
 import { h } from "tsx-dom";
+import "typeface-open-sans";
 
 import { settings } from "../../lib/settings";
 import { translateDocument } from "../../lib/htmlUtils";
@@ -27,6 +28,7 @@ import { CleanDialog } from "../dialogs/cleanDialog";
 import { EXPORT_IGNORE_KEYS, SettingsKey } from "../../lib/settingsSignature";
 import { CookieBrowserDialog } from "../dialogs/cookieBrowserDialog";
 import { CookieBrowserBubble } from "../hoverBubbles/cookieBrowserBubble";
+import icons from "../../icons";
 
 settings.onReady(() => {
     if (browserInfo.mobile) (document.querySelector("html") as HTMLHtmlElement).classList.add("fullscreen");
@@ -40,16 +42,16 @@ settings.onReady(() => {
 
     const popup = (
         <TabContainer helpUrl="readme.html#tutorial" defaultTab="this_tab">
-            <Tab i18n="tabs_this_tab?title" name="this_tab" icon="location.svg">
+            <Tab i18n="tabs_this_tab?title" name="this_tab" icon={icons.location}>
                 <StartTab />
             </Tab>
-            <Tab i18n="tabs_rules?title" name="rules" icon="shield.svg">
+            <Tab i18n="tabs_rules?title" name="rules" icon={icons.shield}>
                 <RulesTab />
             </Tab>
-            <Tab i18n="tabs_settings?title" name="settings" icon="settings.svg" panelClass="tab_with_subtabs">
+            <Tab i18n="tabs_settings?title" name="settings" icon={icons.settings} panelClass="tab_with_subtabs">
                 <SettingsTab />
             </Tab>
-            <Tab i18n="tabs_log?title" name="log" icon="list.svg">
+            <Tab i18n="tabs_log?title" name="log" icon={icons.list}>
                 <LogTab />
             </Tab>
         </TabContainer>

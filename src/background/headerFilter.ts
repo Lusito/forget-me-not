@@ -7,16 +7,10 @@
 import { browser, WebRequest } from "webextension-polyfill-ts";
 
 import { messageUtil } from "../lib/messageUtil";
-import { settings } from "../lib/settings";
-import { TabWatcher } from "./tabWatcher";
-import { getValidHostname } from "../lib/shared";
-import { CleanupType, SettingsKey } from "../lib/settingsSignature";
-import { parseSetCookieHeader } from "./backgroundHelpers";
-import { someItemsMatch } from "./backgroundShared";
-import { IncognitoWatcher } from "./incognitoWatcher";
-import { browserInfo, isFirefox } from "../lib/browserInfo";
+import { SettingsKey } from "../lib/defaultSettings";
+import { CleanupType } from "../lib/shared";
+import { someItemsMatch, ExtensionBackgroundContext } from "./backgroundShared";
 
-const REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"] };
 const LISTENER_OPTIONS: WebRequest.OnHeadersReceivedOptions[] = ["responseHeaders", "blocking"];
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = [
     "cleanThirdPartyCookies.beforeCreation",
@@ -25,27 +19,28 @@ const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = [
     "instantly.enabled",
 ];
 
-if (isFirefox && browserInfo.versionAsNumber >= 68) REQUEST_FILTER.incognito = false;
-
 export class HeaderFilter {
+    private filter: WebRequest.RequestFilter = { urls: ["<all_urls>"] };
+
     private snoozing = false;
 
     private blockThirdpartyCookies = false;
 
-    private readonly tabWatcher: TabWatcher;
+    private readonly context: ExtensionBackgroundContext;
 
     private readonly onHeadersReceived: (
         details: WebRequest.OnHeadersReceivedDetailsType
     ) => WebRequest.BlockingResponse;
 
-    public constructor(tabWatcher: TabWatcher, incognitoWatcher: IncognitoWatcher) {
-        this.tabWatcher = tabWatcher;
+    public constructor(context: ExtensionBackgroundContext) {
+        this.context = context;
+        if (context.supports.requestFilterIncognito) this.filter.incognito = false;
         this.onHeadersReceived = (details) => {
-            if (details.responseHeaders && !details.incognito && !incognitoWatcher.hasTab(details.tabId)) {
+            if (details.responseHeaders && !details.incognito && !context.incognitoWatcher.hasTab(details.tabId)) {
                 return {
                     responseHeaders: this.filterResponseHeaders(
                         details.responseHeaders,
-                        getValidHostname(details.url),
+                        context.domainUtils.getValidHostname(details.url),
                         details.tabId
                     ),
                 };
@@ -63,11 +58,12 @@ export class HeaderFilter {
     }
 
     private shouldCookieBeBlocked(tabId: number, domain: string, name: string) {
+        const { settings, tabWatcher } = this.context;
         const type = settings.getCleanupTypeForCookie(domain.startsWith(".") ? domain.substr(1) : domain, name);
         if (type === CleanupType.NEVER || type === CleanupType.STARTUP) return false;
         return (
             type === CleanupType.INSTANTLY ||
-            (this.blockThirdpartyCookies && this.tabWatcher.isThirdPartyCookieOnTab(tabId, domain))
+            (this.blockThirdpartyCookies && tabWatcher.isThirdPartyCookieOnTab(tabId, domain))
         );
     }
 
@@ -80,7 +76,7 @@ export class HeaderFilter {
             if (x.name.toLowerCase() === "set-cookie") {
                 if (x.value) {
                     const filtered = x.value.split("\n").filter((value) => {
-                        const cookieInfo = parseSetCookieHeader(value.trim(), fallbackDomain);
+                        const cookieInfo = this.context.cookieUtils.parseSetCookieHeader(value.trim(), fallbackDomain);
                         if (cookieInfo) {
                             const domain = cookieInfo.domain.startsWith(".")
                                 ? cookieInfo.domain.substr(1)
@@ -102,17 +98,14 @@ export class HeaderFilter {
     }
 
     private updateSettings() {
+        const { settings } = this.context;
         this.blockThirdpartyCookies = settings.get("cleanThirdPartyCookies.beforeCreation");
         const enable =
             !this.snoozing &&
             (this.blockThirdpartyCookies || (settings.get("instantly.enabled") && settings.hasBlockingRule()));
         if (enable !== this.isEnabled()) {
             if (enable)
-                browser.webRequest.onHeadersReceived.addListener(
-                    this.onHeadersReceived,
-                    REQUEST_FILTER,
-                    LISTENER_OPTIONS
-                );
+                browser.webRequest.onHeadersReceived.addListener(this.onHeadersReceived, this.filter, LISTENER_OPTIONS);
             else browser.webRequest.onHeadersReceived.removeListener(this.onHeadersReceived);
         }
     }

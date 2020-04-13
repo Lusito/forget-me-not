@@ -8,19 +8,19 @@ import { browser } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 
 import { messageUtil } from "./lib/messageUtil";
-import { settings } from "./lib/settings";
+import bootstrap from "./lib/bootstrap";
 import { loadJSONFile } from "./lib/fileHelper";
 import { Background, CleanUrlNowConfig } from "./background/background";
 import { someItemsMatch } from "./background/backgroundShared";
-import { manifestVersion } from "./lib/settingsMigrations";
 
 const UPDATE_NOTIFICATION_ID = "UpdateNotification";
 const BADGE_SETTINGS_KEYS = ["rules", "fallbackRule", "whitelistNoTLD", "whitelistFileSystem", "showBadge"];
 
 wetLayer.reset();
 
-settings.onReady(() => {
-    const background = new Background();
+bootstrap().then((context) => {
+    const { settings, version } = context;
+    const background = new Background(context);
     messageUtil.receive("cleanAllNow", () => background.cleanAllNow());
     messageUtil.receive("cleanUrlNow", (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
     messageUtil.receive("toggleSnoozingState", () => background.toggleSnoozingState());
@@ -64,8 +64,8 @@ settings.onReady(() => {
 
     const startup = async () => {
         const previousVersion = settings.get("version");
-        if (previousVersion !== manifestVersion) {
-            settings.set("version", manifestVersion);
+        if (previousVersion !== version) {
+            settings.set("version", version);
             settings.performUpgrade(previousVersion);
             settings.rebuildRules();
             settings.save();

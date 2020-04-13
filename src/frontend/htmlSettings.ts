@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings } from "./settings";
+import { Settings } from "../lib/settings";
 import { on } from "./htmlUtils";
 
 interface SettingsInfo {
@@ -14,7 +14,7 @@ interface SettingsInfo {
 }
 const settingsInfoMap: { [s: string]: SettingsInfo } = {};
 
-function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
+function connectInputSetting(element: HTMLInputElement | HTMLSelectElement, settings: Settings) {
     const key = element.dataset.settingsKey;
     if (key) {
         if (settingsInfoMap[key]) {
@@ -40,7 +40,7 @@ function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
     }
 }
 
-export function updateFromSettings() {
+export function updateFromSettings(settings: Settings) {
     for (const key of Object.keys(settingsInfoMap)) {
         const info = settingsInfoMap[key];
         if (info) {
@@ -59,12 +59,12 @@ export function updateFromSettings() {
     }
 }
 
-export function connectSettings(parent: HTMLElement) {
+export function connectSettings(parent: HTMLElement, settings: Settings) {
     for (const element of parent.querySelectorAll("input[data-settings-key]"))
-        connectInputSetting(element as HTMLInputElement);
+        connectInputSetting(element as HTMLInputElement, settings);
     for (const element of parent.querySelectorAll("select[data-settings-key]"))
-        connectInputSetting(element as HTMLSelectElement);
-    updateFromSettings();
+        connectInputSetting(element as HTMLSelectElement, settings);
+    updateFromSettings(settings);
 }
 
 export function permanentDisableSettings(keys: string[], uncheck?: boolean) {

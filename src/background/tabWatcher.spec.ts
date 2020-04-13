@@ -7,19 +7,31 @@
 import { booleanContext } from "../testUtils/testHelpers";
 import { TabWatcher } from "./tabWatcher";
 import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
+import { StoreUtils } from "./storeUtils";
+import { DomainUtils } from "./domainUtils";
+import { RequestWatcher } from "./requestWatcher";
 
 describe("TabWatcher", () => {
+    const domainUtils = new DomainUtils();
+    const context = {
+        // fixme: isFirefox: false
+        storeUtils: new StoreUtils(true),
+        domainUtils,
+    } as any;
     let listener: {
         onDomainEnter: jest.Mock;
         onDomainLeave: jest.Mock;
     };
     let watcher: TabWatcher | null = null;
-    function setupWatcher() {
+    async function setupWatcher() {
         listener = {
             onDomainEnter: jest.fn(),
             onDomainLeave: jest.fn(),
         };
-        watcher = new TabWatcher(listener);
+        watcher = new TabWatcher(listener, context);
+        // eslint-disable-next-line no-new
+        new RequestWatcher(watcher, { domainUtils } as any);
+        await watcher.initializeExistingTabs();
     }
 
     afterEach(() => {
@@ -27,8 +39,8 @@ describe("TabWatcher", () => {
     });
 
     describe("listener", () => {
-        it("should be called on tab create and remove", () => {
-            setupWatcher();
+        it("should be called on tab create and remove", async () => {
+            await setupWatcher();
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             expect(listener.onDomainEnter.mock.calls).toEqual([["firefox-default", "www.google.com"]]);
             listener.onDomainEnter.mockClear();
@@ -43,8 +55,8 @@ describe("TabWatcher", () => {
             browserMock.tabs.remove(tabId2);
             expect(listener.onDomainLeave.mock.calls).toEqual([["firefox-private", "www.google.de"]]);
         });
-        it("should be called only for new domains tab create and remove", () => {
-            setupWatcher();
+        it("should be called only for new domains tab create and remove", async () => {
+            await setupWatcher();
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             expect(listener.onDomainEnter.mock.calls).toEqual([["firefox-default", "www.google.com"]]);
             listener.onDomainEnter.mockClear();
@@ -70,8 +82,8 @@ describe("TabWatcher", () => {
             browserMock.tabs.remove(tabId2b);
             expect(listener.onDomainLeave.mock.calls).toEqual([["firefox-private", "www.google.de"]]);
         });
-        it("should be called after web navigation commit", () => {
-            setupWatcher();
+        it("should be called after web navigation commit", async () => {
+            await setupWatcher();
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             expect(listener.onDomainEnter.mock.calls).toEqual([["firefox-default", "www.google.com"]]);
             listener.onDomainEnter.mockClear();
@@ -82,8 +94,8 @@ describe("TabWatcher", () => {
             expect(listener.onDomainEnter.mock.calls).toEqual([["firefox-default", "www.google.de"]]);
             expect(listener.onDomainLeave.mock.calls).toEqual([["firefox-default", "www.google.com"]]);
         });
-        it("should be called when a navigation follows a navigation", () => {
-            setupWatcher();
+        it("should be called when a navigation follows a navigation", async () => {
+            await setupWatcher();
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             browserMock.tabs.create("http://www.google.co.uk", "firefox-default");
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
@@ -101,17 +113,17 @@ describe("TabWatcher", () => {
                 ["firefox-default", "www.amazon.com"],
             ]);
         });
-        it("should be called if tabs exist before creation", () => {
+        it("should be called if tabs exist before creation", async () => {
             browserMock.tabs.create("http://www.google.com", "firefox-default");
             browserMock.tabs.create("http://www.google.de", "firefox-private");
-            setupWatcher();
+            await setupWatcher();
             expect(listener.onDomainEnter.mock.calls).toEqual([
                 ["firefox-default", "www.google.com"],
                 ["firefox-private", "www.google.de"],
             ]);
         });
-        it("should call scheduleDeadFramesCheck on tab if it exists", () => {
-            setupWatcher();
+        it("should call scheduleDeadFramesCheck on tab if it exists", async () => {
+            await setupWatcher();
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             const scheduleDeadFramesCheck = jest.fn();
             (watcher as any).tabInfos[tabId1] = { scheduleDeadFramesCheck };
@@ -119,8 +131,8 @@ describe("TabWatcher", () => {
             browserMock.webNavigation.complete(tabId1, "");
             expect(scheduleDeadFramesCheck.mock.calls).toEqual([[]]);
         });
-        it("should be called for frames", () => {
-            setupWatcher();
+        it("should be called for frames", async () => {
+            await setupWatcher();
             const tabId1 = browserMock.tabs.create("http://www.amazon.com", "firefox-default");
             expect(listener.onDomainEnter.mock.calls).toEqual([["firefox-default", "www.amazon.com"]]);
             listener.onDomainEnter.mockClear();
@@ -146,8 +158,8 @@ describe("TabWatcher", () => {
     });
     describe("cookieStoreContainsDomain", () => {
         booleanContext((checkNext) => {
-            it("should work with multiple cookie stores", () => {
-                setupWatcher();
+            it("should work with multiple cookie stores", async () => {
+                await setupWatcher();
 
                 expect(watcher!.cookieStoreContainsDomain("firefox-default", "www.google.com", checkNext)).toBe(false);
                 expect(watcher!.cookieStoreContainsDomain("firefox-private", "www.google.com", checkNext)).toBe(false);
@@ -166,8 +178,8 @@ describe("TabWatcher", () => {
                 expect(watcher!.cookieStoreContainsDomain("firefox-default", "www.google.com", checkNext)).toBe(false);
             });
         });
-        it("should work during navigation", () => {
-            setupWatcher();
+        it("should work during navigation", async () => {
+            await setupWatcher();
 
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
@@ -181,8 +193,8 @@ describe("TabWatcher", () => {
             expect(watcher!.cookieStoreContainsDomain("firefox-default", "www.google.com", true)).toBe(false);
             expect(watcher!.cookieStoreContainsDomain("firefox-default", "www.google.de", true)).toBe(true);
         });
-        it("should work with frames", () => {
-            setupWatcher();
+        it("should work with frames", async () => {
+            await setupWatcher();
 
             const tabId1 = browserMock.tabs.create("", "firefox-default");
             watcher!.commitNavigation(tabId1, 1, "www.google.com");
@@ -199,8 +211,8 @@ describe("TabWatcher", () => {
         });
     });
     describe("containsDomain", () => {
-        it("should work with multiple cookie stores", () => {
-            setupWatcher();
+        it("should work with multiple cookie stores", async () => {
+            await setupWatcher();
 
             expect(watcher!.containsDomain("www.google.com")).toBe(false);
 
@@ -216,8 +228,8 @@ describe("TabWatcher", () => {
             browserMock.tabs.remove(tabId2);
             expect(watcher!.containsDomain("www.google.com")).toBe(false);
         });
-        it("should work during navigation", () => {
-            setupWatcher();
+        it("should work during navigation", async () => {
+            await setupWatcher();
 
             const tabId1 = browserMock.tabs.create("http://www.google.com", "firefox-default");
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
@@ -227,8 +239,8 @@ describe("TabWatcher", () => {
             expect(watcher!.containsDomain("www.google.com")).toBe(false);
             expect(watcher!.containsDomain("www.google.de")).toBe(true);
         });
-        it("should work with frames", () => {
-            setupWatcher();
+        it("should work with frames", async () => {
+            await setupWatcher();
 
             const tabId1 = browserMock.tabs.create("", "firefox-default");
             watcher!.commitNavigation(tabId1, 1, "www.google.com");
@@ -241,8 +253,8 @@ describe("TabWatcher", () => {
         });
     });
     describe("isThirdPartyCookieOnTab", () => {
-        it("should detect if a cookie domain is third-party for a specified tab", () => {
-            setupWatcher();
+        it("should detect if a cookie domain is third-party for a specified tab", async () => {
+            await setupWatcher();
 
             expect(watcher!.isThirdPartyCookieOnTab(1, "google.com")).toBe(false);
             expect(watcher!.isThirdPartyCookieOnTab(1, "www.google.com")).toBe(false);
@@ -284,8 +296,8 @@ describe("TabWatcher", () => {
     });
     describe("cookieStoreContainsDomainFP", () => {
         booleanContext((deep) => {
-            it("should detect if a first party domain is opened in a cookie store and if it is not", () => {
-                setupWatcher();
+            it("should detect if a first party domain is opened in a cookie store and if it is not", async () => {
+                await setupWatcher();
 
                 const cookieStoreId = "firefox-default";
                 const cookieStoreId2 = "firefox-alternative";

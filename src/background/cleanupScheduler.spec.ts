@@ -5,10 +5,18 @@
  */
 
 import { CleanupScheduler } from "./cleanupScheduler";
-import { settings } from "../lib/settings";
 import { advanceTime } from "../testUtils/time";
+import { quickSettings } from "../testUtils/quickHelpers";
 
 describe("Cleanup Scheduler", () => {
+    const settings = quickSettings({
+        version: "2.0.0",
+        // fixme: mobile: true?
+        mobile: false,
+        // fixme: removeLocalStorageByHostname: false?
+        removeLocalStorageByHostname: true,
+    });
+    const context = { settings } as any;
     let handler: jest.Mock | null = null;
     let cleanupScheduler: CleanupScheduler | null = null;
 
@@ -23,7 +31,7 @@ describe("Cleanup Scheduler", () => {
                 settings.set("domainLeave.enabled", false);
                 await settings.save();
                 handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(handler, false);
+                cleanupScheduler = new CleanupScheduler(context, handler, false);
             });
             it("should neither schedule nor remember domains", async () => {
                 await cleanupScheduler!.schedule("google.de");
@@ -40,7 +48,7 @@ describe("Cleanup Scheduler", () => {
                 settings.set("domainLeave.enabled", true);
                 await settings.save();
                 handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(handler, true);
+                cleanupScheduler = new CleanupScheduler(context, handler, true);
             });
             it("should schedule domain cleans", async () => {
                 await cleanupScheduler!.schedule("google.de");
@@ -61,7 +69,7 @@ describe("Cleanup Scheduler", () => {
                 settings.set("domainLeave.enabled", true);
                 await settings.save();
                 handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(handler, false);
+                cleanupScheduler = new CleanupScheduler(context, handler, false);
             });
             it("should remember domains to clean", async () => {
                 await cleanupScheduler!.schedule("google.de");
@@ -95,7 +103,7 @@ describe("Cleanup Scheduler", () => {
                 settings.set("domainLeave.enabled", true);
                 await settings.save();
                 handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(handler, false);
+                cleanupScheduler = new CleanupScheduler(context, handler, false);
             });
             it("should remember domains to clean", async () => {
                 await cleanupScheduler!.schedule("google.de");
@@ -123,7 +131,7 @@ describe("Cleanup Scheduler", () => {
                 settings.set("domainLeave.enabled", true);
                 await settings.save();
                 handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(handler, false);
+                cleanupScheduler = new CleanupScheduler(context, handler, false);
             });
             it("should forget domains and remove timeouts", async () => {
                 await cleanupScheduler!.schedule("google.de");
@@ -144,7 +152,7 @@ describe("Cleanup Scheduler", () => {
                 settings.set("domainLeave.delay", 0.4);
                 await settings.save();
                 handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(handler, false);
+                cleanupScheduler = new CleanupScheduler(context, handler, false);
             });
             it("should call handler with little difference in expected duration", async () => {
                 await cleanupScheduler!.schedule("google.de");

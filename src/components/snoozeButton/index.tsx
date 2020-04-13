@@ -3,10 +3,10 @@ import { wetLayer } from "wet-layer";
 
 import { messageUtil } from "../../lib/messageUtil";
 import "./style.scss";
-import { browserInfo } from "../../lib/browserInfo";
 import { SnoozeDialog } from "../dialogs/snoozeDialog";
+import { ExtensionContextProps } from "../../lib/bootstrap";
 
-export function SnoozeButton() {
+export function SnoozeButton({ context: { browserInfo } }: ExtensionContextProps) {
     const button = (<button class="snooze_button" onClick={onClick} disabled />) as HTMLButtonElement;
     function toggleSnooze() {
         button.disabled = true;

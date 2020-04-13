@@ -1,6 +1,6 @@
 import { h, BaseProps } from "tsx-dom";
 
-import { on } from "../../lib/htmlUtils";
+import { on } from "../../frontend/htmlUtils";
 import "./style.scss";
 
 interface HoverBubbleProps extends BaseProps {

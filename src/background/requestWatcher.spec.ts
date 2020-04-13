@@ -6,6 +6,7 @@
 
 import { RequestWatcher } from "./requestWatcher";
 import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
+import { DomainUtils } from "./domainUtils";
 
 class RequestWatcherSpy {
     public readonly prepareNavigation = jest.fn();
@@ -22,6 +23,9 @@ class RequestWatcherSpy {
 }
 
 describe("Request Watcher", () => {
+    const context = {
+        domainUtils: new DomainUtils(),
+    } as any;
     const listenerSpy = new RequestWatcherSpy();
     let requestWatcher: RequestWatcher | null = null;
 
@@ -31,7 +35,7 @@ describe("Request Watcher", () => {
 
     beforeEach(() => {
         listenerSpy.reset();
-        requestWatcher = new RequestWatcher(listenerSpy);
+        requestWatcher = new RequestWatcher(listenerSpy, context);
     });
 
     describe("listeners", () => {

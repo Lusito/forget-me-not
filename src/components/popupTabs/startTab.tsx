@@ -1,12 +1,12 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
-import punycode from "punycode";
+import * as punycode from "punycode";
 import { browser } from "webextension-polyfill-ts";
 
 import { messageUtil } from "../../lib/messageUtil";
-import { getValidHostname } from "../../lib/shared";
-import { on } from "../../lib/htmlUtils";
+import { on } from "../../frontend/htmlUtils";
 import { RuleTable } from "../ruleTable";
+import { ExtensionContext, ExtensionContextProps } from "../../lib/bootstrap";
 
 class StartTabManager {
     private hostname = "";
@@ -19,16 +19,20 @@ class StartTabManager {
 
     private ruleTableContainer: HTMLElement;
 
+    private context: ExtensionContext;
+
     public constructor(
         cleanButton: HTMLElement,
         urlLabel: HTMLElement,
         punifiedUrlLabel: HTMLElement,
-        ruleTableContainer: HTMLElement
+        ruleTableContainer: HTMLElement,
+        context: ExtensionContext
     ) {
         this.cleanButton = cleanButton;
         this.urlLabel = urlLabel;
         this.punifiedUrlLabel = punifiedUrlLabel;
         this.ruleTableContainer = ruleTableContainer;
+        this.context = context;
         this.initCurrentTab();
 
         wetLayer.addListener(() => this.setCurrentTabLabel(this.hostname || false));
@@ -53,7 +57,7 @@ class StartTabManager {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
         const tab = tabs.length ? tabs[0] : null;
         if (tab?.url && !tab.incognito) {
-            const hostname = getValidHostname(tab.url);
+            const hostname = this.context.domainUtils.getValidHostname(tab.url);
             if (!hostname) {
                 this.setInvalidTab();
             } else {
@@ -63,7 +67,11 @@ class StartTabManager {
                     messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                 });
                 this.ruleTableContainer.appendChild(
-                    <RuleTable forDomain={hostname} headerI18n="rules_column_matching_expression" />
+                    <RuleTable
+                        forDomain={hostname}
+                        headerI18n="rules_column_matching_expression"
+                        context={this.context}
+                    />
                 );
             }
         } else {
@@ -72,13 +80,13 @@ class StartTabManager {
     }
 }
 
-export function StartTab() {
+export function StartTab({ context }: ExtensionContextProps) {
     const urlLabel = <span id="current_tab">?</span>;
     const cleanButton = <button id="clean_current_tab" data-i18n="button_clean_domain" />;
     const punifiedUrlLabel = <div id="current_tab_punyfied" />;
     const ruleTableContainer = <div />;
     // eslint-disable-next-line no-new
-    new StartTabManager(cleanButton, urlLabel, punifiedUrlLabel, ruleTableContainer);
+    new StartTabManager(cleanButton, urlLabel, punifiedUrlLabel, ruleTableContainer, context);
 
     return (
         <div>

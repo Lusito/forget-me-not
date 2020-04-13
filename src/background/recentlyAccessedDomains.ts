@@ -7,11 +7,9 @@
 import { browser, Cookies, WebRequest } from "webextension-polyfill-ts";
 
 import { messageUtil } from "../lib/messageUtil";
-import { CookieDomainInfo, getValidHostname } from "../lib/shared";
+import { CookieDomainInfo } from "../lib/shared";
 import { getBadgeForCleanupType } from "./backgroundHelpers";
-import { settings } from "../lib/settings";
-import { someItemsMatch } from "./backgroundShared";
-import { IncognitoWatcher } from "./incognitoWatcher";
+import { someItemsMatch, ExtensionBackgroundContext } from "./backgroundShared";
 
 const APPLY_SETTINGS_KEYS = ["logRAD.enabled", "logRAD.limit"];
 const UPDATE_SETTINGS_KEYS = ["fallbackRule", "rules", "whitelistNoTLD", "whitelistFileSystem"];
@@ -24,10 +22,10 @@ export class RecentlyAccessedDomains {
 
     private domains: string[] = [];
 
-    private readonly incognitoWatcher: IncognitoWatcher;
+    private readonly context: ExtensionBackgroundContext;
 
-    public constructor(incognitoWatcher: IncognitoWatcher) {
-        this.incognitoWatcher = incognitoWatcher;
+    public constructor(context: ExtensionBackgroundContext) {
+        this.context = context;
         messageUtil.receive("getRecentlyAccessedDomains", () => {
             messageUtil.send("onRecentlyAccessedDomains", this.get());
         });
@@ -39,7 +37,7 @@ export class RecentlyAccessedDomains {
                 messageUtil.send("onRecentlyAccessedDomains", this.get());
             }
         });
-        settings.onReady(this.applySettings);
+        this.applySettings();
     }
 
     private addListeners() {
@@ -61,6 +59,7 @@ export class RecentlyAccessedDomains {
     }
 
     private applySettings = () => {
+        const { settings } = this.context;
         const enabled = settings.get("logRAD.enabled");
         if (this.enabled !== enabled) {
             this.enabled = enabled;
@@ -77,6 +76,7 @@ export class RecentlyAccessedDomains {
     }
 
     public get() {
+        const { settings } = this.context;
         const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
             const badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(domain));
@@ -104,7 +104,7 @@ export class RecentlyAccessedDomains {
     }
 
     private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
-        if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
+        if (!changeInfo.removed && !this.context.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
             let { domain } = changeInfo.cookie;
             if (domain.startsWith(".")) domain = domain.substr(1);
             this.add(domain);
@@ -112,7 +112,7 @@ export class RecentlyAccessedDomains {
     };
 
     private onHeadersReceived = (details: WebRequest.OnHeadersReceivedDetailsType) => {
-        if (details.tabId >= 0 && !details.incognito && !this.incognitoWatcher.hasTab(details.tabId))
-            this.add(getValidHostname(details.url));
+        if (details.tabId >= 0 && !details.incognito && !this.context.incognitoWatcher.hasTab(details.tabId))
+            this.add(this.context.domainUtils.getValidHostname(details.url));
     };
 }

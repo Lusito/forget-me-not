@@ -7,7 +7,7 @@
 import { browser } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 
-import { settings } from "../lib/settings";
+import { ExtensionBackgroundContext } from "./backgroundShared";
 import DelayedExecution from "../lib/delayedExecution";
 import { messageUtil } from "../lib/messageUtil";
 
@@ -32,7 +32,7 @@ export class NotificationHandler {
 
     private updateOnStart = false;
 
-    public constructor() {
+    public constructor({ settings }: ExtensionBackgroundContext) {
         browser.notifications.onClosed.addListener(this.onNotificationClosed);
 
         this.enabled = settings.get("showCookieRemovalNotification");

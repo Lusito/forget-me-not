@@ -4,6 +4,8 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+// fixme: instantiate messageUtils in context as well?
+
 import { browser, Runtime } from "webextension-polyfill-ts";
 
 // This file contains communication helpers
@@ -41,17 +43,16 @@ function getCallbacksList(name: string) {
 const noop = () => undefined;
 
 export const messageUtil = {
-    send(name: string, params?: any, callback?: (value: any) => any) {
+    send(name: string, params?: any) {
         const data = {
             action: name,
             params,
         };
         const promise = browser.runtime.sendMessage(data);
-        if (callback) promise.then(callback);
         promise.catch(noop);
         return promise;
     },
-    sendSelf(name: string, params: any) {
+    sendSelf(name: string, params?: any) {
         if (callbacksMap) {
             const callbacks = callbacksMap[name];
             callbacks?.forEach((cb) => cb(params, {}));

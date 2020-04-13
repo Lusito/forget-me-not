@@ -2,15 +2,14 @@ import { h } from "tsx-dom";
 import { browser } from "webextension-polyfill-ts";
 
 import { SettingsCheckbox } from "../../settingsCheckbox";
-import { isFirefox, browserInfo } from "../../../lib/browserInfo";
 import { loadJSONFile, saveJSONFile } from "../../../lib/fileHelper";
-import { settings } from "../../../lib/settings";
 import { ResetDialog } from "../../dialogs/resetDialog";
-import { EXPORT_IGNORE_KEYS } from "../../../lib/settingsSignature";
+import { EXPORT_IGNORE_KEYS } from "../../../lib/defaultSettings";
+import { ExtensionContext, ExtensionContextProps } from "../../../lib/bootstrap";
 
-function onImport() {
+function onImport({ browserInfo, settings }: ExtensionContext) {
     // desktop firefox closes popup when dialog is shown
-    if (isFirefox && !browserInfo.mobile) {
+    if (browserInfo.firefox && !browserInfo.mobile) {
         browser.tabs.create({
             url: browser.runtime.getURL("dist/import.html"),
             active: true,
@@ -23,7 +22,7 @@ function onImport() {
     }
 }
 
-function onExport() {
+function onExport({ settings }: ExtensionContext) {
     const exported = settings.getAll();
     EXPORT_IGNORE_KEYS.forEach((key) => delete exported[key]);
     // Remove temporary rules
@@ -31,22 +30,30 @@ function onExport() {
     saveJSONFile(exported, "forget-me-not-settings.json");
 }
 
-function onReset() {
+function onReset(context: ExtensionContext) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    <ResetDialog />;
+    <ResetDialog context={context} />;
 }
 
-export function GeneralTab() {
+export function GeneralTab({ context }: ExtensionContextProps) {
     return (
         <div>
             <div>
-                <SettingsCheckbox key="showUpdateNotification" i18n="setting_show_update_notification" />
+                <SettingsCheckbox
+                    key="showUpdateNotification"
+                    i18n="setting_show_update_notification"
+                    context={context}
+                />
             </div>
             <div>
-                <SettingsCheckbox key="showCookieRemovalNotification" i18n="setting_show_cookie_removal_notification" />
+                <SettingsCheckbox
+                    key="showCookieRemovalNotification"
+                    i18n="setting_show_cookie_removal_notification"
+                    context={context}
+                />
             </div>
             <div>
-                <SettingsCheckbox key="showBadge" i18n="setting_show_badge" />
+                <SettingsCheckbox key="showBadge" i18n="setting_show_badge" context={context} />
             </div>
             <div>
                 <label>
@@ -61,9 +68,9 @@ export function GeneralTab() {
                 </label>
             </div>
             <div class="split_equal split_wrap top_margin">
-                <button data-i18n="button_import" onClick={onImport} />
-                <button data-i18n="button_export" onClick={onExport} />
-                <button data-i18n="button_reset" onClick={onReset} />
+                <button data-i18n="button_import" onClick={() => onImport(context)} />
+                <button data-i18n="button_export" onClick={() => onExport(context)} />
+                <button data-i18n="button_reset" onClick={() => onReset(context)} />
             </div>
         </div>
     );

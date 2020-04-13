@@ -4,13 +4,16 @@
  * @see https://github.com/Lusito/leave-me-not
  */
 
-import { CleanupType } from "../lib/settingsSignature";
+import { CleanupType } from "../lib/shared";
 import { TabWatcher } from "./tabWatcher";
 import { IncognitoWatcher } from "./incognitoWatcher";
 import { HeaderFilter } from "./headerFilter";
-import { settings } from "../lib/settings";
 import { booleanContext } from "../testUtils/testHelpers";
-import { quickHttpHeader, quickHeadersReceivedDetails } from "../testUtils/quickHelpers";
+import { quickHttpHeader, quickHeadersReceivedDetails, quickSettings, quickIncognito } from "../testUtils/quickHelpers";
+import { StoreUtils } from "./storeUtils";
+import { DomainUtils } from "./domainUtils";
+import { CookieUtils } from "./cookieUtils";
+import { RequestWatcher } from "./requestWatcher";
 
 const baseRules = [
     { rule: "*.never.com", type: CleanupType.NEVER },
@@ -20,6 +23,27 @@ const baseRules = [
 ];
 
 describe("Header Filter", () => {
+    const settings = quickSettings({
+        version: "2.0.0",
+        // fixme: mobile: true?
+        mobile: false,
+        // fixme: removeLocalStorageByHostname: false?
+        removeLocalStorageByHostname: true,
+    });
+    // fixme: isFirefox: false
+    const storeUtils = new StoreUtils(true);
+    const domainUtils = new DomainUtils();
+    const cookieUtils = new CookieUtils({
+        supports: {
+            // fixme: firstPartyIsolation false?
+            firstPartyIsolation: true,
+        },
+    } as any);
+    const tabWatcherContext = {
+        storeUtils,
+        domainUtils,
+    } as any;
+    const incognitoWatcherContext = { storeUtils: { defaultCookieStoreId: "mock" } } as any;
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
         onDomainLeave: () => undefined,
@@ -27,6 +51,7 @@ describe("Header Filter", () => {
     let tabWatcher: TabWatcher | null = null;
     let incognitoWatcher: IncognitoWatcher | null = null;
     let headerFilter: HeaderFilter | null = null;
+    let context: any = null;
 
     afterEach(async () => {
         tabWatcher = null;
@@ -35,19 +60,35 @@ describe("Header Filter", () => {
         await settings.restoreDefaults();
     });
 
-    beforeEach(() => {
-        tabWatcher = new TabWatcher(tabWatcherListener);
-        incognitoWatcher = new IncognitoWatcher();
+    beforeEach(async () => {
+        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
+        incognitoWatcher = new IncognitoWatcher(incognitoWatcherContext);
+        // eslint-disable-next-line no-new
+        new RequestWatcher(tabWatcher, { domainUtils } as any);
+        await tabWatcher.initializeExistingTabs();
+        await incognitoWatcher.initializeExistingTabs();
+
+        context = {
+            supports: {
+                // fixme: requestFilterIncognito false?
+                requestFilterIncognito: true,
+            },
+            incognitoWatcher,
+            domainUtils,
+            settings,
+            tabWatcher,
+            cookieUtils,
+        } as any;
     });
 
     describe("isEnabled", () => {
         it("should return false with default settings", () => {
-            headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+            headerFilter = new HeaderFilter(context);
             expect(headerFilter!.isEnabled()).toBe(false);
         });
         it("should return true if cleanThirdPartyCookies.beforeCreation was set before creation", () => {
             settings.set("cleanThirdPartyCookies.beforeCreation", true);
-            headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+            headerFilter = new HeaderFilter(context);
             expect(headerFilter.isEnabled()).toBe(true);
             headerFilter.setSnoozing(true);
             expect(headerFilter.isEnabled()).toBe(false);
@@ -55,7 +96,7 @@ describe("Header Filter", () => {
             expect(headerFilter.isEnabled()).toBe(true);
         });
         it("should return true if cleanThirdPartyCookies.beforeCreation was set after creation", async () => {
-            headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+            headerFilter = new HeaderFilter(context);
             settings.set("cleanThirdPartyCookies.beforeCreation", true);
             await settings.save();
             expect(headerFilter.isEnabled()).toBe(true);
@@ -73,7 +114,7 @@ describe("Header Filter", () => {
 
             it(`should return ${instantlyEnabled} if an instantly rule existed before creation`, () => {
                 settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
                 headerFilter.setSnoozing(true);
                 expect(headerFilter.isEnabled()).toBe(false);
@@ -81,7 +122,7 @@ describe("Header Filter", () => {
                 expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
             });
             it(`should return ${instantlyEnabled} if an instantly rule was added after creation`, async () => {
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
                 await settings.save();
                 expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
@@ -97,7 +138,7 @@ describe("Header Filter", () => {
         describe("cleanThirdPartyCookies.beforeCreation = false and no rules", () => {
             it("should do nothing", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("something", "hello=world"),
@@ -118,7 +159,7 @@ describe("Header Filter", () => {
             });
 
             it("should return empty object if no responseHeaders are set", () => {
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const result = browserMock.webRequest.headersReceived(
                     quickHeadersReceivedDetails("http://www.google.com", 0)
                 );
@@ -126,7 +167,7 @@ describe("Header Filter", () => {
             });
             it("should filter all thirdparty cookies", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const result = browserMock.webRequest.headersReceived(
                     quickHeadersReceivedDetails("http://www.google.com", tabId, [
                         quickHttpHeader("set-cookie", "hello=world"),
@@ -144,7 +185,7 @@ describe("Header Filter", () => {
             });
             it("should not filter firstparty cookies", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("set-cookie", "foo=bar"),
@@ -156,7 +197,7 @@ describe("Header Filter", () => {
             });
             it("should not filter thirdparty cookies with an unknown tab id", () => {
                 browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("set-cookie", "foo=bar"),
@@ -168,7 +209,7 @@ describe("Header Filter", () => {
             });
             it("should only filter set-cookie headers", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("something", "hello=world"),
@@ -186,7 +227,7 @@ describe("Header Filter", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
                 settings.set("rules", baseRules);
                 await settings.save();
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("set-cookie", "foo=bar"),
@@ -215,8 +256,8 @@ describe("Header Filter", () => {
 
             it("should not change anything on a private tab", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-private");
-                incognitoWatcher!.forceAdd(tabId, "firefox-private");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                quickIncognito(incognitoWatcher!, tabId);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("something", "hello=world"),
@@ -238,7 +279,7 @@ describe("Header Filter", () => {
 
             it("should filter no thirdparty cookies", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("set-cookie", "foo=bar"),
@@ -251,7 +292,7 @@ describe("Header Filter", () => {
 
             it("should filter only cookies that have an instantly rule", () => {
                 const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("set-cookie", "foo=bar"),
@@ -280,7 +321,7 @@ describe("Header Filter", () => {
 
             it("should handle multiline values correctly", async () => {
                 const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
-                headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
+                headerFilter = new HeaderFilter(context);
                 const headers = [quickHttpHeader("set-cookie", "hello=world\nfoo=bar")];
                 expect(
                     browserMock.webRequest.headersReceived(

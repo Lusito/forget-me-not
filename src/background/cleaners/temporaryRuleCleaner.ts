@@ -5,22 +5,22 @@
  */
 
 import { Cleaner } from "./cleaner";
-import { TabWatcher } from "../tabWatcher";
-import { settings } from "../../lib/settings";
+import { ExtensionBackgroundContext } from "../backgroundShared";
 
 // fixme: add tests
 export class TemporaryRuleCleaner extends Cleaner {
-    private readonly tabWatcher: TabWatcher;
+    private readonly context: ExtensionBackgroundContext;
 
-    public constructor(tabWatcher: TabWatcher) {
+    public constructor(context: ExtensionBackgroundContext) {
         super();
-        this.tabWatcher = tabWatcher;
+        this.context = context;
     }
 
     public async cleanDomainOnLeave() {
+        const { settings, tabWatcher } = this.context;
         const temporaryRules = settings.getTemporaryRules();
         const rulesToRemove = temporaryRules
-            .filter((rule) => !this.tabWatcher.containsRuleFP(rule.regex))
+            .filter((rule) => !tabWatcher.containsRuleFP(rule.regex))
             .map((rule) => rule.definition.rule);
         if (rulesToRemove.length) await settings.removeRules(rulesToRemove);
     }

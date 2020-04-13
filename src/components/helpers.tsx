@@ -1,9 +1,10 @@
 import { h } from "tsx-dom";
-import punycode from "punycode";
+import * as punycode from "punycode";
 
-import { isValidExpression, settings } from "../lib/settings";
-import { CleanupType } from "../lib/settingsSignature";
+import { CleanupType } from "../lib/shared";
 import { RuleDialog } from "./dialogs/ruleDialog";
+import { isValidExpression } from "../lib/expressionUtils";
+import { ExtensionContext } from "../lib/bootstrap";
 
 export function appendPunycode(domain: string) {
     const punified = punycode.toUnicode(domain);
@@ -15,8 +16,9 @@ export function getSuggestedRuleExpression(domain: string, cookieName?: string) 
     return domain.startsWith(".") ? `*${domain}` : `*.${domain}`;
 }
 
-export function showAddRuleDialog(expression: string, next?: () => void) {
+export function showAddRuleDialog(context: ExtensionContext, expression: string, next?: () => void) {
     if (isValidExpression(expression)) {
+        const { settings } = context;
         // eslint-disable-next-line no-inner-declarations
         function onConfirm(type: CleanupType | false, changedExpression: string, temporary: boolean) {
             if (changedExpression && type !== false) {
@@ -28,6 +30,7 @@ export function showAddRuleDialog(expression: string, next?: () => void) {
         const definition = settings.getExactRuleDefinition(expression);
         const focusType = definition ? definition.type : CleanupType.NEVER;
         const temporary = definition?.temporary || false;
+
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         <RuleDialog
             expression={expression}
@@ -35,6 +38,7 @@ export function showAddRuleDialog(expression: string, next?: () => void) {
             focusType={focusType}
             temporary={temporary}
             onConfirm={onConfirm}
+            context={context}
         />;
     }
 }

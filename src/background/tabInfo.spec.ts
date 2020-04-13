@@ -20,7 +20,7 @@ describe("TabInfo", () => {
         it("should initialize with the parameters", () => {
             const tabInfo = createTabInfo();
             expect((tabInfo as any).tabId).toBe(42);
-            expect(Object.getOwnPropertyNames((tabInfo as any).frameInfos)).toHaveSameMembers(["0"]);
+            expect(Object.keys((tabInfo as any).frameInfos)).toHaveSameMembers(["0"]);
             expect(tabInfo.contains("first.amazon.com", false)).toBe(true);
             expect(tabInfo.contains("first.amazon.com", true)).toBe(true);
             expect(tabInfo.contains("amazon.com", false)).toBe(false);

@@ -8,10 +8,8 @@ import { wetLayer } from "wet-layer";
 import { h } from "tsx-dom";
 import "typeface-open-sans";
 
-import { settings } from "../../lib/settings";
-import { translateDocument } from "../../lib/htmlUtils";
-import { browserInfo } from "../../lib/browserInfo";
-import { connectSettings, updateFromSettings } from "../../lib/htmlSettings";
+import { translateDocument } from "../../frontend/htmlUtils";
+import { connectSettings, updateFromSettings } from "../../frontend/htmlSettings";
 import { messageUtil } from "../../lib/messageUtil";
 import { LogTab } from "../popupTabs/logTab";
 import { RulesTab } from "../popupTabs/rulesTab";
@@ -25,12 +23,14 @@ import { HelpBubble } from "../hoverBubbles/helpBubble";
 import { LogoWithLink } from "../logo/logoWithLink";
 import "./style.scss";
 import { CleanDialog } from "../dialogs/cleanDialog";
-import { EXPORT_IGNORE_KEYS, SettingsKey } from "../../lib/settingsSignature";
+import { EXPORT_IGNORE_KEYS, SettingsKey } from "../../lib/defaultSettings";
 import { CookieBrowserDialog } from "../dialogs/cookieBrowserDialog";
 import { CookieBrowserBubble } from "../hoverBubbles/cookieBrowserBubble";
+import bootstrap from "../../lib/bootstrap";
 import icons from "../../icons";
 
-settings.onReady(() => {
+bootstrap().then((context) => {
+    const { settings, browserInfo } = context;
     if (browserInfo.mobile) (document.querySelector("html") as HTMLHtmlElement).classList.add("fullscreen");
     else if (window.innerWidth <= 350) (document.querySelector("html") as HTMLHtmlElement).classList.add("small_size");
 
@@ -43,35 +43,35 @@ settings.onReady(() => {
     const popup = (
         <TabContainer helpUrl="readme.html#tutorial" defaultTab="this_tab">
             <Tab i18n="tabs_this_tab?title" name="this_tab" icon={icons.location}>
-                <StartTab />
+                <StartTab context={context} />
             </Tab>
             <Tab i18n="tabs_rules?title" name="rules" icon={icons.shield}>
-                <RulesTab />
+                <RulesTab context={context} />
             </Tab>
             <Tab i18n="tabs_settings?title" name="settings" icon={icons.settings} panelClass="tab_with_subtabs">
-                <SettingsTab />
+                <SettingsTab context={context} />
             </Tab>
             <Tab i18n="tabs_log?title" name="log" icon={icons.list}>
-                <LogTab />
+                <LogTab context={context} />
             </Tab>
         </TabContainer>
     );
 
-    connectSettings(popup);
+    connectSettings(popup, settings);
 
     messageUtil.receive("settingsChanged", (changedKeys: SettingsKey[]) => {
-        if (changedKeys.some((key) => !EXPORT_IGNORE_KEYS.includes(key))) updateFromSettings();
+        if (changedKeys.some((key) => !EXPORT_IGNORE_KEYS.includes(key))) updateFromSettings(settings);
     });
 
     document.body.appendChild(popup);
 
     const cookieBrowserButton = <button class="cookie_browser_button">{/* fixme:title/aria */}</button>;
     const cleanupButton = <button class="manual_cleanup_button">{/* fixme:title/aria */}</button>;
-    const snoozeButton = <SnoozeButton />;
+    const snoozeButton = <SnoozeButton context={context} />;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    <CookieBrowserDialog button={cookieBrowserButton} />;
+    <CookieBrowserDialog button={cookieBrowserButton} context={context} />;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    <CleanDialog button={cleanupButton} />;
+    <CleanDialog button={cleanupButton} context={context} />;
 
     popup.insertBefore(
         <div id="toolbar">

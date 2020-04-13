@@ -6,9 +6,12 @@
 
 import { TabWatcher } from "../tabWatcher";
 import { LocalStorageCleaner } from "./localStorageCleaner";
-import { settings } from "../../lib/settings";
-import { CleanupType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/shared";
 import { booleanContext } from "../../testUtils/testHelpers";
+import { quickSettings } from "../../testUtils/quickHelpers";
+import { StoreUtils } from "../storeUtils";
+import { DomainUtils } from "../domainUtils";
+import { RequestWatcher } from "../requestWatcher";
 
 const COOKIE_STORE_ID = "mock";
 const WHITELISTED_DOMAIN = "never.com";
@@ -19,6 +22,20 @@ const OPEN_DOMAIN2 = "open2.com";
 const UNKNOWN_DOMAIN = "unknown.com";
 
 describe("LocalStorageCleaner", () => {
+    const settings = quickSettings({
+        version: "2.0.0",
+        // fixme: mobile: true?
+        mobile: false,
+        // fixme: removeLocalStorageByHostname: false?
+        removeLocalStorageByHostname: true,
+    });
+    // fixme: isFirefox: false
+    const storeUtils = new StoreUtils(true);
+    const domainUtils = new DomainUtils();
+    const tabWatcherContext = {
+        storeUtils,
+        domainUtils,
+    } as any;
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
         onDomainLeave: () => undefined,
@@ -33,8 +50,19 @@ describe("LocalStorageCleaner", () => {
     });
 
     beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener);
-        cleaner = new LocalStorageCleaner(tabWatcher);
+        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
+        await tabWatcher.initializeExistingTabs();
+        // eslint-disable-next-line no-new
+        new RequestWatcher(tabWatcher, { domainUtils } as any);
+        cleaner = new LocalStorageCleaner({
+            settings,
+            supports: {
+                // fixme: removeLocalStorageByHostname: false?
+                removeLocalStorageByHostname: true,
+            },
+            storeUtils,
+            tabWatcher,
+        } as any);
 
         const tabIds = [
             browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
@@ -148,7 +176,7 @@ describe("LocalStorageCleaner", () => {
     describe("cleanDomains", () => {
         it("should call browser.browsingData.remove", async () => {
             const hostnames = ["google.com", "amazon.de"];
-            await cleaner!.cleanDomains("firefox-default", hostnames);
+            await cleaner!["cleanDomains"]("firefox-default", hostnames);
             expect(browserMock.browsingData.remove.mock.calls).toEqual([
                 [
                     {

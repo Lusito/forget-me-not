@@ -1,17 +1,18 @@
 import { h } from "tsx-dom";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { on } from "../../lib/htmlUtils";
+import { on } from "../../frontend/htmlUtils";
 import { HelpLink } from "../helpLink";
 import { SettingsCheckbox } from "../settingsCheckbox";
-import { connectSettings } from "../../lib/htmlSettings";
-import { browserInfo } from "../../lib/browserInfo";
+import { connectSettings } from "../../frontend/htmlSettings";
 import { messageUtil } from "../../lib/messageUtil";
-import { SettingsKey } from "../../lib/settingsSignature";
+import { SettingsKey } from "../../lib/defaultSettings";
+import { ExtensionContext } from "../../lib/bootstrap";
 import icons from "../../icons";
 
 interface CleanDialogProps {
     button: HTMLElement;
+    context: ExtensionContext;
 }
 
 type CleanupRow = [string, SettingsKey, SettingsKey | null];
@@ -29,7 +30,8 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
     ["setting_cache", "cleanAll.cache", null],
 ];
 
-export function CleanDialog({ button }: CleanDialogProps) {
+export function CleanDialog({ button, context }: CleanDialogProps) {
+    const { settings, browserInfo } = context;
     function onOK() {
         hideDialog(dialog);
         messageUtil.send("cleanAllNow");
@@ -42,7 +44,9 @@ export function CleanDialog({ button }: CleanDialogProps) {
         return (
             <tr>
                 <td data-i18n={i18n} />
-                <td class="cleanup_type_manual">{manualCleanup && <SettingsCheckbox key={manualCleanup} />}</td>
+                <td class="cleanup_type_manual">
+                    {manualCleanup && <SettingsCheckbox key={manualCleanup} context={context} />}
+                </td>
                 <td class="cleanup_type_manual apply_rules_checkbox">
                     {manualCleanupRules && (
                         <SettingsCheckbox
@@ -50,6 +54,7 @@ export function CleanDialog({ button }: CleanDialogProps) {
                             enabledBy={manualCleanup || undefined}
                             i18n="setting_apply_rules?title"
                             i18nUnchecked="setting_ignore_rules?title"
+                            context={context}
                         />
                     )}
                 </td>
@@ -97,13 +102,17 @@ export function CleanDialog({ button }: CleanDialogProps) {
                     <tbody>{rows}</tbody>
                 </table>
                 <div>
-                    <SettingsCheckbox key="cleanAll.protectOpenDomains" i18n="setting_protect_open_domains" />
+                    <SettingsCheckbox
+                        key="cleanAll.protectOpenDomains"
+                        i18n="setting_protect_open_domains"
+                        context={context}
+                    />
                 </div>
             </div>
             <div class="split_equal split_wrap">{buttons}</div>
         </Dialog>
     );
     on(button, "click", () => showDialog(dialog, buttons[0]));
-    connectSettings(dialog);
+    connectSettings(dialog, settings);
     return dialog;
 }

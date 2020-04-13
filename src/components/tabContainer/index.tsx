@@ -1,8 +1,7 @@
 import { Key } from "ts-keycode-enum";
 import { h } from "tsx-dom";
 
-import { handleClickOpenNewTab } from "../../lib/htmlUtils";
-import { settings } from "../../lib/settings";
+import { handleClickOpenNewTab } from "../../frontend/htmlUtils";
 import "./style.scss";
 
 export const validHash = /^[a-z_/]+$/;
@@ -35,6 +34,7 @@ interface TabContainerProps {
     children: HTMLElement[];
     helpUrl?: string;
     defaultTab: string;
+    onTabSelected?: (name: string) => void;
 }
 
 class TabContainerManager {
@@ -48,8 +48,11 @@ class TabContainerManager {
 
     private initialized = false;
 
+    private readonly onTabSelected?: (name: string) => void;
+
     public constructor(props: TabContainerProps) {
         this.panels = props.children || [];
+        this.onTabSelected = props.onTabSelected;
 
         this.tabs = this.panels.map((panel, index) => {
             const className = panel.classList.contains("active") ? "active" : "";
@@ -133,8 +136,7 @@ class TabContainerManager {
                 if (this.initialized && location && !location.hash.startsWith(`#${name}/`)) location.hash = `#${name}`;
                 tab.classList.add("active");
                 panel.classList.add("active");
-                settings.set("lastTab", name);
-                settings.save();
+                if (this.onTabSelected) this.onTabSelected(name);
             }
         });
         this.tabs[index].focus();

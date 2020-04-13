@@ -1,7 +1,3 @@
-import { browser } from "webextension-polyfill-ts";
-
-export const manifestVersion = browser.runtime.getManifest().version;
-
 const versionNumber = (major: number, minor = 0, patch = 0) => major * 1000000 + minor * 1000 + patch;
 const versionNumberFromString = (version: string) => {
     const [major, minor, patch] = version.split(".").map((i) => parseInt(i));

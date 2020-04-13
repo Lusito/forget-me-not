@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings } from "../lib/settings";
+import { ExtensionContext } from "../lib/bootstrap";
 import { messageUtil } from "../lib/messageUtil";
 import { someItemsMatch } from "./backgroundShared";
 
@@ -23,7 +23,10 @@ export class CleanupScheduler {
 
     private readonly snoozedDomains: { [s: string]: boolean } = {};
 
-    public constructor(handler: (domain: string) => Promise<void>, snoozing: boolean) {
+    private readonly context: ExtensionContext;
+
+    public constructor(context: ExtensionContext, handler: (domain: string) => Promise<void>, snoozing: boolean) {
+        this.context = context;
         this.snoozing = snoozing;
         this.handler = handler;
 
@@ -34,6 +37,7 @@ export class CleanupScheduler {
     }
 
     private updateSettings() {
+        const { settings } = this.context;
         const enabled = settings.get("domainLeave.enabled");
         if (enabled !== this.enabled) {
             this.enabled = enabled;
@@ -91,10 +95,10 @@ export class CleanupScheduler {
     }
 
     public getSnoozedDomainsToClean() {
-        return Object.getOwnPropertyNames(this.snoozedDomains);
+        return Object.keys(this.snoozedDomains);
     }
 
     public getScheduledDomainsToClean() {
-        return Object.getOwnPropertyNames(this.domainTimeouts);
+        return Object.keys(this.domainTimeouts);
     }
 }

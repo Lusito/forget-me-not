@@ -1,9 +1,10 @@
 import { h } from "tsx-dom";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { CleanupType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/shared";
 import { ExpressionHint } from "../expressionHint";
-import { isValidExpression, settings } from "../../lib/settings";
+import { ExtensionContext } from "../../lib/bootstrap";
+import { isValidExpression } from "../../lib/expressionUtils";
 import { ConfirmDialog } from "./confirmDialog";
 
 export interface RuleDialogProps {
@@ -12,9 +13,11 @@ export interface RuleDialogProps {
     focusType: CleanupType | null;
     temporary: boolean;
     onConfirm: (type: CleanupType | false, expression: string, temporary: boolean) => void;
+    context: ExtensionContext;
 }
 
-export function RuleDialog({ expression, editable, focusType, temporary, onConfirm }: RuleDialogProps) {
+export function RuleDialog({ expression, editable, focusType, temporary, onConfirm, context }: RuleDialogProps) {
+    const { settings } = context;
     function onCancel() {
         hideDialog(dialog);
         onConfirm(false, "", false);
@@ -82,7 +85,7 @@ export function RuleDialog({ expression, editable, focusType, temporary, onConfi
             <b data-i18n="rule_dialog_expression" />
             <div>
                 {expressionElement}
-                {editable ? <ExpressionHint input={expressionElement as HTMLInputElement} /> : null}
+                {editable ? <ExpressionHint input={expressionElement as HTMLInputElement} context={context} /> : null}
             </div>
         </div>
     ) : null;

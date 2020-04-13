@@ -9,109 +9,15 @@
 import { browser, Storage } from "webextension-polyfill-ts";
 
 import { messageUtil } from "./messageUtil";
-import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
-import { SettingsTypeMap, SettingsSignature, RuleDefinition, CleanupType } from "./settingsSignature";
+import { isNodeTest } from "./browserInfo";
+import type { RuleDefinition, SettingsSignature, SettingsKey } from "./defaultSettings";
+import { CleanupType } from "./shared";
 import { getRegExForRule } from "./regexp";
-import migrateSettings, { manifestVersion } from "./settingsMigrations";
-
-type Callback = () => void;
+import migrateSettings from "./settingsMigrations";
+import { isValidExpression } from "./expressionUtils";
 
 type SettingsValue = string | boolean | number | RuleDefinition[] | { [s: string]: boolean };
 export type SettingsMap = { [s: string]: SettingsValue };
-
-export const localStorageDefault: boolean = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 58);
-
-export const defaultSettings: SettingsMap = {
-    "version": manifestVersion,
-    "showUpdateNotification": true,
-    "showCookieRemovalNotification": false,
-    "rules": [],
-    "whitelistNoTLD": false,
-    "whitelistFileSystem": true,
-    "fallbackRule": CleanupType.LEAVE,
-    "domainsToClean": {},
-    "downloadsToClean": {},
-    "showBadge": true,
-    "initialTab": "this_tab",
-    "lastTab": "this_tab",
-    "cleanAll.cookies": true,
-    "cleanAll.cookies.applyRules": true,
-    "cleanAll.localStorage": localStorageDefault,
-    "cleanAll.localStorage.applyRules": localStorageDefault,
-    "cleanAll.protectOpenDomains": true,
-    "cleanAll.history": false,
-    "cleanAll.history.applyRules": true,
-    "cleanAll.downloads": true,
-    "cleanAll.downloads.applyRules": true,
-    "cleanAll.formData": false,
-    "cleanAll.passwords": false,
-    "cleanAll.indexedDB": true,
-    "cleanAll.pluginData": true,
-    "cleanAll.serviceWorkers": true,
-    "cleanAll.serverBoundCertificates": false,
-    "cleanAll.cache": false,
-
-    "cleanThirdPartyCookies.enabled": false,
-    "cleanThirdPartyCookies.delay": 60,
-    "cleanThirdPartyCookies.beforeCreation": false,
-
-    "domainLeave.enabled": false,
-    "domainLeave.delay": 120,
-    "domainLeave.cookies": true,
-    "domainLeave.localStorage": localStorageDefault,
-    "domainLeave.history": false,
-    "domainLeave.downloads": false,
-
-    "instantly.enabled": true,
-    "instantly.cookies": true,
-    "instantly.history": false,
-    "instantly.history.applyRules": true,
-    "instantly.downloads": false,
-    "instantly.downloads.applyRules": true,
-
-    "startup.enabled": false,
-    "startup.cookies": true,
-    "startup.cookies.applyRules": true,
-    "startup.localStorage": localStorageDefault,
-    "startup.localStorage.applyRules": localStorageDefault,
-    "startup.history": false,
-    "startup.history.applyRules": true,
-    "startup.downloads": true,
-    "startup.downloads.applyRules": false,
-    "startup.formData": false,
-    "startup.passwords": false,
-    "startup.indexedDB": true,
-    "startup.pluginData": true,
-    "startup.serviceWorkers": true,
-    "startup.serverBoundCertificates": false,
-    "startup.cache": false,
-
-    "purgeExpiredCookies": false,
-
-    "logRAD.enabled": true,
-    "logRAD.limit": 20,
-};
-
-const isAlNum = /^[a-z0-9]+$/;
-const isAlNumDash = /^[a-z0-9-]+$/;
-const validCookieName = /^[!,#,$,%,&,',*,+,\-,.,0-9,:,;,A-Z,\\,^,_,`,a-z,|,~]+$/i;
-
-function isValidExpressionPart(part: string) {
-    if (part.length === 0) return false;
-    if (part === "*") return true;
-    return isAlNum.test(part[0]) && isAlNum.test(part[part.length - 1]) && isAlNumDash.test(part);
-}
-
-function isValidDomainExpression(exp: string) {
-    const parts = exp.split(".");
-    return parts.length > 0 && parts.findIndex((p) => !isValidExpressionPart(p)) === -1;
-}
-
-export function isValidExpression(exp: string) {
-    const parts = exp.split("@");
-    if (parts.length === 1) return isValidDomainExpression(exp);
-    return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
-}
 
 export function classNameForCleanupType(type: CleanupType) {
     if (type === CleanupType.NEVER) return "cleanup_type_never";
@@ -165,30 +71,29 @@ export class Settings {
 
     private map: SettingsMap = {};
 
-    private readyCallbacks: Callback[] | null = [];
+    private readonly defaults: SettingsMap;
 
-    public constructor() {
+    public constructor(defaults: SettingsMap) {
+        this.defaults = defaults;
         this.storage = browser.storage.local;
-        this.load();
+
         browser.storage.onChanged.addListener((changes) => {
-            this.load(changes);
+            this.reload(changes);
         });
     }
 
     public async load(changes?: { [key: string]: Storage.StorageChange }) {
-        const map = await this.storage.get(null);
-        this.map = map;
-        const changedKeys = Object.getOwnPropertyNames(changes ?? map);
+        this.map = await this.storage.get(null);
+        const changedKeys = Object.keys(changes || this.map);
         if (changedKeys.includes("rules")) this.rebuildRules();
-        if (this.readyCallbacks) {
-            for (const callback of this.readyCallbacks) callback();
-            this.readyCallbacks = null;
-        }
-        if (typeof messageUtil !== "undefined") {
-            await messageUtil.send("settingsChanged", changedKeys); // to other background scripts
-            messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
-        }
+        return changedKeys;
     }
+
+    private reload = async (changes: { [key: string]: Storage.StorageChange }) => {
+        const changedKeys = await this.load(changes);
+        messageUtil.send("settingsChanged", changedKeys); // to other background scripts
+        messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
+    };
 
     public rebuildRules() {
         this.rules = [];
@@ -216,11 +121,6 @@ export class Settings {
         await this.storage.set(this.map);
     }
 
-    public onReady(callback: Callback) {
-        if (this.readyCallbacks) this.readyCallbacks.push(callback);
-        else callback();
-    }
-
     public async restoreDefaults() {
         this.map = {};
         this.storage.clear();
@@ -240,16 +140,16 @@ export class Settings {
             else (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
         }
         for (const key of Object.keys(json)) {
-            if (!(key in defaultSettings)) {
+            if (!(key in this.defaults)) {
                 if (!isNodeTest) console.warn("Unknown setting: ", key);
                 delete json[key];
             }
-            if (typeof defaultSettings[key] !== typeof json[key]) {
+            if (typeof this.defaults[key] !== typeof json[key]) {
                 if (!isNodeTest)
                     console.warn(
                         "Types do not match while importing setting: ",
                         key,
-                        typeof defaultSettings[key],
+                        typeof this.defaults[key],
                         typeof json[key]
                     );
                 delete json[key];
@@ -269,19 +169,19 @@ export class Settings {
 
     public getAll() {
         const result: SettingsMap = {};
-        for (const key in defaultSettings) {
+        for (const key in this.defaults) {
             if (key in this.map) result[key] = this.map[key];
-            else result[key] = defaultSettings[key];
+            else result[key] = this.defaults[key];
         }
         return result as SettingsSignature;
     }
 
-    public get<T extends keyof SettingsTypeMap>(key: T) {
-        if (key in this.map) return this.map[key] as SettingsTypeMap[T];
-        return defaultSettings[key] as SettingsTypeMap[T];
+    public get<T extends SettingsKey>(key: T): SettingsSignature[T] {
+        if (key in this.map) return this.map[key] as SettingsSignature[T];
+        return this.defaults[key] as SettingsSignature[T];
     }
 
-    public set<T extends keyof SettingsTypeMap>(key: T, value: SettingsTypeMap[T]) {
+    public set<T extends SettingsKey>(key: T, value: SettingsSignature[T]) {
         this.map[key] = value;
         if (key === "rules") this.rebuildRules();
     }
@@ -411,4 +311,3 @@ export class Settings {
         await this.save();
     }
 }
-export const settings = new Settings();

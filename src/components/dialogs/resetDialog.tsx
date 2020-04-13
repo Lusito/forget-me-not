@@ -1,9 +1,9 @@
 import { h } from "tsx-dom";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { settings } from "../../lib/settings";
+import { ExtensionContextProps } from "../../lib/bootstrap";
 
-export function ResetDialog() {
+export function ResetDialog({ context: { settings } }: ExtensionContextProps) {
     function onResetSettingsAndRules() {
         hideDialog(dialog);
         settings.setAll({

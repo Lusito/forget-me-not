@@ -1,7 +1,7 @@
 import { h } from "tsx-dom";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { translateChildren } from "../../lib/htmlUtils";
+import { translateChildren } from "../../frontend/htmlUtils";
 
 interface SnoozeDialogProps {
     snoozing: boolean;

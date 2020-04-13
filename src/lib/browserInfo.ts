@@ -15,7 +15,7 @@ export interface BrowserInfo {
 
 export const isNodeTest = process.env.JEST_WORKER_ID !== undefined;
 
-function createBrowserInfo(): BrowserInfo {
+export function createBrowserInfo(): BrowserInfo {
     // if not in a browser, assume we're in a test
     if (isNodeTest) return { name: "NodeTest", version: "1.0.0", versionAsNumber: 1, mobile: false };
 
@@ -46,6 +46,3 @@ function createBrowserInfo(): BrowserInfo {
         mobile,
     };
 }
-export const browserInfo = createBrowserInfo();
-
-export const isFirefox = browserInfo.name.toLocaleLowerCase() === "firefox";

@@ -8,12 +8,9 @@ import { browser, BrowsingData } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 
 import { messageUtil } from "../lib/messageUtil";
-import { settings } from "../lib/settings";
-import { removeLocalStorageByHostname } from "./backgroundShared";
 import { TabWatcher, TabWatcherListener } from "./tabWatcher";
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { HeaderFilter } from "./headerFilter";
-import { getValidHostname, DEFAULT_COOKIE_STORE_ID } from "../lib/shared";
 import { getBadgeForCleanupType, badges } from "./backgroundHelpers";
 import { NotificationHandler } from "./notificationHandler";
 import { CleanupScheduler } from "./cleanupScheduler";
@@ -24,15 +21,15 @@ import { Cleaner } from "./cleaners/cleaner";
 import { HistoryCleaner } from "./cleaners/historyCleaner";
 import { IncognitoWatcher } from "./incognitoWatcher";
 import { TemporaryRuleCleaner } from "./cleaners/temporaryRuleCleaner";
+import { ExtensionContext } from "../lib/bootstrap";
+import { ExtensionBackgroundContext } from "./backgroundShared";
+import { CookieUtils } from "./cookieUtils";
+import { RequestWatcher } from "./requestWatcher";
 
 // fixme: make this file unit-testable and add tests
 
 export class Background implements TabWatcherListener {
     private readonly cleanupScheduler: { [s: string]: CleanupScheduler } = {};
-
-    private readonly incognitoWatcher = new IncognitoWatcher();
-
-    private readonly tabWatcher = new TabWatcher(this);
 
     private snoozing = false;
 
@@ -40,19 +37,35 @@ export class Background implements TabWatcherListener {
 
     private readonly headerFilter: HeaderFilter;
 
-    public constructor() {
+    private readonly context: ExtensionBackgroundContext;
+
+    private readonly defaultCookieStoreId: string;
+
+    public constructor(context: ExtensionContext) {
+        this.defaultCookieStoreId = context.storeUtils.defaultCookieStoreId;
+        this.context = {
+            ...context,
+            incognitoWatcher: new IncognitoWatcher(context),
+            tabWatcher: new TabWatcher(this, context),
+            cookieUtils: new CookieUtils(context),
+        };
+        // fixme: maybe rather do it only once?
+        this.context.tabWatcher.initializeExistingTabs();
         // eslint-disable-next-line no-new
-        new NotificationHandler();
-        this.cleaners.push(new TemporaryRuleCleaner(this.tabWatcher));
-        browser.history && this.cleaners.push(new HistoryCleaner(this.tabWatcher));
-        this.cleaners.push(new DownloadCleaner(this.tabWatcher));
-        this.cleaners.push(new CookieCleaner(this.tabWatcher, this.incognitoWatcher));
-        this.cleaners.push(new LocalStorageCleaner(this.tabWatcher));
+        new RequestWatcher(this.context.tabWatcher, this.context);
+        this.context.incognitoWatcher.initializeExistingTabs();
+        // eslint-disable-next-line no-new
+        new NotificationHandler(this.context);
+        this.cleaners.push(new TemporaryRuleCleaner(this.context));
+        browser.history && this.cleaners.push(new HistoryCleaner(this.context));
+        this.cleaners.push(new DownloadCleaner(this.context));
+        this.cleaners.push(new CookieCleaner(this.context));
+        this.cleaners.push(new LocalStorageCleaner(this.context));
 
         this.updateBadge();
-        this.headerFilter = new HeaderFilter(this.tabWatcher, this.incognitoWatcher);
+        this.headerFilter = new HeaderFilter(this.context);
         // eslint-disable-next-line no-new
-        new RecentlyAccessedDomains(this.incognitoWatcher);
+        new RecentlyAccessedDomains(this.context);
         wetLayer.addListener(() => {
             this.updateBadge();
             this.updateBrowserAction();
@@ -60,6 +73,7 @@ export class Background implements TabWatcherListener {
     }
 
     public async onStartup() {
+        const { settings } = this.context;
         await settings.removeTemporaryRules();
         if (settings.get("startup.enabled")) await this.runCleanup(true);
     }
@@ -73,6 +87,7 @@ export class Background implements TabWatcherListener {
     }
 
     private async runCleanup(startup: boolean) {
+        const { settings } = this.context;
         const typeSet: BrowsingData.DataTypeSet = {
             localStorage: settings.get(startup ? "startup.localStorage" : "cleanAll.localStorage"),
             cookies: settings.get(startup ? "startup.cookies" : "cleanAll.cookies"),
@@ -94,13 +109,17 @@ export class Background implements TabWatcherListener {
     }
 
     private getCleanupScheduler(id?: string) {
-        if (!id) id = DEFAULT_COOKIE_STORE_ID;
+        if (!id) id = this.defaultCookieStoreId;
         let scheduler = this.cleanupScheduler[id];
         if (!scheduler) {
             const storeId = id;
-            scheduler = new CleanupScheduler(async (domain) => {
-                await Promise.all(this.cleaners.map((cleaner) => cleaner.cleanDomainOnLeave(storeId, domain)));
-            }, this.snoozing);
+            scheduler = new CleanupScheduler(
+                this.context,
+                async (domain) => {
+                    await Promise.all(this.cleaners.map((cleaner) => cleaner.cleanDomainOnLeave(storeId, domain)));
+                },
+                this.snoozing
+            );
             this.cleanupScheduler[id] = scheduler;
         }
         return scheduler;
@@ -108,10 +127,11 @@ export class Background implements TabWatcherListener {
 
     public async updateBadge() {
         const tabs = await browser.tabs.query({ active: true });
+        const { settings, domainUtils } = this.context;
         for (const tab of tabs) {
             if (tab?.url && !tab.incognito) {
                 let badge = badges.none;
-                const hostname = getValidHostname(tab.url);
+                const hostname = domainUtils.getValidHostname(tab.url);
                 if (hostname) badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(hostname));
                 let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
                 if (!settings.get("showBadge")) text = "";
@@ -126,7 +146,8 @@ export class Background implements TabWatcherListener {
     }
 
     public onDomainEnter(cookieStoreId: string, hostname: string) {
-        if (removeLocalStorageByHostname && !this.incognitoWatcher.hasCookieStore(cookieStoreId)) {
+        const { supports, incognitoWatcher, settings } = this.context;
+        if (supports.removeLocalStorageByHostname && !incognitoWatcher.hasCookieStore(cookieStoreId)) {
             const domainsToClean = { ...settings.get("domainsToClean") };
             domainsToClean[hostname] = true;
             settings.set("domainsToClean", domainsToClean);

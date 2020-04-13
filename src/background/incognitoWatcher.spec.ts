@@ -10,14 +10,16 @@ const COOKIE_STORE_ID = "mock";
 const COOKIE_STORE_ID_2 = "mock2";
 
 describe("Incognito Watcher", () => {
+    const context = { storeUtils: { defaultCookieStoreId: COOKIE_STORE_ID } } as any;
     let incognitoWatcher: IncognitoWatcher | null = null;
 
     afterEach(() => {
         incognitoWatcher = null;
     });
 
-    beforeEach(() => {
-        incognitoWatcher = new IncognitoWatcher();
+    beforeEach(async () => {
+        incognitoWatcher = new IncognitoWatcher(context);
+        await incognitoWatcher.initializeExistingTabs();
     });
 
     describe("listeners", () => {
@@ -40,10 +42,11 @@ describe("Incognito Watcher", () => {
                 browserMock.tabs.remove(tabId);
                 expect(incognitoWatcher!.hasTab(tabId)).toBe(false);
             });
-            it("should return true for pre-existing incognito tabs", () => {
+            it("should return true for pre-existing incognito tabs", async () => {
                 const tabId = browserMock.tabs.create("", COOKIE_STORE_ID, true);
                 const tabId2 = browserMock.tabs.create("", COOKIE_STORE_ID_2, false);
-                incognitoWatcher = new IncognitoWatcher();
+                incognitoWatcher = new IncognitoWatcher(context);
+                await incognitoWatcher.initializeExistingTabs();
                 expect(incognitoWatcher.hasTab(tabId)).toBe(true);
                 expect(incognitoWatcher.hasTab(tabId2)).toBe(false);
             });
@@ -70,10 +73,11 @@ describe("Incognito Watcher", () => {
             expect(incognitoWatcher!.hasCookieStore(COOKIE_STORE_ID)).toBe(true);
             expect(incognitoWatcher!.hasCookieStore(COOKIE_STORE_ID_2)).toBe(false);
         });
-        it("should return true for pre-existing incognito cookie stores", () => {
+        it("should return true for pre-existing incognito cookie stores", async () => {
             browserMock.tabs.create("", COOKIE_STORE_ID, true);
             browserMock.tabs.create("", COOKIE_STORE_ID_2, false);
-            incognitoWatcher = new IncognitoWatcher();
+            incognitoWatcher = new IncognitoWatcher(context);
+            await incognitoWatcher.initializeExistingTabs();
             expect(incognitoWatcher.hasCookieStore(COOKIE_STORE_ID)).toBe(true);
             expect(incognitoWatcher.hasCookieStore(COOKIE_STORE_ID_2)).toBe(false);
         });

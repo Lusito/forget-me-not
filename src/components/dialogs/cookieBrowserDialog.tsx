@@ -4,14 +4,11 @@ import { getDomain } from "tldjs";
 import { wetLayer } from "wet-layer";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { on, removeAllChildren } from "../../lib/htmlUtils";
-import { connectSettings } from "../../lib/htmlSettings";
-import { getBadgeForCleanupType, BadgeInfo, getAllCookieStoreIds } from "../../background/backgroundHelpers";
-import { settings } from "../../lib/settings";
+import { on, removeAllChildren } from "../../frontend/htmlUtils";
+import { connectSettings } from "../../frontend/htmlSettings";
+import { getBadgeForCleanupType, BadgeInfo } from "../../background/backgroundHelpers";
 import { appendPunycode, showAddRuleDialog, getSuggestedRuleExpression } from "../helpers";
-import { isFirefox, browserInfo } from "../../lib/browserInfo";
-
-const supportsFirstPartyIsolation = isFirefox && browserInfo.versionAsNumber >= 59;
+import { ExtensionContext } from "../../lib/bootstrap";
 
 interface CookieListCookie {
     badge: BadgeInfo;
@@ -45,12 +42,12 @@ function compareCookieName(a: CookieListCookie, b: CookieListCookie) {
 
 const noopToArray = () => [];
 
-async function getCookieList() {
-    const cookieStores = await getAllCookieStoreIds();
+async function getCookieList({ settings, supports, storeUtils }: ExtensionContext) {
+    const cookieStores = await storeUtils.getAllCookieStoreIds();
     const nestedCookies = await Promise.all(
         cookieStores.map((storeId) => {
             const details: Cookies.GetAllDetailsType = { storeId };
-            if (supportsFirstPartyIsolation) details.firstPartyDomain = null;
+            if (supports.firstPartyIsolation) details.firstPartyDomain = null;
             return browser.cookies.getAll(details).catch(noopToArray);
         })
     );
@@ -96,7 +93,7 @@ async function updateContextualIdentities() {
     }
 }
 
-function mapToCookieItem(entry: CookieListCookie, updateList: () => void) {
+function mapToCookieItem(context: ExtensionContext, entry: CookieListCookie, updateList: () => void) {
     const expires = entry.cookie.session
         ? "On Session End"
         : new Date((entry.cookie.expirationDate ?? 0) * 1000).toLocaleString() || "?";
@@ -137,7 +134,7 @@ function mapToCookieItem(entry: CookieListCookie, updateList: () => void) {
     };
 
     function addCookieRule() {
-        showAddRuleDialog(getSuggestedRuleExpression(entry.cookie.domain, entry.cookie.name), updateList);
+        showAddRuleDialog(context, getSuggestedRuleExpression(entry.cookie.domain, entry.cookie.name), updateList);
     }
     const title = wetLayer.getMessage(`${entry.badge.i18nButton}@title`);
     return (
@@ -161,8 +158,8 @@ function mapToCookieItem(entry: CookieListCookie, updateList: () => void) {
     );
 }
 
-function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
-    const mapToCookieItemWrapped = (e: CookieListCookie) => mapToCookieItem(e, updateList);
+function mapToDomainItem(context: ExtensionContext, entry: CookieListForDomain, updateList: () => void) {
+    const mapToCookieItemWrapped = (e: CookieListCookie) => mapToCookieItem(context, e, updateList);
     const cookiesList = (
         <ul class="collapsed" data-tree-node-id={`domain-${entry.domain}`}>
             {entry.cookies.map(mapToCookieItemWrapped)}
@@ -180,7 +177,7 @@ function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
     }
 
     function addDomainRule() {
-        showAddRuleDialog(getSuggestedRuleExpression(entry.domain), updateList);
+        showAddRuleDialog(context, getSuggestedRuleExpression(entry.domain), updateList);
     }
     const punified = appendPunycode(entry.domain);
     const title = wetLayer.getMessage(`${entry.badge.i18nButton}@title`);
@@ -205,9 +202,10 @@ function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
 
 interface CookieBrowserDialogProps {
     button: HTMLElement;
+    context: ExtensionContext;
 }
 
-export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
+export function CookieBrowserDialog({ button, context }: CookieBrowserDialogProps) {
     const buttons = [<button data-i18n="dialog_back" onClick={() => hideDialog(dialog)} />];
 
     const cookieList = <ul class="cookie_list" />;
@@ -238,11 +236,11 @@ export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
             e.getAttribute("data-tree-node-id")
         );
         removeAllChildren(cookieList);
-        const list = await getCookieList();
+        const list = await getCookieList(context);
         await updateContextualIdentities();
         for (const byDomain of list)
             cookieList.appendChild(
-                mapToDomainItem(byDomain, () => {
+                mapToDomainItem(context, byDomain, () => {
                     updateList();
                 })
             );
@@ -256,6 +254,6 @@ export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
         updateList();
         showDialog(dialog, buttons[0]);
     });
-    connectSettings(dialog);
+    connectSettings(dialog, context.settings);
     return dialog;
 }

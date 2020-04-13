@@ -1,5 +1,3 @@
-import { isFirefox } from "./browserInfo";
-
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
@@ -13,15 +11,9 @@ export interface CookieDomainInfo {
     i18nButton: string;
 }
 
-export const allowedProtocols = /^https?:$/;
-
-export function getValidHostname(url: string) {
-    try {
-        const parsedUrl = new URL(url);
-        return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : "";
-    } catch (e) {
-        return "";
-    }
+export enum CleanupType {
+    NEVER,
+    STARTUP,
+    LEAVE,
+    INSTANTLY,
 }
-
-export const DEFAULT_COOKIE_STORE_ID = isFirefox ? "firefox-default" : "0";

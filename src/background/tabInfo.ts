@@ -51,7 +51,7 @@ export class TabInfo {
         this.lastDeadFrameCheck = Date.now();
         const allFramesIdle = this.allFramesIdle();
         const frameIds = await Promise.all(
-            Object.getOwnPropertyNames(this.frameInfos)
+            Object.keys(this.frameInfos)
                 .filter((key) => key !== "0" && this.frameInfos[key].isIdle())
                 .map((key) => parseInt(key))
                 .map((id) => frameDead(this.tabId, id))

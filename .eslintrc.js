@@ -6,6 +6,7 @@ module.exports = {
         "react/no-unknown-property": ["error", { ignore: ["class"] }],
         "@typescript-eslint/prefer-nullish-coalescing": "off",
         "@typescript-eslint/prefer-optional-chain": "warn",
+        "react/static-property-placement": "off",
         ...utils.getA11yOffRules(), // just for now
     },
     settings: {

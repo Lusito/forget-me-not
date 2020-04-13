@@ -4,9 +4,38 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, WebRequest } from "webextension-polyfill-ts";
+import { browser, WebRequest, Cookies } from "webextension-polyfill-ts";
 
-import { removeCookie } from "../background/cleaners/cookieCleaner";
+import { Settings } from "../lib/settings";
+import { createDefaultSettings } from "../lib/defaultSettings";
+import { IncognitoWatcher } from "../background/incognitoWatcher";
+
+export function quickIncognito(incognitoWatcher: IncognitoWatcher, id: number, cookieStoreId = "firefox-private") {
+    // eslint-disable-next-line dot-notation
+    incognitoWatcher["onCreated"]({ id, incognito: true, cookieStoreId } as any);
+}
+
+export function quickSettings({
+    version,
+    mobile,
+    removeLocalStorageByHostname,
+}: {
+    version: string;
+    mobile: boolean;
+    removeLocalStorageByHostname: boolean;
+}) {
+    return new Settings(
+        createDefaultSettings({
+            version,
+            browserInfo: {
+                mobile,
+            },
+            supports: {
+                removeLocalStorageByHostname,
+            },
+        } as any)
+    );
+}
 
 export function quickCookieDomainInfo(domain: string, type: "never" | "startup" | "leave" | "instantly") {
     const className = `cleanup_type_${type}`;
@@ -39,6 +68,7 @@ export function quickSetCookie(
     });
 }
 
+// fixme: rename to quickCookie
 export function quickRemoveCookie(
     domain: string,
     name: string,
@@ -46,8 +76,9 @@ export function quickRemoveCookie(
     storeId: string,
     firstPartyDomain: string,
     secure = false
-) {
-    return removeCookie({
+): Cookies.Cookie {
+    // fixme: removeCookie()
+    return {
         name,
         domain,
         path,
@@ -59,7 +90,7 @@ export function quickRemoveCookie(
         httpOnly: false,
         session: false,
         sameSite: "no_restriction",
-    });
+    };
 }
 
 export function quickHeadersReceivedDetails(

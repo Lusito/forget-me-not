@@ -6,15 +6,17 @@
 
 import { browser, BrowsingData } from "webextension-polyfill-ts";
 
-import { ReceiverHandle, messageUtil } from "../../lib/messageUtil";
 import { booleanContext } from "../../testUtils/testHelpers";
-import { quickSetCookie, quickRemoveCookie } from "../../testUtils/quickHelpers";
+import { quickSetCookie, quickSettings } from "../../testUtils/quickHelpers";
 import { TabWatcher } from "../tabWatcher";
 import { IncognitoWatcher } from "../incognitoWatcher";
 import { CookieCleaner } from "./cookieCleaner";
-import { settings } from "../../lib/settings";
-import { CleanupType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/shared";
 import { advanceTime } from "../../testUtils/time";
+import { StoreUtils } from "../storeUtils";
+import { DomainUtils } from "../domainUtils";
+import { CookieUtils } from "../cookieUtils";
+import { RequestWatcher } from "../requestWatcher";
 
 const COOKIE_STORE_ID = "mock";
 const WHITELISTED_DOMAIN = "never.com";
@@ -47,94 +49,25 @@ async function getRemainingCookieDomains() {
     return cookies.map((c) => c.domain);
 }
 
-describe("removeCookie", () => {
-    const receivers: ReceiverHandle[] = [];
-
-    beforeEach(async () => {
-        quickSetCookie("google.com", "hello", "world", "", "firefox-default", "");
-        quickSetCookie("google.com", "foo", "bar", "", "firefox-default", "");
-        quickSetCookie("google.com", "oh_long", "johnson", "", "firefox-default", "");
-        quickSetCookie("google.de", "hello", "world", "", "firefox-default", "");
-        quickSetCookie("google.de", "foo", "bar", "", "firefox-default", "");
-        quickSetCookie("google.de", "foo", "bar", "", "firefox-default", "", true);
-        quickSetCookie("google.com", "hello", "world", "", "firefox-default-2", "");
-        quickSetCookie("google.com", "foo", "bar", "", "firefox-default-2", "");
-        quickSetCookie("", "foo", "bar", "/C:/path/to/somewhere/", "firefox-default", "");
-
-        const cookies = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" });
-        // eslint-disable-next-line jest/no-standalone-expect
-        expect(cookies).toHaveLength(7);
-        const cookies2 = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" });
-        // eslint-disable-next-line jest/no-standalone-expect
-        expect(cookies2).toHaveLength(2);
-    });
-
-    it("should reject if cookie does not exist", async () => {
-        const spy = jest.fn();
-        receivers.push(messageUtil.receive("cookieRemoved", spy));
-        let error = "Did not reject";
-        await quickRemoveCookie("google.de", "fox", "", "firefox-default", "").catch((e) => {
-            error = e;
-        });
-        expect(error).toBe("Was not able to find mocked cookie 'fox'");
-
-        expect(spy).not.toHaveBeenCalled();
-    });
-
-    it("should emit cookieRemoved event", async () => {
-        const spy = jest.fn();
-        receivers.push(messageUtil.receive("cookieRemoved", spy));
-        await quickRemoveCookie("google.com", "hello", "", "firefox-default", "");
-        await quickRemoveCookie("google.com", "foo", "", "firefox-default", "");
-        await quickRemoveCookie("google.de", "hello", "", "firefox-default", "");
-        await quickRemoveCookie("google.de", "foo", "", "firefox-default", "");
-        await quickRemoveCookie("google.com", "hello", "", "firefox-default-2", "");
-        await quickRemoveCookie("google.com", "foo", "", "firefox-default-2", "");
-        await quickRemoveCookie("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
-        expect(spy.mock.calls).toEqual([
-            ["google.com", {}],
-            ["google.com", {}],
-            ["google.de", {}],
-            ["google.de", {}],
-            ["google.com", {}],
-            ["google.com", {}],
-            ["/C:/path/to/somewhere/", {}],
-        ]);
-    });
-    it("should remove cookies from the specified store", async () => {
-        await quickRemoveCookie("google.com", "hello", "", "firefox-default", "");
-        await quickRemoveCookie("google.com", "foo", "", "firefox-default", "");
-        await quickRemoveCookie("google.com", "foo", "", "firefox-default-2", "");
-        const cookies = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" });
-        expect(cookies).toHaveLength(5);
-        expect(cookies.find((c) => c.name === "hello" && c.domain === "google.com")).toBeUndefined();
-        expect(cookies.find((c) => c.name === "foo" && c.domain === "google.com")).toBeUndefined();
-        expect(cookies.findIndex((c) => c.name === "oh_long" && c.domain === "google.com")).not.toBe(-1);
-
-        const cookies2 = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" });
-        expect(cookies2).toHaveLength(1);
-        expect(cookies2.findIndex((c) => c.name === "hello" && c.domain === "google.com")).not.toBe(-1);
-        expect(cookies2.find((c) => c.name === "foo" && c.domain === "google.com")).toBeUndefined();
-    });
-
-    it("should call browser.cookies.remove with the correct parameters", async () => {
-        await quickRemoveCookie("google.com", "hello", "", "firefox-default", "");
-        await quickRemoveCookie("google.com", "foo", "", "firefox-default", "");
-        await quickRemoveCookie("google.com", "foo", "", "firefox-default-2", "");
-        await quickRemoveCookie("google.de", "foo", "", "firefox-default", "", true);
-        await quickRemoveCookie("", "foo", "/C:/path/to/somewhere/", "firefox-default", "");
-
-        expect(browserMock.cookies.remove.mock.calls).toEqual([
-            [{ name: "hello", url: "http://google.com", storeId: "firefox-default", firstPartyDomain: "" }],
-            [{ name: "foo", url: "http://google.com", storeId: "firefox-default", firstPartyDomain: "" }],
-            [{ name: "foo", url: "http://google.com", storeId: "firefox-default-2", firstPartyDomain: "" }],
-            [{ name: "foo", url: "https://google.de", storeId: "firefox-default", firstPartyDomain: "" }],
-            [{ name: "foo", url: "file:///C:/path/to/somewhere/", storeId: "firefox-default", firstPartyDomain: "" }],
-        ]);
-    });
-});
-
 describe("CookieCleaner", () => {
+    const settings = quickSettings({
+        version: "2.0.0",
+        // fixme: mobile: true?
+        mobile: false,
+        // fixme: removeLocalStorageByHostname: false?
+        removeLocalStorageByHostname: true,
+    });
+    // fixme: firstPartyIsolation: false?
+    const supports = { firstPartyIsolation: true };
+    const cookieUtils = new CookieUtils({ supports } as any);
+    // fixme: isFirefox: false
+    const storeUtils = new StoreUtils(true);
+    const domainUtils = new DomainUtils();
+    const tabWatcherContext = {
+        storeUtils,
+        domainUtils,
+    } as any;
+    const incognitoWatcherContext = { storeUtils: { defaultCookieStoreId: COOKIE_STORE_ID } } as any;
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
         onDomainLeave: () => undefined,
@@ -151,8 +84,12 @@ describe("CookieCleaner", () => {
     });
 
     beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener);
-        incognitoWatcher = new IncognitoWatcher();
+        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
+        incognitoWatcher = new IncognitoWatcher(incognitoWatcherContext);
+        // eslint-disable-next-line no-new
+        new RequestWatcher(tabWatcher, { domainUtils } as any);
+        await tabWatcher.initializeExistingTabs();
+        await incognitoWatcher.initializeExistingTabs();
 
         const tabIds = [
             browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
@@ -176,7 +113,15 @@ describe("CookieCleaner", () => {
             { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
         ]);
         await settings.save();
-        cleaner = new CookieCleaner(tabWatcher, incognitoWatcher);
+        cleaner = new CookieCleaner({
+            settings,
+            domainUtils,
+            storeUtils,
+            cookieUtils,
+            incognitoWatcher,
+            supports,
+            tabWatcher,
+        } as any);
     });
 
     describe("clean", () => {

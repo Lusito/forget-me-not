@@ -5,16 +5,17 @@ import { SettingsCheckbox } from "../settingsCheckbox";
 import { SettingsNumber } from "../settingsNumber";
 import { messageUtil } from "../../lib/messageUtil";
 import { CookieDomainInfo } from "../../lib/shared";
-import { removeAllChildren } from "../../lib/htmlUtils";
+import { removeAllChildren } from "../../frontend/htmlUtils";
 import "./style.scss";
 import { appendPunycode, getSuggestedRuleExpression, showAddRuleDialog } from "../helpers";
+import { ExtensionContextProps } from "../../lib/bootstrap";
 
-export function LogTab() {
+export function LogTab({ context }: ExtensionContextProps) {
     const list = <ul id="recently_accessed_domains" />;
 
     function createListItem(info: CookieDomainInfo) {
         function addRule() {
-            showAddRuleDialog(getSuggestedRuleExpression(info.domain));
+            showAddRuleDialog(context, getSuggestedRuleExpression(info.domain));
         }
         const punified = appendPunycode(info.domain);
         const addRuleMessage = wetLayer.getMessage("button_log_add_rule");
@@ -49,7 +50,7 @@ export function LogTab() {
     return (
         <div>
             <div class="split_equal">
-                <SettingsCheckbox key="logRAD.enabled" i18n="setting_log_rad_enabled" />
+                <SettingsCheckbox key="logRAD.enabled" i18n="setting_log_rad_enabled" context={context} />
                 <SettingsNumber key="logRAD.limit" i18n="setting_log_rad_limit" class="align_right" />
             </div>
             <b data-i18n="recently_accessed_domains" class="top_margin" />

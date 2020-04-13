@@ -473,7 +473,7 @@ class StorageAreaMock {
     }
 
     public clear() {
-        return this.remove(Object.getOwnPropertyNames(this.data));
+        return this.remove(Object.keys(this.data));
     }
 
     public reset() {

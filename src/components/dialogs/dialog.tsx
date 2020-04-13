@@ -1,6 +1,6 @@
 import { h, BaseProps } from "tsx-dom";
 
-import { translateChildren } from "../../lib/htmlUtils";
+import { translateChildren } from "../../frontend/htmlUtils";
 import "./style.scss";
 import { Logo } from "../logo";
 

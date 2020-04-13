@@ -8,9 +8,12 @@ import { BrowsingData } from "webextension-polyfill-ts";
 
 import { HistoryCleaner } from "./historyCleaner";
 import { TabWatcher } from "../tabWatcher";
-import { settings } from "../../lib/settings";
-import { CleanupType } from "../../lib/settingsSignature";
+import { CleanupType } from "../../lib/shared";
 import { booleanContext } from "../../testUtils/testHelpers";
+import { quickSettings } from "../../testUtils/quickHelpers";
+import { StoreUtils } from "../storeUtils";
+import { DomainUtils } from "../domainUtils";
+import { RequestWatcher } from "../requestWatcher";
 
 const COOKIE_STORE_ID = "mock";
 const BLACKLISTED_DOMAIN = "instantly.com";
@@ -20,6 +23,20 @@ const UNKNOWN_DOMAIN = "unknown.com";
 const OPEN_DOMAIN = "open.com";
 
 describe("HistoryCleaner", () => {
+    const settings = quickSettings({
+        version: "2.0.0",
+        // fixme: mobile: true?
+        mobile: false,
+        // fixme: removeLocalStorageByHostname: false?
+        removeLocalStorageByHostname: true,
+    });
+    // fixme: isFirefox: false
+    const storeUtils = new StoreUtils(true);
+    const domainUtils = new DomainUtils();
+    const tabWatcherContext = {
+        storeUtils,
+        domainUtils,
+    } as any;
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
         onDomainLeave: () => undefined,
@@ -34,7 +51,10 @@ describe("HistoryCleaner", () => {
     });
 
     beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener);
+        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
+        await tabWatcher.initializeExistingTabs();
+        // eslint-disable-next-line no-new
+        new RequestWatcher(tabWatcher, { domainUtils } as any);
 
         browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID);
 
@@ -45,7 +65,11 @@ describe("HistoryCleaner", () => {
             { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
         ]);
         await settings.save();
-        cleaner = new HistoryCleaner(tabWatcher);
+        cleaner = new HistoryCleaner({
+            settings,
+            domainUtils,
+            tabWatcher,
+        } as any);
     });
 
     describe("onVisited", () => {

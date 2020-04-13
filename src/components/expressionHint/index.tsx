@@ -1,15 +1,17 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
 
-import { isValidExpression, settings } from "../../lib/settings";
-import { on } from "../../lib/htmlUtils";
+import { ExtensionContext } from "../../lib/bootstrap";
+import { isValidExpression } from "../../lib/expressionUtils";
+import { on } from "../../frontend/htmlUtils";
 import "./style.scss";
 
 interface ExpressionHintProps {
     input: HTMLInputElement;
+    context: ExtensionContext;
 }
 
-export function ExpressionHint({ input }: ExpressionHintProps) {
+export function ExpressionHint({ input, context: { settings } }: ExpressionHintProps) {
     const hint = <div class="expression_hint" />;
 
     function updateError(error: string) {

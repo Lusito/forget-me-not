@@ -8,14 +8,14 @@ import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
 import "typeface-open-sans";
 
-import { settings } from "../../lib/settings";
-import { on } from "../../lib/htmlUtils";
+import bootstrap from "../../lib/bootstrap";
+import { on } from "../../frontend/htmlUtils";
 import { loadJSONFile, readJSONFile } from "../../lib/fileHelper";
 import "./style.scss";
 
 wetLayer.loadFromStorage();
 
-settings.onReady(() => {
+bootstrap().then(({ settings }) => {
     const dropzone = <div id="dropzone" />;
     function onFileLoaded(json: any) {
         if (json && settings.setAll(json)) dropzone.textContent = wetLayer.getMessage("import_success_close_now");

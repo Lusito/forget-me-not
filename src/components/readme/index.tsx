@@ -1,9 +1,9 @@
 import { h } from "tsx-dom";
-import { wetLayer } from "wet-layer";
 import "typeface-open-sans";
+import { wetLayer } from "wet-layer";
 
 import { TabContainer, Tab } from "../tabContainer";
-import { translateDocument } from "../../lib/htmlUtils";
+import { translateDocument } from "../../frontend/htmlUtils";
 import { LogoWithLink } from "../logo/logoWithLink";
 import icons from "../../icons";
 

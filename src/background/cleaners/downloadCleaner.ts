@@ -6,23 +6,22 @@
 
 import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
 
-import { settings } from "../../lib/settings";
 import { Cleaner } from "./cleaner";
-import { getValidHostname } from "../../lib/shared";
-import { TabWatcher } from "../tabWatcher";
+import { ExtensionBackgroundContext } from "../backgroundShared";
 
 export class DownloadCleaner extends Cleaner {
-    private readonly tabWatcher: TabWatcher;
+    private readonly context: ExtensionBackgroundContext;
 
-    public constructor(tabWatcher: TabWatcher) {
+    public constructor(context: ExtensionBackgroundContext) {
         super();
-        this.tabWatcher = tabWatcher;
+        this.context = context;
         browser.downloads.onCreated.addListener(this.onCreated);
     }
 
     private onCreated = ({ url, incognito }: Downloads.DownloadItem) => {
-        const domain = getValidHostname(url);
+        const domain = this.context.domainUtils.getValidHostname(url);
         if (domain) {
+            const { settings } = this.context;
             if (settings.get("instantly.enabled") && settings.get("instantly.downloads")) {
                 const applyRules = settings.get("instantly.downloads.applyRules");
                 if (!applyRules || settings.isDomainBlocked(domain)) {
@@ -52,6 +51,7 @@ export class DownloadCleaner extends Cleaner {
     }
 
     public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
+        const { settings } = this.context;
         const applyRules = settings.get(startup ? "startup.downloads.applyRules" : "cleanAll.downloads.applyRules");
         if (typeSet.downloads && (applyRules || !typeSet.history)) {
             // Need to manually clear downloads from history before cleaning downloads, as otherwise the history entries will remain on firefox.
@@ -64,8 +64,9 @@ export class DownloadCleaner extends Cleaner {
         }
     }
 
-    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
+    private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean): boolean {
+        const { settings, tabWatcher } = this.context;
+        if (protectOpenDomains && tabWatcher.containsDomain(domain)) return true;
         return settings.isDomainProtected(domain, ignoreStartupType);
     }
 
@@ -75,16 +76,21 @@ export class DownloadCleaner extends Cleaner {
         protectOpenDomains: boolean,
         applyRules: boolean
     ) {
+        const { settings } = this.context;
         const downloadsToClean = { ...settings.get("downloadsToClean") };
         downloads.forEach((d) => {
             downloadsToClean[d.url] = true;
         });
 
         const newDownloadsToClean: { [s: string]: boolean } = {};
-        let urls = Object.getOwnPropertyNames(downloadsToClean);
+        let urls = Object.keys(downloadsToClean);
         if (applyRules) {
             urls = urls.filter((url) => {
-                const isProtected = this.isDomainProtected(getValidHostname(url), startup, protectOpenDomains);
+                const isProtected = this.isDomainProtected(
+                    this.context.domainUtils.getValidHostname(url),
+                    startup,
+                    protectOpenDomains
+                );
                 if (isProtected) newDownloadsToClean[url] = true;
                 return !isProtected;
             });

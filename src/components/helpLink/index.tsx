@@ -1,6 +1,6 @@
 import { h } from "tsx-dom";
 
-import { handleClickOpenNewTab } from "../../lib/htmlUtils";
+import { handleClickOpenNewTab } from "../../frontend/htmlUtils";
 
 interface HelpLinkProps {
     href: string;

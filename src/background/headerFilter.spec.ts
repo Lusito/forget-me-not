@@ -16,13 +16,13 @@ const baseRules = [
     { rule: "*.never.com", type: CleanupType.NEVER },
     { rule: "*.startup.com", type: CleanupType.STARTUP },
     { rule: "*.leave.com", type: CleanupType.LEAVE },
-    { rule: "*.instantly.com", type: CleanupType.INSTANTLY }
+    { rule: "*.instantly.com", type: CleanupType.INSTANTLY },
 ];
 
 describe("Header Filter", () => {
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined
+        onDomainLeave: () => undefined,
     };
     let tabWatcher: TabWatcher | null = null;
     let incognitoWatcher: IncognitoWatcher | null = null;
@@ -102,11 +102,11 @@ describe("Header Filter", () => {
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("something", "hello=world"),
                     quickHttpHeader("cookie", "foo=bar"),
-                    quickHttpHeader("x-set-cookie", "woot")
+                    quickHttpHeader("x-set-cookie", "woot"),
                 ];
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, headers
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
+                );
                 expect(result).toHaveLength(0);
             });
         });
@@ -119,27 +119,27 @@ describe("Header Filter", () => {
 
             it("should return empty object if no responseHeaders are set", () => {
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", 0
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", 0)
+                );
                 expect(result).toEqual([{}]);
             });
             it("should filter all thirdparty cookies", () => {
                 const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, [
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", tabId, [
                         quickHttpHeader("set-cookie", "hello=world"),
-                        quickHttpHeader("set-cookie", "foo=bar")
-                    ]
-                ));
+                        quickHttpHeader("set-cookie", "foo=bar"),
+                    ])
+                );
                 expect(result).toEqual([{ responseHeaders: [] }]);
-                const result2 = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.jp", tabId, [
+                const result2 = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.jp", tabId, [
                         quickHttpHeader("set-cookie", "hello=world"),
-                        quickHttpHeader("set-cookie", "foo=bar")
-                    ]
-                ));
+                        quickHttpHeader("set-cookie", "foo=bar"),
+                    ])
+                );
                 expect(result2).toEqual([{ responseHeaders: [] }]);
             });
             it("should not filter firstparty cookies", () => {
@@ -147,11 +147,11 @@ describe("Header Filter", () => {
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar")
+                    quickHttpHeader("set-cookie", "foo=bar"),
                 ];
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.de", tabId, headers
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.de", tabId, headers)
+                );
                 expect(result).toEqual([{ responseHeaders: headers }]);
             });
             it("should not filter thirdparty cookies with an unknown tab id", () => {
@@ -159,11 +159,11 @@ describe("Header Filter", () => {
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar")
+                    quickHttpHeader("set-cookie", "foo=bar"),
                 ];
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", 9999, headers
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", 9999, headers)
+                );
                 expect(result).toEqual([{ responseHeaders: headers }]);
             });
             it("should only filter set-cookie headers", () => {
@@ -173,11 +173,11 @@ describe("Header Filter", () => {
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("something", "hello=world"),
                     quickHttpHeader("cookie", "foo=bar"),
-                    quickHttpHeader("x-set-cookie", "woot")
+                    quickHttpHeader("x-set-cookie", "woot"),
                 ];
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, headers
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
+                );
                 expect(result).toEqual([{ responseHeaders: headers.slice(1) }]);
                 browserMock.webRequest.reset();
             });
@@ -189,20 +189,28 @@ describe("Header Filter", () => {
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar")
+                    quickHttpHeader("set-cookie", "foo=bar"),
                 ];
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.never.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.startup.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.leave.com", tabId, headers
-                ))).toEqual([{ responseHeaders: [] }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.instantly.com", tabId, headers
-                ))).toEqual([{ responseHeaders: [] }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.never.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.startup.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.leave.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: [] }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.instantly.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: [] }]);
             });
 
             it("should not change anything on a private tab", () => {
@@ -213,11 +221,11 @@ describe("Header Filter", () => {
                     quickHttpHeader("set-cookie", "hello=world"),
                     quickHttpHeader("something", "hello=world"),
                     quickHttpHeader("cookie", "foo=bar"),
-                    quickHttpHeader("x-set-cookie", "woot")
+                    quickHttpHeader("x-set-cookie", "woot"),
                 ];
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, headers
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
+                );
                 expect(result).toEqual([{}]);
             });
         });
@@ -233,11 +241,11 @@ describe("Header Filter", () => {
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar")
+                    quickHttpHeader("set-cookie", "foo=bar"),
                 ];
-                const result = browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, headers
-                ));
+                const result = browserMock.webRequest.headersReceived(
+                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
+                );
                 expect(result).toEqual([{ responseHeaders: headers }]);
             });
 
@@ -246,57 +254,75 @@ describe("Header Filter", () => {
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
                 const headers = [
                     quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar")
+                    quickHttpHeader("set-cookie", "foo=bar"),
                 ];
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.instantly.com", tabId, headers
-                ))).toEqual([{ responseHeaders: [] }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.leave.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.startup.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.never.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.instantly.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: [] }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.leave.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.startup.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.never.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
             });
 
             it("should handle multiline values correctly", async () => {
                 const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
                 headerFilter = new HeaderFilter(tabWatcher!, incognitoWatcher!);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world\nfoo=bar")
-                ];
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.instantly.com", tabId, headers
-                ))).toEqual([{ responseHeaders: [] }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.leave.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.startup.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.never.com", tabId, headers
-                ))).toEqual([{ responseHeaders: headers }]);
+                const headers = [quickHttpHeader("set-cookie", "hello=world\nfoo=bar")];
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.instantly.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: [] }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.leave.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.startup.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.never.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: headers }]);
 
                 settings.set("rules", [{ rule: "hello@*.google.com", type: CleanupType.INSTANTLY }]);
                 await settings.save();
 
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, headers
-                ))).toEqual([{ responseHeaders: [ quickHttpHeader("set-cookie", "foo=bar") ] }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: [quickHttpHeader("set-cookie", "foo=bar")] }]);
 
                 settings.set("rules", [
                     { rule: "hello@*.google.com", type: CleanupType.INSTANTLY },
-                    { rule: "foo@*.google.com", type: CleanupType.INSTANTLY }
+                    { rule: "foo@*.google.com", type: CleanupType.INSTANTLY },
                 ]);
                 await settings.save();
 
-                expect(browserMock.webRequest.headersReceived(quickHeadersReceivedDetails(
-                    "http://www.google.com", tabId, headers
-                ))).toEqual([{ responseHeaders: [] }]);
+                expect(
+                    browserMock.webRequest.headersReceived(
+                        quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
+                    )
+                ).toEqual([{ responseHeaders: [] }]);
             });
         });
     });

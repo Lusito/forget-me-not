@@ -7,8 +7,7 @@
 // This file converts rule expressions to regular expressions
 
 export function ruleToRegExString(rule: string) {
-    if (rule === "*")
-        return ".*";
+    if (rule === "*") return ".*";
 
     const parts = rule.split(".");
 
@@ -27,7 +26,10 @@ export function ruleToRegExString(rule: string) {
     } else {
         suffix = "$";
     }
-    const middle = parts.map((part) => part === "*" ? ".*" : part).join("\\.").replace(/\\.\.\*\\./g, "(\\..*\\.|\\.)");
+    const middle = parts
+        .map((part) => (part === "*" ? ".*" : part))
+        .join("\\.")
+        .replace(/\\.\.\*\\./g, "(\\..*\\.|\\.)");
 
     return `${prefix}${middle}${suffix}`;
 }

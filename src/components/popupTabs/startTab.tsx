@@ -1,27 +1,45 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
-import { messageUtil } from "../../lib/messageUtil";
 import * as punycode from "punycode";
 import { browser } from "webextension-polyfill-ts";
+
+import { messageUtil } from "../../lib/messageUtil";
 import { getValidHostname } from "../../shared";
 import { on } from "../../lib/htmlUtils";
 import { RuleTable } from "../ruleTable";
 
 class StartTabManager {
-    private hostname: string = "";
+    private hostname = "";
 
-    public constructor(private cleanButton: HTMLElement, private urlLabel: HTMLElement, private punifiedUrlLabel: HTMLElement, private ruleTableContainer: HTMLElement) {
+    private cleanButton: HTMLElement;
+
+    private urlLabel: HTMLElement;
+
+    private punifiedUrlLabel: HTMLElement;
+
+    private ruleTableContainer: HTMLElement;
+
+    public constructor(
+        cleanButton: HTMLElement,
+        urlLabel: HTMLElement,
+        punifiedUrlLabel: HTMLElement,
+        ruleTableContainer: HTMLElement
+    ) {
+        this.cleanButton = cleanButton;
+        this.urlLabel = urlLabel;
+        this.punifiedUrlLabel = punifiedUrlLabel;
+        this.ruleTableContainer = ruleTableContainer;
         this.initCurrentTab();
 
         wetLayer.addListener(() => this.setCurrentTabLabel(this.hostname || false));
     }
 
     private setCurrentTabLabel(domain: string | false) {
-        this.urlLabel.textContent = domain ? domain : wetLayer.getMessage("invalid_tab");
+        this.urlLabel.textContent = domain || wetLayer.getMessage("invalid_tab");
         let punnified = "";
         if (domain) {
             punnified = domain ? punycode.toUnicode(domain) : "";
-            punnified = (punnified === domain) ? "" : `(${punnified})`;
+            punnified = punnified === domain ? "" : `(${punnified})`;
         }
         this.punifiedUrlLabel.textContent = punnified;
     }
@@ -33,8 +51,8 @@ class StartTabManager {
 
     private async initCurrentTab() {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-        const tab = tabs.length && tabs[0];
-        if (tab && tab.url && !tab.incognito) {
+        const tab = tabs.length ? tabs[0] : null;
+        if (tab?.url && !tab.incognito) {
             const hostname = getValidHostname(tab.url);
             if (!hostname) {
                 this.setInvalidTab();
@@ -44,7 +62,9 @@ class StartTabManager {
                 on(this.cleanButton, "click", () => {
                     messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                 });
-                this.ruleTableContainer.appendChild(<RuleTable forDomain={hostname} headerI18n="rules_column_matching_expression" />);
+                this.ruleTableContainer.appendChild(
+                    <RuleTable forDomain={hostname} headerI18n="rules_column_matching_expression" />
+                );
             }
         } else {
             this.setInvalidTab();
@@ -57,14 +77,17 @@ export function StartTab() {
     const cleanButton = <button id="clean_current_tab" data-i18n="button_clean_domain" />;
     const punifiedUrlLabel = <div id="current_tab_punyfied" />;
     const ruleTableContainer = <div />;
+    // eslint-disable-next-line no-new
     new StartTabManager(cleanButton, urlLabel, punifiedUrlLabel, ruleTableContainer);
 
-    return <div>
+    return (
         <div>
-            {urlLabel}
-            {cleanButton}
-            {punifiedUrlLabel}
+            <div>
+                {urlLabel}
+                {cleanButton}
+                {punifiedUrlLabel}
+            </div>
+            {ruleTableContainer}
         </div>
-        {ruleTableContainer}
-    </div>;
+    );
 }

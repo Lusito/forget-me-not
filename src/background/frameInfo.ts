@@ -9,10 +9,15 @@ const FRAME_IDLE_TIME = 1000;
 
 export class FrameInfo {
     private lastTimeStamp = 0;
+
     private hostname = "";
+
     private hostnameFP = "";
+
     private nextHostname = "";
+
     private nextHostnameFP = "";
+
     private navigating = false;
 
     public collectHostnames(collector: Set<string>) {
@@ -35,8 +40,7 @@ export class FrameInfo {
 
     public prepareNavigation(hostname: string) {
         this.lastTimeStamp = Date.now();
-        if (this.navigating && this.nextHostname === hostname)
-            return "";
+        if (this.navigating && this.nextHostname === hostname) return "";
         const lastHostname = this.nextHostname;
         this.navigating = true;
         this.nextHostname = hostname;
@@ -49,13 +53,14 @@ export class FrameInfo {
             this.hostname = hostname;
             this.hostnameFP = getDomain(hostname) || hostname;
         }
-        this.nextHostname = this.nextHostnameFP = "";
+        this.nextHostname = "";
+        this.nextHostnameFP = "";
         this.navigating = false;
         this.lastTimeStamp = Date.now();
     }
 
     public isIdle() {
-        return !this.navigating && (Date.now() - this.lastTimeStamp) >= FRAME_IDLE_TIME;
+        return !this.navigating && Date.now() - this.lastTimeStamp >= FRAME_IDLE_TIME;
     }
 
     public isNavigating() {

@@ -4,14 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { BrowsingData } from "webextension-polyfill-ts";
+
 import { HistoryCleaner } from "./historyCleaner";
 import { TabWatcher } from "../tabWatcher";
 import { settings } from "../../lib/settings";
 import { CleanupType } from "../../lib/settingsSignature";
 import { booleanContext } from "../../testUtils/testHelpers";
-import { BrowsingData } from "webextension-polyfill-ts";
-
-export{};
 
 const COOKIE_STORE_ID = "mock";
 const BLACKLISTED_DOMAIN = "instantly.com";
@@ -23,7 +22,7 @@ const OPEN_DOMAIN = "open.com";
 describe("HistoryCleaner", () => {
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined
+        onDomainLeave: () => undefined,
     };
     let cleaner: HistoryCleaner | null = null;
     let tabWatcher: TabWatcher | null = null;
@@ -39,13 +38,11 @@ describe("HistoryCleaner", () => {
 
         browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID);
 
-        browserMock.cookies.cookieStores = [
-            { id: COOKIE_STORE_ID, tabIds: [], incognito: false }
-        ];
+        browserMock.cookies.cookieStores = [{ id: COOKIE_STORE_ID, tabIds: [], incognito: false }];
         settings.set("rules", [
             { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
             { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
-            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY }
+            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
         ]);
         await settings.save();
         cleaner = new HistoryCleaner(tabWatcher);
@@ -79,7 +76,7 @@ describe("HistoryCleaner", () => {
 
     describe("clean", () => {
         const typeSet: BrowsingData.DataTypeSet = {
-            history: true
+            history: true,
         };
         beforeEach(() => {
             typeSet.history = true;
@@ -91,7 +88,7 @@ describe("HistoryCleaner", () => {
                 settings.set("cleanAll.history.applyRules", cleanAllApplyRules);
                 await settings.save();
             });
-            if (history && (startup && startupApplyRules || !startup && cleanAllApplyRules)) {
+            if (history && ((startup && startupApplyRules) || (!startup && cleanAllApplyRules))) {
                 it("should clean up", async () => {
                     await cleaner!.clean(typeSet, startup);
                     expect(browserMock.history.search.mock.calls).toEqual([[{ text: "" }]]);
@@ -116,17 +113,14 @@ describe("HistoryCleaner", () => {
                 browserMock.history.items.push({ id: "4", url: `https://${GRAYLISTED_DOMAIN}` });
                 browserMock.history.items.push({ id: "5", url: `https://${OPEN_DOMAIN}` });
             });
-            it(`should protect whitelisted${startup ? "" : "and graylisted"} ${(startup || protectOpenDomains) ? "and open" : ""} domains`, async () => {
+            it(`should protect whitelisted${startup ? "" : "and graylisted"} ${
+                startup || protectOpenDomains ? "and open" : ""
+            } domains`, async () => {
                 await cleaner!.clean(typeSet, startup);
                 expect(typeSet.history).toBe(false);
-                const expectedCalls = [
-                    [{ url: "https://www.google.de" }],
-                    [{ url: `https://${BLACKLISTED_DOMAIN}` }]
-                ];
-                if (startup)
-                    expectedCalls.push([{ url: `https://${GRAYLISTED_DOMAIN}` }]);
-                if (!startup && !protectOpenDomains)
-                    expectedCalls.push([{ url: `https://${OPEN_DOMAIN}` }]);
+                const expectedCalls = [[{ url: "https://www.google.de" }], [{ url: `https://${BLACKLISTED_DOMAIN}` }]];
+                if (startup) expectedCalls.push([{ url: `https://${GRAYLISTED_DOMAIN}` }]);
+                if (!startup && !protectOpenDomains) expectedCalls.push([{ url: `https://${OPEN_DOMAIN}` }]);
                 expect(browserMock.history.deleteUrl.mock.calls).toEqual(expectedCalls);
                 expect(browserMock.history.search.mock.calls).toEqual([[{ text: "" }]]);
                 expect(typeSet.history).toBe(false);

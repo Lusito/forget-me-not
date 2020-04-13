@@ -4,12 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { browser, Cookies, WebRequest } from "webextension-polyfill-ts";
+
 import { messageUtil } from "../lib/messageUtil";
 import { CookieDomainInfo, getValidHostname } from "../shared";
 import { getBadgeForCleanupType } from "./backgroundHelpers";
 import { settings } from "../lib/settings";
 import { someItemsMatch } from "./backgroundShared";
-import { browser, Cookies, WebRequest } from "webextension-polyfill-ts";
 import { IncognitoWatcher } from "./incognitoWatcher";
 
 const APPLY_SETTINGS_KEYS = ["logRAD.enabled", "logRAD.limit"];
@@ -18,13 +19,16 @@ const WEB_REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"], typ
 
 export class RecentlyAccessedDomains {
     private enabled = false;
+
     private limit = 0;
+
     private domains: string[] = [];
+
     private readonly incognitoWatcher: IncognitoWatcher;
 
     public constructor(incognitoWatcher: IncognitoWatcher) {
         this.incognitoWatcher = incognitoWatcher;
-        messageUtil.receive("getRecentlyAccessedDomains", (params: any, sender: any) => {
+        messageUtil.receive("getRecentlyAccessedDomains", () => {
             messageUtil.send("onRecentlyAccessedDomains", this.get());
         });
         messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
@@ -60,19 +64,16 @@ export class RecentlyAccessedDomains {
         const enabled = settings.get("logRAD.enabled");
         if (this.enabled !== enabled) {
             this.enabled = enabled;
-            if (this.enabled)
-                this.addListeners();
-            else
-                this.removeListeners();
+            if (this.enabled) this.addListeners();
+            else this.removeListeners();
         }
         this.limit = settings.get("logRAD.limit");
         this.applyLimit();
-    }
+    };
 
     private applyLimit() {
-        const limit = (this.enabled && this.limit > 0) ? this.limit : 0;
-        if (this.domains.length > limit)
-            this.domains.length = limit;
+        const limit = this.enabled && this.limit > 0 ? this.limit : 0;
+        if (this.domains.length > limit) this.domains.length = limit;
     }
 
     public get() {
@@ -84,7 +85,7 @@ export class RecentlyAccessedDomains {
                     domain,
                     className: badge.className,
                     i18nBadge: badge.i18nBadge,
-                    i18nButton: badge.i18nButton
+                    i18nButton: badge.i18nButton,
                 });
             }
         }
@@ -95,8 +96,7 @@ export class RecentlyAccessedDomains {
         if (this.enabled && domain) {
             const index = this.domains.indexOf(domain);
             if (index !== 0) {
-                if (index !== -1)
-                    this.domains.splice(index, 1);
+                if (index !== -1) this.domains.splice(index, 1);
                 this.domains.unshift(domain);
                 this.applyLimit();
             }
@@ -105,15 +105,14 @@ export class RecentlyAccessedDomains {
 
     private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
         if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
-            let domain = changeInfo.cookie.domain;
-            if (domain.startsWith("."))
-                domain = domain.substr(1);
+            let { domain } = changeInfo.cookie;
+            if (domain.startsWith(".")) domain = domain.substr(1);
             this.add(domain);
         }
-    }
+    };
 
     private onHeadersReceived = (details: WebRequest.OnHeadersReceivedDetailsType) => {
         if (details.tabId >= 0 && !details.incognito && !this.incognitoWatcher.hasTab(details.tabId))
             this.add(getValidHostname(details.url));
-    }
+    };
 }

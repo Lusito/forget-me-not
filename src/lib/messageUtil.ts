@@ -26,14 +26,16 @@ function getCallbacksList(name: string) {
         browser.runtime.onMessage.addListener((request, sender) => {
             if (callbacksMap) {
                 const callbacks = callbacksMap[request.action];
-                callbacks && callbacks.forEach((cb) => cb(request.params, sender));
+                callbacks?.forEach((cb) => cb(request.params, sender));
             }
         });
     }
-    const callbacks = callbacksMap[name];
-    if (callbacks)
-        return callbacks;
-    return callbacksMap[name] = [];
+    let callbacks = callbacksMap[name];
+    if (!callbacks) {
+        callbacks = [];
+        callbacksMap[name] = callbacks;
+    }
+    return callbacks;
 }
 
 const noop = () => undefined;
@@ -42,18 +44,17 @@ export const messageUtil = {
     send(name: string, params?: any, callback?: (value: any) => any) {
         const data = {
             action: name,
-            params
+            params,
         };
         const promise = browser.runtime.sendMessage(data);
-        if (callback)
-            promise.then(callback);
+        if (callback) promise.then(callback);
         promise.catch(noop);
         return promise;
     },
     sendSelf(name: string, params: any) {
         if (callbacksMap) {
             const callbacks = callbacksMap[name];
-            callbacks && callbacks.forEach((cb) => cb(params, {}));
+            callbacks?.forEach((cb) => cb(params, {}));
         }
     },
     receive(name: string, callback: Callback): ReceiverHandle {
@@ -62,12 +63,11 @@ export const messageUtil = {
         return {
             destroy() {
                 const index = callbacks.indexOf(callback);
-                if (index !== -1)
-                    callbacks.splice(index, 1);
-            }
+                if (index !== -1) callbacks.splice(index, 1);
+            },
         };
     },
     clearCallbacksMap() {
         callbacksMap = null;
-    }
+    },
 };

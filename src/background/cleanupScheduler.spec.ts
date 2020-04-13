@@ -49,7 +49,9 @@ describe("Cleanup Scheduler", () => {
                 await cleanupScheduler!.schedule("google.jp");
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveSameMembers([
-                    "google.de", "google.com", "google.jp"
+                    "google.de",
+                    "google.com",
+                    "google.jp",
                 ]);
                 expect(handler).not.toHaveBeenCalled();
             });
@@ -67,7 +69,9 @@ describe("Cleanup Scheduler", () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.jp");
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers([
-                    "google.de", "google.com", "google.jp"
+                    "google.de",
+                    "google.com",
+                    "google.jp",
                 ]);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
                 expect(handler).not.toHaveBeenCalled();
@@ -78,7 +82,9 @@ describe("Cleanup Scheduler", () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.jp");
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers([
-                    "google.de", "google.com", "google.jp"
+                    "google.de",
+                    "google.com",
+                    "google.jp",
                 ]);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
                 expect(handler).not.toHaveBeenCalled();
@@ -97,13 +103,17 @@ describe("Cleanup Scheduler", () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.jp");
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers([
-                    "google.de", "google.com", "google.jp"
+                    "google.de",
+                    "google.com",
+                    "google.jp",
                 ]);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
                 cleanupScheduler!.setSnoozing(true);
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveSameMembers([
-                    "google.de", "google.com", "google.jp"
+                    "google.de",
+                    "google.com",
+                    "google.jp",
                 ]);
                 expect(handler).not.toHaveBeenCalled();
             });

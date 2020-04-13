@@ -1,7 +1,8 @@
 import { h } from "tsx-dom";
+import * as punycode from "punycode";
+
 import { CleanupType } from "../../../lib/settingsSignature";
 import { RuleButton } from "../../ruleButton";
-import * as punycode from "punycode";
 import { settings } from "../../../lib/settings";
 
 interface RuleTableRowProps {
@@ -18,16 +19,29 @@ export function RuleTableRow({ expression, type, temporary, isChosen }: RuleTabl
         content.unshift(<span>[ </span>);
         content.push(<span> ]</span>);
     }
-    if (punified !== expression)
-        content.push(<i> ({punified})</i>);
+    if (punified !== expression) content.push(<i> ({punified})</i>);
     const title = content.map((e) => e.textContent).join("");
-    const classes = isChosen ? [ "is-chosen-rule" ] : [];
-    if (expression.indexOf("@") >= 0)
-        classes.push("is-cookie-rule");
+    const classes = isChosen ? ["is-chosen-rule"] : [];
+    if (expression.includes("@")) classes.push("is-cookie-rule");
 
-    return <tr class={classes.length ? classes.join(" ") : undefined}>
-        <td title={title}><div class="rules_table_row_expression">{content}</div></td>
-        <td><RuleButton expression={expression} type={type} temporary={temporary} onConfirm={(newType, newExpression, newTemporary) => settings.setRule(newExpression, newType, newTemporary)} /></td>
-        <td><button onClick={() => settings.removeRule(expression)}>X</button></td>
-    </tr>;
+    return (
+        <tr class={classes.length ? classes.join(" ") : undefined}>
+            <td title={title}>
+                <div class="rules_table_row_expression">{content}</div>
+            </td>
+            <td>
+                <RuleButton
+                    expression={expression}
+                    type={type}
+                    temporary={temporary}
+                    onConfirm={(newType, newExpression, newTemporary) =>
+                        settings.setRule(newExpression, newType, newTemporary)
+                    }
+                />
+            </td>
+            <td>
+                <button onClick={() => settings.removeRule(expression)}>X</button>
+            </td>
+        </tr>
+    );
 }

@@ -1,4 +1,3 @@
-
 .log_add_rule {
     height: auto;
     padding: 1px 7px;
@@ -8,7 +7,7 @@
     font-size: 10px;
     background: #264597;
     cursor: pointer;
-    
+
     &:hover {
         color: black;
     }
@@ -33,7 +32,7 @@
             border-color: #800000 !important;
         }
     }
-    >button {
+    > button {
         flex-shrink: 0;
         margin: 0 0 0 4px;
     }
@@ -77,19 +76,19 @@
 #recently_accessed_domains {
     padding-left: 10px;
     list-style-type: none;
-    >li {
+    > li {
         display: flex;
         flex-direction: row;
         margin: 5px 0px;
         max-width: 100%;
         line-height: 14px;
-        >:nth-child(2) {
+        > :nth-child(2) {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        >:first-child,
-        >:last-child {
+        > :first-child,
+        > :last-child {
             flex-shrink: 0;
         }
     }

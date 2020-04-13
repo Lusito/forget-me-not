@@ -5,6 +5,7 @@
  */
 
 import { browser, WebRequest, WebNavigation } from "webextension-polyfill-ts";
+
 import { getValidHostname } from "../shared";
 
 const WEB_REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] };
@@ -29,17 +30,17 @@ export class RequestWatcher {
 
     private onBeforeNavigate = (details: WebNavigation.OnBeforeNavigateDetailsType) => {
         this.listener.prepareNavigation(details.tabId, details.frameId, getValidHostname(details.url));
-    }
+    };
 
     private onCommitted = (details: WebNavigation.OnCommittedDetailsType) => {
         this.listener.commitNavigation(details.tabId, details.frameId, getValidHostname(details.url));
-    }
+    };
 
     private onCompleted = (details: WebNavigation.OnCompletedDetailsType) => {
         this.listener.completeNavigation(details.tabId, details.frameId);
-    }
+    };
 
     private onBeforeRedirect = (details: WebRequest.OnBeforeRedirectDetailsType) => {
         this.listener.prepareNavigation(details.tabId, details.frameId, getValidHostname(details.redirectUrl));
-    }
+    };
 }

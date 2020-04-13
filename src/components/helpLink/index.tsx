@@ -1,4 +1,5 @@
 import { h } from "tsx-dom";
+
 import { handleClickOpenNewTab } from "../../lib/htmlUtils";
 
 interface HelpLinkProps {
@@ -7,5 +8,16 @@ interface HelpLinkProps {
 }
 
 export function HelpLink({ href, i18n }: HelpLinkProps) {
-    return <a href={href} onClick={handleClickOpenNewTab} target="_blank" class="help_link" data-i18n={i18n}>?</a>;
+    return (
+        <a
+            href={href}
+            onClick={handleClickOpenNewTab}
+            target="_blank"
+            rel="noreferrer noopener"
+            class="help_link"
+            data-i18n={i18n}
+        >
+            ?
+        </a>
+    );
 }

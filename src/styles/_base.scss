@@ -18,7 +18,7 @@ body {
     box-sizing: border-box;
     background: white;
     position: relative;
-    color: black
+    color: black;
 }
 
 html {
@@ -26,7 +26,7 @@ html {
 }
 
 html.fullscreen,
-html.fullscreen>body {
+html.fullscreen > body {
     width: 100%;
     height: 100%;
 }

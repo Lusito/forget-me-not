@@ -8,11 +8,10 @@ import { messageUtil } from "../lib/messageUtil";
 
 jest.mock("webextension-polyfill-ts", () => ({ browser }));
 
-(window as any).URL = function (url: string) {
+(window as any).URL = function URL(url: string) {
     const parsed = parseUrl(url);
     for (const key in parsed) {
-        if (parsed.hasOwnProperty(key))
-            this[key] = parsed[key as keyof UrlWithStringQuery];
+        if (key in parsed) this[key] = parsed[key as keyof UrlWithStringQuery];
     }
 };
 

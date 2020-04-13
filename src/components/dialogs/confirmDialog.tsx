@@ -1,4 +1,5 @@
 import { h } from "tsx-dom";
+
 import { Dialog, showDialog, hideDialog } from "./dialog";
 
 interface ConfirmDialogProps {
@@ -19,11 +20,13 @@ export function ConfirmDialog({ titleI18nKey, contentI18nKey, content, onClose }
     }
     const buttons = [
         <button data-i18n="confirm_ok" onClick={onOK} />,
-        <button data-i18n="confirm_cancel" onClick={onCancel} />
+        <button data-i18n="confirm_cancel" onClick={onCancel} />,
     ];
-    const dialog = <Dialog className="confirm_dialog" titleI18nKey={titleI18nKey}>
-        <div data-i18n={contentI18nKey}>{content}</div>
-        <div class="split_equal split_wrap">{buttons}</div>
-    </Dialog>;
+    const dialog = (
+        <Dialog className="confirm_dialog" titleI18nKey={titleI18nKey}>
+            <div data-i18n={contentI18nKey}>{content}</div>
+            <div class="split_equal split_wrap">{buttons}</div>
+        </Dialog>
+    );
     return showDialog(dialog, buttons[0]);
 }

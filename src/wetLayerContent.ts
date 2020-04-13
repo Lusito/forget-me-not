@@ -11,10 +11,15 @@ const vcsUser = "lusito";
 const vcsRepository = "forget-me-not";
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data && event.data.action === "WetApplyLanguage"
-    && vcsHost === event.data.vcsHost.toLowerCase() && vcsUser === event.data.vcsUser.toLowerCase()
-     && vcsRepository === event.data.vcsRepository.toLowerCase()) {
-    browser.runtime.sendMessage({ action: "WetApplyLanguage", language: event.data.language });
-  }
+    if (
+        event.source === window &&
+        event.data &&
+        event.data.action === "WetApplyLanguage" &&
+        vcsHost === event.data.vcsHost.toLowerCase() &&
+        vcsUser === event.data.vcsUser.toLowerCase() &&
+        vcsRepository === event.data.vcsRepository.toLowerCase()
+    ) {
+        browser.runtime.sendMessage({ action: "WetApplyLanguage", language: event.data.language });
+    }
 });
 window.postMessage({ action: "EnableWebExtensionMode" }, "*");

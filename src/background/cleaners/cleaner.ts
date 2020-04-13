@@ -12,12 +12,14 @@ export abstract class Cleaner {
     /**
      * Manual cleanup or startup cleanup
      */
-    public abstract clean(typeSet: BrowsingData.DataTypeSet, startup: boolean): Promise<void>;
+    public async clean(_typeSet: BrowsingData.DataTypeSet, _startup: boolean) {
+        // Do nothing by default
+    }
 
     /**
      * Clean domain on leave
      */
-    public async cleanDomainOnLeave(storeId: string, domain: string) {
+    public async cleanDomainOnLeave(_storeId: string, _domain: string) {
         // Do nothing by default
     }
 
@@ -25,7 +27,7 @@ export abstract class Cleaner {
      * Clean domain upon button press
      * Todo: maybe allow cleaning for all stores?
      */
-    public async cleanDomain(storeId: string, domain: string) {
+    public async cleanDomain(_storeId: string, _domain: string) {
         // Do nothing by default
     }
 

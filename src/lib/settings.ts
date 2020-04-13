@@ -6,16 +6,17 @@
 
 // This file manages all settings, their defaults and changes
 
-import { messageUtil } from "../lib/messageUtil";
+import { browser, Storage } from "webextension-polyfill-ts";
+
+import { messageUtil } from "./messageUtil";
 import { isFirefox, browserInfo, isNodeTest } from "./browserInfo";
 import { SettingsTypeMap, SettingsSignature, RuleDefinition, CleanupType } from "./settingsSignature";
-import { browser, Storage } from "webextension-polyfill-ts";
 import { getRegExForRule } from "./regexp";
 import migrateSettings, { manifestVersion } from "./settingsMigrations";
 
 type Callback = () => void;
 
-type SettingsValue = string | boolean | number | (RuleDefinition[]) | { [s: string]: boolean };
+type SettingsValue = string | boolean | number | RuleDefinition[] | { [s: string]: boolean };
 export type SettingsMap = { [s: string]: SettingsValue };
 
 export const localStorageDefault: boolean = isNodeTest || (isFirefox && browserInfo.versionAsNumber >= 58);
@@ -88,18 +89,16 @@ export const defaultSettings: SettingsMap = {
     "purgeExpiredCookies": false,
 
     "logRAD.enabled": true,
-    "logRAD.limit": 20
+    "logRAD.limit": 20,
 };
 
 const isAlNum = /^[a-z0-9]+$/;
-const isAlNumDash = /^[a-z0-9\-]+$/;
-const validCookieName = /^[!,#,\$,%,&,',\*,\+,\-,\.,0-9,:,;,A-Z,\\,\^,_,`,a-z,\|,~]+$/i;
+const isAlNumDash = /^[a-z0-9-]+$/;
+const validCookieName = /^[!,#,$,%,&,',*,+,\-,.,0-9,:,;,A-Z,\\,^,_,`,a-z,|,~]+$/i;
 
 function isValidExpressionPart(part: string) {
-    if (part.length === 0)
-        return false;
-    if (part === "*")
-        return true;
+    if (part.length === 0) return false;
+    if (part === "*") return true;
     return isAlNum.test(part[0]) && isAlNum.test(part[part.length - 1]) && isAlNumDash.test(part);
 }
 
@@ -110,44 +109,41 @@ function isValidDomainExpression(exp: string) {
 
 export function isValidExpression(exp: string) {
     const parts = exp.split("@");
-    if (parts.length === 1)
-        return isValidDomainExpression(exp);
+    if (parts.length === 1) return isValidDomainExpression(exp);
     return parts.length === 2 && validCookieName.test(parts[0]) && isValidDomainExpression(parts[1]);
 }
 
 export function classNameForCleanupType(type: CleanupType) {
-    if (type === CleanupType.NEVER)
-        return "cleanup_type_never";
-    if (type === CleanupType.STARTUP)
-        return "cleanup_type_startup";
-    if (type === CleanupType.INSTANTLY)
-        return "cleanup_type_instantly";
+    if (type === CleanupType.NEVER) return "cleanup_type_never";
+    if (type === CleanupType.STARTUP) return "cleanup_type_startup";
+    if (type === CleanupType.INSTANTLY) return "cleanup_type_instantly";
     return "cleanup_type_leave";
 }
 
 export function cleanupTypeForElement(element: HTMLElement) {
-    if (element.classList.contains("cleanup_type_never"))
-        return CleanupType.NEVER;
-    if (element.classList.contains("cleanup_type_startup"))
-        return CleanupType.STARTUP;
-    if (element.classList.contains("cleanup_type_leave"))
-        return CleanupType.LEAVE;
-    if (element.classList.contains("cleanup_type_instantly"))
-        return CleanupType.INSTANTLY;
+    if (element.classList.contains("cleanup_type_never")) return CleanupType.NEVER;
+    if (element.classList.contains("cleanup_type_startup")) return CleanupType.STARTUP;
+    if (element.classList.contains("cleanup_type_leave")) return CleanupType.LEAVE;
+    if (element.classList.contains("cleanup_type_instantly")) return CleanupType.INSTANTLY;
     return null;
 }
 
 function isValidCleanupType(type: CleanupType) {
-    return type === CleanupType.NEVER || type === CleanupType.STARTUP || type === CleanupType.LEAVE || type === CleanupType.INSTANTLY;
+    return (
+        type === CleanupType.NEVER ||
+        type === CleanupType.STARTUP ||
+        type === CleanupType.LEAVE ||
+        type === CleanupType.INSTANTLY
+    );
 }
 
 function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
     const validRules: RuleDefinition[] = [];
     for (const ruleDef of rules) {
-        if (typeof (ruleDef.rule) === "string" && expressionValidator(ruleDef.rule) && isValidCleanupType(ruleDef.type)) {
+        if (typeof ruleDef.rule === "string" && expressionValidator(ruleDef.rule) && isValidCleanupType(ruleDef.type)) {
             validRules.push({
                 rule: ruleDef.rule,
-                type: ruleDef.type
+                type: ruleDef.type,
             });
         }
     }
@@ -162,28 +158,33 @@ interface CompiledRuleDefinition {
 
 export class Settings {
     private rules: CompiledRuleDefinition[] = [];
+
     private cookieRules: CompiledRuleDefinition[] = [];
+
     private readonly storage: Storage.StorageArea;
+
     private map: SettingsMap = {};
+
     private readyCallbacks: Callback[] | null = [];
+
     public constructor() {
         this.storage = browser.storage.local;
         this.load();
-        browser.storage.onChanged.addListener(this.load);
+        browser.storage.onChanged.addListener((changes) => {
+            this.load(changes);
+        });
     }
 
-    public load = async (changes?: { [key: string]: Storage.StorageChange }) => {
+    public async load(changes?: { [key: string]: Storage.StorageChange }) {
         const map = await this.storage.get(null);
         this.map = map;
-        const changedKeys = Object.getOwnPropertyNames(changes || map);
-        if (changedKeys.indexOf("rules") >= 0)
-            this.rebuildRules();
+        const changedKeys = Object.getOwnPropertyNames(changes ?? map);
+        if (changedKeys.includes("rules")) this.rebuildRules();
         if (this.readyCallbacks) {
-            for (const callback of this.readyCallbacks)
-                callback();
+            for (const callback of this.readyCallbacks) callback();
             this.readyCallbacks = null;
         }
-        if (typeof (messageUtil) !== "undefined") {
+        if (typeof messageUtil !== "undefined") {
             await messageUtil.send("settingsChanged", changedKeys); // to other background scripts
             messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
         }
@@ -200,12 +201,12 @@ export class Settings {
                 this.cookieRules.push({
                     definition: rule,
                     regex: getRegExForRule(parts[1]),
-                    cookieName: parts[0].toLowerCase()
+                    cookieName: parts[0].toLowerCase(),
                 });
             } else {
                 this.rules.push({
                     definition: rule,
-                    regex: getRegExForRule(rule.rule)
+                    regex: getRegExForRule(rule.rule),
                 });
             }
         }
@@ -216,10 +217,8 @@ export class Settings {
     }
 
     public onReady(callback: Callback) {
-        if (this.readyCallbacks)
-            this.readyCallbacks.push(callback);
-        else
-            callback();
+        if (this.readyCallbacks) this.readyCallbacks.push(callback);
+        else callback();
     }
 
     public async restoreDefaults() {
@@ -235,30 +234,29 @@ export class Settings {
 
     public setAll(json: any) {
         // Validate and throw out anything that is no longer valid
-        if (typeof (json) !== "object")
-            return false;
+        if (typeof json !== "object") return false;
         if (json.rules) {
-            if (!Array.isArray(json.rules))
-                delete json.rules;
-            else
-                (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
+            if (!Array.isArray(json.rules)) delete json.rules;
+            else (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
         }
-        for (const key in json) {
-            if (!json.hasOwnProperty(key))
-                continue;
-            if (!defaultSettings.hasOwnProperty(key)) {
-                if (!isNodeTest)
-                    console.warn("Unknown setting: ", key);
+        for (const key of Object.keys(json)) {
+            if (!(key in defaultSettings)) {
+                if (!isNodeTest) console.warn("Unknown setting: ", key);
                 delete json[key];
             }
-            if (typeof (defaultSettings[key]) !== typeof (json[key])) {
+            if (typeof defaultSettings[key] !== typeof json[key]) {
                 if (!isNodeTest)
-                    console.warn("Types do not match while importing setting: ", key, typeof (defaultSettings[key]), typeof (json[key]));
+                    console.warn(
+                        "Types do not match while importing setting: ",
+                        key,
+                        typeof defaultSettings[key],
+                        typeof json[key]
+                    );
                 delete json[key];
             }
         }
 
-        const keysToRemove = Object.getOwnPropertyNames(this.getAll()).filter((key) => !json.hasOwnProperty(key));
+        const keysToRemove = Object.keys(this.getAll()).filter((key) => !(key in json));
         this.storage.remove(keysToRemove);
 
         this.map = json;
@@ -272,43 +270,40 @@ export class Settings {
     public getAll() {
         const result: SettingsMap = {};
         for (const key in defaultSettings) {
-            if (this.map.hasOwnProperty(key))
-                result[key] = this.map[key];
-            else
-                result[key] = defaultSettings[key];
+            if (key in this.map) result[key] = this.map[key];
+            else result[key] = defaultSettings[key];
         }
         return result as SettingsSignature;
     }
 
-    public get<K extends keyof SettingsTypeMap>(key: K) {
-        if (this.map.hasOwnProperty(key))
-            return this.map[key] as SettingsTypeMap[K];
-        return defaultSettings[key] as SettingsTypeMap[K];
+    public get<T extends keyof SettingsTypeMap>(key: T) {
+        if (key in this.map) return this.map[key] as SettingsTypeMap[T];
+        return defaultSettings[key] as SettingsTypeMap[T];
     }
 
-    public set<K extends keyof SettingsTypeMap>(key: K, value: SettingsTypeMap[K]) {
+    public set<T extends keyof SettingsTypeMap>(key: T, value: SettingsTypeMap[T]) {
         this.map[key] = value;
-        if (key === "rules")
-            this.rebuildRules();
+        if (key === "rules") this.rebuildRules();
     }
 
     // Convenience methods
     // fixme: add tests
     public getExactRuleDefinition(expression: string) {
         for (const crd of this.rules) {
-            if (crd.definition.rule === expression)
-                return crd.definition;
+            if (crd.definition.rule === expression) return crd.definition;
         }
         return null;
     }
 
     public getExactCleanupType(expression: string) {
         const definition = this.getExactRuleDefinition(expression);
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         return definition && definition.type;
     }
 
     public getMatchingRules(domain: string, cookieName: string | false = false) {
         const rules = cookieName !== false ? this.cookieRules : this.rules;
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         const lowerCookieName = cookieName && cookieName.toLowerCase();
         const matchingRules: RuleDefinition[] = [];
         for (const rule of rules) {
@@ -319,38 +314,32 @@ export class Settings {
     }
 
     public hasBlockingRule() {
-        return this.get("fallbackRule") === CleanupType.INSTANTLY || !!this.get("rules").find((r) => r.type === CleanupType.INSTANTLY);
+        return (
+            this.get("fallbackRule") === CleanupType.INSTANTLY ||
+            !!this.get("rules").find((r) => r.type === CleanupType.INSTANTLY)
+        );
     }
 
     private getCleanupTypeFromMatchingRules(matchingRules: RuleDefinition[]) {
-        if (matchingRules.find((r) => r.type === CleanupType.INSTANTLY))
-            return CleanupType.INSTANTLY;
-        if (matchingRules.find((r) => r.type === CleanupType.LEAVE))
-            return CleanupType.LEAVE;
-        if (matchingRules.find((r) => r.type === CleanupType.NEVER))
-            return CleanupType.NEVER;
+        if (matchingRules.find((r) => r.type === CleanupType.INSTANTLY)) return CleanupType.INSTANTLY;
+        if (matchingRules.find((r) => r.type === CleanupType.LEAVE)) return CleanupType.LEAVE;
+        if (matchingRules.find((r) => r.type === CleanupType.NEVER)) return CleanupType.NEVER;
         return CleanupType.STARTUP;
     }
 
     public getCleanupTypeForCookie(domain: string, name: string) {
-        if (this.get("whitelistFileSystem") && domain.length === 0)
-            return CleanupType.NEVER;
-        if (this.get("whitelistNoTLD") && domain.length > 0 && domain.indexOf(".") === -1)
-            return CleanupType.NEVER;
+        if (this.get("whitelistFileSystem") && domain.length === 0) return CleanupType.NEVER;
+        if (this.get("whitelistNoTLD") && domain.length > 0 && !domain.includes(".")) return CleanupType.NEVER;
         const matchingRules = this.getMatchingRules(domain, name);
-        if (matchingRules.length)
-            return this.getCleanupTypeFromMatchingRules(matchingRules);
+        if (matchingRules.length) return this.getCleanupTypeFromMatchingRules(matchingRules);
         return this.getCleanupTypeForDomain(domain);
     }
 
     public getCleanupTypeForDomain(domain: string) {
-        if (this.get("whitelistFileSystem") && domain.length === 0)
-            return CleanupType.NEVER;
-        if (this.get("whitelistNoTLD") && domain.length > 0 && domain.indexOf(".") === -1)
-            return CleanupType.NEVER;
+        if (this.get("whitelistFileSystem") && domain.length === 0) return CleanupType.NEVER;
+        if (this.get("whitelistNoTLD") && domain.length > 0 && !domain.includes(".")) return CleanupType.NEVER;
         const matchingRules = this.getMatchingRules(domain);
-        if (matchingRules.length)
-            return this.getCleanupTypeFromMatchingRules(matchingRules);
+        if (matchingRules.length) return this.getCleanupTypeFromMatchingRules(matchingRules);
         return this.get("fallbackRule");
     }
 
@@ -365,23 +354,21 @@ export class Settings {
 
     // FIXME: add tests
     public getRulesForDomain(domain: string) {
-        return this.rules.concat(this.cookieRules)
+        return this.rules
+            .concat(this.cookieRules)
             .filter((rule) => rule.regex.test(domain))
             .map((rule) => rule.definition);
     }
 
     public getChosenRulesForDomain(domain: string) {
-        if (this.get("whitelistFileSystem") && domain.length === 0)
-            return [];
-        if (this.get("whitelistNoTLD") && domain.length > 0 && domain.indexOf(".") === -1)
-            return [];
+        if (this.get("whitelistFileSystem") && domain.length === 0) return [];
+        if (this.get("whitelistNoTLD") && domain.length > 0 && !domain.includes(".")) return [];
         const matchingRules = this.getMatchingRules(domain);
         if (matchingRules.length) {
             const types = [CleanupType.INSTANTLY, CleanupType.LEAVE, CleanupType.NEVER, CleanupType.STARTUP];
             for (const type of types) {
                 const rules = matchingRules.filter((r) => r.type === type);
-                if (rules.length)
-                    return rules;
+                if (rules.length) return rules;
             }
         }
         return [];
@@ -390,16 +377,13 @@ export class Settings {
     public async setRule(expression: string, type: CleanupType, temporary: boolean) {
         const rules = this.get("rules").slice();
         let ruleDef = rules.find((r) => r.rule === expression);
-        if (ruleDef)
-            ruleDef.type = type;
+        if (ruleDef) ruleDef.type = type;
         else {
             ruleDef = { rule: expression, type };
             rules.push(ruleDef);
         }
-        if (temporary)
-            ruleDef.temporary = true;
-        else
-            delete ruleDef.temporary;
+        if (temporary) ruleDef.temporary = true;
+        else delete ruleDef.temporary;
         this.set("rules", rules);
         await this.save();
     }
@@ -411,7 +395,7 @@ export class Settings {
     }
 
     public async removeRules(rules: string[]) {
-        const remainingRules = this.get("rules").filter((r) => rules.indexOf(r.rule) === -1);
+        const remainingRules = this.get("rules").filter((r) => !rules.includes(r.rule));
         this.set("rules", remainingRules);
         await this.save();
         this.rebuildRules();

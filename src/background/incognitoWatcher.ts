@@ -5,10 +5,12 @@
  */
 
 import { browser, Tabs } from "webextension-polyfill-ts";
+
 import { DEFAULT_COOKIE_STORE_ID } from "../shared";
 
 export class IncognitoWatcher {
     private cookieStores = new Set<string>();
+
     private tabs = new Set<number>();
 
     public constructor() {
@@ -23,11 +25,11 @@ export class IncognitoWatcher {
             this.tabs.add(tab.id);
             this.cookieStores.add(tab.cookieStoreId || DEFAULT_COOKIE_STORE_ID);
         }
-    }
+    };
 
-    private onRemoved = (tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => {
+    private onRemoved = (tabId: number) => {
         this.tabs.delete(tabId);
-    }
+    };
 
     public hasCookieStore(cookieStoreId: string) {
         return this.cookieStores.has(cookieStoreId);

@@ -6,8 +6,6 @@
 
 import { IncognitoWatcher } from "./incognitoWatcher";
 
-export{};
-
 const COOKIE_STORE_ID = "mock";
 const COOKIE_STORE_ID_2 = "mock2";
 
@@ -24,8 +22,12 @@ describe("Incognito Watcher", () => {
 
     describe("listeners", () => {
         it("should add listeners on creation", () => {
-            expect(browserMock.tabs.onRemoved.mock.addListener.mock.calls).toEqual([[(incognitoWatcher as any).onRemoved]]);
-            expect(browserMock.tabs.onCreated.mock.addListener.mock.calls).toEqual([[(incognitoWatcher as any).onCreated]]);
+            expect(browserMock.tabs.onRemoved.mock.addListener.mock.calls).toEqual([
+                [(incognitoWatcher as any).onRemoved],
+            ]);
+            expect(browserMock.tabs.onCreated.mock.addListener.mock.calls).toEqual([
+                [(incognitoWatcher as any).onCreated],
+            ]);
         });
     });
 

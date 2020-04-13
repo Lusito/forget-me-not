@@ -13,7 +13,6 @@ describe("DownloadCleaner", () => {
     //     erase download and, if history api exists, delete history url
     // - else if startup enabled and startup downloads and domain is not protected
     //     add to downloadsToClean storage
-
     // cleanup:
     // - if downloads and (apply rules or not history)
     //     remove downloads flag

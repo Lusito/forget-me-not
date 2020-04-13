@@ -1,12 +1,13 @@
 import { h } from "tsx-dom";
+import { Cookies, browser, ContextualIdentities } from "webextension-polyfill-ts";
+import { getDomain } from "tldjs";
+import { wetLayer } from "wet-layer";
+
 import { Dialog, showDialog, hideDialog } from "./dialog";
 import { on, removeAllChildren } from "../../lib/htmlUtils";
 import { connectSettings } from "../../lib/htmlSettings";
-import { Cookies, browser, ContextualIdentities } from "webextension-polyfill-ts";
 import { getBadgeForCleanupType, BadgeInfo, getAllCookieStoreIds } from "../../background/backgroundHelpers";
-import { getDomain } from "tldjs";
 import { settings } from "../../lib/settings";
-import { wetLayer } from "wet-layer";
 import { appendPunycode, showAddRuleDialog, getSuggestedRuleExpression } from "../helpers";
 import { isFirefox, browserInfo } from "../../lib/browserInfo";
 
@@ -27,17 +28,14 @@ interface CookieListForDomain {
 function compareCaseInsensitive(a: string, b: string) {
     const lowerA = a.toLowerCase();
     const lowerB = b.toLowerCase();
-    if (lowerA < lowerB)
-        return -1;
-    if (lowerA > lowerB)
-        return 1;
+    if (lowerA < lowerB) return -1;
+    if (lowerA > lowerB) return 1;
     return 0;
 }
 
 function compareDomain(a: CookieListForDomain, b: CookieListForDomain) {
     const value = compareCaseInsensitive(a.firstPartyDomain, b.firstPartyDomain);
-    if (value !== 0)
-        return value;
+    if (value !== 0) return value;
     return compareCaseInsensitive(a.domain, b.domain);
 }
 
@@ -49,12 +47,13 @@ const noopToArray = () => [];
 
 async function getCookieList() {
     const cookieStores = await getAllCookieStoreIds();
-    const nestedCookies = await Promise.all(cookieStores.map((storeId) => {
-        const details: Cookies.GetAllDetailsType = { storeId };
-        if (supportsFirstPartyIsolation)
-            details.firstPartyDomain = null;
-        return browser.cookies.getAll(details).catch(noopToArray);
-    }));
+    const nestedCookies = await Promise.all(
+        cookieStores.map((storeId) => {
+            const details: Cookies.GetAllDetailsType = { storeId };
+            if (supportsFirstPartyIsolation) details.firstPartyDomain = null;
+            return browser.cookies.getAll(details).catch(noopToArray);
+        })
+    );
     const cookies = ([] as Cookies.Cookie[]).concat(...nestedCookies);
 
     const cookiesByDomain: { [s: string]: CookieListForDomain } = {};
@@ -72,15 +71,14 @@ async function getCookieList() {
                 badge: getBadgeForCleanupType(settings.getCleanupTypeForDomain(rawDomain)),
                 domain: cookie.domain,
                 firstPartyDomain,
-                cookies: [mapped]
+                cookies: [mapped],
             };
         }
     }
     const cookiesByDomainList = Object.keys(cookiesByDomain)
         .map((domain) => cookiesByDomain[domain])
         .sort(compareDomain);
-    for (const a of cookiesByDomainList)
-        a.cookies.sort(compareCookieName);
+    for (const a of cookiesByDomainList) a.cookies.sort(compareCookieName);
     return cookiesByDomainList;
 }
 
@@ -91,8 +89,7 @@ async function updateContextualIdentities() {
     if (browser.contextualIdentities) {
         try {
             const list = await browser.contextualIdentities.query({});
-            for (const ci of list)
-                contextualIdentities[ci.cookieStoreId] = ci;
+            for (const ci of list) contextualIdentities[ci.cookieStoreId] = ci;
         } catch (e) {
             console.error("Can't get storeNames", e);
         }
@@ -102,32 +99,38 @@ async function updateContextualIdentities() {
 function mapToCookieItem(entry: CookieListCookie, updateList: () => void) {
     const expires = entry.cookie.session
         ? "On Session End"
-        : new Date((entry.cookie.expirationDate || 0) * 1000).toLocaleString() || "?";
+        : new Date((entry.cookie.expirationDate ?? 0) * 1000).toLocaleString() || "?";
     const contextualIdentity = contextualIdentities[entry.cookie.storeId];
-    const cookieStoreValue = contextualIdentity
-        ? <span class="cookie_list_value" style={`border-bottom: 1px solid ${contextualIdentity.colorCode}`}>
+    const cookieStoreValue = contextualIdentity ? (
+        <span class="cookie_list_value" style={`border-bottom: 1px solid ${contextualIdentity.colorCode}`}>
             {contextualIdentity.name}
         </span>
-        : <span class="cookie_list_value">{entry.cookie.storeId}</span>;
+    ) : (
+        <span class="cookie_list_value">{entry.cookie.storeId}</span>
+    );
 
-    const cookieAttributes = <ul class="collapsed cookie_attributes" data-tree-node-id={`cookie-${entry.cookie.name}`}>
-        <li class="cookie_list_split">
-            <b>Value:</b>
-            <span class="cookie_list_value" data-searchable title={entry.cookie.value}>{entry.cookie.value}</span>
-        </li>
-        <li class="cookie_list_split">
-            <b>Expires:</b>
-            <span class="cookie_list_value">{expires}</span>
-        </li>
-        <li class="cookie_list_split">
-            <b>Store:</b>
-            {cookieStoreValue}
-        </li>
-        <li class="cookie_list_split">
-            <b>Secure:</b>
-            <span class="cookie_list_value">{entry.cookie.secure ? "Yes" : "No"}</span>
-        </li>
-    </ul>;
+    const cookieAttributes = (
+        <ul class="collapsed cookie_attributes" data-tree-node-id={`cookie-${entry.cookie.name}`}>
+            <li class="cookie_list_split">
+                <b>Value:</b>
+                <span class="cookie_list_value" data-searchable title={entry.cookie.value}>
+                    {entry.cookie.value}
+                </span>
+            </li>
+            <li class="cookie_list_split">
+                <b>Expires:</b>
+                <span class="cookie_list_value">{expires}</span>
+            </li>
+            <li class="cookie_list_split">
+                <b>Store:</b>
+                {cookieStoreValue}
+            </li>
+            <li class="cookie_list_split">
+                <b>Secure:</b>
+                <span class="cookie_list_value">{entry.cookie.secure ? "Yes" : "No"}</span>
+            </li>
+        </ul>
+    );
     const toggleCookieAttributes = (e: MouseEvent) => {
         const collapsed = cookieAttributes.classList.toggle("collapsed");
         (e.currentTarget as HTMLElement).textContent = collapsed ? "+" : "-";
@@ -136,23 +139,41 @@ function mapToCookieItem(entry: CookieListCookie, updateList: () => void) {
     function addCookieRule() {
         showAddRuleDialog(getSuggestedRuleExpression(entry.cookie.domain, entry.cookie.name), updateList);
     }
-    const title = wetLayer.getMessage(entry.badge.i18nButton + "@title");
-    return <li>
-        <div class="cookie_list_split">
-            <span class="cookie_list_toggle" onClick={toggleCookieAttributes}>+</span>
-            <span class={entry.badge.className} title={title}>{wetLayer.getMessage(entry.badge.i18nBadge)}</span>
-            <i class="cookie_list_label" data-searchable>{entry.cookie.name}</i>
-            <button class="cookie_list_add_rule" onClick={addCookieRule}>+ Add Rule</button>
-        </div>
-        {cookieAttributes}
-    </li>;
+    const title = wetLayer.getMessage(`${entry.badge.i18nButton}@title`);
+    return (
+        <li>
+            <div class="cookie_list_split">
+                <span class="cookie_list_toggle" onClick={toggleCookieAttributes}>
+                    +
+                </span>
+                <span class={entry.badge.className} title={title}>
+                    {wetLayer.getMessage(entry.badge.i18nBadge)}
+                </span>
+                <i class="cookie_list_label" data-searchable>
+                    {entry.cookie.name}
+                </i>
+                <button class="cookie_list_add_rule" onClick={addCookieRule}>
+                    + Add Rule
+                </button>
+            </div>
+            {cookieAttributes}
+        </li>
+    );
 }
 
 function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
     const mapToCookieItemWrapped = (e: CookieListCookie) => mapToCookieItem(e, updateList);
-    const cookiesList = <ul class="collapsed" data-tree-node-id={`domain-${entry.domain}`}>{entry.cookies.map(mapToCookieItemWrapped)}</ul>;
+    const cookiesList = (
+        <ul class="collapsed" data-tree-node-id={`domain-${entry.domain}`}>
+            {entry.cookies.map(mapToCookieItemWrapped)}
+        </ul>
+    );
 
-    const toggler = <span class="cookie_list_toggle" onClick={toggleCookiesList}>+</span>;
+    const toggler = (
+        <span class="cookie_list_toggle" onClick={toggleCookiesList}>
+            +
+        </span>
+    );
     function toggleCookiesList() {
         const collapsed = cookiesList.classList.toggle("collapsed");
         toggler.textContent = collapsed ? "+" : "-";
@@ -162,16 +183,24 @@ function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
         showAddRuleDialog(getSuggestedRuleExpression(entry.domain), updateList);
     }
     const punified = appendPunycode(entry.domain);
-    const title = wetLayer.getMessage(entry.badge.i18nButton + "@title");
-    return <li>
-        <div class="cookie_list_split">
-            {toggler}
-            <span class={entry.badge.className} title={title}>{wetLayer.getMessage(entry.badge.i18nBadge)}</span>
-            <b title={punified} data-searchable>{punified}</b>
-            <button class="cookie_list_add_rule" onClick={addDomainRule}>+ Add Rule</button>
-        </div>
-        {cookiesList}
-    </li>;
+    const title = wetLayer.getMessage(`${entry.badge.i18nButton}@title`);
+    return (
+        <li>
+            <div class="cookie_list_split">
+                {toggler}
+                <span class={entry.badge.className} title={title}>
+                    {wetLayer.getMessage(entry.badge.i18nBadge)}
+                </span>
+                <b title={punified} data-searchable>
+                    {punified}
+                </b>
+                <button class="cookie_list_add_rule" onClick={addDomainRule}>
+                    + Add Rule
+                </button>
+            </div>
+            {cookiesList}
+        </li>
+    );
 }
 
 interface CookieBrowserDialogProps {
@@ -182,38 +211,45 @@ export function CookieBrowserDialog({ button }: CookieBrowserDialogProps) {
     const buttons = [<button data-i18n="dialog_back" onClick={() => hideDialog(dialog)} />];
 
     const cookieList = <ul class="cookie_list" />;
-    const searchField = <input class="cookie_list_search" placeholder="Search.." /> as HTMLInputElement;
+    const searchField = (<input class="cookie_list_search" placeholder="Search.." />) as HTMLInputElement;
     function filterList() {
         const needle = searchField.value.trim().toLowerCase();
         if (needle) {
             for (const child of cookieList.children) {
                 const searchables = [...child.querySelectorAll("*[data-searchable]")];
-                const collapsed = searchables.every((s) => (s.textContent || "").toLowerCase().indexOf(needle) === -1);
+                const collapsed = searchables.every((s) => !(s.textContent ?? "").toLowerCase().includes(needle));
                 child.classList.toggle("collapsed", collapsed);
             }
         } else {
-            for (const child of cookieList.children)
-                child.classList.toggle("collapsed", false);
+            for (const child of cookieList.children) child.classList.toggle("collapsed", false);
         }
     }
     on(searchField, "input", filterList);
 
-    const dialog = <Dialog className="clean_dialog" titleI18nKey="cookie_browser_title">
-        <div>{searchField}</div>
-        {cookieList}
-        <div class="split_equal split_wrap">{buttons}</div>
-    </Dialog>;
+    const dialog = (
+        <Dialog className="clean_dialog" titleI18nKey="cookie_browser_title">
+            <div>{searchField}</div>
+            {cookieList}
+            <div class="split_equal split_wrap">{buttons}</div>
+        </Dialog>
+    );
     async function updateList() {
-        const expanded = [...cookieList.querySelectorAll("ul:not(.collapsed)")].map((e) => e.getAttribute("data-tree-node-id"));
+        const expanded = [...cookieList.querySelectorAll("ul:not(.collapsed)")].map((e) =>
+            e.getAttribute("data-tree-node-id")
+        );
         removeAllChildren(cookieList);
         const list = await getCookieList();
         await updateContextualIdentities();
         for (const byDomain of list)
-            cookieList.appendChild(mapToDomainItem(byDomain, updateList));
+            cookieList.appendChild(
+                mapToDomainItem(byDomain, () => {
+                    updateList();
+                })
+            );
         filterList();
         for (const key of expanded) {
             const element = cookieList.querySelector(`ul.collapsed[data-tree-node-id='${key}']`);
-            element && element.classList.remove("collapsed");
+            element?.classList.remove("collapsed");
         }
     }
     on(button, "click", () => {

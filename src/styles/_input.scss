@@ -14,7 +14,7 @@ $hover-border-color: rgba(0, 0, 0, 0.3);
 
 // Fieldset
 fieldset {
-    border: 1px solid #A7A7A7;
+    border: 1px solid #a7a7a7;
     box-sizing: border-box;
 }
 
@@ -23,7 +23,7 @@ label {
     margin-right: 2px;
 }
 
-label>input:disabled+span {
+label > input:disabled + span {
     color: $disabled-label;
 }
 
@@ -33,7 +33,7 @@ select {
     margin: 0;
     padding: 2px 8px;
     height: 26px;
-    background-color: #EDEDED;
+    background-color: #ededed;
     border: 1px solid $border-color;
     color: black;
     font: inherit;
@@ -42,9 +42,9 @@ select {
     &:not(:last-child) {
         margin-right: 3px;
     }
-    
+
     &:hover {
-        background-color: #F4F4F4;
+        background-color: #f4f4f4;
         border-color: $hover-border-color;
     }
 }
@@ -52,7 +52,7 @@ select {
 button {
     position: relative;
     cursor: pointer;
-    
+
     &:after {
         display: block;
         content: "";
@@ -66,14 +66,14 @@ button {
         background-position: 50%;
         transform: scale(1, 1);
         opacity: 0;
-        transition: transform .25s, opacity 1s;
+        transition: transform 0.25s, opacity 1s;
         pointer-events: none;
     }
 
     &:active:after {
         transition: 0s;
         transform: scale(0, 0);
-        opacity: .3;
+        opacity: 0.3;
     }
 }
 
@@ -81,7 +81,7 @@ select {
     padding: 2px 24px 2px 8px;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-color: #EDEDED;
+    background-color: #ededed;
     background-image: url(../icons/downarrow.svg);
     background-position: calc(100% - -1px) -1px, left top;
     background-size: 27px 27px, 100% 100%;
@@ -89,11 +89,11 @@ select {
 }
 
 // Input fields
-input[type=number],
-input[type=password],
-input[type=search],
-input[type=text],
-input[type=url],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="text"],
+input[type="url"],
 input:not([type]),
 textarea {
     height: 26px;
@@ -113,8 +113,8 @@ textarea {
 }
 
 // Checkboxes & Radio Buttons
-input[type=radio],
-input[type=checkbox] {
+input[type="radio"],
+input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     width: 0;
@@ -122,11 +122,11 @@ input[type=checkbox] {
     margin: 0;
 }
 
-input[type=checkbox],
-input[type=radio] {
-    +span {
+input[type="checkbox"],
+input[type="radio"] {
+    + span {
         vertical-align: middle;
-        
+
         &:before {
             width: 17px;
             height: 17px;
@@ -146,47 +146,47 @@ input[type=radio] {
     }
     &:focus,
     &:hover {
-        +span:before {
+        + span:before {
             box-shadow: 0 0 1px 2px $focus-color;
         }
     }
-    &:disabled+span:before {
+    &:disabled + span:before {
         box-shadow: none;
     }
 }
 
-input[type=checkbox] {
-    +span:before {
+input[type="checkbox"] {
+    + span:before {
         margin-left: 2px;
     }
     &:disabled {
-        +span:before {
+        + span:before {
             background: $disabled-background;
         }
-        &:checked+span:before {
+        &:checked + span:before {
             color: $disabled-foreground;
         }
     }
 }
 
-input[type=radio] {
-    +span:before {
+input[type="radio"] {
+    + span:before {
         border-radius: 10px;
         border: 3px solid white;
         margin-left: 3px;
         vertical-align: middle;
     }
-    &:checked+span:before {
+    &:checked + span:before {
         background-color: $focus-color;
     }
     &:disabled {
-        +span:before {
+        + span:before {
             border-color: $disabled-background;
         }
-        &:not(:checked)+span:before {
+        &:not(:checked) + span:before {
             background-color: $disabled-background;
         }
-        &:checked+span:before {
+        &:checked + span:before {
             background-color: $disabled-foreground;
         }
     }

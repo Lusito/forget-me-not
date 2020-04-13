@@ -18,7 +18,7 @@ function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
     const key = element.dataset.settingsKey;
     if (key) {
         if (settingsInfoMap[key]) {
-            console.error("Setting already registered: " + key, element, settingsInfoMap[key].element);
+            console.error(`Setting already registered: ${key}`, element, settingsInfoMap[key].element);
             return;
         }
         settingsInfoMap[key] = { element };
@@ -41,16 +41,15 @@ function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
 }
 
 export function updateFromSettings() {
-    for (const key in settingsInfoMap) {
+    for (const key of Object.keys(settingsInfoMap)) {
         const info = settingsInfoMap[key];
         if (info) {
             if (!info.permanentlyUnchecked) {
                 if (info.element.type === "checkbox") {
-                    const input = (info.element as HTMLInputElement);
+                    const input = info.element as HTMLInputElement;
                     input.checked = settings.get(key as any);
                     input.dispatchEvent(new Event("change"));
-                } else
-                    info.element.value = settings.get(key as any);
+                } else info.element.value = settings.get(key as any);
 
                 const enabledBy = info.element.dataset.settingsEnabledBy;
                 if (enabledBy)

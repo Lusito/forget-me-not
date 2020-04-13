@@ -9,7 +9,8 @@
     tbody > tr:nth-child(odd) > *:first-child {
         background: #e6e6e6;
     }
-    tbody, thead {
+    tbody,
+    thead {
         > tr:hover > *:first-child {
             background: rgba(33, 67, 152, 0.3803921568627451);
         }
@@ -43,32 +44,32 @@
         margin: 0;
     }
 
-    input[type=checkbox]+span:before {
+    input[type="checkbox"] + span:before {
         margin-left: 3px;
     }
 
     .apply_rules_checkbox {
-        input[type=checkbox] {
-            +span:before {
+        input[type="checkbox"] {
+            + span:before {
                 content: "";
                 background: url("../icons/tabs/shield_white.svg");
             }
-            +span:before {
+            + span:before {
                 box-shadow: none;
             }
         }
-        input[type=checkbox]:disabled {
-            +span {
+        input[type="checkbox"]:disabled {
+            + span {
                 display: none;
             }
         }
-        input[type=checkbox]:not(:disabled) {
-            &:not(:checked)+span:before {
+        input[type="checkbox"]:not(:disabled) {
+            &:not(:checked) + span:before {
                 background: url("../icons/tabs/no_shield_white.svg");
             }
             &:focus,
             &:hover {
-                +span {
+                + span {
                     outline: 1px dashed rgba(80, 149, 234, 0.75);
                 }
             }
@@ -83,14 +84,14 @@
         border-bottom: 1px solid #afafaf;
     }
 
-    tr>*:nth-child(1),
-    tr>*:nth-child(3),
-    tr>*:nth-child(4) {
+    tr > *:nth-child(1),
+    tr > *:nth-child(3),
+    tr > *:nth-child(4) {
         border-right: 1px solid #afafaf;
     }
 
-    thead>tr:not(:first-child)>th,
-    tbody>tr>td {
+    thead > tr:not(:first-child) > th,
+    tbody > tr > td {
         &.cleanup_type_never {
             background: rgba($badgeColorNever, 0.7);
         }
@@ -119,7 +120,7 @@
         padding-left: 12px;
     }
 
-    tr:last-child>td {
+    tr:last-child > td {
         padding-bottom: 4px;
     }
 
@@ -135,7 +136,7 @@
     margin: 5px 0;
     padding: 0;
 
-    >li {
+    > li {
         width: 50%;
         &:last-child:nth-child(odd) {
             width: auto;
@@ -153,6 +154,6 @@
     margin: 0 4px;
 }
 
-select[data-settings-key=initialTab] {
+select[data-settings-key="initialTab"] {
     margin-left: 5px;
 }

@@ -11,11 +11,16 @@ import { someItemsMatch } from "./backgroundShared";
 const DOMAIN_LEAVE_SETTINGS_KEYS = ["domainLeave.enabled", "domainLeave.delay"];
 
 export class CleanupScheduler {
-    private delayTime: number = 0;
-    private enabled: boolean = false;
+    private delayTime = 0;
+
+    private enabled = false;
+
     private readonly handler: (domain: string) => Promise<void>;
+
     private domainTimeouts: { [s: string]: ReturnType<typeof setTimeout> } = {};
+
     private snoozing: boolean;
+
     private readonly snoozedDomains: { [s: string]: boolean } = {};
 
     public constructor(handler: (domain: string) => Promise<void>, snoozing: boolean) {
@@ -24,8 +29,7 @@ export class CleanupScheduler {
 
         this.updateSettings();
         messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-            if (someItemsMatch(changedKeys, DOMAIN_LEAVE_SETTINGS_KEYS))
-                this.updateSettings();
+            if (someItemsMatch(changedKeys, DOMAIN_LEAVE_SETTINGS_KEYS)) this.updateSettings();
         });
     }
 
@@ -35,39 +39,33 @@ export class CleanupScheduler {
             this.enabled = enabled;
             if (!enabled) {
                 this.clearAllTimeouts();
-                for (const domain in this.snoozedDomains)
-                    delete this.snoozedDomains[domain];
+                for (const domain of Object.keys(this.snoozedDomains)) delete this.snoozedDomains[domain];
             }
         }
         this.delayTime = settings.get("domainLeave.delay") * 1000;
     }
 
     private clearAllTimeouts() {
-        for (const domain in this.domainTimeouts) {
+        for (const domain of Object.keys(this.domainTimeouts)) {
             clearTimeout(this.domainTimeouts[domain]);
             delete this.domainTimeouts[domain];
         }
     }
 
     public async schedule(domain: string) {
-        if (!this.enabled)
-            return;
+        if (!this.enabled) return;
 
         if (this.domainTimeouts[domain]) {
             clearTimeout(this.domainTimeouts[domain]);
             delete this.domainTimeouts[domain];
         }
-        if (this.snoozing)
-            this.snoozedDomains[domain] = true;
-        else if (this.delayTime <= 0)
-            await this.handler(domain);
+        if (this.snoozing) this.snoozedDomains[domain] = true;
+        else if (this.delayTime <= 0) await this.handler(domain);
         else {
             this.domainTimeouts[domain] = setTimeout(() => {
                 if (this.enabled) {
-                    if (this.snoozing)
-                        this.snoozedDomains[domain] = true;
-                    else
-                        this.handler(domain);
+                    if (this.snoozing) this.snoozedDomains[domain] = true;
+                    else this.handler(domain);
                 }
                 delete this.domainTimeouts[domain];
             }, this.delayTime);
@@ -78,14 +76,14 @@ export class CleanupScheduler {
         this.snoozing = snoozing;
         if (snoozing) {
             // cancel countdowns and remember them for later
-            for (const domain in this.domainTimeouts) {
+            for (const domain of Object.keys(this.domainTimeouts)) {
                 this.snoozedDomains[domain] = true;
                 clearTimeout(this.domainTimeouts[domain]);
                 delete this.domainTimeouts[domain];
             }
         } else {
             // reschedule
-            for (const domain in this.snoozedDomains) {
+            for (const domain of Object.keys(this.snoozedDomains)) {
                 this.schedule(domain);
                 delete this.snoozedDomains[domain];
             }

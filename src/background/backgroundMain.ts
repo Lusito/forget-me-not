@@ -4,13 +4,14 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { browser } from "webextension-polyfill-ts";
+import { wetLayer } from "wet-layer";
+
 import { messageUtil } from "../lib/messageUtil";
 import { settings } from "../lib/settings";
 import { loadJSONFile } from "../lib/fileHelper";
-import { browser } from "webextension-polyfill-ts";
 import { Background, CleanUrlNowConfig } from "./background";
 import { someItemsMatch } from "./backgroundShared";
-import { wetLayer } from "wet-layer";
 import { manifestVersion } from "../lib/settingsMigrations";
 
 const UPDATE_NOTIFICATION_ID = "UpdateNotification";
@@ -26,12 +27,13 @@ settings.onReady(() => {
     messageUtil.receive("getSnoozingState", () => background.sendSnoozingState());
 
     // listen for tab changes to update badge
-    const badgeUpdater = () => background.updateBadge();
+    const badgeUpdater = () => {
+        background.updateBadge();
+    };
     browser.tabs.onActivated.addListener(badgeUpdater);
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-        if (someItemsMatch(changedKeys, BADGE_SETTINGS_KEYS))
-            background.updateBadge();
+        if (someItemsMatch(changedKeys, BADGE_SETTINGS_KEYS)) background.updateBadge();
     });
 
     // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.
@@ -45,7 +47,7 @@ settings.onReady(() => {
         if (id === UPDATE_NOTIFICATION_ID) {
             browser.tabs.create({
                 active: true,
-                url: browser.runtime.getURL("views/readme.html") + "#changelog"
+                url: `${browser.runtime.getURL("views/readme.html")}#changelog`,
             });
         }
     });
@@ -55,12 +57,12 @@ settings.onReady(() => {
             type: "basic",
             iconUrl: browser.extension.getURL("icons/icon96.png"),
             title: wetLayer.getMessage("update_notification_title"),
-            message: wetLayer.getMessage("update_notification_message")
+            message: wetLayer.getMessage("update_notification_message"),
         });
     }
     wetLayer.addListener(showUpdateNotification);
 
-    setTimeout(async () => {
+    const startup = async () => {
         const previousVersion = settings.get("version");
         if (previousVersion !== manifestVersion) {
             settings.set("version", manifestVersion);
@@ -68,9 +70,11 @@ settings.onReady(() => {
             settings.rebuildRules();
             settings.save();
 
-            if (settings.get("showUpdateNotification"))
-                showUpdateNotification();
+            if (settings.get("showUpdateNotification")) showUpdateNotification();
         }
         await background.onStartup();
+    };
+    setTimeout(() => {
+        startup();
     }, 1000);
 });

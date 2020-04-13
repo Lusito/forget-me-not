@@ -11,6 +11,7 @@ describe("TabInfo", () => {
     const checkDomainLeaveSpy = jest.fn();
 
     beforeEach(() => checkDomainLeaveSpy.mockClear());
+    // eslint-disable-next-line jest/no-standalone-expect
     afterEach(() => expect(checkDomainLeaveSpy).not.toHaveBeenCalled());
 
     const createTabInfo = () => new TabInfo(42, "first.amazon.com", "mock", checkDomainLeaveSpy);
@@ -48,7 +49,7 @@ describe("TabInfo", () => {
                     "first.amazon.com",
                     "second.amazon.com",
                     "p.second.amazon.com",
-                    "third.amazon.com"
+                    "third.amazon.com",
                 ]);
                 expect(tabInfo.contains("first.amazon.com", true)).toBe(false);
                 expect(tabInfo.contains("second.amazon.com", true)).toBe(false);
@@ -65,10 +66,7 @@ describe("TabInfo", () => {
                 tabInfo.prepareNavigation(2, "p.second.amazon.com");
                 tabInfo.commitNavigation(3, "third.amazon.com");
                 const hostnames = tabInfo.commitNavigation(2, "zero.amazon.com");
-                expect(Array.from(hostnames)).toHaveSameMembers([
-                    "second.amazon.com",
-                    "p.second.amazon.com"
-                ]);
+                expect(Array.from(hostnames)).toHaveSameMembers(["second.amazon.com", "p.second.amazon.com"]);
                 expect(tabInfo.contains("first.amazon.com", true)).toBe(true);
                 expect(tabInfo.contains("second.amazon.com", true)).toBe(false);
                 expect(tabInfo.contains("p.second.amazon.com", true)).toBe(false);
@@ -197,9 +195,8 @@ describe("TabInfo", () => {
             tabInfo.commitNavigation(1, "amazon.com");
 
             // ensure all tabinfos are in idle
-            const frameInfos = (tabInfo as any).frameInfos;
-            for (const key in frameInfos)
-                frameInfos[key].lastTimeStamp = 0;
+            const { frameInfos } = tabInfo as any;
+            for (const key of Object.keys(frameInfos)) frameInfos[key].lastTimeStamp = 0;
 
             const originalScheduleDeadFramesCheck = tabInfo.scheduleDeadFramesCheck.bind(tabInfo);
             const spy = jest.fn();
@@ -231,9 +228,8 @@ describe("TabInfo", () => {
                 tabInfo.commitNavigation(2, "images.google.com");
 
                 // ensure all tabinfos are in idle
-                const frameInfos = (tabInfo as any).frameInfos;
-                for (const key in frameInfos)
-                    frameInfos[key].lastTimeStamp = 0;
+                const { frameInfos } = tabInfo as any;
+                for (const key of Object.keys(frameInfos)) frameInfos[key].lastTimeStamp = 0;
 
                 await tabInfo.scheduleDeadFramesCheck();
                 expect(checkDomainLeaveSpy).toHaveBeenCalledTimes(1);
@@ -241,7 +237,7 @@ describe("TabInfo", () => {
                 checkDomainLeaveSpy.mockClear();
                 expect(browserMock.tabs.executeScript.mock.calls).toEqual([
                     [42, { frameId: 1, code: "1" }],
-                    [42, { frameId: 2, code: "1" }]
+                    [42, { frameId: 2, code: "1" }],
                 ]);
             });
         });
@@ -253,15 +249,14 @@ describe("TabInfo", () => {
                 tabInfo.commitNavigation(2, "images.google.com");
 
                 // ensure all tabinfos are in idle
-                const frameInfos = (tabInfo as any).frameInfos;
-                for (const key in frameInfos)
-                    frameInfos[key].lastTimeStamp = 0;
+                const { frameInfos } = tabInfo as any;
+                for (const key of Object.keys(frameInfos)) frameInfos[key].lastTimeStamp = 0;
 
                 await tabInfo.scheduleDeadFramesCheck();
                 expect(checkDomainLeaveSpy).not.toHaveBeenCalled();
                 expect(browserMock.tabs.executeScript.mock.calls).toEqual([
                     [42, { frameId: 1, code: "1" }],
-                    [42, { frameId: 2, code: "1" }]
+                    [42, { frameId: 2, code: "1" }],
                 ]);
             });
         });

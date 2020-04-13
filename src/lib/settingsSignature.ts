@@ -8,7 +8,7 @@ export enum CleanupType {
     NEVER,
     STARTUP,
     LEAVE,
-    INSTANTLY
+    INSTANTLY,
 }
 
 export interface RuleDefinition {
@@ -89,9 +89,6 @@ export interface SettingsTypeMap {
 }
 
 export type SettingsKey = keyof SettingsTypeMap;
-export type SettingsSignature = { [K in SettingsKey]: SettingsTypeMap[K] };
+export type SettingsSignature = { [T in SettingsKey]: SettingsTypeMap[T] };
 
-export const EXPORT_IGNORE_KEYS: SettingsKey[] = [
-    "domainsToClean",
-    "downloadsToClean"
-];
+export const EXPORT_IGNORE_KEYS: SettingsKey[] = ["domainsToClean", "downloadsToClean"];

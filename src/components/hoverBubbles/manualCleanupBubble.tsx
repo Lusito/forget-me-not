@@ -1,4 +1,5 @@
 import { h } from "tsx-dom";
+
 import { HoverBubble } from "./hoverBubble";
 
 interface ManualCleanupBubbleProps {
@@ -6,7 +7,9 @@ interface ManualCleanupBubbleProps {
 }
 
 export function ManualCleanupBubble({ button }: ManualCleanupBubbleProps) {
-    return <HoverBubble button={button}>
-        <div data-i18n="manual_cleanup_description?markdown" class="compact_markdown" />
-    </HoverBubble>;
+    return (
+        <HoverBubble button={button}>
+            <div data-i18n="manual_cleanup_description?markdown" class="compact_markdown" />
+        </HoverBubble>
+    );
 }

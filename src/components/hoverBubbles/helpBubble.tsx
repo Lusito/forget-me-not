@@ -1,4 +1,5 @@
 import { h } from "tsx-dom";
+
 import { HoverBubble } from "./hoverBubble";
 
 interface HelpBubbleProps {
@@ -6,7 +7,9 @@ interface HelpBubbleProps {
 }
 
 export function HelpBubble({ button }: HelpBubbleProps) {
-    return <HoverBubble button={button}>
-        <div data-i18n="help_button@title" />
-    </HoverBubble>;
+    return (
+        <HoverBubble button={button}>
+            <div data-i18n="help_button@title" />
+        </HoverBubble>
+    );
 }

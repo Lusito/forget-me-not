@@ -5,8 +5,9 @@
  */
 
 import { getDomain } from "tldjs";
-import { CleanupType } from "../lib/settingsSignature";
 import { browser } from "webextension-polyfill-ts";
+
+import { CleanupType } from "../lib/settingsSignature";
 import { isFirefox } from "../lib/browserInfo";
 
 export function getFirstPartyCookieDomain(domain: string) {
@@ -28,12 +29,12 @@ export function parseSetCookieHeader(header: string, fallbackDomain: string): Se
         const parts = header.split(";");
         const kv = parts[0].split(keyValueRegexpSplit);
         const domainPart = parts.find((part, i) => i > 0 && cookieDomainRegexp.test(part.trim()));
-        const domain = domainPart && domainPart.split("=")[1].trim();
+        const domain = domainPart?.split("=")[1].trim();
         // fixme: get first party domain?
         return {
             name: kv[0].trim(),
             value: kv[1].trim(),
-            domain: domain || fallbackDomain
+            domain: domain || fallbackDomain,
         };
     } catch (e) {
         return null;
@@ -53,7 +54,7 @@ function createBadge(name: string, color: [number, number, number, number]): Bad
         className,
         i18nBadge: `${className}_badge`,
         i18nButton: `${className}_button`,
-        color
+        color,
     };
 }
 
@@ -64,7 +65,7 @@ export const badges = {
     startup: createBadge("startup", [116, 116, 116, 255]),
     leave: createBadge("leave", [190, 23, 38, 255]),
     instantly: createBadge("instantly", [0, 0, 0, 255]),
-    none: badgeNone
+    none: badgeNone,
 };
 
 export function getBadgeForCleanupType(type: CleanupType) {
@@ -84,19 +85,19 @@ export function getBadgeForCleanupType(type: CleanupType) {
 // Workaround for getAllCookieStores returning only active cookie stores.
 // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1486274
 export async function getAllCookieStoreIds() {
-    const ids: {[s: string]: boolean} = isFirefox ? {
-        "firefox-default": true,
-        "firefox-private": true
-    } : {};
+    const ids: { [s: string]: boolean } = isFirefox
+        ? {
+              "firefox-default": true,
+              "firefox-private": true,
+          }
+        : {};
     const cookieStores = await browser.cookies.getAllCookieStores();
 
-    for (const store of cookieStores)
-        ids[store.id] = true;
+    for (const store of cookieStores) ids[store.id] = true;
 
     if (browser.contextualIdentities) {
         const contextualIdentities = await browser.contextualIdentities.query({});
-        for (const ci of contextualIdentities)
-            ids[ci.cookieStoreId] = true;
+        for (const ci of contextualIdentities) ids[ci.cookieStoreId] = true;
     }
     return Object.getOwnPropertyNames(ids);
 }

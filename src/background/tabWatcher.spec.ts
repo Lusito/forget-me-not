@@ -10,14 +10,14 @@ import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
 
 describe("TabWatcher", () => {
     let listener: {
-        onDomainEnter: jest.Mock,
-        onDomainLeave: jest.Mock
+        onDomainEnter: jest.Mock;
+        onDomainLeave: jest.Mock;
     };
     let watcher: TabWatcher | null = null;
     function setupWatcher() {
         listener = {
             onDomainEnter: jest.fn(),
-            onDomainLeave: jest.fn()
+            onDomainLeave: jest.fn(),
         };
         watcher = new TabWatcher(listener);
     }
@@ -89,12 +89,16 @@ describe("TabWatcher", () => {
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.de");
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.jp");
             browserMock.webNavigation.beforeNavigate(tabId1, "http://www.google.co.uk");
-            browserMock.webRequest.onBeforeRedirect.emit(quickBeforeRedirectDetails("http://www.amazon.jp", "http://www.amazon.com", tabId1));
-            browserMock.webRequest.onBeforeRedirect.emit(quickBeforeRedirectDetails("http://www.amazon.co.uk", "http://www.amazon.de", tabId1));
+            browserMock.webRequest.onBeforeRedirect.emit(
+                quickBeforeRedirectDetails("http://www.amazon.jp", "http://www.amazon.com", tabId1)
+            );
+            browserMock.webRequest.onBeforeRedirect.emit(
+                quickBeforeRedirectDetails("http://www.amazon.co.uk", "http://www.amazon.de", tabId1)
+            );
             expect(listener.onDomainLeave.mock.calls).toEqual([
                 ["firefox-default", "www.google.de"],
                 ["firefox-default", "www.google.jp"],
-                ["firefox-default", "www.amazon.com"]
+                ["firefox-default", "www.amazon.com"],
             ]);
         });
         it("should be called if tabs exist before creation", () => {
@@ -103,7 +107,7 @@ describe("TabWatcher", () => {
             setupWatcher();
             expect(listener.onDomainEnter.mock.calls).toEqual([
                 ["firefox-default", "www.google.com"],
-                ["firefox-private", "www.google.de"]
+                ["firefox-private", "www.google.de"],
             ]);
         });
         it("should call scheduleDeadFramesCheck on tab if it exists", () => {

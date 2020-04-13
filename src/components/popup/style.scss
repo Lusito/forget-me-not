@@ -22,7 +22,7 @@ div.split_equal {
     flex-wrap: wrap;
     align-items: center;
 
-    >* {
+    > * {
         min-width: 10%;
         flex-grow: 1;
         flex-shrink: 1;
@@ -32,7 +32,7 @@ div.split_equal {
     }
 }
 
-input[type=checkbox]:checked+span:before {
+input[type="checkbox"]:checked + span:before {
     color: #5095ea;
 }
 
@@ -92,7 +92,7 @@ span.cleanup_type_instantly {
     p {
         margin: 0 0 10px 0;
     }
-    >p:last-child {
+    > p:last-child {
         margin-bottom: 0;
     }
 }
@@ -135,7 +135,7 @@ span.cleanup_type_instantly {
     text-align: right;
 }
 
-input[type=number] {
+input[type="number"] {
     width: 60px;
     text-align: right;
     height: 20px;

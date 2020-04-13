@@ -7,5 +7,10 @@ interface SettingsNumberProps {
 }
 
 export function SettingsNumber(props: SettingsNumberProps) {
-    return <label class={props.class}><span data-i18n={props.i18n} /><input type="number" data-settings-key={props.key} /></label>;
+    return (
+        <label class={props.class}>
+            <span data-i18n={props.i18n} />
+            <input type="number" data-settings-key={props.key} />
+        </label>
+    );
 }

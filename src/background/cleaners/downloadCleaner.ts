@@ -4,8 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings } from "../../lib/settings";
 import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
+
+import { settings } from "../../lib/settings";
 import { Cleaner } from "./cleaner";
 import { getValidHostname } from "../../shared";
 import { TabWatcher } from "../tabWatcher";
@@ -29,20 +30,24 @@ export class DownloadCleaner extends Cleaner {
                     return;
                 }
             }
-            if (!incognito && settings.get("startup.enabled") && settings.get("startup.downloads") && !settings.isDomainProtected(domain, false)) {
+            if (
+                !incognito &&
+                settings.get("startup.enabled") &&
+                settings.get("startup.downloads") &&
+                !settings.isDomainProtected(domain, false)
+            ) {
                 const downloadsToClean = { ...settings.get("downloadsToClean") };
                 downloadsToClean[url] = true;
                 settings.set("downloadsToClean", downloadsToClean);
                 settings.save();
             }
         }
-    }
+    };
 
     private async cleanupUrl(url: string) {
-        const promises: Promise<any>[] = [browser.downloads.erase({ url })];
+        const promises: Array<Promise<any>> = [browser.downloads.erase({ url })];
         // Firefox Android doesn't support history API yet
-        if (browser.history)
-            promises.push(browser.history.deleteUrl({ url }));
+        if (browser.history) promises.push(browser.history.deleteUrl({ url }));
         await Promise.all(promises);
     }
 
@@ -60,22 +65,27 @@ export class DownloadCleaner extends Cleaner {
     }
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        if (protectOpenDomains && this.tabWatcher.containsDomain(domain))
-            return true;
+        if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
         return settings.isDomainProtected(domain, ignoreStartupType);
     }
 
-    private getUrlsToClean(downloads: Downloads.DownloadItem[], startup: boolean, protectOpenDomains: boolean, applyRules: boolean) {
+    private getUrlsToClean(
+        downloads: Downloads.DownloadItem[],
+        startup: boolean,
+        protectOpenDomains: boolean,
+        applyRules: boolean
+    ) {
         const downloadsToClean = { ...settings.get("downloadsToClean") };
-        downloads.forEach((d) => downloadsToClean[d.url] = true);
+        downloads.forEach((d) => {
+            downloadsToClean[d.url] = true;
+        });
 
         const newDownloadsToClean: { [s: string]: boolean } = {};
         let urls = Object.getOwnPropertyNames(downloadsToClean);
         if (applyRules) {
             urls = urls.filter((url) => {
                 const isProtected = this.isDomainProtected(getValidHostname(url), startup, protectOpenDomains);
-                if (isProtected)
-                    newDownloadsToClean[url] = true;
+                if (isProtected) newDownloadsToClean[url] = true;
                 return !isProtected;
             });
         }

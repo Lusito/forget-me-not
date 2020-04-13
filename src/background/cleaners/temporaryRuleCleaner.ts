@@ -4,7 +4,6 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { BrowsingData } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { TabWatcher } from "../tabWatcher";
 import { settings } from "../../lib/settings";
@@ -18,14 +17,11 @@ export class TemporaryRuleCleaner extends Cleaner {
         this.tabWatcher = tabWatcher;
     }
 
-    public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
-        // done in background.ts
-    }
-
-    public async cleanDomainOnLeave(storeId: string, domain: string) {
+    public async cleanDomainOnLeave() {
         const temporaryRules = settings.getTemporaryRules();
-        const rulesToRemove = temporaryRules.filter((rule) => !this.tabWatcher.containsRuleFP(rule.regex)).map((rule) => rule.definition.rule);
-        if (rulesToRemove.length)
-            await settings.removeRules(rulesToRemove);
+        const rulesToRemove = temporaryRules
+            .filter((rule) => !this.tabWatcher.containsRuleFP(rule.regex))
+            .map((rule) => rule.definition.rule);
+        if (rulesToRemove.length) await settings.removeRules(rulesToRemove);
     }
 }

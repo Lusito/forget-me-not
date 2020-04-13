@@ -5,10 +5,11 @@
  */
 
 import { browser } from "webextension-polyfill-ts";
+import { wetLayer } from "wet-layer";
+
 import { settings } from "../lib/settings";
 import DelayedExecution from "../lib/delayedExecution";
 import { messageUtil } from "../lib/messageUtil";
-import { wetLayer } from "wet-layer";
 
 const COOKIE_CLEANUP_NOTIFICATION_ID = "CookieCleanupNotification";
 
@@ -18,10 +19,17 @@ const DELAY_NOTIFICATION = 500;
 
 export class NotificationHandler {
     private enabled: boolean;
-    private readonly delayNotification = new DelayedExecution(this.showNotification.bind(this));
+
+    private readonly delayNotification = new DelayedExecution(() => {
+        this.showNotification();
+    });
+
     private readonly delayClearNotification = new DelayedExecution(this.clearNotification.bind(this));
+
     private removalCountsByDomain: { [s: string]: number } = {};
+
     private starting = false;
+
     private updateOnStart = false;
 
     public constructor() {
@@ -34,11 +42,11 @@ export class NotificationHandler {
         messageUtil.receive("cookieRemoved", this.onCookieRemoved);
     }
 
-    private onNotificationClosed = (id: string) => {
+    private onNotificationClosed = () => {
         this.starting = false;
         this.removalCountsByDomain = {};
         this.delayClearNotification.cancel();
-    }
+    };
 
     private clearNotification() {
         browser.notifications.clear(COOKIE_CLEANUP_NOTIFICATION_ID);
@@ -53,7 +61,7 @@ export class NotificationHandler {
         }
         const lines = [];
         let totalCount = 0;
-        for (const domain in this.removalCountsByDomain) {
+        for (const domain of Object.keys(this.removalCountsByDomain)) {
             const count = this.removalCountsByDomain[domain];
             lines.push(wetLayer.getMessage("cookie_cleanup_notification_line", [domain, count.toString()]));
             totalCount += count;
@@ -66,12 +74,11 @@ export class NotificationHandler {
             type: "basic",
             iconUrl: browser.extension.getURL("icons/icon96.png"),
             title: wetLayer.getMessage("cookie_cleanup_notification_title", totalCount.toString()),
-            message: lines.join("\n")
+            message: lines.join("\n"),
         });
 
         this.starting = false;
-        if (this.updateOnStart)
-            this.delayNotification.restart(DELAY_NOTIFICATION_UPDATE_ON_START);
+        if (this.updateOnStart) this.delayNotification.restart(DELAY_NOTIFICATION_UPDATE_ON_START);
     }
 
     private onCookieRemoved = (domain: string) => {
@@ -79,5 +86,5 @@ export class NotificationHandler {
             this.removalCountsByDomain[domain] = (this.removalCountsByDomain[domain] || 0) + 1;
             this.delayNotification.restart(DELAY_NOTIFICATION);
         }
-    }
+    };
 }

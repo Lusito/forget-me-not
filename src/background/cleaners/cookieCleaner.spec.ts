@@ -4,8 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { ReceiverHandle, messageUtil } from "../../lib/messageUtil";
 import { browser, BrowsingData } from "webextension-polyfill-ts";
+
+import { ReceiverHandle, messageUtil } from "../../lib/messageUtil";
 import { booleanContext } from "../../testUtils/testHelpers";
 import { quickSetCookie, quickRemoveCookie } from "../../testUtils/quickHelpers";
 import { TabWatcher } from "../tabWatcher";
@@ -14,8 +15,6 @@ import { CookieCleaner } from "./cookieCleaner";
 import { settings } from "../../lib/settings";
 import { CleanupType } from "../../lib/settingsSignature";
 import { advanceTime } from "../../testUtils/time";
-
-export{};
 
 const COOKIE_STORE_ID = "mock";
 const WHITELISTED_DOMAIN = "never.com";
@@ -28,12 +27,22 @@ const FRAME_DOMAIN2 = "frame2.com";
 const UNKNOWN_DOMAIN = "unknown.com";
 const UNKNOWN_DOMAIN2 = "unknown2.com";
 const UNKNOWN_SUBDOMAIN = "sub.unknown.com";
-const ALL_COOKIE_DOMAINS = [WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2, UNKNOWN_DOMAIN, UNKNOWN_DOMAIN2];
+const ALL_COOKIE_DOMAINS = [
+    WHITELISTED_DOMAIN,
+    GRAYLISTED_DOMAIN,
+    BLACKLISTED_DOMAIN,
+    OPEN_DOMAIN,
+    OPEN_DOMAIN2,
+    FRAME_DOMAIN,
+    FRAME_DOMAIN2,
+    UNKNOWN_DOMAIN,
+    UNKNOWN_DOMAIN2,
+];
 
 async function getRemainingCookieDomains() {
     const cookies = await browser.cookies.getAll({
         firstPartyDomain: null,
-        storeId: COOKIE_STORE_ID
+        storeId: COOKIE_STORE_ID,
     });
     return cookies.map((c) => c.domain);
 }
@@ -53,16 +62,20 @@ describe("removeCookie", () => {
         quickSetCookie("", "foo", "bar", "/C:/path/to/somewhere/", "firefox-default", "");
 
         const cookies = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default" });
+        // eslint-disable-next-line jest/no-standalone-expect
         expect(cookies).toHaveLength(7);
         const cookies2 = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" });
+        // eslint-disable-next-line jest/no-standalone-expect
         expect(cookies2).toHaveLength(2);
     });
 
     it("should reject if cookie does not exist", async () => {
         const spy = jest.fn();
         receivers.push(messageUtil.receive("cookieRemoved", spy));
-        let error: string = "Did not reject";
-        await quickRemoveCookie("google.de", "fox", "", "firefox-default", "").catch((e) => error = e);
+        let error = "Did not reject";
+        await quickRemoveCookie("google.de", "fox", "", "firefox-default", "").catch((e) => {
+            error = e;
+        });
         expect(error).toBe("Was not able to find mocked cookie 'fox'");
 
         expect(spy).not.toHaveBeenCalled();
@@ -85,7 +98,7 @@ describe("removeCookie", () => {
             ["google.de", {}],
             ["google.com", {}],
             ["google.com", {}],
-            ["/C:/path/to/somewhere/", {}]
+            ["/C:/path/to/somewhere/", {}],
         ]);
     });
     it("should remove cookies from the specified store", async () => {
@@ -96,7 +109,7 @@ describe("removeCookie", () => {
         expect(cookies).toHaveLength(5);
         expect(cookies.find((c) => c.name === "hello" && c.domain === "google.com")).toBeUndefined();
         expect(cookies.find((c) => c.name === "foo" && c.domain === "google.com")).toBeUndefined();
-        expect((cookies.findIndex((c) => c.name === "oh_long" && c.domain === "google.com"))).not.toBe(-1);
+        expect(cookies.findIndex((c) => c.name === "oh_long" && c.domain === "google.com")).not.toBe(-1);
 
         const cookies2 = await browser.cookies.getAll({ firstPartyDomain: null, storeId: "firefox-default-2" });
         expect(cookies2).toHaveLength(1);
@@ -116,7 +129,7 @@ describe("removeCookie", () => {
             [{ name: "foo", url: "http://google.com", storeId: "firefox-default", firstPartyDomain: "" }],
             [{ name: "foo", url: "http://google.com", storeId: "firefox-default-2", firstPartyDomain: "" }],
             [{ name: "foo", url: "https://google.de", storeId: "firefox-default", firstPartyDomain: "" }],
-            [{ name: "foo", url: "file:///C:/path/to/somewhere/", storeId: "firefox-default", firstPartyDomain: "" }]
+            [{ name: "foo", url: "file:///C:/path/to/somewhere/", storeId: "firefox-default", firstPartyDomain: "" }],
         ]);
     });
 });
@@ -124,7 +137,7 @@ describe("removeCookie", () => {
 describe("CookieCleaner", () => {
     const tabWatcherListener = {
         onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined
+        onDomainLeave: () => undefined,
     };
     let tabWatcher: TabWatcher | null = null;
     let incognitoWatcher: IncognitoWatcher | null = null;
@@ -143,13 +156,11 @@ describe("CookieCleaner", () => {
 
         const tabIds = [
             browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
-            browserMock.tabs.create(`http://${OPEN_DOMAIN2}`, COOKIE_STORE_ID)
+            browserMock.tabs.create(`http://${OPEN_DOMAIN2}`, COOKIE_STORE_ID),
         ];
         tabWatcher.commitNavigation(tabIds[0], 1, FRAME_DOMAIN);
         tabWatcher.commitNavigation(tabIds[1], 1, FRAME_DOMAIN2);
-        browserMock.cookies.cookieStores = [
-            { id: COOKIE_STORE_ID, tabIds, incognito: false }
-        ];
+        browserMock.cookies.cookieStores = [{ id: COOKIE_STORE_ID, tabIds, incognito: false }];
         quickSetCookie(OPEN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
         quickSetCookie(OPEN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN2);
         quickSetCookie(FRAME_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
@@ -162,7 +173,7 @@ describe("CookieCleaner", () => {
         settings.set("rules", [
             { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
             { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
-            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY }
+            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
         ]);
         await settings.save();
         cleaner = new CookieCleaner(tabWatcher, incognitoWatcher);
@@ -170,7 +181,7 @@ describe("CookieCleaner", () => {
 
     describe("clean", () => {
         const typeSet: BrowsingData.DataTypeSet = {
-            cookies: true
+            cookies: true,
         };
         beforeEach(() => {
             typeSet.cookies = true;
@@ -183,7 +194,7 @@ describe("CookieCleaner", () => {
                 settings.set("cleanAll.cookies.applyRules", cleanAllApplyRules);
                 await settings.save();
             });
-            if (cookies && (startup && startupApplyRules || !startup && cleanAllApplyRules)) {
+            if (cookies && ((startup && startupApplyRules) || (!startup && cleanAllApplyRules))) {
                 it("should clean up", async () => {
                     await cleaner!.clean(typeSet, startup);
                     expect(browserMock.cookies.getAllCookieStores.mock.calls).toEqual([[]]);
@@ -205,7 +216,13 @@ describe("CookieCleaner", () => {
             });
             it("should protect whitelisted cookies and open domains (+iframes)", async () => {
                 await cleaner!.clean(typeSet, true);
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2]);
+                expect(await getRemainingCookieDomains()).toHaveSameMembers([
+                    WHITELISTED_DOMAIN,
+                    OPEN_DOMAIN,
+                    OPEN_DOMAIN2,
+                    FRAME_DOMAIN,
+                    FRAME_DOMAIN2,
+                ]);
                 expect(typeSet.cookies).toBe(false);
             });
         });
@@ -216,7 +233,14 @@ describe("CookieCleaner", () => {
             });
             it("should protect whitelisted and graylisted cookies, as well as open domains (+iframes)", async () => {
                 await cleaner!.clean(typeSet, false);
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2]);
+                expect(await getRemainingCookieDomains()).toHaveSameMembers([
+                    WHITELISTED_DOMAIN,
+                    GRAYLISTED_DOMAIN,
+                    OPEN_DOMAIN,
+                    OPEN_DOMAIN2,
+                    FRAME_DOMAIN,
+                    FRAME_DOMAIN2,
+                ]);
                 expect(typeSet.cookies).toBe(false);
             });
         });
@@ -227,7 +251,7 @@ describe("CookieCleaner", () => {
             });
             it("should protect whitelisted and graylisted cookies", async () => {
                 await cleaner!.clean(typeSet, false);
-                
+
                 expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN]);
                 expect(typeSet.cookies).toBe(false);
             });
@@ -237,6 +261,7 @@ describe("CookieCleaner", () => {
     describe("cleanDomainOnLeave", () => {
         describe("domainLeave.enabled = false", () => {
             beforeEach(() => {
+                // eslint-disable-next-line jest/no-standalone-expect
                 expect(settings.get("domainLeave.enabled")).toBe(false);
             });
             it("should not do anything", async () => {
@@ -270,7 +295,16 @@ describe("CookieCleaner", () => {
             });
             it("should clean cookies", async () => {
                 await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([OPEN_DOMAIN, OPEN_DOMAIN2, FRAME_DOMAIN, FRAME_DOMAIN2, UNKNOWN_DOMAIN2, WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN, BLACKLISTED_DOMAIN]);
+                expect(await getRemainingCookieDomains()).toHaveSameMembers([
+                    OPEN_DOMAIN,
+                    OPEN_DOMAIN2,
+                    FRAME_DOMAIN,
+                    FRAME_DOMAIN2,
+                    UNKNOWN_DOMAIN2,
+                    WHITELISTED_DOMAIN,
+                    GRAYLISTED_DOMAIN,
+                    BLACKLISTED_DOMAIN,
+                ]);
             });
             it("should not clean anything if the domain is protected", async () => {
                 await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
@@ -282,14 +316,23 @@ describe("CookieCleaner", () => {
     });
 
     describe("isCookieAllowed", () => {
-        async function testCookieAllowed(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean, protectSubFrames: boolean, expected: boolean) {
+        /* eslint-disable jest/expect-expect */
+        async function testCookieAllowed(
+            domain: string,
+            ignoreStartupType: boolean,
+            protectOpenDomains: boolean,
+            protectSubFrames: boolean,
+            expected: boolean
+        ) {
             const cookies = await browser.cookies.getAll({
                 firstPartyDomain: null,
-                storeId: COOKIE_STORE_ID
+                storeId: COOKIE_STORE_ID,
             });
             const cookie = cookies.find((c) => c.domain === domain);
             expect(cookie).toBeDefined();
-            expect(cleaner!.isCookieAllowed(cookie!, ignoreStartupType, protectOpenDomains, protectSubFrames)).toBe(expected);
+            expect(cleaner!.isCookieAllowed(cookie!, ignoreStartupType, protectOpenDomains, protectSubFrames)).toBe(
+                expected
+            );
         }
         it("should return true if the matching rule is never", async () => {
             await testCookieAllowed(WHITELISTED_DOMAIN, true, true, false, true);
@@ -361,6 +404,7 @@ describe("CookieCleaner", () => {
             await testCookieAllowed(FRAME_DOMAIN, true, true, false, false);
             await testCookieAllowed(FRAME_DOMAIN, false, true, false, false);
         });
+        /* eslint-enable jest/expect-expect */
     });
 
     describe("cleanDomain", () => {
@@ -370,18 +414,18 @@ describe("CookieCleaner", () => {
                 settings.set("domainLeave.cookies", false);
                 await settings.save();
             });
-            const NON_FP_COOKIE_DOMAINS = ALL_COOKIE_DOMAINS.filter((value) => value !== FRAME_DOMAIN2 && value !== UNKNOWN_DOMAIN2);
-            for (const domain of NON_FP_COOKIE_DOMAINS) {
-                it(`should clean ${domain} regardless of rules and settings`, async () => {
-                    await cleaner!.cleanDomain(COOKIE_STORE_ID, domain);
-                    const remainder = ALL_COOKIE_DOMAINS.slice();
-                    remainder.splice(ALL_COOKIE_DOMAINS.indexOf(domain), 1);
-                    if (domain === OPEN_DOMAIN)
-                        remainder.splice(remainder.indexOf(FRAME_DOMAIN2), 1);
-                        
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers(remainder);
-                });
-            }
+            ALL_COOKIE_DOMAINS.filter((value) => value !== FRAME_DOMAIN2 && value !== UNKNOWN_DOMAIN2).forEach(
+                (domain) => {
+                    it(`should clean ${domain} regardless of rules and settings`, async () => {
+                        await cleaner!.cleanDomain(COOKIE_STORE_ID, domain);
+                        const remainder = ALL_COOKIE_DOMAINS.slice();
+                        remainder.splice(ALL_COOKIE_DOMAINS.indexOf(domain), 1);
+                        if (domain === OPEN_DOMAIN) remainder.splice(remainder.indexOf(FRAME_DOMAIN2), 1);
+
+                        expect(await getRemainingCookieDomains()).toHaveSameMembers(remainder);
+                    });
+                }
+            );
         });
         describe("First-party-domain cookies", () => {
             beforeEach(async () => {
@@ -423,10 +467,6 @@ describe("CookieCleaner", () => {
                     quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
                     expect(await getRemainingCookieDomains()).toHaveSameMembers([]);
                 });
-                it("Should not remove whitelisted cookies", async () => {
-                    quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN]);
-                });
             } else {
                 it("Should not remove blacklisted cookies", async () => {
                     quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
@@ -439,11 +479,11 @@ describe("CookieCleaner", () => {
                         expect(await getRemainingCookieDomains()).toHaveSameMembers([]);
                     });
                 }
-                it("Should not remove whitelisted cookies", async () => {
-                    quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN]);
-                });
             }
+            it("Should not remove whitelisted cookies", async () => {
+                quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
+                expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN]);
+            });
         });
 
         booleanContext((incognito, thirdPartyEnabled, snoozing, delayed, whitelisted) => {
@@ -464,7 +504,7 @@ describe("CookieCleaner", () => {
                         expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain]);
                         advanceTime(1);
                     }
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([])
+                    expect(await getRemainingCookieDomains()).toHaveSameMembers([]);
                 });
             } else {
                 it(`Should not remove cookie${delayed ? " delayed" : ""}`, async () => {
@@ -474,7 +514,7 @@ describe("CookieCleaner", () => {
                         expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain]);
                         advanceTime(1);
                     }
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain])
+                    expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain]);
                 });
             }
         });

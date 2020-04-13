@@ -1,58 +1,58 @@
 {
-    "manifest_version": 2,
-    "name": "__MSG_extensionName__",
-    "description": "__MSG_extensionDescription__",
-    "author": "Santo Pfingsten",
-    "default_locale": "en",
-    "version": "2.2.7",
-    "applications": {
-        "gecko": {
-            "id": "forget-me-not@lusito.info",
-            "strict_min_version": "57.0"
-        }
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "author": "Santo Pfingsten",
+  "default_locale": "en",
+  "version": "2.2.7",
+  "applications": {
+    "gecko": {
+      "id": "forget-me-not@lusito.info",
+      "strict_min_version": "57.0"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "64": "icons/icon64.png",
+    "96": "icons/icon96.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "64": "icons/icon64.png",
+      "96": "icons/icon96.png",
+      "128": "icons/icon128.png"
     },
-    "icons": {
-        "16": "icons/icon16.png",
-        "32": "icons/icon32.png",
-        "48": "icons/icon48.png",
-        "64": "icons/icon64.png",
-        "96": "icons/icon96.png",
-        "128": "icons/icon128.png"
-    },
-    "browser_action": {
-        "default_icon": {
-            "16": "icons/icon16.png",
-            "32": "icons/icon32.png",
-            "48": "icons/icon48.png",
-            "64": "icons/icon64.png",
-            "96": "icons/icon96.png",
-            "128": "icons/icon128.png"
-        },
-        "default_popup": "views/popup.html",
-        "default_title": "__MSG_actionTitle__"
-    },
-    "background": {
-        "scripts": [
-            "dist/background.js"
-        ]
-    },
-    "content_scripts": [{
-        "matches": [ "https://lusito.github.io/web-ext-translator/*" ],
-        "js": [ "dist/wetLayerContent.js" ],
-        "run_at": "document_idle"
-    }],
-    "permissions": [
-        "storage",
-        "tabs",
-        "browsingData",
-        "cookies",
-        "downloads",
-        "history",
-        "notifications",
-        "webNavigation",
-        "webRequest",
-        "webRequestBlocking",
-        "contextualIdentities",
-        "<all_urls>"
-    ]
+    "default_popup": "views/popup.html",
+    "default_title": "__MSG_actionTitle__"
+  },
+  "background": {
+    "scripts": ["dist/background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://lusito.github.io/web-ext-translator/*"],
+      "js": ["dist/wetLayerContent.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "browsingData",
+    "cookies",
+    "downloads",
+    "history",
+    "notifications",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "contextualIdentities",
+    "<all_urls>"
+  ]
 }

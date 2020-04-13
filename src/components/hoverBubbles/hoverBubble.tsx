@@ -1,4 +1,5 @@
 import { h, BaseProps } from "tsx-dom";
+
 import { on } from "../../lib/htmlUtils";
 import "./style.scss";
 
@@ -8,18 +9,20 @@ interface HoverBubbleProps extends BaseProps {
 
 export function HoverBubble({ children, button }: HoverBubbleProps) {
     const arrow = <div class="hover_bubble_arrow" />;
-    const bubble = <div class="hover_bubble">
-        {arrow}
-        {children}
-    </div>;
+    const bubble = (
+        <div class="hover_bubble">
+            {arrow}
+            {children}
+        </div>
+    );
 
     function focus() {
         document.querySelectorAll(".hover_bubble").forEach((e) => e.classList.remove("is-active"));
         const buttonRect = button.getBoundingClientRect();
-        arrow.style.left = (buttonRect.left + buttonRect.width / 2) + "px";
+        arrow.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
         requestAnimationFrame(() => {
             const bubbleRect = bubble.getBoundingClientRect();
-            document.body.style.minHeight = (bubbleRect.top + bubbleRect.height + 1) + "px";
+            document.body.style.minHeight = `${bubbleRect.top + bubbleRect.height + 1}px`;
         });
         bubble.classList.add("is-active");
     }

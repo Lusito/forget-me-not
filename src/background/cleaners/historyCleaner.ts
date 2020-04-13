@@ -4,11 +4,12 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { settings } from "../../lib/settings";
 import { browser, BrowsingData, History } from "webextension-polyfill-ts";
+import { getDomain } from "tldjs";
+
+import { settings } from "../../lib/settings";
 import { Cleaner } from "./cleaner";
 import { getValidHostname } from "../../shared";
-import { getDomain } from "tldjs";
 import { TabWatcher } from "../tabWatcher";
 
 export class HistoryCleaner extends Cleaner {
@@ -24,10 +25,9 @@ export class HistoryCleaner extends Cleaner {
         if (url && settings.get("instantly.enabled") && settings.get("instantly.history")) {
             const applyRules = settings.get("instantly.history.applyRules");
             const domain = getValidHostname(url);
-            if (domain && (!applyRules || settings.isDomainBlocked(domain)))
-                browser.history.deleteUrl({ url });
+            if (domain && (!applyRules || settings.isDomainBlocked(domain))) browser.history.deleteUrl({ url });
         }
-    }
+    };
 
     public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
         if (typeSet.history && settings.get(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")) {
@@ -54,12 +54,13 @@ export class HistoryCleaner extends Cleaner {
     }
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        if (protectOpenDomains && this.tabWatcher.containsDomain(domain))
-            return true;
+        if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
         return settings.isDomainProtected(domain, ignoreStartupType);
     }
 
     private getUrlsToClean(items: History.HistoryItem[], ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        return items.map((item) => item.url).filter((url) => !!url && !this.isDomainProtected(getValidHostname(url), ignoreStartupType, protectOpenDomains)) as string[]; // fixme
+        const unprotected = (url: string | undefined): boolean =>
+            !!url && !this.isDomainProtected(getValidHostname(url), ignoreStartupType, protectOpenDomains);
+        return items.map((item) => item.url).filter(unprotected) as string[];
     }
 }

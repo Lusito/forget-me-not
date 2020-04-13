@@ -25,14 +25,14 @@ describe("Message Utility", () => {
             expect(spy.mock.calls).toEqual([
                 [1, data1, {}],
                 [2, data1, {}],
-                [4, data1, {}]
+                [4, data1, {}],
             ]);
             spy.mockClear();
 
             messageUtil.sendSelf(event2, data2);
             expect(spy.mock.calls).toEqual([
                 [3, data2, {}],
-                [5, data2, {}]
+                [5, data2, {}],
             ]);
         });
         it("should not call the receiver if it has been canceled", () => {
@@ -59,14 +59,14 @@ describe("Message Utility", () => {
             expect(spy.mock.calls).toEqual([
                 [1, data1, sender],
                 [2, data1, sender],
-                [4, data1, sender]
+                [4, data1, sender],
             ]);
             spy.mockClear();
 
             await messageUtil.send(event2, data2);
             expect(spy.mock.calls).toEqual([
                 [3, data2, sender],
-                [5, data2, sender]
+                [5, data2, sender],
             ]);
         });
         it("should not call the receiver if it has been canceled", async () => {

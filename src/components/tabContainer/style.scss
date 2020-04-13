@@ -9,15 +9,15 @@ html.fullscreen body > .tab_container {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    >.tabs_list {
+    > .tabs_list {
         flex-shrink: 0;
         flex-grow: 0;
     }
-    >.tabs_pages {
+    > .tabs_pages {
         flex-shrink: 1;
         flex-grow: 1;
         overflow: auto;
-        >div {
+        > div {
             overflow: hidden;
         }
     }
@@ -33,25 +33,25 @@ html:not(.fullscreen) body > .tab_container {
 
 .tabs_pages {
     clear: both;
-    border-top: 1px solid #A7A7A7;
+    border-top: 1px solid #a7a7a7;
     padding: 0;
-    background: #FBFBFB;
+    background: #fbfbfb;
     position: relative;
-    >div > div {
+    > div > div {
         margin: 10px;
         padding: 0;
         max-width: 960px;
-        >div:not(:last-child, .tabs_list) {
+        > div:not(:last-child, .tabs_list) {
             margin-bottom: 5px;
         }
-        >p:first-child {
+        > p:first-child {
             margin-top: 0;
         }
-        >p:last-child {
+        > p:last-child {
             margin-bottom: 0;
         }
     }
-    >div:not(.active) {
+    > div:not(.active) {
         display: none;
     }
 }
@@ -62,7 +62,7 @@ html:not(.fullscreen) body > .tab_container {
     overflow: visible;
     display: flex;
     flex-direction: row;
-    >div {
+    > div {
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -73,35 +73,35 @@ html:not(.fullscreen) body > .tab_container {
         background-size: 24px;
         background-position: center;
         background-repeat: no-repeat;
-        border: 1px solid #A7A7A7;
+        border: 1px solid #a7a7a7;
         outline: 1px solid transparent;
         padding: 2px 12px;
         z-index: 40;
     }
-    >div.active {
-        background-color: #FBFBFB;
+    > div.active {
+        background-color: #fbfbfb;
         border-bottom: none;
     }
-    >div:not(:last-of-type) {
+    > div:not(:last-of-type) {
         border-right: 0;
     }
-    >*:focus {
+    > *:focus {
         border-color: #5095ea;
         border-style: dashed;
     }
-    >*:focus + div {
+    > *:focus + div {
         border-left-color: #5095ea;
         border-left-style: dashed;
     }
 }
 
-.tabs_list>div:first-child {
+.tabs_list > div:first-child {
     border-left: 0;
 }
 
 .tabs_list_as_icons {
     height: 38px;
-    >div {
+    > div {
         height: 39px;
         width: 50px;
     }
@@ -141,7 +141,7 @@ html.small_size {
     border: 1px solid white;
     box-sizing: border-box;
     box-shadow: 0px 0px 0px 2px #214398;
-    
+
     &:focus {
         outline: 1px dashed #5095ea;
     }

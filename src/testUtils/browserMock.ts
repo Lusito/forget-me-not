@@ -1,18 +1,34 @@
+/* eslint-disable */
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import {
+    ContextualIdentities,
+    Cookies,
+    History,
+    Tabs,
+    ExtensionTypes,
+    WebNavigation,
+    WebRequest,
+    Runtime,
+    Storage,
+    BrowsingData,
+} from "webextension-polyfill-ts";
+
 import { clone } from "./testHelpers";
-import { ContextualIdentities, Cookies, History, Tabs, ExtensionTypes, WebNavigation, WebRequest, Runtime, Storage, BrowsingData } from "webextension-polyfill-ts";
 
 type ListenerCallback = (...args: any[]) => any;
 // tslint:disable-next-line:ban-types
 class ListenerMock<T extends Function> {
     private listeners: ListenerCallback[] = [];
+
     public emit: T;
+
     public readonly mock: { [s: string]: jest.Mock };
+
     public constructor() {
         // @ts-ignore
         this.emit = (...args) => {
@@ -31,18 +47,17 @@ class ListenerMock<T extends Function> {
                 this.listeners = this.listeners.filter((cb) => listener !== cb);
             }),
             hasListener: jest.fn((listener: ListenerCallback) => {
-                return this.listeners.indexOf(listener) >= 0;
+                return this.listeners.includes(listener);
             }),
             hasListeners: jest.fn(() => {
                 return this.listeners.length > 0;
-            })
+            }),
         };
     }
 
     public reset() {
         this.listeners.length = 0;
-        for (const key in this.mock)
-            this.mock[key].mockClear();
+        for (const key in this.mock) this.mock[key].mockClear();
     }
 }
 
@@ -70,11 +85,17 @@ const DOMAIN_PATH_SPLIT = /\/(.*)/;
 
 class BrowserCookiesMock {
     private readonly cookies: Cookies.Cookie[] = [];
+
     public remove = jest.fn(this._remove);
+
     public set = jest.fn(this._set);
+
     public getAll = jest.fn(this._getAll);
+
     public getAllCookieStores = jest.fn(this._getAllCookieStores);
+
     public cookieStores: Cookies.CookieStore[] = [];
+
     public onChanged = new ListenerMock<(changeInfo: Cookies.OnChangedChangeInfoType) => void>();
 
     public reset() {
@@ -91,38 +112,60 @@ class BrowserCookiesMock {
         this.cookies.length = 0;
     }
 
-    private findCookie(name: string, secure: boolean, domain: string, path: string, storeId: string, firstPartyDomain?: string) {
-        let cookies = firstPartyDomain ? this.cookies.filter((c) => c.firstPartyDomain === firstPartyDomain) : this.cookies;
-        cookies = cookies.filter((c) => c.secure === secure && c.path === path && c.storeId === storeId && c.name === name && c.domain === domain);
-        if (cookies.length === 1)
-            return cookies[0];
+    private findCookie(
+        name: string,
+        secure: boolean,
+        domain: string,
+        path: string,
+        storeId: string,
+        firstPartyDomain?: string
+    ) {
+        let cookies = firstPartyDomain
+            ? this.cookies.filter((c) => c.firstPartyDomain === firstPartyDomain)
+            : this.cookies;
+        cookies = cookies.filter(
+            (c) =>
+                c.secure === secure &&
+                c.path === path &&
+                c.storeId === storeId &&
+                c.name === name &&
+                c.domain === domain
+        );
+        if (cookies.length === 1) return cookies[0];
         return null;
     }
 
     private _set(details: Cookies.SetDetailsType) {
-        let cookie = this.findCookie(details.name || "", details.secure || false, details.domain || "", details.path || "", details.storeId || "firefox-default", details.firstPartyDomain);
+        let cookie = this.findCookie(
+            details.name ?? "",
+            details.secure || false,
+            details.domain ?? "",
+            details.path ?? "",
+            details.storeId || "firefox-default",
+            details.firstPartyDomain
+        );
         if (cookie) {
-            cookie.value = details.value || "";
+            cookie.value = details.value ?? "";
         } else {
             cookie = {
-                name: details.name || "",
-                value: details.value || "",
-                domain: details.domain || "",
+                name: details.name ?? "",
+                value: details.value ?? "",
+                domain: details.domain ?? "",
                 hostOnly: false,
-                path: details.path || "",
+                path: details.path ?? "",
                 secure: details.secure || false,
                 httpOnly: false,
                 session: false,
                 storeId: details.storeId || "firefox-default",
-                firstPartyDomain: details.firstPartyDomain || "",
-                sameSite: "no_restriction"
+                firstPartyDomain: details.firstPartyDomain ?? "",
+                sameSite: "no_restriction",
             };
             this.cookies.push(cookie);
         }
         this.onChanged.emit({
             removed: false,
             cookie: clone(cookie),
-            cause: "explicit"
+            cause: "explicit",
         });
         return Promise.resolve(clone(cookie));
     }
@@ -132,25 +175,31 @@ class BrowserCookiesMock {
         const withoutProtocol = details.url.substr(secure ? 8 : 7);
         const parts = withoutProtocol.split(DOMAIN_PATH_SPLIT);
         const domain = parts[0].toLowerCase();
-        const path = domain === "" ? withoutProtocol : (parts[1] || "");
-        const cookie = this.findCookie(details.name || "", secure, domain, path, details.storeId || "firefox-default", details.firstPartyDomain);
+        const path = domain === "" ? withoutProtocol : parts[1] || "";
+        const cookie = this.findCookie(
+            details.name || "",
+            secure,
+            domain,
+            path,
+            details.storeId || "firefox-default",
+            details.firstPartyDomain
+        );
         if (cookie) {
             const index = this.cookies.indexOf(cookie);
             this.cookies.splice(index, 1);
             this.onChanged.emit({
                 removed: true,
                 cookie: clone(cookie),
-                cause: "explicit"
+                cause: "explicit",
             });
             return Promise.resolve({
                 url: details.url,
                 name: details.name,
                 storeId: cookie.storeId,
-                firstPartyDomain: cookie.firstPartyDomain
+                firstPartyDomain: cookie.firstPartyDomain,
             });
-        } else {
-            return Promise.reject(`Was not able to find mocked cookie '${details.name}'`);
         }
+        return Promise.reject(`Was not able to find mocked cookie '${details.name}'`);
     }
 
     private _getAll(details: Cookies.GetAllDetailsType) {
@@ -169,8 +218,11 @@ class BrowserCookiesMock {
 
 class BrowserHistoryMock {
     public onVisited = new ListenerMock<(result: History.HistoryItem) => void>();
+
     public deleteUrl = jest.fn();
+
     public search = jest.fn(this._search.bind(this));
+
     public readonly items: History.HistoryItem[] = [];
 
     public reset() {
@@ -187,10 +239,15 @@ class BrowserHistoryMock {
 
 class BrowserTabsMock {
     private idCount = 0;
+
     private tabs: Tabs.Tab[] = [];
+
     public onRemoved = new ListenerMock<(tabId: number, removeInfo: Tabs.OnRemovedRemoveInfoType) => void>();
+
     public onCreated = new ListenerMock<(tab: Tabs.Tab) => void>();
+
     public executeScriptSuccess = false;
+
     public executeScript = jest.fn(this._executeScript);
 
     public reset() {
@@ -205,9 +262,8 @@ class BrowserTabsMock {
         const tab = this.tabs.find((t) => t.id === tabId);
         if (tab) {
             return Promise.resolve(clone(tab));
-        } else {
-            return Promise.reject("Tab doesn't exist");
         }
+        return Promise.reject("Tab doesn't exist");
     }
 
     public getTabs() {
@@ -232,7 +288,7 @@ class BrowserTabsMock {
             lastAccessed: Date.now(),
             pinned: false,
             url,
-            windowId: 1
+            windowId: 1,
         };
         this.tabs.push(tab);
         browserMock.tabs.onCreated.emit(tab);
@@ -249,30 +305,30 @@ class BrowserTabsMock {
             }
             i++;
         }
-        while (i < this.tabs.length)
-            this.tabs[i].index = i++;
+        while (i < this.tabs.length) this.tabs[i].index = i++;
     }
 
     public query(queryInfo: Tabs.QueryQueryInfoType) {
         return {
             then(resolve: (tabs: Tabs.Tab[]) => void) {
                 resolve(browserMock.tabs.getTabs());
-            }
+            },
         };
     }
 
     public _executeScript(tabId: number | undefined, details: ExtensionTypes.InjectDetails) {
         if (this.executeScriptSuccess) {
             return Promise.resolve([]);
-        } else {
-            return Promise.reject({});
         }
+        return Promise.reject({});
     }
 }
 
 class BrowserWebNavigationMock {
     public onBeforeNavigate = new ListenerMock<(details: WebNavigation.OnBeforeNavigateDetailsType) => void>();
+
     public onCommitted = new ListenerMock<(details: WebNavigation.OnCommittedDetailsType) => void>();
+
     public onCompleted = new ListenerMock<(details: WebNavigation.OnCompletedDetailsType) => void>();
 
     public reset() {
@@ -290,7 +346,7 @@ class BrowserWebNavigationMock {
                 url,
                 timeStamp: Date.now(),
                 frameId: 0,
-                parentFrameId: 0
+                parentFrameId: 0,
             });
         }
     }
@@ -304,7 +360,7 @@ class BrowserWebNavigationMock {
                 tabId,
                 url,
                 timeStamp: Date.now(),
-                frameId: 0
+                frameId: 0,
             });
         }
     }
@@ -318,14 +374,17 @@ class BrowserWebNavigationMock {
                 tabId,
                 url,
                 timeStamp: Date.now(),
-                frameId: 0
+                frameId: 0,
             });
         }
     }
 }
 
 class BrowserWebRequestMock {
-    public onHeadersReceived = new ListenerMock<(details: WebRequest.OnHeadersReceivedDetailsType) => Array<WebRequest.BlockingResponse | undefined>>();
+    public onHeadersReceived = new ListenerMock<
+        (details: WebRequest.OnHeadersReceivedDetailsType) => Array<WebRequest.BlockingResponse | undefined>
+    >();
+
     public onBeforeRedirect = new ListenerMock<(details: WebRequest.OnBeforeRedirectDetailsType) => void>();
 
     public reset() {
@@ -343,7 +402,9 @@ class BrowserWebRequestMock {
 }
 
 class BrowserRuntimeMock {
-    public onMessage = new ListenerMock<(message: any | undefined, sender: Runtime.MessageSender, sendResponse: () => void) => void>();
+    public onMessage = new ListenerMock<
+        (message: any | undefined, sender: Runtime.MessageSender, sendResponse: () => void) => void
+    >();
 
     public reset() {
         this.onMessage.reset();
@@ -356,13 +417,14 @@ class BrowserRuntimeMock {
 
     public getManifest() {
         return {
-            version: "2.0.0"
+            version: "2.0.0",
         };
     }
 }
 
 class StorageAreaMock {
     public readonly QUOTA_BYTES: 5242880 = 5242880;
+
     private readonly data: any = {};
 
     public get(keys?: null | string | string[] | { [s: string]: any }) {
@@ -374,8 +436,7 @@ class StorageAreaMock {
         if (!this.data.hasOwnProperty(key)) {
             this.data[key] = clone(newValue);
             changes[key] = { newValue: clone(newValue) };
-        }
-        else if (JSON.stringify(this.data[key]) !== JSON.stringify(newValue)) {
+        } else if (JSON.stringify(this.data[key]) !== JSON.stringify(newValue)) {
             const oldValue = this.data[key];
             this.data[key] = clone(newValue);
             changes[key] = { oldValue: clone(oldValue), newValue: clone(newValue) };
@@ -403,11 +464,9 @@ class StorageAreaMock {
 
     public remove(keys: string | string[]) {
         const changes: { [s: string]: Storage.StorageChange } = {};
-        if (typeof (keys) === "string")
-            this.removeInternal(keys, changes);
+        if (typeof keys === "string") this.removeInternal(keys, changes);
         else {
-            for (const key of keys)
-                this.removeInternal(key, changes);
+            for (const key of keys) this.removeInternal(key, changes);
         }
         browserMock.storage.onChanged.emit(changes, "local");
         return Promise.resolve();
@@ -418,8 +477,7 @@ class StorageAreaMock {
     }
 
     public reset() {
-        for (const key in this.data)
-            delete this.data[key];
+        for (const key in this.data) delete this.data[key];
     }
 }
 
@@ -434,7 +492,7 @@ const browserMock = {
     runtime: new BrowserRuntimeMock(),
     storage: {
         local: new StorageAreaMock(),
-        onChanged: new ListenerMock<(changes: { [s: string]: Storage.StorageChange }, areaName: string) => void>()
+        onChanged: new ListenerMock<(changes: { [s: string]: Storage.StorageChange }, areaName: string) => void>(),
     },
     reset: () => {
         browserMock.browsingData.reset();
@@ -446,7 +504,7 @@ const browserMock = {
         browserMock.webRequest.reset();
         browserMock.runtime.reset();
         browserMock.storage.local.reset();
-    }
+    },
 };
 
 export type BrowserMock = typeof browserMock;
@@ -457,10 +515,8 @@ function bindMocks<DT>(source: any, keys: Array<keyof DT>) {
     const destination = {} as any;
     for (const key of keys) {
         let mock = source[key];
-        if (typeof (mock) === "function")
-            mock = mock.bind(source);
-        else if (mock.constructor.name === "ListenerMock")
-            mock = mock.mock;
+        if (typeof mock === "function") mock = mock.bind(source);
+        else if (mock.constructor.name === "ListenerMock") mock = mock.mock;
         (destination as any)[key] = mock;
     }
     return destination;
@@ -468,11 +524,21 @@ function bindMocks<DT>(source: any, keys: Array<keyof DT>) {
 
 export const browser = {
     browsingData: bindMocks<BrowsingData.Static>(browserMock.browsingData, ["remove"]),
-    cookies: bindMocks<Cookies.Static>(browserMock.cookies, ["getAll", "set", "remove", "getAllCookieStores", "onChanged"]),
+    cookies: bindMocks<Cookies.Static>(browserMock.cookies, [
+        "getAll",
+        "set",
+        "remove",
+        "getAllCookieStores",
+        "onChanged",
+    ]),
     history: bindMocks<History.Static>(browserMock.history, ["onVisited", "deleteUrl", "search"]),
     contextualIdentities: bindMocks<ContextualIdentities.Static>(browserMock.contextualIdentities, ["query"]),
     tabs: bindMocks<Tabs.Static>(browserMock.tabs, ["get", "query", "onRemoved", "onCreated", "executeScript"]),
-    webNavigation: bindMocks<WebNavigation.Static>(browserMock.webNavigation, ["onBeforeNavigate", "onCommitted", "onCompleted"]),
+    webNavigation: bindMocks<WebNavigation.Static>(browserMock.webNavigation, [
+        "onBeforeNavigate",
+        "onCommitted",
+        "onCompleted",
+    ]),
     webRequest: bindMocks<WebRequest.Static>(browserMock.webRequest, ["onHeadersReceived", "onBeforeRedirect"]),
     runtime: bindMocks<Runtime.Static>(browserMock.runtime, ["onMessage", "sendMessage", "getManifest"]),
     storage: bindMocks<Storage.Static>(browserMock.storage, ["onChanged", "local"]),

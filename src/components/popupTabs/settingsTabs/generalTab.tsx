@@ -1,7 +1,8 @@
 import { h } from "tsx-dom";
+import { browser } from "webextension-polyfill-ts";
+
 import { SettingsCheckbox } from "../../settingsCheckbox";
 import { isFirefox, browserInfo } from "../../../lib/browserInfo";
-import { browser } from "webextension-polyfill-ts";
 import { loadJSONFile, saveJSONFile } from "../../../lib/fileHelper";
 import { settings } from "../../../lib/settings";
 import { ResetDialog } from "../../dialogs/resetDialog";
@@ -12,7 +13,7 @@ function onImport() {
     if (isFirefox && !browserInfo.mobile) {
         browser.tabs.create({
             url: browser.runtime.getURL("views/import.html"),
-            active: true
+            active: true,
         });
         window.close();
     } else {
@@ -31,25 +32,39 @@ function onExport() {
 }
 
 function onReset() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     <ResetDialog />;
 }
 
 export function GeneralTab() {
-    return <div>
-        <div><SettingsCheckbox key="showUpdateNotification" i18n="setting_show_update_notification" /></div>
-        <div><SettingsCheckbox key="showCookieRemovalNotification" i18n="setting_show_cookie_removal_notification" /></div>
-        <div><SettingsCheckbox key="showBadge" i18n="setting_show_badge" /></div>
-        <div><label><span data-i18n="setting_initialTab" /><select data-settings-key="initialTab">
-            <option data-i18n="initial_tab_last_active" value="last_active_tab" />
-            <option data-i18n="initial_tab_this_tab" value="this_tab" />
-            <option data-i18n="initial_tab_rules" value="rules" />
-            <option data-i18n="initial_tab_settings" value="settings" />
-            <option data-i18n="initial_tab_log" value="log" />
-        </select></label></div>
-        <div class="split_equal split_wrap top_margin">
-            <button data-i18n="button_import" onClick={onImport} />
-            <button data-i18n="button_export" onClick={onExport} />
-            <button data-i18n="button_reset" onClick={onReset} />
+    return (
+        <div>
+            <div>
+                <SettingsCheckbox key="showUpdateNotification" i18n="setting_show_update_notification" />
+            </div>
+            <div>
+                <SettingsCheckbox key="showCookieRemovalNotification" i18n="setting_show_cookie_removal_notification" />
+            </div>
+            <div>
+                <SettingsCheckbox key="showBadge" i18n="setting_show_badge" />
+            </div>
+            <div>
+                <label>
+                    <span data-i18n="setting_initialTab" />
+                    <select data-settings-key="initialTab">
+                        <option data-i18n="initial_tab_last_active" value="last_active_tab" />
+                        <option data-i18n="initial_tab_this_tab" value="this_tab" />
+                        <option data-i18n="initial_tab_rules" value="rules" />
+                        <option data-i18n="initial_tab_settings" value="settings" />
+                        <option data-i18n="initial_tab_log" value="log" />
+                    </select>
+                </label>
+            </div>
+            <div class="split_equal split_wrap top_margin">
+                <button data-i18n="button_import" onClick={onImport} />
+                <button data-i18n="button_export" onClick={onExport} />
+                <button data-i18n="button_reset" onClick={onReset} />
+            </div>
         </div>
-    </div>;
+    );
 }

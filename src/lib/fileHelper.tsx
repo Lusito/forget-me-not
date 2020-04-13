@@ -11,8 +11,7 @@ export function readJSONFile(file: File, callback: (json: any) => void) {
     reader.onload = () => {
         try {
             callback(JSON.parse(reader.result as string));
-        }
-        catch (e) {
+        } catch (e) {
             callback(null);
             console.error("Error reading json: ", e);
         }
@@ -21,10 +20,9 @@ export function readJSONFile(file: File, callback: (json: any) => void) {
 }
 
 export function loadJSONFile(callback: (json: any) => void) {
-    const input = document.body.appendChild(<input type="file" style="display: none" />) as HTMLInputElement;
+    const input = document.body.appendChild(<input type="file" style={{ display: "none" }} />) as HTMLInputElement;
     input.onchange = () => {
-        if (!input.files)
-            return;
+        if (!input.files) return;
         readJSONFile(input.files[0], callback);
     };
     input.click();
@@ -32,8 +30,8 @@ export function loadJSONFile(callback: (json: any) => void) {
 }
 
 export function saveJSONFile(json: any, filename: string) {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
-    const a = document.body.appendChild(<a href={dataStr} download={filename} style= "display:none" />);
+    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(json, null, 2))}`;
+    const a = document.body.appendChild(<a href={dataStr} download={filename} style={{ display: "none" }} />);
     a.click();
     document.body.removeChild(a);
 }

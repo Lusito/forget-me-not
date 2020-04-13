@@ -5,6 +5,7 @@
  */
 
 import { browser, WebRequest } from "webextension-polyfill-ts";
+
 import { removeCookie } from "../background/cleaners/cookieCleaner";
 
 export function quickCookieDomainInfo(domain: string, type: "never" | "startup" | "leave" | "instantly") {
@@ -13,11 +14,19 @@ export function quickCookieDomainInfo(domain: string, type: "never" | "startup" 
         domain,
         className,
         i18nBadge: `${className}_badge`,
-        i18nButton: `${className}_button`
+        i18nButton: `${className}_button`,
     };
 }
 
-export function quickSetCookie(domain: string, name: string, value: string, path: string, storeId: string, firstPartyDomain: string, secure = false) {
+export function quickSetCookie(
+    domain: string,
+    name: string,
+    value: string,
+    path: string,
+    storeId: string,
+    firstPartyDomain: string,
+    secure = false
+) {
     return browser.cookies.set({
         url: "mock",
         name,
@@ -26,11 +35,18 @@ export function quickSetCookie(domain: string, name: string, value: string, path
         path,
         storeId,
         firstPartyDomain,
-        secure
+        secure,
     });
 }
 
-export function quickRemoveCookie(domain: string, name: string, path: string, storeId: string, firstPartyDomain: string, secure: boolean = false) {
+export function quickRemoveCookie(
+    domain: string,
+    name: string,
+    path: string,
+    storeId: string,
+    firstPartyDomain: string,
+    secure = false
+) {
     return removeCookie({
         name,
         domain,
@@ -42,11 +58,15 @@ export function quickRemoveCookie(domain: string, name: string, path: string, st
         secure,
         httpOnly: false,
         session: false,
-        sameSite: "no_restriction"
+        sameSite: "no_restriction",
     });
 }
 
-export function quickHeadersReceivedDetails(url: string, tabId: number, responseHeaders?: WebRequest.HttpHeaders): WebRequest.OnHeadersReceivedDetailsType {
+export function quickHeadersReceivedDetails(
+    url: string,
+    tabId: number,
+    responseHeaders?: WebRequest.HttpHeaders
+): WebRequest.OnHeadersReceivedDetailsType {
     return {
         url,
         tabId,
@@ -59,11 +79,16 @@ export function quickHeadersReceivedDetails(url: string, tabId: number, response
         thirdParty: false,
         timeStamp: Date.now(),
         statusLine: "HTTP/0.9 200 OK",
-        statusCode: 200
+        statusCode: 200,
     };
 }
 
-export function quickBeforeRedirectDetails(url: string, redirectUrl: string, tabId: number, frameId = 0): WebRequest.OnBeforeRedirectDetailsType {
+export function quickBeforeRedirectDetails(
+    url: string,
+    redirectUrl: string,
+    tabId: number,
+    frameId = 0
+): WebRequest.OnBeforeRedirectDetailsType {
     return {
         requestId: "request",
         url,
@@ -77,13 +102,13 @@ export function quickBeforeRedirectDetails(url: string, redirectUrl: string, tab
         fromCache: false,
         statusCode: 200,
         redirectUrl,
-        statusLine: "OK"
+        statusLine: "OK",
     };
 }
 
 export function quickHttpHeader(name: string, value?: string) {
     return {
         name,
-        value
+        value,
     };
 }

@@ -141,21 +141,21 @@ describe("TabInfo", () => {
     });
 
     describe("scheduleDeadFramesCheck", () => {
-        it("should run instantly if never run before", () => {
+        it("should run instantly if never run before", async () => {
             const tabInfo = createTabInfo();
             const spy = jest.fn();
             tabInfo["checkDeadFrames"] = spy;
-            tabInfo.scheduleDeadFramesCheck();
+            await tabInfo.scheduleDeadFramesCheck();
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
         // tslint:disable-next-line:only-arrow-functions
-        it("should run delayed by 1s if just run", () => {
+        it("should run delayed by 1s if just run", async () => {
             const tabInfo = createTabInfo();
             const spy = jest.fn();
             tabInfo["checkDeadFrames"] = spy;
             tabInfo["lastDeadFrameCheck"] = Date.now();
-            tabInfo.scheduleDeadFramesCheck();
+            await tabInfo.scheduleDeadFramesCheck();
             expect(spy).not.toHaveBeenCalled();
             advanceTime(MIN_DEAD_FRAME_CHECK_INTERVAL - 1);
             expect(spy).not.toHaveBeenCalled();
@@ -163,12 +163,12 @@ describe("TabInfo", () => {
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
-        it("should run delayed by 0.3s run 0.7s ago", () => {
+        it("should run delayed by 0.3s run 0.7s ago", async () => {
             const tabInfo = createTabInfo();
             const spy = jest.fn();
             tabInfo["checkDeadFrames"] = spy;
             tabInfo["lastDeadFrameCheck"] = Date.now() - 700;
-            tabInfo.scheduleDeadFramesCheck();
+            await tabInfo.scheduleDeadFramesCheck();
             expect(spy).not.toHaveBeenCalled();
             advanceTime(299);
             expect(spy).not.toHaveBeenCalled();
@@ -176,13 +176,13 @@ describe("TabInfo", () => {
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
-        it("should run only once if scheduled twice", () => {
+        it("should run only once if scheduled twice", async () => {
             const tabInfo = createTabInfo();
             const spy = jest.fn();
             tabInfo["checkDeadFrames"] = spy;
             tabInfo["lastDeadFrameCheck"] = Date.now();
-            tabInfo.scheduleDeadFramesCheck();
-            tabInfo.scheduleDeadFramesCheck();
+            await tabInfo.scheduleDeadFramesCheck();
+            await tabInfo.scheduleDeadFramesCheck();
             expect(spy).not.toHaveBeenCalled();
             advanceTime(MIN_DEAD_FRAME_CHECK_INTERVAL - 1);
             expect(spy).not.toHaveBeenCalled();
@@ -194,18 +194,16 @@ describe("TabInfo", () => {
             const tabInfo = createTabInfo();
             tabInfo.commitNavigation(1, "amazon.com");
 
+            // @ts-ignore
+            mockBrowser.tabs.executeScript.expect(42, { frameId: 1, code: "1" }).andResolve([]);
+
             // ensure all tabinfos are in idle
             const { frameInfos } = tabInfo as any;
             for (const key of Object.keys(frameInfos)) frameInfos[key].lastTimeStamp = 0;
 
-            const originalScheduleDeadFramesCheck = tabInfo.scheduleDeadFramesCheck.bind(tabInfo);
-            const spy = jest.fn();
-            tabInfo.scheduleDeadFramesCheck = spy;
-            await originalScheduleDeadFramesCheck();
-            expect(checkDomainLeaveSpy).toBeCalledTimes(1);
-            expect(checkDomainLeaveSpy).toHaveBeenCalledWith("mock", new Set(["amazon.com"]));
-            checkDomainLeaveSpy.mockClear();
-            expect(browserMock.tabs.executeScript.mock.calls).toEqual([[42, { frameId: 1, code: "1" }]]);
+            const spy = jest.spyOn(tabInfo, "scheduleDeadFramesCheck");
+            await tabInfo["checkDeadFrames"]();
+            expect(checkDomainLeaveSpy).not.toHaveBeenCalled();
             expect(spy).not.toHaveBeenCalled();
         });
         it("should reschedule itself if not all frames are idle", async () => {
@@ -217,7 +215,6 @@ describe("TabInfo", () => {
             const spy = jest.fn();
             tabInfo.scheduleDeadFramesCheck = spy;
             await originalScheduleDeadFramesCheck();
-            expect(browserMock.tabs.executeScript).not.toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
@@ -227,6 +224,11 @@ describe("TabInfo", () => {
                 tabInfo.commitNavigation(1, "amazon.com");
                 tabInfo.commitNavigation(2, "images.google.com");
 
+                // @ts-ignore
+                mockBrowser.tabs.executeScript.expect(42, { frameId: 1, code: "1" }).andReject(new Error());
+                // @ts-ignore
+                mockBrowser.tabs.executeScript.expect(42, { frameId: 2, code: "1" }).andReject(new Error());
+
                 // ensure all tabinfos are in idle
                 const { frameInfos } = tabInfo as any;
                 for (const key of Object.keys(frameInfos)) frameInfos[key].lastTimeStamp = 0;
@@ -235,15 +237,15 @@ describe("TabInfo", () => {
                 expect(checkDomainLeaveSpy).toHaveBeenCalledTimes(1);
                 expect(checkDomainLeaveSpy).toHaveBeenCalledWith("mock", new Set(["amazon.com", "images.google.com"]));
                 checkDomainLeaveSpy.mockClear();
-                expect(browserMock.tabs.executeScript.mock.calls).toEqual([
-                    [42, { frameId: 1, code: "1" }],
-                    [42, { frameId: 2, code: "1" }],
-                ]);
             });
         });
         describe("with executeScript returning success", () => {
             it("should not collect hostnames and not call checkDomainLeave", async () => {
-                browserMock.tabs.executeScriptSuccess = true;
+                // @ts-ignore
+                mockBrowser.tabs.executeScript.expect(42, { frameId: 1, code: "1" }).andResolve([]);
+                // @ts-ignore
+                mockBrowser.tabs.executeScript.expect(42, { frameId: 2, code: "1" }).andResolve([]);
+
                 const tabInfo = createTabInfo();
                 tabInfo.commitNavigation(1, "amazon.com");
                 tabInfo.commitNavigation(2, "images.google.com");
@@ -254,10 +256,6 @@ describe("TabInfo", () => {
 
                 await tabInfo.scheduleDeadFramesCheck();
                 expect(checkDomainLeaveSpy).not.toHaveBeenCalled();
-                expect(browserMock.tabs.executeScript.mock.calls).toEqual([
-                    [42, { frameId: 1, code: "1" }],
-                    [42, { frameId: 2, code: "1" }],
-                ]);
             });
         });
     });

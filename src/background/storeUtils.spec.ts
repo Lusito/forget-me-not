@@ -7,33 +7,37 @@
 import { StoreUtils } from "./storeUtils";
 
 describe("Misc functionality", () => {
-    // fixme: isFirefox: false
-    const utils = new StoreUtils(true);
     describe("getAllCookieStoreIds", () => {
         beforeEach(() => {
-            browserMock.cookies.cookieStores = [
-                { id: "cs-1", tabIds: [], incognito: false },
-                { id: "cs-2", tabIds: [], incognito: false },
-                { id: "cs-4", tabIds: [], incognito: false },
-            ];
-            browserMock.contextualIdentities.contextualIdentities = [
-                { name: "", icon: "", iconUrl: "", color: "", colorCode: "", cookieStoreId: "ci-1" },
-                { name: "", icon: "", iconUrl: "", color: "", colorCode: "", cookieStoreId: "ci-2" },
-                { name: "", icon: "", iconUrl: "", color: "", colorCode: "", cookieStoreId: "ci-4" },
-            ];
+            mockBrowser.cookies.getAllCookieStores
+                .expect()
+                .andResolve(["cs-1", "cs-2", "cs-4"].map((id) => ({ id } as any)));
+            mockBrowser.contextualIdentities.query
+                .expect({})
+                .andResolve(["ci-1", "ci-2", "ci-4"].map((cookieStoreId) => ({ cookieStoreId } as any)));
         });
-        it("should return the correct cookie store ids", async () => {
-            const ids = await utils.getAllCookieStoreIds();
-            expect(ids).toHaveSameMembers([
-                "firefox-default",
-                "firefox-private",
-                "cs-1",
-                "cs-2",
-                "cs-4",
-                "ci-1",
-                "ci-2",
-                "ci-4",
-            ]);
+        describe("with firefox = false", () => {
+            const utils = new StoreUtils(false);
+            it("should only return cookie stores and contextual identities", async () => {
+                const ids = await utils.getAllCookieStoreIds();
+                expect(ids).toHaveSameMembers(["cs-1", "cs-2", "cs-4", "ci-1", "ci-2", "ci-4"]);
+            });
+        });
+        describe("with firefox = true", () => {
+            const utils = new StoreUtils(true);
+            it("should additionally include the default store ids", async () => {
+                const ids = await utils.getAllCookieStoreIds();
+                expect(ids).toHaveSameMembers([
+                    "firefox-default",
+                    "firefox-private",
+                    "cs-1",
+                    "cs-2",
+                    "cs-4",
+                    "ci-1",
+                    "ci-2",
+                    "ci-4",
+                ]);
+            });
         });
     });
 });

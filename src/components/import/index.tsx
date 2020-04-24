@@ -17,13 +17,20 @@ wetLayer.loadFromStorage();
 
 bootstrap().then(({ settings }) => {
     const dropzone = <div id="dropzone" />;
-    function onFileLoaded(json: any) {
-        if (json && settings.setAll(json)) dropzone.textContent = wetLayer.getMessage("import_success_close_now");
-        else
+    async function onFileLoadedAsync(json: any) {
+        try {
+            await settings.setAll(json);
+            dropzone.textContent = wetLayer.getMessage("import_success_close_now");
+        } catch (e) {
+            console.log(e);
             dropzone.textContent = `${wetLayer.getMessage("import_failure")} ${wetLayer.getMessage(
                 "import_by_drop_or_click"
             )}`;
+        }
     }
+    const onFileLoaded = (json: any) => {
+        onFileLoadedAsync(json);
+    };
     on(dropzone, "dragover", (evt) => {
         evt.stopPropagation();
         evt.preventDefault();

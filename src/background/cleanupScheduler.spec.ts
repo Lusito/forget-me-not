@@ -6,33 +6,29 @@
 
 import { CleanupScheduler } from "./cleanupScheduler";
 import { advanceTime } from "../testUtils/time";
-import { quickSettings } from "../testUtils/quickHelpers";
+import { testContext, mockContext } from "../testUtils/mockContext";
+import { mockEvent } from "../testUtils/mockBrowser";
 
 describe("Cleanup Scheduler", () => {
-    const settings = quickSettings({
-        version: "2.0.0",
-        // fixme: mobile: true?
-        mobile: false,
-        // fixme: removeLocalStorageByHostname: false?
-        removeLocalStorageByHostname: true,
-    });
-    const context = { settings } as any;
     let handler: jest.Mock | null = null;
     let cleanupScheduler: CleanupScheduler | null = null;
 
-    afterEach(async () => {
+    afterEach(() => {
         cleanupScheduler = null;
-        await settings.restoreDefaults();
     });
+
+    function createScheduler(enabled: boolean, snoozing: boolean, delay = 1) {
+        handler = jest.fn();
+        mockContext.settings.get.expect("domainLeave.enabled").andReturn(enabled);
+        mockContext.settings.get.expect("domainLeave.delay").andReturn(delay);
+        mockEvent(mockBrowser.runtime.onMessage);
+        cleanupScheduler = new CleanupScheduler(testContext, handler, snoozing);
+    }
 
     describe("schedule", () => {
         describe("domainLeave.enabled = false", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", false);
-                await settings.save();
-                handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(context, handler, false);
-            });
+            beforeEach(() => createScheduler(false, false));
+
             it("should neither schedule nor remember domains", async () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.com");
@@ -44,12 +40,8 @@ describe("Cleanup Scheduler", () => {
             });
         });
         describe("snoozing = true, domainLeave.enabled = true", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                await settings.save();
-                handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(context, handler, true);
-            });
+            beforeEach(() => createScheduler(true, true));
+
             it("should schedule domain cleans", async () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.com");
@@ -65,12 +57,8 @@ describe("Cleanup Scheduler", () => {
             });
         });
         describe("snoozing = false, domainLeave.enabled = true", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                await settings.save();
-                handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(context, handler, false);
-            });
+            beforeEach(() => createScheduler(true, false));
+
             it("should remember domains to clean", async () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.com");
@@ -82,7 +70,10 @@ describe("Cleanup Scheduler", () => {
                     "google.jp",
                 ]);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                advanceTime(999);
                 expect(handler).not.toHaveBeenCalled();
+                advanceTime(1);
+                expect(handler?.mock.calls).toEqual([["google.com"], ["google.de"], ["google.jp"]]);
             });
             it("should call handler with little difference in expected duration", async () => {
                 await cleanupScheduler!.schedule("google.de");
@@ -95,16 +86,15 @@ describe("Cleanup Scheduler", () => {
                     "google.jp",
                 ]);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                advanceTime(999);
                 expect(handler).not.toHaveBeenCalled();
+                advanceTime(1);
+                expect(handler?.mock.calls).toEqual([["google.com"], ["google.de"], ["google.jp"]]);
             });
         });
         describe("snoozing changing, domainLeave.enabled = true", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                await settings.save();
-                handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(context, handler, false);
-            });
+            beforeEach(() => createScheduler(true, false));
+
             it("should remember domains to clean", async () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.com");
@@ -127,33 +117,25 @@ describe("Cleanup Scheduler", () => {
             });
         });
         describe("domainLeave.enabled = true changed to false", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                await settings.save();
-                handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(context, handler, false);
-            });
+            beforeEach(() => createScheduler(true, false));
+
             it("should forget domains and remove timeouts", async () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.com");
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.jp");
 
-                settings.set("domainLeave.enabled", false);
-                await settings.save();
+                mockContext.settings.get.expect("domainLeave.enabled").andReturn(false);
+                mockContext.settings.get.expect("domainLeave.delay").andReturn(1000);
+                cleanupScheduler!["updateSettings"]();
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
                 expect(handler).not.toHaveBeenCalled();
             });
         });
         describe("snoozing = false, domainLeave.enabled = true, domainLeave.delay = 0.4s", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.delay", 0.4);
-                await settings.save();
-                handler = jest.fn();
-                cleanupScheduler = new CleanupScheduler(context, handler, false);
-            });
+            beforeEach(() => createScheduler(true, false, 0.4));
+
             it("should call handler with little difference in expected duration", async () => {
                 await cleanupScheduler!.schedule("google.de");
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers(["google.de"]);

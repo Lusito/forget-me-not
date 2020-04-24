@@ -5,289 +5,174 @@
  */
 
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
-import { IncognitoWatcher } from "./incognitoWatcher";
-import { messageUtil } from "../lib/messageUtil";
-import {
-    quickSetCookie,
-    quickRemoveCookie,
-    quickHeadersReceivedDetails,
-    quickCookieDomainInfo,
-    quickSettings,
-    quickIncognito,
-} from "../testUtils/quickHelpers";
-import { CookieDomainInfo } from "../lib/shared";
-import { DomainUtils } from "./domainUtils";
+import { testContext, mockContext } from "../testUtils/mockContext";
+import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
+import { quickCookie, quickHeadersReceivedDetails } from "../testUtils/quickHelpers";
 
 const COOKIE_STORE_ID = "mock";
-const INCOGNITO_COOKIE_STORE_ID = "mock-incognito";
 
 describe("Recently Accessed Domains", () => {
-    const settings = quickSettings({
-        version: "2.0.0",
-        // fixme: mobile: true?
-        mobile: false,
-        // fixme: removeLocalStorageByHostname: false?
-        removeLocalStorageByHostname: true,
-    });
     let recentlyAccessedDomains: RecentlyAccessedDomains | null = null;
-    let incognitoWatcher: IncognitoWatcher | null = null;
-    const incognitoWatcherContext = { storeUtils: { defaultCookieStoreId: "mock" } } as any;
-    const domainUtils = new DomainUtils();
-    let context: any = null;
+    let onHeadersReceived: EventMockOf<typeof mockBrowser.webRequest.onHeadersReceived>;
+    let onCookieChanged: EventMockOf<typeof mockBrowser.cookies.onChanged>;
 
-    beforeEach(async () => {
-        incognitoWatcher = new IncognitoWatcher(incognitoWatcherContext);
-        await incognitoWatcher.initializeExistingTabs();
-        context = {
-            domainUtils,
-            incognitoWatcher,
-            settings,
-        };
+    beforeEach(() => {
+        mockEvent(mockBrowser.runtime.onMessage);
+        onHeadersReceived = mockEvent(mockBrowser.webRequest.onHeadersReceived);
+        onCookieChanged = mockEvent(mockBrowser.cookies.onChanged);
     });
-    afterEach(async () => {
-        incognitoWatcher = null;
+    afterEach(() => {
         recentlyAccessedDomains = null;
-        await settings.restoreDefaults();
     });
+
+    function prepareApplySettings(enabled: boolean, limit = 5) {
+        mockContext.settings.get.expect("logRAD.enabled").andReturn(enabled);
+        mockContext.settings.get.expect("logRAD.limit").andReturn(limit);
+    }
+    function createRAD(enabled: boolean, limit = 5) {
+        prepareApplySettings(enabled, limit);
+        recentlyAccessedDomains = new RecentlyAccessedDomains(testContext);
+    }
+
+    // fixme: messageUtil listeners and events
+    // fixme: get()
 
     describe("listeners", () => {
-        it("should add listeners on creation if logRAD.enabled = true", async () => {
-            settings.set("logRAD.enabled", true);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            expect(browserMock.webRequest.onHeadersReceived.mock.addListener.mock.calls).toEqual([
+        it("should add listeners on creation if logRAD.enabled = true", () => {
+            createRAD(true);
+            expect(onHeadersReceived.addListener.mock.calls).toEqual([
                 [
-                    (recentlyAccessedDomains as any).onHeadersReceived,
+                    recentlyAccessedDomains!["onHeadersReceived"],
                     { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] },
                 ],
             ]);
-            expect(browserMock.cookies.onChanged.mock.addListener.mock.calls).toEqual([
-                [(recentlyAccessedDomains as any).onCookieChanged],
-            ]);
+            expect(onCookieChanged.addListener.mock.calls).toEqual([[recentlyAccessedDomains!["onCookieChanged"]]]);
         });
-        it("should neither add nor remove listeners on creation if logRAD.enabled = false", async () => {
-            settings.set("logRAD.enabled", false);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            expect(browserMock.webRequest.onHeadersReceived.mock.addListener).not.toHaveBeenCalled();
-            expect(browserMock.cookies.onChanged.mock.addListener).not.toHaveBeenCalled();
-            expect(browserMock.webRequest.onHeadersReceived.mock.removeListener).not.toHaveBeenCalled();
-            expect(browserMock.cookies.onChanged.mock.removeListener).not.toHaveBeenCalled();
+        it("should neither add nor remove listeners on creation if logRAD.enabled = false", () => {
+            createRAD(false);
+            expect(onHeadersReceived.addListener).not.toHaveBeenCalled();
+            expect(onHeadersReceived.removeListener).not.toHaveBeenCalled();
+            expect(onCookieChanged.addListener).not.toHaveBeenCalled();
+            expect(onCookieChanged.removeListener).not.toHaveBeenCalled();
         });
-        it("should add listeners after setting logRAD.enabled = true", async () => {
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            settings.set("logRAD.enabled", true);
-            await settings.save();
-            expect(browserMock.webRequest.onHeadersReceived.mock.addListener.mock.calls).toEqual([
+        it("should add listeners after setting logRAD.enabled = true", () => {
+            createRAD(false);
+            prepareApplySettings(true);
+            recentlyAccessedDomains!["applySettings"]();
+            expect(onHeadersReceived.addListener.mock.calls).toEqual([
                 [
-                    (recentlyAccessedDomains as any).onHeadersReceived,
+                    recentlyAccessedDomains!["onHeadersReceived"],
                     { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] },
                 ],
             ]);
-            expect(browserMock.cookies.onChanged.mock.addListener.mock.calls).toEqual([
-                [(recentlyAccessedDomains as any).onCookieChanged],
-            ]);
+            expect(onCookieChanged.addListener.mock.calls).toEqual([[recentlyAccessedDomains!["onCookieChanged"]]]);
         });
-        it("should remove listeners after setting logRAD.enabled = false", async () => {
-            settings.set("logRAD.enabled", true);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            settings.set("logRAD.enabled", false);
-            await settings.save();
-            expect(browserMock.webRequest.onHeadersReceived.mock.removeListener.mock.calls).toEqual([
-                [(recentlyAccessedDomains as any).onHeadersReceived],
+        it("should remove listeners after setting logRAD.enabled = false", () => {
+            createRAD(true);
+            prepareApplySettings(false);
+            recentlyAccessedDomains!["applySettings"]();
+            expect(onHeadersReceived.removeListener.mock.calls).toEqual([
+                [recentlyAccessedDomains!["onHeadersReceived"]],
             ]);
-            expect(browserMock.cookies.onChanged.mock.removeListener.mock.calls).toEqual([
-                [(recentlyAccessedDomains as any).onCookieChanged],
-            ]);
+            expect(onCookieChanged.removeListener.mock.calls).toEqual([[recentlyAccessedDomains!["onCookieChanged"]]]);
         });
+    });
 
-        describe("onCookieChanged", () => {
-            it("should call add() if non-incognito cookie was added", () => {
-                quickIncognito(incognitoWatcher!, 1, INCOGNITO_COOKIE_STORE_ID);
-                recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-                const spy = jest.spyOn(recentlyAccessedDomains, "add");
-                quickSetCookie("google.com", "hello", "world", "", COOKIE_STORE_ID, "");
-                quickSetCookie(".google.de", "hello", "world", "", COOKIE_STORE_ID, "");
-                expect(spy).toHaveBeenCalledTimes(2);
-                expect(spy).toHaveBeenCalledWith("google.com");
-                expect(spy).toHaveBeenCalledWith("google.de");
+    describe("onCookieChanged", () => {
+        function fireOnCookieChanged(removed: boolean) {
+            recentlyAccessedDomains!["onCookieChanged"]({
+                removed,
+                cookie: quickCookie(".www.google.com", "hello", "", COOKIE_STORE_ID, ""),
+                cause: 0 as any,
             });
-            it("should not call add() if non-incognito cookie was removed", () => {
-                quickIncognito(incognitoWatcher!, 1, INCOGNITO_COOKIE_STORE_ID);
-                quickSetCookie("google.com", "hello", "world", "", COOKIE_STORE_ID, "");
-                recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-                const spy = jest.spyOn(recentlyAccessedDomains, "add");
-                quickRemoveCookie("google.com", "hello", "", COOKIE_STORE_ID, "");
-                expect(spy).not.toHaveBeenCalled();
-            });
-            it("should not call add() if incognito cookie was added or removed", () => {
-                quickIncognito(incognitoWatcher!, 1, INCOGNITO_COOKIE_STORE_ID);
-                recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-                const spy = jest.spyOn(recentlyAccessedDomains, "add");
-                quickSetCookie("google.com", "hello", "world", "", INCOGNITO_COOKIE_STORE_ID, "");
-                quickRemoveCookie("google.com", "hello", "", INCOGNITO_COOKIE_STORE_ID, "");
-                expect(spy).not.toHaveBeenCalled();
-            });
+        }
+        it("should call add() if non-incognito cookie was added", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
+            fireOnCookieChanged(false);
+            expect(spy.mock.calls).toEqual([["www.google.com"]]);
         });
+        it("should not call add() if non-incognito cookie was removed", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            fireOnCookieChanged(true);
+            expect(spy).not.toHaveBeenCalled();
+        });
+        it("should not call add() if incognito cookie was added or removed", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(true);
+            fireOnCookieChanged(false);
+            fireOnCookieChanged(true);
+            expect(spy).not.toHaveBeenCalled();
+        });
+    });
 
-        describe("onHeadersReceived", () => {
-            it("should call add() if non-incognito tab received a header", () => {
-                quickIncognito(incognitoWatcher!, 1, INCOGNITO_COOKIE_STORE_ID);
-                recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-                const spy = jest.spyOn(recentlyAccessedDomains, "add");
-                browserMock.webRequest.headersReceived(quickHeadersReceivedDetails("http://google.com", 2));
-                expect(spy).toHaveBeenCalledTimes(1);
-                expect(spy).toHaveBeenCalledWith("google.com");
+    describe("onHeadersReceived", () => {
+        it("should call add() if non-incognito tab received a header", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            mockContext.incognitoWatcher.hasTab.expect(42).andReturn(false);
+            mockContext.domainUtils.getValidHostname.expect("http://www.google.com").andReturn("www.google.com");
+            recentlyAccessedDomains!["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith("www.google.com");
+        });
+        it("should not call add() if incognito tab received a header", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            mockContext.incognitoWatcher.hasTab.expect(42).andReturn(true);
+            recentlyAccessedDomains!["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
+            expect(spy).not.toHaveBeenCalled();
+        });
+        it("should not call add() if tab with incognito attribute received a header", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            recentlyAccessedDomains!["onHeadersReceived"]({
+                ...quickHeadersReceivedDetails("http://www.google.com", 42),
+                incognito: true,
             });
-            it("should not call add() if incognito tab received a header", () => {
-                quickIncognito(incognitoWatcher!, 1, INCOGNITO_COOKIE_STORE_ID);
-                recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-                const spy = jest.spyOn(recentlyAccessedDomains, "add");
-                browserMock.webRequest.headersReceived(quickHeadersReceivedDetails("http://google.com", 1));
-                expect(spy).not.toHaveBeenCalled();
-            });
-            it("should not call add() if a header was received on a negative tab id", () => {
-                quickIncognito(incognitoWatcher!, 1, INCOGNITO_COOKIE_STORE_ID);
-                recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-                const spy = jest.spyOn(recentlyAccessedDomains, "add");
-                browserMock.webRequest.headersReceived(quickHeadersReceivedDetails("http://google.com", -1));
-                expect(spy).not.toHaveBeenCalled();
-            });
+            expect(spy).not.toHaveBeenCalled();
+        });
+        it("should not call add() if a header was received on a negative tab id", () => {
+            createRAD(false);
+            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            recentlyAccessedDomains!["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", -1));
+            expect(spy).not.toHaveBeenCalled();
         });
     });
 
     describe("add", () => {
-        it("should detect settings on creation", async () => {
-            settings.set("logRAD.enabled", false);
-            settings.set("logRAD.limit", 42);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            expect(recentlyAccessedDomains.isEnabled()).toBe(false);
-            expect(recentlyAccessedDomains.getLimit()).toBe(42);
+        it("should not do anything if not enabled", () => {
+            createRAD(false);
+            recentlyAccessedDomains!["domains"] = ["a", "b", "c", "d", "e", "f"];
+            recentlyAccessedDomains!.add("woop");
+            expect(recentlyAccessedDomains!["domains"]).toEqual(["a", "b", "c", "d", "e", "f"]);
         });
-        it("should detect settings after creation", async () => {
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            expect(recentlyAccessedDomains.isEnabled()).toBe(true);
-            expect(recentlyAccessedDomains.getLimit()).not.toBe(42);
-            settings.set("logRAD.enabled", false);
-            settings.set("logRAD.limit", 42);
-            await settings.save();
-            expect(recentlyAccessedDomains!.isEnabled()).toBe(false);
-            expect(recentlyAccessedDomains!.getLimit()).toBe(42);
+        it("should not do anything if enabled, but domain is empty", () => {
+            createRAD(true);
+            recentlyAccessedDomains!["domains"] = ["a", "b", "c", "d", "e", "f"];
+            recentlyAccessedDomains!.add("");
+            expect(recentlyAccessedDomains!["domains"]).toEqual(["a", "b", "c", "d", "e", "f"]);
         });
-        it("should not do anything if logRAD.enabled === false", async () => {
-            settings.set("logRAD.enabled", false);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            expect(recentlyAccessedDomains.get()).toHaveLength(0);
+        it("should not do anything if domain already at the top spot", () => {
+            createRAD(true);
+            recentlyAccessedDomains!["domains"] = ["a", "b", "c", "d", "e", "f"];
+            recentlyAccessedDomains!.add("a");
+            expect(recentlyAccessedDomains!["domains"]).toEqual(["a", "b", "c", "d", "e", "f"]);
         });
-        it("should not do anything if logRAD.limit === 0", async () => {
-            settings.set("logRAD.limit", 0);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            expect(recentlyAccessedDomains.get()).toHaveLength(0);
+        it("should move existing domain to the top spot", () => {
+            createRAD(true);
+            recentlyAccessedDomains!["domains"] = ["a", "b", "c", "d"];
+            recentlyAccessedDomains!.add("c");
+            expect(recentlyAccessedDomains!["domains"]).toEqual(["c", "a", "b", "d"]);
         });
-        it("should only add domains up to the limit and discard the oldest ones", async () => {
-            settings.set("logRAD.limit", 3);
-            await settings.save();
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            recentlyAccessedDomains.add("google.de");
-            recentlyAccessedDomains.add("google.co.uk");
-            recentlyAccessedDomains.add("google.dk");
-            recentlyAccessedDomains.add("google.jp");
-            expect(recentlyAccessedDomains.get()).toEqual([
-                quickCookieDomainInfo("google.jp", "leave"),
-                quickCookieDomainInfo("google.dk", "leave"),
-                quickCookieDomainInfo("google.co.uk", "leave"),
-            ]);
-        });
-        it("should drop all domains above the limit when the limit has been changed", async () => {
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            recentlyAccessedDomains.add("google.de");
-            recentlyAccessedDomains.add("google.co.uk");
-            recentlyAccessedDomains.add("google.dk");
-            recentlyAccessedDomains.add("google.jp");
-            expect(recentlyAccessedDomains.get()).toEqual([
-                quickCookieDomainInfo("google.jp", "leave"),
-                quickCookieDomainInfo("google.dk", "leave"),
-                quickCookieDomainInfo("google.co.uk", "leave"),
-                quickCookieDomainInfo("google.de", "leave"),
-                quickCookieDomainInfo("google.com", "leave"),
-            ]);
-            settings.set("logRAD.limit", 3);
-            await settings.save();
-            expect(recentlyAccessedDomains.get()).toEqual([
-                quickCookieDomainInfo("google.jp", "leave"),
-                quickCookieDomainInfo("google.dk", "leave"),
-                quickCookieDomainInfo("google.co.uk", "leave"),
-            ]);
-        });
-        it("should fire an event 'onRecentlyAccessedDomains' with the domain infos when the event 'getRecentlyAccessedDomains' has been fired", () => {
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            recentlyAccessedDomains.add("google.de");
-            recentlyAccessedDomains.add("google.co.uk");
-            recentlyAccessedDomains.add("google.dk");
-            recentlyAccessedDomains.add("google.jp");
-            const expected = [
-                quickCookieDomainInfo("google.jp", "leave"),
-                quickCookieDomainInfo("google.dk", "leave"),
-                quickCookieDomainInfo("google.co.uk", "leave"),
-                quickCookieDomainInfo("google.de", "leave"),
-                quickCookieDomainInfo("google.com", "leave"),
-            ];
-            expect(recentlyAccessedDomains.get()).toEqual(expected);
-
-            const spy = jest.fn();
-            messageUtil.receive("onRecentlyAccessedDomains", spy);
-            messageUtil.send("getRecentlyAccessedDomains");
-            expect(spy).toBeCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(expected, { id: "mock" });
-        });
-        it("should fire an event 'onRecentlyAccessedDomains' when logRAD.limit changed", async () => {
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            recentlyAccessedDomains.add("google.de");
-            recentlyAccessedDomains.add("google.co.uk");
-            recentlyAccessedDomains.add("google.dk");
-            recentlyAccessedDomains.add("google.jp");
-
-            const promise = new Promise((resolve) => {
-                messageUtil.receive("onRecentlyAccessedDomains", (list: CookieDomainInfo[]) => {
-                    expect(list).toEqual([
-                        quickCookieDomainInfo("google.jp", "leave"),
-                        quickCookieDomainInfo("google.dk", "leave"),
-                        quickCookieDomainInfo("google.co.uk", "leave"),
-                    ]);
-                    resolve();
-                });
-            });
-            settings.set("logRAD.limit", 3);
-            await settings.save();
-            await promise;
-        });
-        it("should fire an event 'onRecentlyAccessedDomains' when logRAD.enabled changed", async () => {
-            recentlyAccessedDomains = new RecentlyAccessedDomains(context);
-            recentlyAccessedDomains.add("google.com");
-            recentlyAccessedDomains.add("google.de");
-            recentlyAccessedDomains.add("google.co.uk");
-            recentlyAccessedDomains.add("google.dk");
-            recentlyAccessedDomains.add("google.jp");
-
-            const promise = new Promise((resolve) => {
-                messageUtil.receive("onRecentlyAccessedDomains", (list: CookieDomainInfo[]) => {
-                    expect(list).toHaveLength(0);
-                    resolve();
-                });
-            });
-            settings.set("logRAD.enabled", false);
-            await settings.save();
-            await promise;
+        it("should insert at the top spot and apply limits", () => {
+            createRAD(true);
+            recentlyAccessedDomains!["domains"] = ["a", "b", "c", "d", "e", "f"];
+            recentlyAccessedDomains!.add("woop");
+            expect(recentlyAccessedDomains!["domains"]).toEqual(["woop", "a", "b", "c", "d"]);
         });
     });
 });

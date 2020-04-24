@@ -22,7 +22,8 @@ export class IncognitoWatcher {
     }
 
     public async initializeExistingTabs() {
-        await browser.tabs.query({}).then((tabs) => tabs.forEach(this.onCreated));
+        const tabs = await browser.tabs.query({});
+        tabs.forEach(this.onCreated);
     }
 
     private onCreated = (tab: Tabs.Tab) => {

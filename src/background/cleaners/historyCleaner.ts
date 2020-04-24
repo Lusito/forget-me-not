@@ -22,9 +22,9 @@ export class HistoryCleaner extends Cleaner {
     private onVisited = ({ url }: History.HistoryItem) => {
         const { settings } = this.context;
         if (url && settings.get("instantly.enabled") && settings.get("instantly.history")) {
-            const applyRules = settings.get("instantly.history.applyRules");
             const domain = this.context.domainUtils.getValidHostname(url);
-            if (domain && (!applyRules || settings.isDomainBlocked(domain))) browser.history.deleteUrl({ url });
+            if (domain && (!settings.get("instantly.history.applyRules") || settings.isDomainBlocked(domain)))
+                browser.history.deleteUrl({ url });
         }
     };
 
@@ -34,6 +34,8 @@ export class HistoryCleaner extends Cleaner {
             if (settings.get(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")) {
                 typeSet.history = false;
                 const items = await browser.history.search({ text: "" });
+                if (!items.length) return;
+
                 const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
                 const urlsToClean = this.getUrlsToClean(items, startup, protectOpenDomains);
                 await Promise.all(urlsToClean.map((url) => browser.history.deleteUrl({ url })));

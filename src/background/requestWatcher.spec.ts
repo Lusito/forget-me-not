@@ -6,7 +6,8 @@
 
 import { RequestWatcher } from "./requestWatcher";
 import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
-import { DomainUtils } from "./domainUtils";
+import { testContext, mockContext } from "../testUtils/mockContext";
+import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 
 class RequestWatcherSpy {
     public readonly prepareNavigation = jest.fn();
@@ -23,11 +24,12 @@ class RequestWatcherSpy {
 }
 
 describe("Request Watcher", () => {
-    const context = {
-        domainUtils: new DomainUtils(),
-    } as any;
     const listenerSpy = new RequestWatcherSpy();
     let requestWatcher: RequestWatcher | null = null;
+    let onBeforeNavigate: EventMockOf<typeof mockBrowser.webNavigation.onBeforeNavigate>;
+    let onCommitted: EventMockOf<typeof mockBrowser.webNavigation.onCommitted>;
+    let onCompleted: EventMockOf<typeof mockBrowser.webNavigation.onCompleted>;
+    let onBeforeRedirect: EventMockOf<typeof mockBrowser.webRequest.onBeforeRedirect>;
 
     afterEach(() => {
         requestWatcher = null;
@@ -35,21 +37,19 @@ describe("Request Watcher", () => {
 
     beforeEach(() => {
         listenerSpy.reset();
-        requestWatcher = new RequestWatcher(listenerSpy, context);
+        onBeforeNavigate = mockEvent(mockBrowser.webNavigation.onBeforeNavigate);
+        onCommitted = mockEvent(mockBrowser.webNavigation.onCommitted);
+        onCompleted = mockEvent(mockBrowser.webNavigation.onCompleted);
+        onBeforeRedirect = mockEvent(mockBrowser.webRequest.onBeforeRedirect);
+        requestWatcher = new RequestWatcher(listenerSpy, testContext);
     });
 
     describe("listeners", () => {
         it("should add listeners on creation", () => {
-            expect(browserMock.webNavigation.onBeforeNavigate.mock.addListener.mock.calls).toEqual([
-                [(requestWatcher as any).onBeforeNavigate],
-            ]);
-            expect(browserMock.webNavigation.onCommitted.mock.addListener.mock.calls).toEqual([
-                [(requestWatcher as any).onCommitted],
-            ]);
-            expect(browserMock.webNavigation.onCompleted.mock.addListener.mock.calls).toEqual([
-                [(requestWatcher as any).onCompleted],
-            ]);
-            expect(browserMock.webRequest.onBeforeRedirect.mock.addListener.mock.calls).toEqual([
+            expect(onBeforeNavigate.addListener.mock.calls).toEqual([[(requestWatcher as any).onBeforeNavigate]]);
+            expect(onCommitted.addListener.mock.calls).toEqual([[(requestWatcher as any).onCommitted]]);
+            expect(onCompleted.addListener.mock.calls).toEqual([[(requestWatcher as any).onCompleted]]);
+            expect(onBeforeRedirect.addListener.mock.calls).toEqual([
                 [
                     (requestWatcher as any).onBeforeRedirect,
                     { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] },
@@ -60,7 +60,8 @@ describe("Request Watcher", () => {
 
     describe("onBeforeNavigate", () => {
         it("should call listener.prepareNavigation", () => {
-            browserMock.webNavigation.onBeforeNavigate.emit({
+            mockContext.domainUtils.getValidHostname.expect("http://www.amazon.com").andReturn("www.amazon.com");
+            onBeforeNavigate.emit({
                 tabId: 42,
                 url: "http://www.amazon.com",
                 frameId: 1337,
@@ -74,7 +75,8 @@ describe("Request Watcher", () => {
 
     describe("onCommitted", () => {
         it("should call listener.commitNavigation", () => {
-            browserMock.webNavigation.onCommitted.emit({
+            mockContext.domainUtils.getValidHostname.expect("http://www.amazon.com").andReturn("www.amazon.com");
+            onCommitted.emit({
                 tabId: 42,
                 url: "http://www.amazon.com",
                 frameId: 1337,
@@ -87,7 +89,7 @@ describe("Request Watcher", () => {
 
     describe("onCompleted", () => {
         it("should call listener.completeNavigation", () => {
-            browserMock.webNavigation.onCompleted.emit({
+            onCompleted.emit({
                 tabId: 42,
                 url: "http://www.amazon.com",
                 frameId: 1337,
@@ -100,7 +102,8 @@ describe("Request Watcher", () => {
 
     describe("onBeforeRedirect", () => {
         it("should call listener.prepareNavigation", () => {
-            browserMock.webRequest.onBeforeRedirect.emit(
+            mockContext.domainUtils.getValidHostname.expect("http://www.amazon.com").andReturn("www.amazon.com");
+            onBeforeRedirect.emit(
                 quickBeforeRedirectDetails("http://www.amazon.de", "http://www.amazon.com", 42, 1337)
             );
             expect(listenerSpy.prepareNavigation).toHaveBeenCalledTimes(1);

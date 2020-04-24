@@ -19,14 +19,21 @@ module.exports = {
     env: {
         browser: true,
     },
-    globals: {
-        browserMock: "readonly",
-    },
     overrides: [
         {
             files: ["**/*.spec.ts"],
             rules: {
                 "dot-notation": "off",
+                "@typescript-eslint/ban-ts-ignore": "off",
+                "jest/expect-expect": [
+                    "error",
+                    {
+                        assertFunctionNames: ["expect", "**.expect", "**.expect.*"],
+                    },
+                ],
+            },
+            globals: {
+                mockBrowser: "readonly",
             },
         },
         {

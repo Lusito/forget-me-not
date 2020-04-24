@@ -22,7 +22,9 @@ export class CookieCleaner extends Cleaner {
         super();
         this.context = context;
 
-        browser.cookies.onChanged.addListener(this.onCookieChanged);
+        browser.cookies.onChanged.addListener((cookie) => {
+            this.onCookieChanged(cookie);
+        });
     }
 
     public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
@@ -60,23 +62,26 @@ export class CookieCleaner extends Cleaner {
     public async setSnoozing(snoozing: boolean) {
         await super.setSnoozing(snoozing);
         if (!snoozing) {
-            const promise1 = Promise.all(
-                this.snoozedThirdpartyCookies.map((cookie) => this.removeCookieIfThirdparty(cookie))
-            );
+            const promises: Array<Promise<any>> = [];
+            const { settings } = this.context;
+
+            settings.get("cleanThirdPartyCookies.enabled") &&
+                promises.push(
+                    Promise.all(this.snoozedThirdpartyCookies.map((cookie) => this.removeCookieIfThirdparty(cookie)))
+                );
             this.snoozedThirdpartyCookies.length = 0;
 
-            const promise2 = Promise.all(
-                this.snoozedInstantlyCookies
-                    .filter(
-                        (cookie) =>
-                            this.shouldRemoveCookieInstantly(cookie) ||
-                            this.shouldRemoveThirdPartyCookieInstantly(cookie)
+            settings.get("cleanThirdPartyCookies.beforeCreation") &&
+                promises.push(
+                    Promise.all(
+                        this.snoozedInstantlyCookies
+                            .filter((cookie) => this.isUnwantedThirdPartyCookie(cookie))
+                            .map((cookie) => this.context.cookieUtils.removeCookie(cookie))
                     )
-                    .map(this.context.cookieUtils.removeCookie)
-            );
+                );
             this.snoozedInstantlyCookies.length = 0;
 
-            await Promise.all([promise1, promise2]);
+            await Promise.all(promises);
         }
     }
 
@@ -88,60 +93,64 @@ export class CookieCleaner extends Cleaner {
         await Promise.all(ids.map((id) => this.removeCookies(id, test)));
     }
 
-    private shouldRemoveThirdPartyCookieInstantly(cookie: Cookies.Cookie) {
-        const { settings, incognitoWatcher } = this.context;
-        return (
-            settings.get("cleanThirdPartyCookies.beforeCreation") &&
-            !incognitoWatcher.hasCookieStore(cookie.storeId) &&
-            this.isThirdpartyCookie(cookie)
-        );
+    private isUnwantedThirdPartyCookie(cookie: Cookies.Cookie) {
+        return !this.context.incognitoWatcher.hasCookieStore(cookie.storeId) && this.isThirdpartyCookie(cookie);
     }
 
     private shouldRemoveCookieInstantly(cookie: Cookies.Cookie) {
-        // Special case if snoozing: needs to be added to this.snoozedInstantlyCookies
-        if (this.snoozing && this.shouldRemoveThirdPartyCookieInstantly(cookie)) return true;
-
         const { settings } = this.context;
         if (!settings.get("instantly.enabled") || !settings.get("instantly.cookies")) return false;
-        const allowSubDomains = cookie.domain.startsWith(".");
-        const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+        const rawDomain = cookie.domain.startsWith(".") ? cookie.domain.substr(1) : cookie.domain;
         return settings.getCleanupTypeForCookie(rawDomain, cookie.name) === CleanupType.INSTANTLY;
     }
 
-    private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
-        const { settings, incognitoWatcher } = this.context;
-        if (!changeInfo.removed && !incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
+    private async onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
+        if (!changeInfo.removed && !this.context.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
             // Cookies set by javascript can't be denied, but can be removed instantly.
-            if (this.shouldRemoveCookieInstantly(changeInfo.cookie)) {
-                if (this.snoozing) this.snoozedInstantlyCookies.push(changeInfo.cookie);
-                else this.context.cookieUtils.removeCookie(changeInfo.cookie);
-            } else if (settings.get("cleanThirdPartyCookies.enabled")) this.removeCookieIfThirdparty(changeInfo.cookie);
+            if (this.snoozing) await this.onCookieAddedSnoozing(changeInfo.cookie);
+            else await this.onCookieAddedAwake(changeInfo.cookie);
         }
-    };
+    }
+
+    private async onCookieAddedSnoozing(cookie: Cookies.Cookie) {
+        // Special case if snoozing: needs to be added to the snoozed lists
+        if (this.isUnwantedThirdPartyCookie(cookie)) {
+            const { settings } = this.context;
+            if (settings.get("cleanThirdPartyCookies.beforeCreation")) this.snoozedInstantlyCookies.push(cookie);
+            else if (settings.get("cleanThirdPartyCookies.enabled")) await this.removeCookieIfThirdparty(cookie);
+        }
+    }
+
+    private async onCookieAddedAwake(cookie: Cookies.Cookie) {
+        if (this.shouldRemoveCookieInstantly(cookie)) this.context.cookieUtils.removeCookie(cookie);
+        else if (this.context.settings.get("cleanThirdPartyCookies.enabled"))
+            await this.removeCookieIfThirdparty(cookie);
+    }
 
     private async removeCookieIfThirdparty(cookie: Cookies.Cookie) {
-        const { settings, incognitoWatcher } = this.context;
-        if (!incognitoWatcher.hasCookieStore(cookie.storeId) && this.isThirdpartyCookie(cookie)) {
-            if (this.snoozing) {
-                this.snoozedThirdpartyCookies.push(cookie);
-                return;
-            }
+        if (this.isUnwantedThirdPartyCookie(cookie)) await this.scheduleThirdpartyCookieRemove(cookie);
+    }
 
-            const removeFn = async () => {
-                if (this.snoozing) {
-                    this.snoozedThirdpartyCookies.push(cookie);
-                    return;
-                }
-                if (this.isThirdpartyCookie(cookie) && !this.isCookieAllowed(cookie, false, false, false))
-                    await this.context.cookieUtils.removeCookie(cookie);
-            };
-            const delay = settings.get("cleanThirdPartyCookies.delay") * 1000;
-            if (delay)
-                setTimeout(() => {
-                    removeFn();
-                }, delay);
-            else await removeFn();
+    private async scheduleThirdpartyCookieRemove(cookie: Cookies.Cookie) {
+        if (this.snoozing) {
+            this.snoozedThirdpartyCookies.push(cookie);
+            return;
         }
+        const removeFn = async () => {
+            await this.delayedScheduleThirdpartyCookieRemove(cookie);
+        };
+        const delay = this.context.settings.get("cleanThirdPartyCookies.delay") * 1000;
+        if (delay > 0)
+            setTimeout(() => {
+                removeFn();
+            }, delay);
+        else await removeFn();
+    }
+
+    private async delayedScheduleThirdpartyCookieRemove(cookie: Cookies.Cookie) {
+        if (this.snoozing) this.snoozedThirdpartyCookies.push(cookie);
+        else if (this.isThirdpartyCookie(cookie) && !this.isCookieAllowed(cookie, false, false, false))
+            await this.context.cookieUtils.removeCookie(cookie);
     }
 
     private isThirdpartyCookie(cookie: Cookies.Cookie) {
@@ -155,7 +164,7 @@ export class CookieCleaner extends Cleaner {
         if (this.context.supports.firstPartyIsolation) details.firstPartyDomain = null;
 
         const cookies = await browser.cookies.getAll(details);
-        await Promise.all(cookies.filter(test).map(this.context.cookieUtils.removeCookie));
+        await Promise.all(cookies.filter(test).map((cookie) => this.context.cookieUtils.removeCookie(cookie)));
     }
 
     private shouldPurgeExpiredCookie(cookie: Cookies.Cookie) {
@@ -174,8 +183,7 @@ export class CookieCleaner extends Cleaner {
         protectSubFrames: boolean
     ) {
         const { settings, tabWatcher } = this.context;
-        const allowSubDomains = cookie.domain.startsWith(".");
-        const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+        const rawDomain = cookie.domain.startsWith(".") ? cookie.domain.substr(1) : cookie.domain;
         const type = settings.getCleanupTypeForCookie(rawDomain, cookie.name);
         if (type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType)) return true;
         if (type === CleanupType.INSTANTLY || !protectOpenDomains) return false;

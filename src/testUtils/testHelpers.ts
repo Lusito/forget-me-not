@@ -6,7 +6,7 @@
 
 export const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
-function booleanVariations(count: number) {
+export function booleanVariations(count: number) {
     const result: boolean[][] = [];
     const size = 2 ** count;
     for (let i = 0; i < size; i++) {
@@ -20,55 +20,33 @@ function booleanVariations(count: number) {
     return result;
 }
 
-function getArgs(func: (...value: boolean[]) => void) {
-    const match = func.toString().match(/.*\(([^)]*)\)/);
-    if (!match) throw new Error("Can't detect argument names for function");
+// function getArgs(func: (...value: boolean[]) => void) {
+//     const match = func.toString().match(/.*\(([^)]*)\)/);
+//     if (!match) throw new Error("Can't detect argument names for function");
 
-    return match[1]
-        .split(",")
-        .map((arg: string) => arg.replace(/\/\*.*\*\//, "").trim())
-        .filter((arg: string) => arg);
-}
+//     return match[1]
+//         .split(",")
+//         .map((arg: string) => arg.replace(/\/\*.*\*\//, "").trim())
+//         .filter((arg: string) => arg);
+// }
 
-export interface SimpleSuiteFunction<T> {
-    (callback: T): void;
-    only: (callback: T) => void;
-}
-function createSimpleSuiteFunction<T>(
-    wrapper: (context: (title: string, fn: () => void) => void, callback: T) => void
-) {
-    const result: SimpleSuiteFunction<T> = (callback: T) => wrapper(describe, callback);
-    result.only = (callback: T) => wrapper(describe.only, callback);
-    return result;
-}
+// export interface SimpleSuiteFunction<T> {
+//     (callback: T): void;
+//     only: (callback: T) => void;
+// }
+// function createSimpleSuiteFunction<T>(
+//     wrapper: (context: (title: string, fn: () => void) => void, callback: T) => void
+// ) {
+//     const result: SimpleSuiteFunction<T> = (callback: T) => wrapper(describe, callback);
+//     result.only = (callback: T) => wrapper(describe.only, callback);
+//     return result;
+// }
 
-export const booleanContext = createSimpleSuiteFunction<(...value: boolean[]) => void>((context, callback) => {
-    const names = getArgs(callback);
-    booleanVariations(names.length).forEach((booleans) => {
-        const label = `with ${booleans.map((value, index) => `${names[index]} = ${value}`).join(", ")}`;
+// export const booleanContext = createSimpleSuiteFunction<(...value: boolean[]) => void>((context, callback) => {
+//     const names = getArgs(callback);
+//     booleanVariations(names.length).forEach((booleans) => {
+//         const label = `with ${booleans.map((value, index) => `${names[index]} = ${value}`).join(", ")}`;
 
-        context(label, () => callback(...booleans));
-    });
-});
-
-type ContextWithResultRow<TContext, TReturn> = { context: TContext; result: TReturn };
-
-/* eslint-disable */
-export function contextWithResult<TContext, TReturn>(
-    name: string,
-    rows: Array<ContextWithResultRow<TContext, TReturn>>,
-    callback: (context: TContext, result: TReturn) => void
-) {
-    rows.forEach((row) => describe(`with ${name} = ${row.context}`, () => callback(row.context, row.result)));
-}
-
-export namespace contextWithResult {
-    export function only<CT, RT>(
-        name: string,
-        rows: Array<ContextWithResultRow<CT, RT>>,
-        callback: (context: CT, result: RT) => void
-    ) {
-        rows.forEach((row) => describe.only(`with ${name} = ${row.context}`, () => callback(row.context, row.result)));
-    }
-}
-/* eslint-enable */
+//         context(label, () => callback(...booleans));
+//     });
+// });

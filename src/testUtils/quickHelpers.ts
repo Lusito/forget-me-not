@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, WebRequest, Cookies } from "webextension-polyfill-ts";
+import { WebRequest, Cookies, Tabs } from "webextension-polyfill-ts";
 
 import { Settings } from "../lib/settings";
 import { createDefaultSettings } from "../lib/defaultSettings";
@@ -15,26 +15,36 @@ export function quickIncognito(incognitoWatcher: IncognitoWatcher, id: number, c
     incognitoWatcher["onCreated"]({ id, incognito: true, cookieStoreId } as any);
 }
 
-export function quickSettings({
-    version,
-    mobile,
-    removeLocalStorageByHostname,
-}: {
-    version: string;
-    mobile: boolean;
-    removeLocalStorageByHostname: boolean;
-}) {
-    return new Settings(
-        createDefaultSettings({
-            version,
-            browserInfo: {
-                mobile,
-            },
-            supports: {
-                removeLocalStorageByHostname,
-            },
-        } as any)
-    );
+export const quickDefaultSettings = () =>
+    createDefaultSettings({
+        version: "2.0.0",
+        browserInfo: {
+            mobile: false,
+        },
+        supports: {
+            removeLocalStorageByHostname: true,
+        },
+    } as any);
+
+export const quickSettings = () => new Settings(quickDefaultSettings());
+
+let nextTabId = 1000;
+
+export function quickTab(url: string, cookieStoreId: string, incognito = false): Tabs.Tab {
+    return {
+        active: true,
+        cookieStoreId,
+        highlighted: false,
+        id: nextTabId++,
+        incognito,
+        index: 1,
+        isArticle: false,
+        isInReaderMode: false,
+        lastAccessed: Date.now(),
+        pinned: false,
+        url,
+        windowId: 1,
+    };
 }
 
 export function quickCookieDomainInfo(domain: string, type: "never" | "startup" | "leave" | "instantly") {
@@ -47,29 +57,29 @@ export function quickCookieDomainInfo(domain: string, type: "never" | "startup" 
     };
 }
 
-export function quickSetCookie(
-    domain: string,
-    name: string,
-    value: string,
-    path: string,
-    storeId: string,
-    firstPartyDomain: string,
-    secure = false
-) {
-    return browser.cookies.set({
-        url: "mock",
-        name,
-        value,
-        domain,
-        path,
-        storeId,
-        firstPartyDomain,
-        secure,
-    });
-}
+// export function quickSetCookie(
+//     domain: string,
+//     name: string,
+//     value: string,
+//     path: string,
+//     storeId: string,
+//     firstPartyDomain: string,
+//     secure = false
+// ) {
+//     return browser.cookies.set({
+//         url: "mock",
+//         name,
+//         value,
+//         domain,
+//         path,
+//         storeId,
+//         firstPartyDomain,
+//         secure,
+//     });
+// }
 
 // fixme: rename to quickCookie
-export function quickRemoveCookie(
+export function quickCookie(
     domain: string,
     name: string,
     path: string,

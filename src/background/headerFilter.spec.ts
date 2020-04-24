@@ -4,367 +4,250 @@
  * @see https://github.com/Lusito/leave-me-not
  */
 
-import { CleanupType } from "../lib/shared";
-import { TabWatcher } from "./tabWatcher";
-import { IncognitoWatcher } from "./incognitoWatcher";
-import { HeaderFilter } from "./headerFilter";
-import { booleanContext } from "../testUtils/testHelpers";
-import { quickHttpHeader, quickHeadersReceivedDetails, quickSettings, quickIncognito } from "../testUtils/quickHelpers";
-import { StoreUtils } from "./storeUtils";
-import { DomainUtils } from "./domainUtils";
-import { CookieUtils } from "./cookieUtils";
-import { RequestWatcher } from "./requestWatcher";
+import { WebRequest } from "webextension-polyfill-ts";
 
-const baseRules = [
-    { rule: "*.never.com", type: CleanupType.NEVER },
-    { rule: "*.startup.com", type: CleanupType.STARTUP },
-    { rule: "*.leave.com", type: CleanupType.LEAVE },
-    { rule: "*.instantly.com", type: CleanupType.INSTANTLY },
-];
+import { CleanupType } from "../lib/shared";
+import { HeaderFilter } from "./headerFilter";
+import { testContext, mockContext } from "../testUtils/mockContext";
+import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
+import { messageUtil } from "../lib/messageUtil";
 
 describe("Header Filter", () => {
-    const settings = quickSettings({
-        version: "2.0.0",
-        // fixme: mobile: true?
-        mobile: false,
-        // fixme: removeLocalStorageByHostname: false?
-        removeLocalStorageByHostname: true,
-    });
-    // fixme: isFirefox: false
-    const storeUtils = new StoreUtils(true);
-    const domainUtils = new DomainUtils();
-    const cookieUtils = new CookieUtils({
-        supports: {
-            // fixme: firstPartyIsolation false?
-            firstPartyIsolation: true,
-        },
-    } as any);
-    const tabWatcherContext = {
-        storeUtils,
-        domainUtils,
-    } as any;
-    const incognitoWatcherContext = { storeUtils: { defaultCookieStoreId: "mock" } } as any;
-    const tabWatcherListener = {
-        onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined,
-    };
-    let tabWatcher: TabWatcher | null = null;
-    let incognitoWatcher: IncognitoWatcher | null = null;
     let headerFilter: HeaderFilter | null = null;
-    let context: any = null;
+    let onHeadersReceived: EventMockOf<typeof mockBrowser.webRequest.onHeadersReceived>;
 
-    afterEach(async () => {
-        tabWatcher = null;
-        incognitoWatcher = null;
+    beforeEach(() => {
+        onHeadersReceived = mockEvent(mockBrowser.webRequest.onHeadersReceived);
+        mockEvent(mockBrowser.runtime.onMessage);
+        mockContext.tabWatcher.mockAllow();
+    });
+
+    afterEach(() => {
         headerFilter = null;
-        await settings.restoreDefaults();
     });
 
-    beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
-        incognitoWatcher = new IncognitoWatcher(incognitoWatcherContext);
-        // eslint-disable-next-line no-new
-        new RequestWatcher(tabWatcher, { domainUtils } as any);
-        await tabWatcher.initializeExistingTabs();
-        await incognitoWatcher.initializeExistingTabs();
+    function prepareUpdateSettings(
+        beforeCreation: boolean,
+        instantlyEnabled: boolean | null,
+        hasBlockingRule: boolean | null
+    ) {
+        mockContext.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(beforeCreation);
+        if (instantlyEnabled !== null) mockContext.settings.get.expect("instantly.enabled").andReturn(instantlyEnabled);
+        if (hasBlockingRule !== null) mockContext.settings.hasBlockingRule.expect().andReturn(hasBlockingRule);
+    }
 
-        context = {
-            supports: {
-                // fixme: requestFilterIncognito false?
-                requestFilterIncognito: true,
-            },
-            incognitoWatcher,
-            domainUtils,
-            settings,
-            tabWatcher,
-            cookieUtils,
-        } as any;
-    });
+    function createFilter(
+        requestFilterIncognito: boolean,
+        beforeCreation: boolean,
+        instantlyEnabled: boolean | null,
+        hasBlockingRule: boolean | null
+    ) {
+        mockContext.supports.requestFilterIncognito.mock(requestFilterIncognito);
+        prepareUpdateSettings(beforeCreation, instantlyEnabled, hasBlockingRule);
+        headerFilter = new HeaderFilter(testContext);
+    }
 
     describe("isEnabled", () => {
         it("should return false with default settings", () => {
-            headerFilter = new HeaderFilter(context);
+            createFilter(true, false, false, null);
             expect(headerFilter!.isEnabled()).toBe(false);
         });
-        it("should return true if cleanThirdPartyCookies.beforeCreation was set before creation", () => {
-            settings.set("cleanThirdPartyCookies.beforeCreation", true);
-            headerFilter = new HeaderFilter(context);
-            expect(headerFilter.isEnabled()).toBe(true);
-            headerFilter.setSnoozing(true);
-            expect(headerFilter.isEnabled()).toBe(false);
-            headerFilter.setSnoozing(false);
-            expect(headerFilter.isEnabled()).toBe(true);
+        it("should return true if beforeCreation=true", () => {
+            createFilter(true, true, null, null);
+            expect(headerFilter!.isEnabled()).toBe(true);
         });
-        it("should return true if cleanThirdPartyCookies.beforeCreation was set after creation", async () => {
-            headerFilter = new HeaderFilter(context);
-            settings.set("cleanThirdPartyCookies.beforeCreation", true);
-            await settings.save();
-            expect(headerFilter.isEnabled()).toBe(true);
-            headerFilter.setSnoozing(true);
-            expect(headerFilter.isEnabled()).toBe(false);
-            headerFilter.setSnoozing(false);
-            expect(headerFilter.isEnabled()).toBe(true);
+        it("should return true if instantly.enabled=true and hasBlockingRule=true", () => {
+            createFilter(true, false, true, true);
+            expect(headerFilter!.isEnabled()).toBe(true);
         });
+        it("should return false if instantly.enabled=true and hasBlockingRule=false", () => {
+            createFilter(true, false, true, false);
+            expect(headerFilter!.isEnabled()).toBe(false);
+        });
+        it("should return false if instantly.enabled=false", () => {
+            createFilter(true, false, false, null);
+            expect(headerFilter!.isEnabled()).toBe(false);
+        });
+        it("should return true if listener has been added", () => {
+            createFilter(true, false, false, null);
+            onHeadersReceived.addListener(headerFilter!["onHeadersReceived"]);
+            expect(headerFilter!.isEnabled()).toBe(true);
+        });
+    });
 
-        booleanContext((instantlyEnabled) => {
-            beforeEach(async () => {
-                settings.set("instantly.enabled", instantlyEnabled);
-                await settings.save();
-            });
+    describe("updateSettings", () => {
+        it("should enable if beforeCreation=true", () => {
+            createFilter(true, false, false, null);
+            prepareUpdateSettings(true, null, null);
+            headerFilter!["updateSettings"]();
+            expect(headerFilter!.isEnabled()).toBe(true);
+        });
+        it("should enable if instantly.enabled=true and hasBlockingRule=true", () => {
+            createFilter(true, false, false, null);
+            prepareUpdateSettings(false, true, true);
+            headerFilter!["updateSettings"]();
+            expect(headerFilter!.isEnabled()).toBe(true);
+        });
+        it("should stay disabled if instantly.enabled=true and hasBlockingRule=false", () => {
+            createFilter(true, false, false, null);
+            prepareUpdateSettings(false, true, false);
+            headerFilter!["updateSettings"]();
+            expect(headerFilter!.isEnabled()).toBe(false);
+        });
+        it("should stay disabled if instantly.enabled=false", () => {
+            createFilter(true, false, false, null);
+            prepareUpdateSettings(false, false, null);
+            headerFilter!["updateSettings"]();
+            expect(headerFilter!.isEnabled()).toBe(false);
+        });
+    });
 
-            it(`should return ${instantlyEnabled} if an instantly rule existed before creation`, () => {
-                settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
-                headerFilter = new HeaderFilter(context);
-                expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
-                headerFilter.setSnoozing(true);
-                expect(headerFilter.isEnabled()).toBe(false);
-                headerFilter.setSnoozing(false);
-                expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
-            });
-            it(`should return ${instantlyEnabled} if an instantly rule was added after creation`, async () => {
-                headerFilter = new HeaderFilter(context);
-                settings.set("rules", [{ rule: "google.com", type: CleanupType.INSTANTLY }]);
-                await settings.save();
-                expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
-                headerFilter.setSnoozing(true);
-                expect(headerFilter.isEnabled()).toBe(false);
-                headerFilter.setSnoozing(false);
-                expect(headerFilter.isEnabled()).toBe(instantlyEnabled);
-            });
+    describe("setSnoozing", () => {
+        it("should set snoozing and then call updateSettings", () => {
+            createFilter(true, false, false, null);
+            expect(headerFilter!["snoozing"]).toBe(false);
+
+            const updateSettings = jest.fn(() => Promise.resolve());
+            headerFilter!["updateSettings"] = updateSettings;
+            headerFilter!.setSnoozing(true);
+            expect(updateSettings.mock.calls).toEqual([[]]);
+            expect(headerFilter!["snoozing"]).toBe(true);
+            updateSettings.mockClear();
+
+            headerFilter!.setSnoozing(false);
+            expect(updateSettings.mock.calls).toEqual([[]]);
+            expect(headerFilter!["snoozing"]).toBe(false);
+        });
+    });
+
+    describe("shouldCookieBeBlocked", () => {
+        it.each([[CleanupType.NEVER], [CleanupType.STARTUP]])(
+            "should return false if getCleanupTypeForCookie returns %i",
+            (cleanupType) => {
+                createFilter(true, false, false, null);
+                mockContext.settings.getCleanupTypeForCookie
+                    .expect("some-domain.com", "cookie-name")
+                    .andReturn(cleanupType);
+                expect(headerFilter!["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(false);
+            }
+        );
+        it("should return true if getCleanupTypeForCookie returns INSTANTLY", () => {
+            createFilter(true, false, false, null);
+            mockContext.settings.getCleanupTypeForCookie
+                .expect("some-domain.com", "cookie-name")
+                .andReturn(CleanupType.INSTANTLY);
+            expect(headerFilter!["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(true);
+        });
+        it("should return true if getCleanupTypeForCookie returns LEAVE, beforeCreation=true and is third party cookie", () => {
+            createFilter(true, true, null, null);
+            mockContext.tabWatcher.isThirdPartyCookieOnTab.expect(42, "some-domain.com").andReturn(true);
+            mockContext.settings.getCleanupTypeForCookie
+                .expect("some-domain.com", "cookie-name")
+                .andReturn(CleanupType.LEAVE);
+            expect(headerFilter!["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(true);
+        });
+        it("should return false if getCleanupTypeForCookie returns LEAVE, beforeCreation=true and is not third party cookie", () => {
+            createFilter(true, true, null, null);
+            mockContext.tabWatcher.isThirdPartyCookieOnTab.expect(42, "some-domain.com").andReturn(false);
+            mockContext.settings.getCleanupTypeForCookie
+                .expect("some-domain.com", "cookie-name")
+                .andReturn(CleanupType.LEAVE);
+            expect(headerFilter!["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(false);
+        });
+        it("should return false if getCleanupTypeForCookie returns LEAVE and beforeCreation=false", () => {
+            createFilter(true, false, false, null);
+            mockContext.settings.getCleanupTypeForCookie
+                .expect("some-domain.com", "cookie-name")
+                .andReturn(CleanupType.LEAVE);
+            expect(headerFilter!["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(false);
+        });
+        it("should strip leading dots from domains", () => {
+            createFilter(true, false, false, null);
+            mockContext.settings.getCleanupTypeForCookie
+                .expect("some-domain.com", "cookie-name")
+                .andReturn(CleanupType.NEVER);
+            expect(headerFilter!["shouldCookieBeBlocked"](42, ".some-domain.com", "cookie-name")).toBe(false);
         });
     });
 
     describe("filterResponseHeaders", () => {
-        describe("cleanThirdPartyCookies.beforeCreation = false and no rules", () => {
-            it("should do nothing", () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("something", "hello=world"),
-                    quickHttpHeader("cookie", "foo=bar"),
-                    quickHttpHeader("x-set-cookie", "woot"),
-                ];
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
-                );
-                expect(result).toHaveLength(0);
-            });
-        });
+        it("should only filter set-cookie headers with a value", () => {
+            createFilter(true, false, false, null);
+            const headers: WebRequest.HttpHeaders = [
+                {
+                    name: "something",
+                    value: "woot",
+                },
+                {
+                    name: "something-else",
+                    value: "",
+                },
+                {
+                    name: "set-cookie",
+                    value: "",
+                },
+                {
+                    name: "set-cookie",
+                    value: "free=b",
+                },
+                {
+                    name: "set-cookie",
+                    value: "a=b",
+                },
+                {
+                    name: "set-cookie",
+                    value: "a=b\nfree=b\na=b",
+                },
+            ];
+            const remainingHeaders = [
+                headers[0],
+                headers[1],
+                headers[2],
+                headers[3],
+                {
+                    name: "set-cookie",
+                    value: "free=b",
+                },
+            ];
 
-        describe("cleanThirdPartyCookies.beforeCreation = true", () => {
-            beforeEach(async () => {
-                settings.set("cleanThirdPartyCookies.beforeCreation", true);
-                await settings.save();
-            });
+            const cookieRemoved = jest.fn();
+            messageUtil.receive("cookieRemoved", cookieRemoved);
 
-            it("should return empty object if no responseHeaders are set", () => {
-                headerFilter = new HeaderFilter(context);
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", 0)
-                );
-                expect(result).toEqual([{}]);
-            });
-            it("should filter all thirdparty cookies", () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", tabId, [
-                        quickHttpHeader("set-cookie", "hello=world"),
-                        quickHttpHeader("set-cookie", "foo=bar"),
-                    ])
-                );
-                expect(result).toEqual([{ responseHeaders: [] }]);
-                const result2 = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.jp", tabId, [
-                        quickHttpHeader("set-cookie", "hello=world"),
-                        quickHttpHeader("set-cookie", "foo=bar"),
-                    ])
-                );
-                expect(result2).toEqual([{ responseHeaders: [] }]);
-            });
-            it("should not filter firstparty cookies", () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar"),
-                ];
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.de", tabId, headers)
-                );
-                expect(result).toEqual([{ responseHeaders: headers }]);
-            });
-            it("should not filter thirdparty cookies with an unknown tab id", () => {
-                browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar"),
-                ];
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", 9999, headers)
-                );
-                expect(result).toEqual([{ responseHeaders: headers }]);
-            });
-            it("should only filter set-cookie headers", () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("something", "hello=world"),
-                    quickHttpHeader("cookie", "foo=bar"),
-                    quickHttpHeader("x-set-cookie", "woot"),
-                ];
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
-                );
-                expect(result).toEqual([{ responseHeaders: headers.slice(1) }]);
-                browserMock.webRequest.reset();
-            });
+            const shouldCookieBeBlocked = jest.fn((tabId: number, domain: string, name: string) => name !== "free");
+            headerFilter!["shouldCookieBeBlocked"] = shouldCookieBeBlocked;
+            mockContext.cookieUtils.parseSetCookieHeader
+                .expect("free=b", "fallback-domain.com")
+                .andReturn({ domain: "c.com", name: "free", value: "" });
+            mockContext.cookieUtils.parseSetCookieHeader
+                .expect("a=b", "fallback-domain.com")
+                .andReturn({ domain: ".c.com", name: "a", value: "" });
+            mockContext.cookieUtils.parseSetCookieHeader
+                .expect("a=b", "fallback-domain.com")
+                .andReturn({ domain: ".c.com", name: "a", value: "" });
+            mockContext.cookieUtils.parseSetCookieHeader
+                .expect("free=b", "fallback-domain.com")
+                .andReturn({ domain: "c.com", name: "free", value: "" });
+            mockContext.cookieUtils.parseSetCookieHeader
+                .expect("a=b", "fallback-domain.com")
+                .andReturn({ domain: ".c.com", name: "a", value: "" });
+            expect(headerFilter!["filterResponseHeaders"](headers, "fallback-domain.com", 42)).toEqual(
+                remainingHeaders
+            );
+            expect(shouldCookieBeBlocked.mock.calls).toEqual([
+                [42, "c.com", "free"],
+                [42, "c.com", "a"],
+                [42, "c.com", "a"],
+                [42, "c.com", "free"],
+                [42, "c.com", "a"],
+            ]);
 
-            it("should filter no neverlisted cookies", async () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                settings.set("rules", baseRules);
-                await settings.save();
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar"),
-                ];
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.never.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.startup.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.leave.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: [] }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.instantly.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: [] }]);
-            });
-
-            it("should not change anything on a private tab", () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-private");
-                quickIncognito(incognitoWatcher!, tabId);
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("something", "hello=world"),
-                    quickHttpHeader("cookie", "foo=bar"),
-                    quickHttpHeader("x-set-cookie", "woot"),
-                ];
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
-                );
-                expect(result).toEqual([{}]);
-            });
-        });
-        describe("cleanThirdPartyCookies.beforeCreation = false, but with rules", () => {
-            beforeEach(async () => {
-                settings.set("cleanThirdPartyCookies.beforeCreation", false);
-                settings.set("rules", baseRules);
-                await settings.save();
-            });
-
-            it("should filter no thirdparty cookies", () => {
-                const tabId = browserMock.tabs.create("http://www.google.de", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar"),
-                ];
-                const result = browserMock.webRequest.headersReceived(
-                    quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
-                );
-                expect(result).toEqual([{ responseHeaders: headers }]);
-            });
-
-            it("should filter only cookies that have an instantly rule", () => {
-                const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [
-                    quickHttpHeader("set-cookie", "hello=world"),
-                    quickHttpHeader("set-cookie", "foo=bar"),
-                ];
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.instantly.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: [] }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.leave.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.startup.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.never.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-            });
-
-            it("should handle multiline values correctly", async () => {
-                const tabId = browserMock.tabs.create("http://www.google.com", "firefox-default");
-                headerFilter = new HeaderFilter(context);
-                const headers = [quickHttpHeader("set-cookie", "hello=world\nfoo=bar")];
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.instantly.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: [] }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.leave.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.startup.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.never.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: headers }]);
-
-                settings.set("rules", [{ rule: "hello@*.google.com", type: CleanupType.INSTANTLY }]);
-                await settings.save();
-
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: [quickHttpHeader("set-cookie", "foo=bar")] }]);
-
-                settings.set("rules", [
-                    { rule: "hello@*.google.com", type: CleanupType.INSTANTLY },
-                    { rule: "foo@*.google.com", type: CleanupType.INSTANTLY },
-                ]);
-                await settings.save();
-
-                expect(
-                    browserMock.webRequest.headersReceived(
-                        quickHeadersReceivedDetails("http://www.google.com", tabId, headers)
-                    )
-                ).toEqual([{ responseHeaders: [] }]);
-            });
+            expect(cookieRemoved.mock.calls).toEqual([
+                ["c.com", {}],
+                ["c.com", {}],
+                ["c.com", {}],
+            ]);
         });
     });
+
+    // fixme: onHeadersReceived
 });

@@ -2,7 +2,7 @@
 import { stringify } from "jest-matcher-utils";
 import { parse as parseUrl, UrlWithStringQuery } from "url";
 
-import { browser } from "./browserMock";
+import { browser } from "./mockBrowser";
 import "./time";
 import { messageUtil } from "../lib/messageUtil";
 
@@ -66,6 +66,5 @@ expect.extend({
 });
 
 beforeEach(() => {
-    browserMock.reset();
     messageUtil.clearCallbacksMap();
 });

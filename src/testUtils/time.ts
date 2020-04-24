@@ -6,6 +6,7 @@ interface TimeoutEntry {
 let currentTime = 0;
 let timeouts: TimeoutEntry[] = [];
 
+// fixme: remember stack in order to show the invocation afterwards
 (window as any).setTimeout = (callback: () => void, ms: number) => {
     const entry: TimeoutEntry = {
         start: currentTime + ms,

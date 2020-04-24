@@ -4,97 +4,77 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { BrowsingData } from "webextension-polyfill-ts";
+import { BrowsingData, History } from "webextension-polyfill-ts";
 
 import { HistoryCleaner } from "./historyCleaner";
-import { TabWatcher } from "../tabWatcher";
-import { CleanupType } from "../../lib/shared";
-import { booleanContext } from "../../testUtils/testHelpers";
-import { quickSettings } from "../../testUtils/quickHelpers";
-import { StoreUtils } from "../storeUtils";
-import { DomainUtils } from "../domainUtils";
-import { RequestWatcher } from "../requestWatcher";
-
-const COOKIE_STORE_ID = "mock";
-const BLACKLISTED_DOMAIN = "instantly.com";
-const WHITELISTED_DOMAIN = "never.com";
-const GRAYLISTED_DOMAIN = "startup.com";
-const UNKNOWN_DOMAIN = "unknown.com";
-const OPEN_DOMAIN = "open.com";
+import { testContext, mockContext } from "../../testUtils/mockContext";
+import { mockEvent, EventMockOf } from "../../testUtils/mockBrowser";
+import { booleanVariations } from "../../testUtils/testHelpers";
 
 describe("HistoryCleaner", () => {
-    const settings = quickSettings({
-        version: "2.0.0",
-        // fixme: mobile: true?
-        mobile: false,
-        // fixme: removeLocalStorageByHostname: false?
-        removeLocalStorageByHostname: true,
-    });
-    // fixme: isFirefox: false
-    const storeUtils = new StoreUtils(true);
-    const domainUtils = new DomainUtils();
-    const tabWatcherContext = {
-        storeUtils,
-        domainUtils,
-    } as any;
-    const tabWatcherListener = {
-        onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined,
-    };
-    let cleaner: HistoryCleaner | null = null;
-    let tabWatcher: TabWatcher | null = null;
+    let historyCleaner: HistoryCleaner | null = null;
+    let onVisited: EventMockOf<typeof mockBrowser.history.onVisited>;
 
-    afterEach(async () => {
-        tabWatcher = null;
-        cleaner = null;
-        await settings.restoreDefaults();
+    beforeEach(() => {
+        onVisited = mockEvent(mockBrowser.history.onVisited);
+        mockContext.settings.mockAllow();
+        historyCleaner = new HistoryCleaner(testContext);
     });
 
-    beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
-        await tabWatcher.initializeExistingTabs();
-        // eslint-disable-next-line no-new
-        new RequestWatcher(tabWatcher, { domainUtils } as any);
-
-        browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID);
-
-        browserMock.cookies.cookieStores = [{ id: COOKIE_STORE_ID, tabIds: [], incognito: false }];
-        settings.set("rules", [
-            { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
-            { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
-            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
-        ]);
-        await settings.save();
-        cleaner = new HistoryCleaner({
-            settings,
-            domainUtils,
-            tabWatcher,
-        } as any);
+    afterEach(() => {
+        historyCleaner = null;
     });
 
     describe("onVisited", () => {
-        booleanContext((instantlyEnabled, instantlyHistory, applyRules, blacklisted) => {
-            const domain = blacklisted ? BLACKLISTED_DOMAIN : UNKNOWN_DOMAIN;
-            const url = `https://${domain}/some/path.html`;
+        const url = `https://google.com/some/path.html`;
 
-            beforeEach(async () => {
-                settings.set("instantly.enabled", instantlyEnabled);
-                settings.set("instantly.history", instantlyHistory);
-                settings.set("instantly.history.applyRules", applyRules);
-                await settings.save();
-            });
+        it("adds listeners correctly", () => {
+            expect(onVisited.addListener.mock.calls).toEqual([[historyCleaner!["onVisited"]]]);
+        });
 
-            if (instantlyEnabled && instantlyHistory && (!applyRules || blacklisted)) {
-                it("should delete the history url", () => {
-                    browserMock.history.onVisited.emit({ id: "mock", url });
-                    expect(browserMock.history.deleteUrl.mock.calls).toEqual([[{ url }]]);
-                });
-            } else {
-                it("should not delete the history url", () => {
-                    browserMock.history.onVisited.emit({ id: "mock", url });
-                    expect(browserMock.history.deleteUrl).not.toHaveBeenCalled();
-                });
-            }
+        // eslint-disable-next-line jest/expect-expect
+        it("does nothing with an empty url", () => {
+            historyCleaner!["onVisited"]({ id: "mock", url: "" });
+        });
+        it("does nothing with instantly.enabled = false", () => {
+            mockContext.settings.get.expect("instantly.enabled").andReturn(false);
+            historyCleaner!["onVisited"]({ id: "mock", url });
+        });
+        it("does nothing with instantly.history = false", () => {
+            mockContext.settings.get.expect("instantly.enabled").andReturn(true);
+            mockContext.settings.get.expect("instantly.history").andReturn(false);
+            historyCleaner!["onVisited"]({ id: "mock", url });
+        });
+        it("does nothing without a valid hostname", () => {
+            mockContext.settings.get.expect("instantly.enabled").andReturn(true);
+            mockContext.settings.get.expect("instantly.history").andReturn(true);
+            mockContext.domainUtils.getValidHostname.expect(url).andReturn("");
+            historyCleaner!["onVisited"]({ id: "mock", url });
+        });
+        it("deletes the URL if applyRules = false", () => {
+            mockContext.settings.get.expect("instantly.enabled").andReturn(true);
+            mockContext.settings.get.expect("instantly.history").andReturn(true);
+            mockContext.domainUtils.getValidHostname.expect(url).andReturn("google.com");
+            mockBrowser.history.deleteUrl.expect({ url });
+            mockContext.settings.get.expect("instantly.history.applyRules").andReturn(false);
+            historyCleaner!["onVisited"]({ id: "mock", url });
+        });
+        it("deletes the URL if applyRules = true, but the domain is blocked", () => {
+            mockContext.settings.get.expect("instantly.enabled").andReturn(true);
+            mockContext.settings.get.expect("instantly.history").andReturn(true);
+            mockContext.domainUtils.getValidHostname.expect(url).andReturn("google.com");
+            mockBrowser.history.deleteUrl.expect({ url });
+            mockContext.settings.get.expect("instantly.history.applyRules").andReturn(true);
+            mockContext.settings.isDomainBlocked.expect("google.com").andReturn(true);
+            historyCleaner!["onVisited"]({ id: "mock", url });
+        });
+        it("does not delete the URL if applyRules = true and the domain is not blocked", () => {
+            mockContext.settings.get.expect("instantly.enabled").andReturn(true);
+            mockContext.settings.get.expect("instantly.history").andReturn(true);
+            mockContext.domainUtils.getValidHostname.expect(url).andReturn("google.com");
+            mockContext.settings.get.expect("instantly.history.applyRules").andReturn(true);
+            mockContext.settings.isDomainBlocked.expect("google.com").andReturn(false);
+            historyCleaner!["onVisited"]({ id: "mock", url });
         });
     });
 
@@ -105,49 +85,81 @@ describe("HistoryCleaner", () => {
         beforeEach(() => {
             typeSet.history = true;
         });
-        booleanContext((history, startup, startupApplyRules, cleanAllApplyRules) => {
-            beforeEach(async () => {
-                typeSet.history = history;
-                settings.set("startup.history.applyRules", startupApplyRules);
-                settings.set("cleanAll.history.applyRules", cleanAllApplyRules);
-                await settings.save();
+        it.each(booleanVariations(1))("does nothing if typeset.history=false with startup=%j", async (startup) => {
+            typeSet.history = false;
+            await historyCleaner!.clean(typeSet, startup);
+            expect(typeSet.history).toBe(false);
+        });
+        describe.each(booleanVariations(1))("with startup=%j", (startup) => {
+            it("does nothing if the respective applyRules setting is false", async () => {
+                mockContext.settings.get
+                    .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
+                    .andReturn(false);
+                await historyCleaner!.clean(typeSet, startup);
+                expect(typeSet.history).toBe(true);
             });
-            if (history && ((startup && startupApplyRules) || (!startup && cleanAllApplyRules))) {
-                it("should clean up", async () => {
-                    await cleaner!.clean(typeSet, startup);
-                    expect(browserMock.history.search.mock.calls).toEqual([[{ text: "" }]]);
+            describe.each(booleanVariations(1))("with protectOpenDomains=%j", (protectOpenDomains) => {
+                it("should clean up nothing if there are no history items", async () => {
+                    mockContext.settings.get
+                        .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
+                        .andReturn(true);
+                    const historyItems: History.HistoryItem[] = [];
+                    mockBrowser.history.search.expect({ text: "" }).andResolve(historyItems);
+                    await historyCleaner!.clean(typeSet, startup);
                     expect(typeSet.history).toBe(false);
                 });
-            } else {
-                it("should not do anything", async () => {
-                    await cleaner!.clean(typeSet, startup);
-                    expect(browserMock.history.search).not.toHaveBeenCalled();
-                    expect(typeSet.history).toBe(history);
+                // fixme: this is an unreadable mess.. split into multiple its?
+                it("should clean up if the respective applyRules setting is true", async () => {
+                    mockContext.settings.get
+                        .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
+                        .andReturn(true);
+                    const data = [
+                        {
+                            url: "http://www.google.com/path1.html",
+                            hostname: "www.google.com",
+                            tabExists: true,
+                            protected: true,
+                            deleted: false,
+                        },
+                        {
+                            url: "http://www.google.com/path2.html",
+                            hostname: "www.google.com",
+                            tabExists: false,
+                            protected: true,
+                            deleted: false,
+                        },
+                        {
+                            url: "http://www.amazon.com/path1.html",
+                            hostname: "www.amazon.com",
+                            tabExists: false,
+                            protected: false,
+                            deleted: true,
+                        },
+                        {
+                            url: "http://www.amazon.com/path2.html",
+                            hostname: "www.amazon.com",
+                            tabExists: true,
+                            protected: false,
+                            deleted: !(startup || protectOpenDomains),
+                        },
+                    ];
+                    const historyItems: History.HistoryItem[] = data.map((entry) => ({ url: entry.url } as any));
+                    mockBrowser.history.search.expect({ text: "" }).andResolve(historyItems);
+                    if (!startup)
+                        mockContext.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
+                    data.forEach((entry) => {
+                        if (!(startup || protectOpenDomains) || entry.tabExists)
+                            mockContext.settings.isDomainProtected
+                                .expect(entry.hostname, startup)
+                                .andReturn(entry.protected);
+                        if (entry.deleted) mockBrowser.history.deleteUrl.expect({ url: entry.url }).andResolve();
+                        mockContext.domainUtils.getValidHostname.expect(entry.url).andReturn(entry.hostname);
+                        if (startup || protectOpenDomains)
+                            mockContext.tabWatcher.containsDomain.expect(entry.hostname).andReturn(entry.tabExists);
+                    });
+                    await historyCleaner!.clean(typeSet, startup);
+                    expect(typeSet.history).toBe(false);
                 });
-            }
-        });
-
-        booleanContext((startup, protectOpenDomains) => {
-            beforeEach(async () => {
-                settings.set("cleanAll.protectOpenDomains", protectOpenDomains);
-                await settings.save();
-                browserMock.history.items.push({ id: "1", url: "https://www.google.de" });
-                browserMock.history.items.push({ id: "2", url: `https://${BLACKLISTED_DOMAIN}` });
-                browserMock.history.items.push({ id: "3", url: `https://${WHITELISTED_DOMAIN}` });
-                browserMock.history.items.push({ id: "4", url: `https://${GRAYLISTED_DOMAIN}` });
-                browserMock.history.items.push({ id: "5", url: `https://${OPEN_DOMAIN}` });
-            });
-            it(`should protect whitelisted${startup ? "" : "and graylisted"} ${
-                startup || protectOpenDomains ? "and open" : ""
-            } domains`, async () => {
-                await cleaner!.clean(typeSet, startup);
-                expect(typeSet.history).toBe(false);
-                const expectedCalls = [[{ url: "https://www.google.de" }], [{ url: `https://${BLACKLISTED_DOMAIN}` }]];
-                if (startup) expectedCalls.push([{ url: `https://${GRAYLISTED_DOMAIN}` }]);
-                if (!startup && !protectOpenDomains) expectedCalls.push([{ url: `https://${OPEN_DOMAIN}` }]);
-                expect(browserMock.history.deleteUrl.mock.calls).toEqual(expectedCalls);
-                expect(browserMock.history.search.mock.calls).toEqual([[{ text: "" }]]);
-                expect(typeSet.history).toBe(false);
             });
         });
     });

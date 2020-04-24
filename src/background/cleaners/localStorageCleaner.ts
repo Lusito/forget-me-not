@@ -26,8 +26,10 @@ export class LocalStorageCleaner extends Cleaner {
                 typeSet.localStorage = false;
                 const ids = await storeUtils.getAllCookieStoreIds();
                 const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
-                await this.removeFromDomainsToClean(hostnames);
-                await Promise.all(ids.map((id) => this.cleanDomains(id, hostnames)));
+                if (hostnames.length) {
+                    await this.removeFromDomainsToClean(hostnames);
+                    await Promise.all(ids.map((id) => this.cleanDomains(id, hostnames)));
+                }
             } else {
                 settings.set("domainsToClean", {});
                 await settings.save();
@@ -90,7 +92,7 @@ export class LocalStorageCleaner extends Cleaner {
         return result;
     }
 
-    public isLocalStorageProtected(storeId: string, domain: string) {
+    private isLocalStorageProtected(storeId: string, domain: string) {
         if (this.context.tabWatcher.cookieStoreContainsDomain(storeId, domain, true)) return true;
         const type = this.context.settings.getCleanupTypeForDomain(domain);
         return type === CleanupType.NEVER || type === CleanupType.STARTUP;

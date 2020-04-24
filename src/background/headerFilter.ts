@@ -28,30 +28,27 @@ export class HeaderFilter {
 
     private readonly context: ExtensionBackgroundContext;
 
-    private readonly onHeadersReceived: (
-        details: WebRequest.OnHeadersReceivedDetailsType
-    ) => WebRequest.BlockingResponse;
-
     public constructor(context: ExtensionBackgroundContext) {
         this.context = context;
         if (context.supports.requestFilterIncognito) this.filter.incognito = false;
-        this.onHeadersReceived = (details) => {
-            if (details.responseHeaders && !details.incognito && !context.incognitoWatcher.hasTab(details.tabId)) {
-                return {
-                    responseHeaders: this.filterResponseHeaders(
-                        details.responseHeaders,
-                        context.domainUtils.getValidHostname(details.url),
-                        details.tabId
-                    ),
-                };
-            }
-            return {};
-        };
         this.updateSettings();
         messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, HEADER_FILTER_SETTINGS_KEYS)) this.updateSettings();
         });
     }
+
+    private onHeadersReceived = (details: WebRequest.OnHeadersReceivedDetailsType): WebRequest.BlockingResponse => {
+        if (details.responseHeaders && !details.incognito && !this.context.incognitoWatcher.hasTab(details.tabId)) {
+            return {
+                responseHeaders: this.filterResponseHeaders(
+                    details.responseHeaders,
+                    this.context.domainUtils.getValidHostname(details.url),
+                    details.tabId
+                ),
+            };
+        }
+        return {};
+    };
 
     public isEnabled() {
         return browser.webRequest.onHeadersReceived.hasListener(this.onHeadersReceived);
@@ -71,27 +68,25 @@ export class HeaderFilter {
         responseHeaders: WebRequest.HttpHeaders,
         fallbackDomain: string,
         tabId: number
-    ): WebRequest.HttpHeaders | undefined {
+    ): WebRequest.HttpHeaders {
         return responseHeaders.filter((x) => {
-            if (x.name.toLowerCase() === "set-cookie") {
-                if (x.value) {
-                    const filtered = x.value.split("\n").filter((value) => {
-                        const cookieInfo = this.context.cookieUtils.parseSetCookieHeader(value.trim(), fallbackDomain);
-                        if (cookieInfo) {
-                            const domain = cookieInfo.domain.startsWith(".")
-                                ? cookieInfo.domain.substr(1)
-                                : cookieInfo.domain;
-                            if (this.shouldCookieBeBlocked(tabId, domain, cookieInfo.name)) {
-                                messageUtil.sendSelf("cookieRemoved", domain);
-                                return false;
-                            }
+            if (x.value && x.name.toLowerCase() === "set-cookie") {
+                const filtered = x.value.split("\n").filter((value) => {
+                    const cookieInfo = this.context.cookieUtils.parseSetCookieHeader(value.trim(), fallbackDomain);
+                    if (cookieInfo) {
+                        const domain = cookieInfo.domain.startsWith(".")
+                            ? cookieInfo.domain.substr(1)
+                            : cookieInfo.domain;
+                        if (this.shouldCookieBeBlocked(tabId, domain, cookieInfo.name)) {
+                            messageUtil.sendSelf("cookieRemoved", domain);
+                            return false;
                         }
-                        return true;
-                    });
+                    }
+                    return true;
+                });
 
-                    if (filtered.length === 0) return false;
-                    x.value = filtered.join("\n");
-                }
+                if (filtered.length === 0) return false;
+                x.value = filtered.join("\n");
             }
             return true;
         });

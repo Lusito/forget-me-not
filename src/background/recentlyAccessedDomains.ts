@@ -105,9 +105,8 @@ export class RecentlyAccessedDomains {
 
     private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
         if (!changeInfo.removed && !this.context.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
-            let { domain } = changeInfo.cookie;
-            if (domain.startsWith(".")) domain = domain.substr(1);
-            this.add(domain);
+            const { domain } = changeInfo.cookie;
+            this.add(domain.startsWith(".") ? domain.substr(1) : domain);
         }
     };
 

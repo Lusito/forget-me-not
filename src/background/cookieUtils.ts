@@ -40,7 +40,7 @@ export class CookieUtils {
         };
     }
 
-    public removeCookie = async (cookie: Cookies.Cookie) => {
+    public async removeCookie(cookie: Cookies.Cookie) {
         const removalInfo = this.getCookieRemovalInfo(cookie);
         const details: Cookies.RemoveDetailsType = {
             name: cookie.name,
@@ -52,7 +52,7 @@ export class CookieUtils {
         const result = await browser.cookies.remove(details);
         messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
         return result;
-    };
+    }
 
     public parseSetCookieHeader(header: string, fallbackDomain: string): SetCookieHeader | null {
         try {

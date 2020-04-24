@@ -132,9 +132,9 @@ export class Settings {
         migrateSettings(previousVersion, this.map);
     }
 
-    public setAll(json: any) {
+    public async setAll(json: any) {
         // Validate and throw out anything that is no longer valid
-        if (typeof json !== "object") return false;
+        if (!json || typeof json !== "object") throw new Error("Expected settings json to be an object");
         if (json.rules) {
             if (!Array.isArray(json.rules)) delete json.rules;
             else (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
@@ -157,14 +157,13 @@ export class Settings {
         }
 
         const keysToRemove = Object.keys(this.getAll()).filter((key) => !(key in json));
-        this.storage.remove(keysToRemove);
+        if (keysToRemove.length) await this.storage.remove(keysToRemove);
 
         this.map = json;
         this.performUpgrade(this.get("version"));
         this.set("version", browser.runtime.getManifest().version);
         this.rebuildRules();
-        this.save();
-        return true;
+        await this.save();
     }
 
     public getAll() {

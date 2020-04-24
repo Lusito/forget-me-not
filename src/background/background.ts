@@ -128,21 +128,24 @@ export class Background implements TabWatcherListener {
     public async updateBadge() {
         const tabs = await browser.tabs.query({ active: true });
         const { settings, domainUtils } = this.context;
-        for (const tab of tabs) {
-            if (tab?.url && !tab.incognito) {
-                let badge = badges.none;
-                const hostname = domainUtils.getValidHostname(tab.url);
-                if (hostname) badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(hostname));
-                let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
-                if (!settings.get("showBadge")) text = "";
-                if (browser.browserAction.setBadgeText) browser.browserAction.setBadgeText({ text, tabId: tab.id });
-                if (browser.browserAction.setBadgeBackgroundColor)
-                    browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
-                browser.browserAction.enable(tab.id);
-            } else {
-                browser.browserAction.disable(tab.id);
-            }
-        }
+        await Promise.all(
+            tabs.map(async (tab) => {
+                if (tab?.url && !tab.incognito) {
+                    let badge = badges.none;
+                    const hostname = domainUtils.getValidHostname(tab.url);
+                    if (hostname) badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(hostname));
+                    let text = badge.i18nBadge ? wetLayer.getMessage(badge.i18nBadge) : "";
+                    if (!settings.get("showBadge")) text = "";
+                    if (browser.browserAction.setBadgeText)
+                        await browser.browserAction.setBadgeText({ text, tabId: tab.id });
+                    if (browser.browserAction.setBadgeBackgroundColor)
+                        await browser.browserAction.setBadgeBackgroundColor({ color: badge.color, tabId: tab.id });
+                    await browser.browserAction.enable(tab.id);
+                } else {
+                    await browser.browserAction.disable(tab.id);
+                }
+            })
+        );
     }
 
     public onDomainEnter(cookieStoreId: string, hostname: string) {
@@ -159,13 +162,13 @@ export class Background implements TabWatcherListener {
         this.getCleanupScheduler(cookieStoreId).schedule(hostname);
     }
 
-    private updateBrowserAction() {
+    private async updateBrowserAction() {
         const path: { [s: string]: string } = {};
         const suffix = this.snoozing ? "z" : "";
         for (const size of [16, 32, 48, 64, 96, 128]) path[size] = `icons/icon${size}${suffix}.png`;
 
-        browser.browserAction.setIcon?.({ path });
-        browser.browserAction.setTitle({
+        if (browser.browserAction.setIcon) await browser.browserAction.setIcon({ path });
+        await browser.browserAction.setTitle({
             title: wetLayer.getMessage(this.snoozing ? "actionTitleSnooze" : "actionTitle"),
         });
     }
@@ -178,7 +181,7 @@ export class Background implements TabWatcherListener {
 
         this.headerFilter.setSnoozing(this.snoozing);
 
-        this.updateBrowserAction();
+        await this.updateBrowserAction();
         this.sendSnoozingState();
         await promise;
     }

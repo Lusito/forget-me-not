@@ -4,124 +4,31 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { browser, BrowsingData } from "webextension-polyfill-ts";
+import { BrowsingData, Cookies } from "webextension-polyfill-ts";
 
-import { booleanContext } from "../../testUtils/testHelpers";
-import { quickSetCookie, quickSettings } from "../../testUtils/quickHelpers";
-import { TabWatcher } from "../tabWatcher";
-import { IncognitoWatcher } from "../incognitoWatcher";
+import { booleanVariations } from "../../testUtils/testHelpers";
 import { CookieCleaner } from "./cookieCleaner";
+import { testContext, mockContext } from "../../testUtils/mockContext";
+import { mockEvent } from "../../testUtils/mockBrowser";
+import { quickCookie } from "../../testUtils/quickHelpers";
 import { CleanupType } from "../../lib/shared";
-import { advanceTime } from "../../testUtils/time";
-import { StoreUtils } from "../storeUtils";
-import { DomainUtils } from "../domainUtils";
-import { CookieUtils } from "../cookieUtils";
-import { RequestWatcher } from "../requestWatcher";
+import { mockAssimilate, whitelistPropertyAccess } from "../../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
-const WHITELISTED_DOMAIN = "never.com";
-const GRAYLISTED_DOMAIN = "startup.com";
-const BLACKLISTED_DOMAIN = "instantly.com";
-const OPEN_DOMAIN = "open.com";
-const OPEN_DOMAIN2 = "open2.com";
-const FRAME_DOMAIN = "frame.com";
-const FRAME_DOMAIN2 = "frame2.com";
-const UNKNOWN_DOMAIN = "unknown.com";
-const UNKNOWN_DOMAIN2 = "unknown2.com";
-const UNKNOWN_SUBDOMAIN = "sub.unknown.com";
-const ALL_COOKIE_DOMAINS = [
-    WHITELISTED_DOMAIN,
-    GRAYLISTED_DOMAIN,
-    BLACKLISTED_DOMAIN,
-    OPEN_DOMAIN,
-    OPEN_DOMAIN2,
-    FRAME_DOMAIN,
-    FRAME_DOMAIN2,
-    UNKNOWN_DOMAIN,
-    UNKNOWN_DOMAIN2,
-];
-
-async function getRemainingCookieDomains() {
-    const cookies = await browser.cookies.getAll({
-        firstPartyDomain: null,
-        storeId: COOKIE_STORE_ID,
-    });
-    return cookies.map((c) => c.domain);
-}
 
 describe("CookieCleaner", () => {
-    const settings = quickSettings({
-        version: "2.0.0",
-        // fixme: mobile: true?
-        mobile: false,
-        // fixme: removeLocalStorageByHostname: false?
-        removeLocalStorageByHostname: true,
-    });
-    // fixme: firstPartyIsolation: false?
-    const supports = { firstPartyIsolation: true };
-    const cookieUtils = new CookieUtils({ supports } as any);
-    // fixme: isFirefox: false
-    const storeUtils = new StoreUtils(true);
-    const domainUtils = new DomainUtils();
-    const tabWatcherContext = {
-        storeUtils,
-        domainUtils,
-    } as any;
-    const incognitoWatcherContext = { storeUtils: { defaultCookieStoreId: COOKIE_STORE_ID } } as any;
-    const tabWatcherListener = {
-        onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined,
-    };
-    let tabWatcher: TabWatcher | null = null;
-    let incognitoWatcher: IncognitoWatcher | null = null;
-    let cleaner: CookieCleaner | null = null;
+    let cookieCleaner: CookieCleaner | null = null;
 
-    afterEach(async () => {
-        tabWatcher = null;
-        incognitoWatcher = null;
-        cleaner = null;
-        await settings.restoreDefaults();
+    afterEach(() => {
+        cookieCleaner = null;
     });
 
-    beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
-        incognitoWatcher = new IncognitoWatcher(incognitoWatcherContext);
-        // eslint-disable-next-line no-new
-        new RequestWatcher(tabWatcher, { domainUtils } as any);
-        await tabWatcher.initializeExistingTabs();
-        await incognitoWatcher.initializeExistingTabs();
-
-        const tabIds = [
-            browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
-            browserMock.tabs.create(`http://${OPEN_DOMAIN2}`, COOKIE_STORE_ID),
-        ];
-        tabWatcher.commitNavigation(tabIds[0], 1, FRAME_DOMAIN);
-        tabWatcher.commitNavigation(tabIds[1], 1, FRAME_DOMAIN2);
-        browserMock.cookies.cookieStores = [{ id: COOKIE_STORE_ID, tabIds, incognito: false }];
-        quickSetCookie(OPEN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        quickSetCookie(OPEN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN2);
-        quickSetCookie(FRAME_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        quickSetCookie(FRAME_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, OPEN_DOMAIN);
-        quickSetCookie(UNKNOWN_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        quickSetCookie(UNKNOWN_DOMAIN2, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN2);
-        quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        quickSetCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-        settings.set("rules", [
-            { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
-            { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
-            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
-        ]);
-        await settings.save();
-        cleaner = new CookieCleaner({
-            settings,
-            domainUtils,
-            storeUtils,
-            cookieUtils,
-            incognitoWatcher,
-            supports,
-            tabWatcher,
-        } as any);
+    beforeEach(() => {
+        mockEvent(mockBrowser.cookies.onChanged);
+        mockContext.incognitoWatcher.mockAllow();
+        mockContext.tabWatcher.mockAllow();
+        mockContext.settings.mockAllow();
+        cookieCleaner = new CookieCleaner(testContext);
     });
 
     describe("clean", () => {
@@ -132,336 +39,704 @@ describe("CookieCleaner", () => {
             typeSet.cookies = true;
         });
 
-        booleanContext((cookies, startup, startupApplyRules, cleanAllApplyRules) => {
-            beforeEach(async () => {
-                typeSet.cookies = cookies;
-                settings.set("startup.cookies.applyRules", startupApplyRules);
-                settings.set("cleanAll.cookies.applyRules", cleanAllApplyRules);
-                await settings.save();
-            });
-            if (cookies && ((startup && startupApplyRules) || (!startup && cleanAllApplyRules))) {
-                it("should clean up", async () => {
-                    await cleaner!.clean(typeSet, startup);
-                    expect(browserMock.cookies.getAllCookieStores.mock.calls).toEqual([[]]);
-                    expect(typeSet.cookies).toBe(false);
-                });
-            } else {
-                it("should not do anything", async () => {
-                    await cleaner!.clean(typeSet, startup);
-                    expect(browserMock.cookies.getAllCookieStores).not.toHaveBeenCalled();
-                    expect(typeSet.cookies).toBe(cookies);
-                });
+        it.each(booleanVariations(1))(
+            "should not do anything if cookies flag is false and startup=%j",
+            async (startup) => {
+                typeSet.cookies = false;
+                const cleanCookiesWithRulesNow = jest.fn();
+                cookieCleaner!["cleanCookiesWithRulesNow"] = cleanCookiesWithRulesNow;
+                await cookieCleaner!.clean(typeSet, startup);
+                expect(typeSet.cookies).toBe(false);
+                expect(cleanCookiesWithRulesNow).not.toHaveBeenCalled();
             }
-        });
-
-        booleanContext((protectOpenDomains) => {
-            beforeEach(async () => {
-                settings.set("cleanAll.protectOpenDomains", protectOpenDomains);
-                await settings.save();
-            });
-            it("should protect whitelisted cookies and open domains (+iframes)", async () => {
-                await cleaner!.clean(typeSet, true);
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([
-                    WHITELISTED_DOMAIN,
-                    OPEN_DOMAIN,
-                    OPEN_DOMAIN2,
-                    FRAME_DOMAIN,
-                    FRAME_DOMAIN2,
-                ]);
+        );
+        it.each(booleanVariations(1))(
+            "should not do anything if cookies flag is true and startup=%j with respective setting of false",
+            async (startup) => {
+                const cleanCookiesWithRulesNow = jest.fn();
+                cookieCleaner!["cleanCookiesWithRulesNow"] = cleanCookiesWithRulesNow;
+                mockContext.settings.get
+                    .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
+                    .andReturn(false);
+                await cookieCleaner!.clean(typeSet, startup);
+                expect(typeSet.cookies).toBe(true);
+                expect(cleanCookiesWithRulesNow).not.toHaveBeenCalled();
+            }
+        );
+        it.each(booleanVariations(2))(
+            "should call cleanCookiesWithRulesNow if cookies flag is true and startup=%j with respective setting of true",
+            async (startup, protectOpenDomains) => {
+                const cleanCookiesWithRulesNow = jest.fn();
+                cookieCleaner!["cleanCookiesWithRulesNow"] = cleanCookiesWithRulesNow;
+                mockContext.settings.get
+                    .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
+                    .andReturn(true);
+                if (!startup)
+                    mockContext.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
+                await cookieCleaner!.clean(typeSet, startup);
                 expect(typeSet.cookies).toBe(false);
-            });
-        });
-        describe("startup = false, protectOpenDomains = true", () => {
-            beforeEach(async () => {
-                settings.set("cleanAll.protectOpenDomains", true);
-                await settings.save();
-            });
-            it("should protect whitelisted and graylisted cookies, as well as open domains (+iframes)", async () => {
-                await cleaner!.clean(typeSet, false);
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([
-                    WHITELISTED_DOMAIN,
-                    GRAYLISTED_DOMAIN,
-                    OPEN_DOMAIN,
-                    OPEN_DOMAIN2,
-                    FRAME_DOMAIN,
-                    FRAME_DOMAIN2,
-                ]);
-                expect(typeSet.cookies).toBe(false);
-            });
-        });
-        describe("startup = false, protectOpenDomains = false", () => {
-            beforeEach(async () => {
-                settings.set("cleanAll.protectOpenDomains", false);
-                await settings.save();
-            });
-            it("should protect whitelisted and graylisted cookies", async () => {
-                await cleaner!.clean(typeSet, false);
-
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN]);
-                expect(typeSet.cookies).toBe(false);
-            });
-        });
+                expect(cleanCookiesWithRulesNow.mock.calls).toEqual([[startup, startup || protectOpenDomains]]);
+            }
+        );
     });
 
     describe("cleanDomainOnLeave", () => {
-        describe("domainLeave.enabled = false", () => {
-            beforeEach(() => {
-                // eslint-disable-next-line jest/no-standalone-expect
-                expect(settings.get("domainLeave.enabled")).toBe(false);
-            });
-            it("should not do anything", async () => {
-                await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
+        it("should not do anything if domainLeave.enabled = false", async () => {
+            const cleanDomainInternal = jest.fn();
+            cookieCleaner!["cleanDomainInternal"] = cleanDomainInternal;
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(false); // domainLeave.cookies
+            await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
 
-                expect(browserMock.cookies.remove).not.toHaveBeenCalled();
-                expect(browserMock.cookies.getAll).not.toHaveBeenCalled();
-            });
+            expect(cleanDomainInternal).not.toHaveBeenCalled();
         });
-        describe("domainLeave.enabled = true, domainLeave.cookies=false", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.cookies", false);
-                await settings.save();
-            });
-            it("should not do anything", async () => {
-                await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
+        it("should not do anything if domainLeave.enabled = true, but domainLeave.cookies = false", async () => {
+            const cleanDomainInternal = jest.fn();
+            cookieCleaner!["cleanDomainInternal"] = cleanDomainInternal;
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(true);
+            mockContext.settings.get.expect("domainLeave.cookies").andReturn(false);
+            await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
 
-                expect(browserMock.cookies.remove).not.toHaveBeenCalled();
-                expect(browserMock.cookies.getAll).not.toHaveBeenCalled();
-            });
+            expect(cleanDomainInternal).not.toHaveBeenCalled();
         });
-        describe("domainLeave.enabled = true, domainLeave.cookies=true", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", true);
-                settings.set("domainLeave.cookies", true);
-                await settings.save();
+        it("should call cleanDomainInternal if domainLeave.enabled = true, but domainLeave.cookies = true", async () => {
+            const cleanDomainInternal = jest.fn(() => Promise.resolve());
+            cookieCleaner!["cleanDomainInternal"] = cleanDomainInternal;
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(true);
+            mockContext.settings.get.expect("domainLeave.cookies").andReturn(true);
+            await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
 
-                // should clean subdomain cookies as well
-                quickSetCookie(UNKNOWN_SUBDOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-            });
-            it("should clean cookies", async () => {
-                await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([
-                    OPEN_DOMAIN,
-                    OPEN_DOMAIN2,
-                    FRAME_DOMAIN,
-                    FRAME_DOMAIN2,
-                    UNKNOWN_DOMAIN2,
-                    WHITELISTED_DOMAIN,
-                    GRAYLISTED_DOMAIN,
-                    BLACKLISTED_DOMAIN,
-                ]);
-            });
-            it("should not clean anything if the domain is protected", async () => {
-                await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
-                await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
-                await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, GRAYLISTED_DOMAIN);
-                expect(browserMock.cookies.remove).not.toHaveBeenCalled();
-            });
+            expect(cleanDomainInternal.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain.com", false]]);
         });
     });
 
-    describe("isCookieAllowed", () => {
-        /* eslint-disable jest/expect-expect */
-        async function testCookieAllowed(
-            domain: string,
-            ignoreStartupType: boolean,
-            protectOpenDomains: boolean,
-            protectSubFrames: boolean,
-            expected: boolean
-        ) {
-            const cookies = await browser.cookies.getAll({
-                firstPartyDomain: null,
-                storeId: COOKIE_STORE_ID,
-            });
-            const cookie = cookies.find((c) => c.domain === domain);
-            expect(cookie).toBeDefined();
-            expect(cleaner!.isCookieAllowed(cookie!, ignoreStartupType, protectOpenDomains, protectSubFrames)).toBe(
-                expected
-            );
+    describe("cleanDomainInternal", () => {
+        function prepareCleanDomainInternal(ignoreRules: boolean) {
+            const removeCookies = jest.fn();
+            cookieCleaner!["removeCookies"] = removeCookies;
+            cookieCleaner!["cleanDomainInternal"](COOKIE_STORE_ID, "www.some-domain.com", ignoreRules);
+            expect(removeCookies.mock.calls).toEqual([[COOKIE_STORE_ID, expect.anything()]]);
+            return removeCookies.mock.calls[0][1] as Parameters<CookieCleaner["removeCookies"]>[1];
         }
-        it("should return true if the matching rule is never", async () => {
-            await testCookieAllowed(WHITELISTED_DOMAIN, true, true, false, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, false, true, false, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, false, false, false, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, true, false, false, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, true, true, true, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, false, true, true, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, false, false, true, true);
-            await testCookieAllowed(WHITELISTED_DOMAIN, true, false, true, true);
+        function prepareShouldPurgeExpiredCookie(shouldPurge: boolean) {
+            const spy = jest.fn(() => shouldPurge);
+            cookieCleaner!["shouldPurgeExpiredCookie"] = spy;
+            return spy;
+        }
+        describe("callback with shouldPurgeExpiredCookie=true", () => {
+            it.each(booleanVariations(1))("should return true with ignoreRules=%j", (ignoreRules) => {
+                const callback = prepareCleanDomainInternal(ignoreRules);
+                const cookie = quickCookie("some-domain.com", "hello", "", COOKIE_STORE_ID, "");
+                const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(true);
+                expect(callback(cookie)).toBe(true);
+                expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+            });
         });
-        it("should return true if the matching rule is startup and ignoreStartupType=false", async () => {
-            await testCookieAllowed(GRAYLISTED_DOMAIN, false, false, false, true);
-            await testCookieAllowed(GRAYLISTED_DOMAIN, false, true, false, true);
-            await testCookieAllowed(GRAYLISTED_DOMAIN, false, false, true, true);
-            await testCookieAllowed(GRAYLISTED_DOMAIN, false, true, true, true);
+        describe("callback with shouldPurgeExpiredCookie=false", () => {
+            describe.each([
+                [true, false, true],
+                [false, true, false],
+                [false, false, true],
+            ])("with ignoreRules=%j and isCookieAllowed=%j", (ignoreRules, isCookieAllowed, result) => {
+                function prepareIsCookieAllowed() {
+                    const spy = jest.fn(() => isCookieAllowed);
+                    cookieCleaner!["isCookieAllowed"] = spy;
+                    return spy;
+                }
+                function validateIsCookieAllowedSpy(spy: jest.Mock<boolean, []>, cookie: Cookies.Cookie) {
+                    if (ignoreRules) expect(spy).not.toHaveBeenCalled();
+                    else expect(spy.mock.calls).toEqual([[cookie, false, true, true]]);
+                }
+                it(`should return ${result} with a matching firstPartyDomain`, () => {
+                    const callback = prepareCleanDomainInternal(ignoreRules);
+                    const cookie = quickCookie("some-domain.com", "hello", "", COOKIE_STORE_ID, "some-domain.com");
+                    const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(false);
+                    const isCookieAllowedSpy = prepareIsCookieAllowed();
+                    expect(callback(cookie)).toBe(result);
+                    expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                    validateIsCookieAllowedSpy(isCookieAllowedSpy, cookie);
+                });
+                it("should return false with no matching firstPartyDomain", () => {
+                    const callback = prepareCleanDomainInternal(ignoreRules);
+                    const cookie = quickCookie(
+                        "some-domain.com",
+                        "hello",
+                        "",
+                        COOKIE_STORE_ID,
+                        "some-other-domain.com"
+                    );
+                    const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(false);
+                    const isCookieAllowedSpy = prepareIsCookieAllowed();
+                    expect(callback(cookie)).toBe(false);
+                    expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                    expect(isCookieAllowedSpy).not.toHaveBeenCalled();
+                });
+                it(`should return ${result} with a matching domain->firstPartyDomain`, () => {
+                    const callback = prepareCleanDomainInternal(ignoreRules);
+                    const cookie = quickCookie("xxx.some-domain.com", "hello", "", COOKIE_STORE_ID, "");
+                    mockContext.domainUtils.getFirstPartyCookieDomain
+                        .expect("xxx.some-domain.com")
+                        .andReturn("some-domain.com");
+                    const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(false);
+                    const isCookieAllowedSpy = prepareIsCookieAllowed();
+                    expect(callback(cookie)).toBe(result);
+                    expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                    validateIsCookieAllowedSpy(isCookieAllowedSpy, cookie);
+                });
+                it("should return false with no matching domain->firstPartyDomain", () => {
+                    const callback = prepareCleanDomainInternal(ignoreRules);
+                    const cookie = quickCookie("xxx.some-other-domain.com", "hello", "", COOKIE_STORE_ID, "");
+                    mockContext.domainUtils.getFirstPartyCookieDomain
+                        .expect("xxx.some-other-domain.com")
+                        .andReturn("some-other-domain.com");
+                    const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(false);
+                    const isCookieAllowedSpy = prepareIsCookieAllowed();
+                    expect(callback(cookie)).toBe(false);
+                    expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                    expect(isCookieAllowedSpy).not.toHaveBeenCalled();
+                });
+            });
         });
-        it("should return false if the matching rule is startup and ignoreStartupType=true", async () => {
-            await testCookieAllowed(GRAYLISTED_DOMAIN, true, false, false, false);
-            await testCookieAllowed(GRAYLISTED_DOMAIN, true, true, false, false);
-            await testCookieAllowed(GRAYLISTED_DOMAIN, true, false, true, false);
-            await testCookieAllowed(GRAYLISTED_DOMAIN, true, true, true, false);
-        });
-        it("should return false if the matching rule is instantly", async () => {
-            await testCookieAllowed(BLACKLISTED_DOMAIN, true, true, false, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, false, true, false, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, false, false, false, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, true, false, false, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, true, true, true, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, false, true, true, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, false, false, true, false);
-            await testCookieAllowed(BLACKLISTED_DOMAIN, true, false, true, false);
-        });
-        it("should return false if the matching rule is leave", async () => {
-            await testCookieAllowed(UNKNOWN_DOMAIN, false, false, false, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, true, false, false, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, false, false, true, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, true, false, true, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, false, true, false, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, true, true, false, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, false, true, true, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN, true, true, true, false);
-        });
-        it("should return true if protectOpenDomains = true and cookie has firstpartydomain, which is on watcher", async () => {
-            await testCookieAllowed(OPEN_DOMAIN2, true, true, false, true);
-            await testCookieAllowed(OPEN_DOMAIN2, false, true, false, true);
-            await testCookieAllowed(OPEN_DOMAIN2, true, true, true, true);
-            await testCookieAllowed(OPEN_DOMAIN2, false, true, true, true);
-        });
-        it("should return false if protectOpenDomains = true and cookie has firstpartydomain, which is not on watcher", async () => {
-            await testCookieAllowed(UNKNOWN_DOMAIN2, true, true, false, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN2, false, true, false, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN2, true, true, true, false);
-            await testCookieAllowed(UNKNOWN_DOMAIN2, false, true, true, false);
-        });
-        it("should return true if protectOpenDomains = true and first party domain of cookie is on watcher", async () => {
-            await testCookieAllowed(OPEN_DOMAIN, true, true, false, true);
-            await testCookieAllowed(OPEN_DOMAIN, false, true, false, true);
-            await testCookieAllowed(OPEN_DOMAIN, true, true, true, true);
-            await testCookieAllowed(OPEN_DOMAIN, false, true, true, true);
-        });
-        it("should return true if protectOpenDomains = true, protectSubFrames = true and first party domain of cookie is on watcher", async () => {
-            await testCookieAllowed(FRAME_DOMAIN, true, true, true, true);
-            await testCookieAllowed(FRAME_DOMAIN, false, true, true, true);
-        });
-        it("should return false if protectOpenDomains = false or protectSubFrames = false and first party domain of cookie is on watcher", async () => {
-            await testCookieAllowed(FRAME_DOMAIN, true, false, true, false);
-            await testCookieAllowed(FRAME_DOMAIN, false, false, true, false);
-            await testCookieAllowed(FRAME_DOMAIN, true, true, false, false);
-            await testCookieAllowed(FRAME_DOMAIN, false, true, false, false);
-        });
-        /* eslint-enable jest/expect-expect */
     });
 
-    describe("cleanDomain", () => {
-        describe("Non-first-party-domain cookies", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", false);
-                settings.set("domainLeave.cookies", false);
-                await settings.save();
+    describe("setSnoozing", () => {
+        describe("with snoozing=true", () => {
+            it("does nothing", async () => {
+                whitelistPropertyAccess(cookieCleaner!, "setSnoozing", "snoozing");
+                await cookieCleaner!.setSnoozing(true);
+                expect(cookieCleaner!["snoozing"]).toBe(true);
             });
-            ALL_COOKIE_DOMAINS.filter((value) => value !== FRAME_DOMAIN2 && value !== UNKNOWN_DOMAIN2).forEach(
-                (domain) => {
-                    it(`should clean ${domain} regardless of rules and settings`, async () => {
-                        await cleaner!.cleanDomain(COOKIE_STORE_ID, domain);
-                        const remainder = ALL_COOKIE_DOMAINS.slice();
-                        remainder.splice(ALL_COOKIE_DOMAINS.indexOf(domain), 1);
-                        if (domain === OPEN_DOMAIN) remainder.splice(remainder.indexOf(FRAME_DOMAIN2), 1);
+        });
+        describe("with snoozing=false", () => {
+            const cookie1 = quickCookie("some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+            const cookie2 = quickCookie("some-domain.com", "name2", "", COOKIE_STORE_ID, "");
+            const cookie3 = quickCookie("some-domain.com", "name3", "", COOKIE_STORE_ID, "");
+            const cookie4 = quickCookie("some-domain.com", "name4", "/unwanted", COOKIE_STORE_ID, "");
+            describe.each(booleanVariations(2))(
+                "with cleanThirdPartyCookies.enabled=%j and cleanThirdPartyCookies.beforeCreation=%j",
+                (enabled, beforeCreation) => {
+                    const parts = [];
+                    enabled && parts.push("snoozed thirdparty cookies");
+                    beforeCreation && parts.push("snoozed instantly cookies");
+                    parts.length === 0 && parts.push("nothing, but still empties the arrays");
+                    it(`removes ${parts.join(" and ")}`, async () => {
+                        cookieCleaner!["snoozedThirdpartyCookies"].push(cookie1, cookie2);
+                        cookieCleaner!["snoozedInstantlyCookies"].push(cookie3, cookie4);
+                        const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                            cookieCleaner!,
+                            {
+                                removeCookieIfThirdparty: cookieCleaner!["removeCookieIfThirdparty"],
+                                isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                            },
+                            [
+                                "context",
+                                "snoozing",
+                                "setSnoozing",
+                                "snoozedThirdpartyCookies",
+                                "snoozedInstantlyCookies",
+                            ]
+                        );
 
-                        expect(await getRemainingCookieDomains()).toHaveSameMembers(remainder);
+                        mockContext.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(enabled);
+                        if (enabled) {
+                            mockCookieCleaner.removeCookieIfThirdparty.expect(cookie1).andResolve();
+                            mockCookieCleaner.removeCookieIfThirdparty.expect(cookie2).andResolve();
+                        }
+                        mockContext.settings.get
+                            .expect("cleanThirdPartyCookies.beforeCreation")
+                            .andReturn(beforeCreation);
+                        if (beforeCreation) {
+                            mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie3).andReturn(false);
+                            mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie4).andReturn(true);
+                            mockContext.cookieUtils.removeCookie.expect(cookie4).andResolve({} as any);
+                        }
+
+                        await cookieCleaner!.setSnoozing(false);
+
+                        expect(cookieCleaner!["snoozedThirdpartyCookies"]).toHaveLength(0);
+                        expect(cookieCleaner!["snoozedInstantlyCookies"]).toHaveLength(0);
+                        expect(cookieCleaner!["snoozing"]).toBe(false);
+                        mockCookieCleanerNode.verifyAndDisable();
                     });
                 }
             );
         });
-        describe("First-party-domain cookies", () => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", false);
-                settings.set("domainLeave.cookies", false);
-                await settings.save();
-                browserMock.cookies.resetCookies();
-                quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-                quickSetCookie(GRAYLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, BLACKLISTED_DOMAIN);
-            });
-            it("should not remove cookies which have a first party domain if that first party domain is not the one to be cleaned", async () => {
-                await cleaner!.cleanDomain(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
+    });
 
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN, GRAYLISTED_DOMAIN]);
-            });
-            it("should remove cookies which have a first party domain if that first party domain is the one to be cleaned", async () => {
-                await cleaner!.cleanDomain(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
+    describe("cleanCookiesWithRulesNow", () => {
+        const cookie = quickCookie("some-domain.com", "name1", "", COOKIE_STORE_ID, "");
 
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([GRAYLISTED_DOMAIN]);
+        it.each(booleanVariations(2))(
+            "should remove unwanted cookies with ignoreStartupType=%j, protectOpenDomains=%j",
+            async (ignoreStartupType, protectOpenDomains) => {
+                mockContext.storeUtils.getAllCookieStoreIds
+                    .expect()
+                    .andResolve([COOKIE_STORE_ID, "another-mock-store"]);
+                const removeCookies = jest.fn();
+                cookieCleaner!["removeCookies"] = removeCookies;
+                const shouldPurgeExpiredCookie = jest.fn();
+                cookieCleaner!["shouldPurgeExpiredCookie"] = shouldPurgeExpiredCookie;
+                const isCookieAllowed = jest.fn();
+                cookieCleaner!["isCookieAllowed"] = isCookieAllowed;
+
+                await cookieCleaner!["cleanCookiesWithRulesNow"](ignoreStartupType, protectOpenDomains);
+
+                expect(removeCookies.mock.calls).toEqual([
+                    [COOKIE_STORE_ID, expect.anything()],
+                    ["another-mock-store", expect.anything()],
+                ]);
+                const callback = removeCookies.mock.calls[0][1] as (cookie: Cookies.Cookie) => boolean;
+
+                shouldPurgeExpiredCookie.mockReturnValueOnce(false);
+                isCookieAllowed.mockReturnValueOnce(true);
+                expect(callback(cookie)).toBe(false);
+                expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                expect(isCookieAllowed.mock.calls).toEqual([[cookie, ignoreStartupType, protectOpenDomains, true]]);
+                shouldPurgeExpiredCookie.mockReset();
+                isCookieAllowed.mockReset();
+
+                shouldPurgeExpiredCookie.mockReturnValueOnce(true);
+                expect(callback(cookie)).toBe(true);
+                expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                expect(isCookieAllowed).not.toHaveBeenCalled();
+                shouldPurgeExpiredCookie.mockReset();
+
+                shouldPurgeExpiredCookie.mockReturnValueOnce(false);
+                isCookieAllowed.mockReturnValueOnce(false);
+                expect(callback(cookie)).toBe(true);
+                expect(shouldPurgeExpiredCookie.mock.calls).toEqual([[cookie]]);
+                expect(isCookieAllowed.mock.calls).toEqual([[cookie, ignoreStartupType, protectOpenDomains, true]]);
+            }
+        );
+    });
+
+    describe("isUnwantedThirdPartyCookie", () => {
+        const cookie = quickCookie("some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+
+        describe.each(booleanVariations(2))("hasStore=%j, isThirdparty=%j", (hasStore, isThirdparty) => {
+            const result = !hasStore && isThirdparty;
+            it(`should return ${result}`, () => {
+                const isThirdpartyCookie = jest.fn();
+                cookieCleaner!["isThirdpartyCookie"] = isThirdpartyCookie;
+                mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(hasStore);
+                if (!hasStore) isThirdpartyCookie.mockReturnValueOnce(isThirdparty);
+
+                expect(cookieCleaner!["isUnwantedThirdPartyCookie"](cookie)).toBe(result);
+
+                if (!hasStore) expect(isThirdpartyCookie.mock.calls).toEqual([[cookie]]);
+                else expect(isThirdpartyCookie).not.toHaveBeenCalled();
+            });
+        });
+    });
+
+    describe("shouldRemoveCookieInstantly", () => {
+        const cookie = quickCookie(".www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+        describe.each([
+            [false, false],
+            [true, false],
+            [false, true],
+        ])("with instantly.enabled=%j and instantly.cookies=%j", (instantlyEnabled, cookiesEnabled) => {
+            it("returns false", () => {
+                mockContext.settings.get.expect("instantly.enabled").andReturn(instantlyEnabled);
+                if (instantlyEnabled) mockContext.settings.get.expect("instantly.cookies").andReturn(cookiesEnabled);
+                expect(cookieCleaner!["shouldRemoveCookieInstantly"](cookie)).toBe(false);
+            });
+        });
+        describe("with instantly.enabled=true and instantly.cookies=true", () => {
+            it.each([
+                [false, CleanupType.LEAVE],
+                [false, CleanupType.NEVER],
+                [false, CleanupType.STARTUP],
+                [true, CleanupType.INSTANTLY],
+            ])("returns %j for cleanupType=%i", (result, cleanupType) => {
+                mockContext.settings.get.expect("instantly.enabled").andReturn(true);
+                mockContext.settings.get.expect("instantly.cookies").andReturn(true);
+                mockContext.settings.getCleanupTypeForCookie
+                    .expect("www.some-domain.com", "name1")
+                    .andReturn(cleanupType);
+                expect(cookieCleaner!["shouldRemoveCookieInstantly"](cookie)).toBe(result);
             });
         });
     });
 
     describe("onCookieChanged", () => {
-        beforeEach(() => {
-            browserMock.cookies.resetCookies();
+        const cookie = quickCookie(".www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+        const changeInfo: Cookies.OnChangedChangeInfoType = {
+            removed: false,
+            cookie,
+            cause: "explicit",
+        };
+        describe.each([
+            [true, true],
+            [true, false],
+            [false, true],
+        ])("with incognito=%j and removed=%j", (incognito, removed) => {
+            it("does nothing", async () => {
+                changeInfo.removed = removed;
+                if (!removed) mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(incognito);
+                await cookieCleaner!["onCookieChanged"](changeInfo);
+                // fixme: helper to disallow certain functions on an object
+            });
+        });
+        describe("with incognito=false and removed=false", () => {
+            beforeEach(() => {
+                changeInfo.removed = false;
+                mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
+            });
+            it("delegates the call to onCookieAddedSnoozing with snoozing=true", async () => {
+                cookieCleaner!["snoozing"] = true;
+                const onCookieAddedSnoozing = jest.fn();
+                cookieCleaner!["onCookieAddedSnoozing"] = onCookieAddedSnoozing;
+                await cookieCleaner!["onCookieChanged"](changeInfo);
+                expect(onCookieAddedSnoozing.mock.calls).toEqual([[cookie]]);
+            });
+            it("delegates the call to onCookieAddedAwake with snoozing=false", async () => {
+                cookieCleaner!["snoozing"] = false;
+                const onCookieAddedAwake = jest.fn();
+                cookieCleaner!["onCookieAddedAwake"] = onCookieAddedAwake;
+                await cookieCleaner!["onCookieChanged"](changeInfo);
+                expect(onCookieAddedAwake.mock.calls).toEqual([[cookie]]);
+            });
+        });
+    });
+
+    describe("onCookieAddedSnoozing", () => {
+        const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+        describe("with isUnwantedThirdPartyCookie=false", () => {
+            it("does nothing", async () => {
+                const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                    cookieCleaner!,
+                    {
+                        isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                    },
+                    ["onCookieAddedSnoozing"]
+                );
+                mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie).andReturn(false);
+
+                await cookieCleaner!["onCookieAddedSnoozing"](cookie);
+                mockCookieCleanerNode.verifyAndDisable();
+            });
         });
 
-        booleanContext((incognito, instantlyEnabled, instantlyCookies, snoozing) => {
-            beforeEach(async () => {
-                browserMock.tabs.create("", COOKIE_STORE_ID, incognito);
-                settings.set("instantly.enabled", instantlyEnabled);
-                settings.set("instantly.cookies", instantlyCookies);
-                await settings.save();
-                await cleaner!.setSnoozing(snoozing);
+        describe("with isUnwantedThirdPartyCookie=true", () => {
+            it("does nothing with cleanThirdPartyCookies.beforeCreation=false and cleanThirdPartyCookies.enabled=false", async () => {
+                const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                    cookieCleaner!,
+                    {
+                        isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                    },
+                    ["onCookieAddedSnoozing", "context"]
+                );
+                mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
+                mockContext.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
+                mockContext.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(false);
+
+                await cookieCleaner!["onCookieAddedSnoozing"](cookie);
+                mockCookieCleanerNode.verifyAndDisable();
             });
-            if (!incognito && instantlyEnabled && instantlyCookies && !snoozing) {
-                it("Should remove blacklisted cookies", async () => {
-                    quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([]);
-                });
-            } else {
-                it("Should not remove blacklisted cookies", async () => {
-                    quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([BLACKLISTED_DOMAIN]);
-                });
-                if (!incognito && instantlyEnabled && instantlyCookies && snoozing) {
-                    it("Should remove blacklisted cookies when snoozing gets disabled", async () => {
-                        quickSetCookie(BLACKLISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                        await cleaner!.setSnoozing(false);
-                        expect(await getRemainingCookieDomains()).toHaveSameMembers([]);
+            it("adds the cookie to snoozedInstantlyCookies with cleanThirdPartyCookies.beforeCreation=true", async () => {
+                const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                    cookieCleaner!,
+                    {
+                        isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                    },
+                    ["onCookieAddedSnoozing", "context", "snoozedInstantlyCookies"]
+                );
+                mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
+                mockContext.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(true);
+
+                await cookieCleaner!["onCookieAddedSnoozing"](cookie);
+                expect(cookieCleaner!["snoozedInstantlyCookies"]).toEqual([cookie]);
+                mockCookieCleanerNode.verifyAndDisable();
+            });
+            it("schedules the cookie to be removed with cleanThirdPartyCookies.beforeCreation=false and cleanThirdPartyCookies.enabled=true", async () => {
+                const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                    cookieCleaner!,
+                    {
+                        isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                        removeCookieIfThirdparty: cookieCleaner!["removeCookieIfThirdparty"],
+                    },
+                    ["onCookieAddedSnoozing", "context"]
+                );
+                mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
+                mockCookieCleaner.removeCookieIfThirdparty.expect(cookie).andResolve();
+
+                mockContext.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
+                mockContext.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(true);
+
+                await cookieCleaner!["onCookieAddedSnoozing"](cookie);
+                mockCookieCleanerNode.verifyAndDisable();
+            });
+        });
+    });
+
+    describe("onCookieAddedAwake", () => {
+        const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+        it("does nothing with shouldRemoveCookieInstantly=false and cleanThirdPartyCookies.enabled=false", async () => {
+            const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                cookieCleaner!,
+                {
+                    shouldRemoveCookieInstantly: cookieCleaner!["shouldRemoveCookieInstantly"],
+                },
+                ["onCookieAddedAwake", "context"]
+            );
+            mockCookieCleaner.shouldRemoveCookieInstantly.expect(cookie).andReturn(false);
+            mockContext.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(false);
+
+            await cookieCleaner!["onCookieAddedAwake"](cookie);
+            mockCookieCleanerNode.verifyAndDisable();
+        });
+        it("removes the cookie with shouldRemoveCookieInstantly=true", async () => {
+            const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                cookieCleaner!,
+                {
+                    shouldRemoveCookieInstantly: cookieCleaner!["shouldRemoveCookieInstantly"],
+                },
+                ["onCookieAddedAwake", "context"]
+            );
+            mockCookieCleaner.shouldRemoveCookieInstantly.expect(cookie).andReturn(true);
+            mockContext.cookieUtils.removeCookie.expect(cookie).andResolve({} as any);
+
+            await cookieCleaner!["onCookieAddedAwake"](cookie);
+            mockCookieCleanerNode.verifyAndDisable();
+        });
+        it("delegates to removeCookieIfThirdparty with shouldRemoveCookieInstantly=false and cleanThirdPartyCookies.enabled=true", async () => {
+            const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                cookieCleaner!,
+                {
+                    shouldRemoveCookieInstantly: cookieCleaner!["shouldRemoveCookieInstantly"],
+                    removeCookieIfThirdparty: cookieCleaner!["removeCookieIfThirdparty"],
+                },
+                ["onCookieAddedAwake", "context"]
+            );
+            mockCookieCleaner.shouldRemoveCookieInstantly.expect(cookie).andReturn(false);
+            mockCookieCleaner.removeCookieIfThirdparty.expect(cookie).andResolve();
+
+            mockContext.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(true);
+
+            await cookieCleaner!["onCookieAddedAwake"](cookie);
+            mockCookieCleanerNode.verifyAndDisable();
+        });
+    });
+
+    describe("removeCookieIfThirdparty", () => {
+        const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+        it("does nothing with isUnwantedThirdPartyCookie=false", async () => {
+            const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                cookieCleaner!,
+                {
+                    isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                },
+                ["removeCookieIfThirdparty"]
+            );
+            mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie).andReturn(false);
+
+            await cookieCleaner!["removeCookieIfThirdparty"](cookie);
+            mockCookieCleanerNode.verifyAndDisable();
+        });
+        it("delegates to scheduleThirdpartyCookieRemove with isUnwantedThirdPartyCookie=true", async () => {
+            const [mockCookieCleaner, mockCookieCleanerNode] = mockAssimilate(
+                cookieCleaner!,
+                {
+                    isUnwantedThirdPartyCookie: cookieCleaner!["isUnwantedThirdPartyCookie"],
+                    scheduleThirdpartyCookieRemove: cookieCleaner!["scheduleThirdpartyCookieRemove"],
+                },
+                ["removeCookieIfThirdparty"]
+            );
+            mockCookieCleaner.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
+            mockCookieCleaner.scheduleThirdpartyCookieRemove.expect(cookie).andResolve();
+
+            await cookieCleaner!["removeCookieIfThirdparty"](cookie);
+            mockCookieCleanerNode.verifyAndDisable();
+        });
+    });
+
+    // fixme: scheduleThirdpartyCookieRemove, delayedScheduleThirdpartyCookieRemove
+
+    describe("isThirdpartyCookie", () => {
+        describe("with firstPartyDomain on cookie", () => {
+            const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
+            it("returns false if firstPartyDomain matches", () => {
+                whitelistPropertyAccess(cookieCleaner!, "context", "isThirdpartyCookie");
+                mockContext.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-domain.com");
+
+                expect(cookieCleaner!["isThirdpartyCookie"](cookie)).toBe(false);
+            });
+            it("returns true if firstPartyDomain does not match", () => {
+                whitelistPropertyAccess(cookieCleaner!, "context", "isThirdpartyCookie");
+                mockContext.domainUtils.getFirstPartyCookieDomain
+                    .expect(cookie.domain)
+                    .andReturn("some-other-domain.com");
+
+                expect(cookieCleaner!["isThirdpartyCookie"](cookie)).toBe(true);
+            });
+        });
+        describe("without firstPartyDomain on cookie", () => {
+            const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
+            it("returns true if cookieStoreContainsDomainFP returns false", () => {
+                whitelistPropertyAccess(cookieCleaner!, "context", "isThirdpartyCookie");
+                mockContext.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-domain.com");
+                mockContext.tabWatcher.cookieStoreContainsDomainFP
+                    .expect(cookie.storeId, "some-domain.com", false)
+                    .andReturn(false);
+
+                expect(cookieCleaner!["isThirdpartyCookie"](cookie)).toBe(true);
+            });
+            it("returns false if cookieStoreContainsDomainFP returns true", () => {
+                whitelistPropertyAccess(cookieCleaner!, "context", "isThirdpartyCookie");
+                mockContext.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-domain.com");
+                mockContext.tabWatcher.cookieStoreContainsDomainFP
+                    .expect(cookie.storeId, "some-domain.com", false)
+                    .andReturn(true);
+
+                expect(cookieCleaner!["isThirdpartyCookie"](cookie)).toBe(false);
+            });
+        });
+    });
+
+    describe("removeCookies", () => {
+        const storeId = COOKIE_STORE_ID;
+        const cookie1 = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
+        const cookie2 = quickCookie("www.some-domain.com", "name2", "", COOKIE_STORE_ID, "some-domain.com");
+        const cookie3 = quickCookie("www.some-domain.com", "name3", "", COOKIE_STORE_ID, "some-domain.com");
+        const cookie4 = quickCookie("www.some-domain.com", "name4", "", COOKIE_STORE_ID, "some-domain.com");
+        const allCookies = [cookie1, cookie2, cookie3, cookie4];
+        const testCookies = [cookie1, cookie3];
+        it.each([
+            [false, { storeId }],
+            [true, { storeId, firstPartyDomain: null }],
+        ])(
+            "removes cookies where test returns true firstPartyIsolation=%j",
+            async (firstPartyIsolation, expectedDetails) => {
+                mockContext.supports.firstPartyIsolation.mock(firstPartyIsolation);
+                mockBrowser.cookies.getAll.expect(expectedDetails).andResolve(allCookies);
+                testCookies.forEach((cookie) =>
+                    mockContext.cookieUtils.removeCookie.expect(cookie).andResolve({} as any)
+                );
+                await cookieCleaner!["removeCookies"](storeId, (cookie) => testCookies.includes(cookie));
+            }
+        );
+    });
+
+    describe("shouldPurgeExpiredCookie", () => {
+        const expired = Date.now() / 1000;
+        const notExpired = (Date.now() + 24 * 60 * 60 * 1000) / 1000;
+        it.each([
+            [false, false, "an expired cookie", expired],
+            [true, true, "an expired cookie", expired],
+            [false, true, "an unexpired cookie", notExpired],
+        ])(
+            "should return %j with purgeExpiredCookies=%j and with %s",
+            (result, purgeExpiredCookies, _, expirationDate) => {
+                const cookie = quickCookie("domain.com", "name", "path", COOKIE_STORE_ID, "");
+                cookie.expirationDate = expirationDate;
+                mockContext.settings.get.expect("purgeExpiredCookies").andReturn(purgeExpiredCookies);
+                expect(cookieCleaner!["shouldPurgeExpiredCookie"](cookie)).toBe(result);
+            }
+        );
+    });
+
+    describe("isCookieAllowed", () => {
+        const cookie = quickCookie(".www.some-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
+
+        describe.each([
+            [CleanupType.NEVER, true],
+            [CleanupType.INSTANTLY, false],
+        ])("with cleanupType=%i", (cleanupType, expectedReturnType) => {
+            it.each(booleanVariations(3))(
+                `should return ${expectedReturnType} for ignoreStartupType=%j, protectOpenDomains=%j, protectSubFrames=%j`,
+                (ignoreStartupType: boolean, protectOpenDomains: boolean, protectSubFrames: boolean) => {
+                    mockContext.settings.getCleanupTypeForCookie
+                        .expect("www.some-domain.com", cookie.name)
+                        .andReturn(cleanupType);
+                    whitelistPropertyAccess(cookieCleaner!, "context", "isCookieAllowed");
+
+                    expect(
+                        cookieCleaner!["isCookieAllowed"](
+                            cookie,
+                            ignoreStartupType,
+                            protectOpenDomains,
+                            protectSubFrames
+                        )
+                    ).toBe(expectedReturnType);
+                }
+            );
+        });
+
+        describe("with CleanupType.STARTUP and ignoreStartupType=false", () => {
+            it.each(booleanVariations(2))(
+                "should return true for protectOpenDomains=%j, protectSubFrames=%j",
+                (protectOpenDomains: boolean, protectSubFrames: boolean) => {
+                    mockContext.settings.getCleanupTypeForCookie
+                        .expect("www.some-domain.com", cookie.name)
+                        .andReturn(CleanupType.STARTUP);
+                    whitelistPropertyAccess(cookieCleaner!, "context", "isCookieAllowed");
+
+                    expect(cookieCleaner!["isCookieAllowed"](cookie, false, protectOpenDomains, protectSubFrames)).toBe(
+                        true
+                    );
+                }
+            );
+        });
+
+        describe.each([
+            [CleanupType.STARTUP, true],
+            [CleanupType.LEAVE, true],
+            [CleanupType.LEAVE, false],
+        ])("with cleanupType=%i and ignoreStartupType=%j", (cleanupType, ignoreStartupType) => {
+            describe.each(booleanVariations(1))(
+                "with protectOpenDomains=false, protectSubFrames=%j",
+                (protectSubFrames: boolean) => {
+                    it("should return false", () => {
+                        mockContext.settings.getCleanupTypeForCookie
+                            .expect("www.some-domain.com", cookie.name)
+                            .andReturn(cleanupType);
+                        whitelistPropertyAccess(cookieCleaner!, "context", "isCookieAllowed");
+
+                        expect(
+                            cookieCleaner!["isCookieAllowed"](cookie, ignoreStartupType, false, protectSubFrames)
+                        ).toBe(false);
                     });
                 }
-            }
-            it("Should not remove whitelisted cookies", async () => {
-                quickSetCookie(WHITELISTED_DOMAIN, "foo", "bar", "", COOKIE_STORE_ID, "");
-                expect(await getRemainingCookieDomains()).toHaveSameMembers([WHITELISTED_DOMAIN]);
-            });
-        });
+            );
+            describe.each(booleanVariations(2))(
+                "with protectOpenDomains=true, protectSubFrames=%j",
+                (protectSubFrames: boolean) => {
+                    describe.each([[""], ["some-other-domain.com"]])(
+                        "with cookie.firstPartyDomain=%j",
+                        (firstPartyDomain) => {
+                            const cookie2 = quickCookie(
+                                ".www.some-domain.com",
+                                "name1",
+                                "",
+                                COOKIE_STORE_ID,
+                                firstPartyDomain
+                            );
+                            it.each([[true], [false]])(
+                                "should return %j if cookieStoreContainsDomainFP does",
+                                (expectedReturn) => {
+                                    mockContext.settings.getCleanupTypeForCookie
+                                        .expect("www.some-domain.com", cookie2.name)
+                                        .andReturn(cleanupType);
+                                    whitelistPropertyAccess(cookieCleaner!, "context", "isCookieAllowed");
+                                    const expectedFirstPartyDomain = firstPartyDomain || "some-domain.com";
+                                    mockContext.tabWatcher.cookieStoreContainsDomainFP
+                                        .expect(COOKIE_STORE_ID, expectedFirstPartyDomain, protectSubFrames)
+                                        .andReturn(expectedReturn);
 
-        booleanContext((incognito, thirdPartyEnabled, snoozing, delayed, whitelisted) => {
-            const delay = delayed ? 0.1 : 0; // in seconds
-            const localDomain = whitelisted ? WHITELISTED_DOMAIN : UNKNOWN_DOMAIN;
-            beforeEach(async () => {
-                browserMock.tabs.create("", COOKIE_STORE_ID, incognito);
-                settings.set("cleanThirdPartyCookies.enabled", thirdPartyEnabled);
-                settings.set("cleanThirdPartyCookies.delay", delay);
-                await settings.save();
-                await cleaner!.setSnoozing(snoozing);
-            });
-            if (!incognito && thirdPartyEnabled && !snoozing && !whitelisted) {
-                it(`Should remove cookie${delayed ? " delayed" : ""}`, async () => {
-                    quickSetCookie(localDomain, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    if (delayed) {
-                        advanceTime(99);
-                        expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain]);
-                        advanceTime(1);
-                    }
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([]);
-                });
-            } else {
-                it(`Should not remove cookie${delayed ? " delayed" : ""}`, async () => {
-                    quickSetCookie(localDomain, "foo", "bar", "", COOKIE_STORE_ID, "");
-                    if (delayed) {
-                        advanceTime(99);
-                        expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain]);
-                        advanceTime(1);
-                    }
-                    expect(await getRemainingCookieDomains()).toHaveSameMembers([localDomain]);
-                });
-            }
+                                    expect(
+                                        cookieCleaner!["isCookieAllowed"](
+                                            cookie2,
+                                            ignoreStartupType,
+                                            true,
+                                            protectSubFrames
+                                        )
+                                    ).toBe(expectedReturn);
+                                }
+                            );
+                        }
+                    );
+                }
+            );
         });
     });
 });

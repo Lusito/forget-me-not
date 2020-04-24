@@ -9,7 +9,6 @@ import { wetLayer } from "wet-layer";
 
 import { messageUtil } from "./lib/messageUtil";
 import bootstrap from "./lib/bootstrap";
-import { loadJSONFile } from "./lib/fileHelper";
 import { Background, CleanUrlNowConfig } from "./background/background";
 import { someItemsMatch } from "./background/backgroundShared";
 
@@ -34,13 +33,6 @@ bootstrap().then((context) => {
     browser.tabs.onUpdated.addListener(badgeUpdater);
     messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
         if (someItemsMatch(changedKeys, BADGE_SETTINGS_KEYS)) background.updateBadge();
-    });
-
-    // for firefox compatibility, we need to show the open file dialog from background, as the browserAction popup will be hidden, stopping the script.
-    messageUtil.receive("import", () => {
-        loadJSONFile((json) => {
-            json && settings.setAll(json);
-        });
     });
 
     browser.notifications.onClicked.addListener((id: string) => {
@@ -68,7 +60,7 @@ bootstrap().then((context) => {
             settings.set("version", version);
             settings.performUpgrade(previousVersion);
             settings.rebuildRules();
-            settings.save();
+            await settings.save();
 
             if (settings.get("showUpdateNotification")) showUpdateNotification();
         }

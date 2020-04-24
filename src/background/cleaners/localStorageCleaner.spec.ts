@@ -4,188 +4,125 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { TabWatcher } from "../tabWatcher";
 import { LocalStorageCleaner } from "./localStorageCleaner";
+import { mockContext, testContext } from "../../testUtils/mockContext";
 import { CleanupType } from "../../lib/shared";
-import { booleanContext } from "../../testUtils/testHelpers";
-import { quickSettings } from "../../testUtils/quickHelpers";
-import { StoreUtils } from "../storeUtils";
-import { DomainUtils } from "../domainUtils";
-import { RequestWatcher } from "../requestWatcher";
 
 const COOKIE_STORE_ID = "mock";
-const WHITELISTED_DOMAIN = "never.com";
-const GRAYLISTED_DOMAIN = "startup.com";
-const BLACKLISTED_DOMAIN = "instantly.com";
-const OPEN_DOMAIN = "open.com";
-const OPEN_DOMAIN2 = "open2.com";
-const UNKNOWN_DOMAIN = "unknown.com";
 
 describe("LocalStorageCleaner", () => {
-    const settings = quickSettings({
-        version: "2.0.0",
-        // fixme: mobile: true?
-        mobile: false,
-        // fixme: removeLocalStorageByHostname: false?
-        removeLocalStorageByHostname: true,
-    });
-    // fixme: isFirefox: false
-    const storeUtils = new StoreUtils(true);
-    const domainUtils = new DomainUtils();
-    const tabWatcherContext = {
-        storeUtils,
-        domainUtils,
-    } as any;
-    const tabWatcherListener = {
-        onDomainEnter: () => undefined,
-        onDomainLeave: () => undefined,
-    };
-    let tabWatcher: TabWatcher | null = null;
-    let cleaner: LocalStorageCleaner | null = null;
+    let localStorageCleaner: LocalStorageCleaner | null = null;
 
-    afterEach(async () => {
-        tabWatcher = null;
-        cleaner = null;
-        await settings.restoreDefaults();
+    beforeEach(() => {
+        localStorageCleaner = new LocalStorageCleaner(testContext);
     });
 
-    beforeEach(async () => {
-        tabWatcher = new TabWatcher(tabWatcherListener, tabWatcherContext);
-        await tabWatcher.initializeExistingTabs();
-        // eslint-disable-next-line no-new
-        new RequestWatcher(tabWatcher, { domainUtils } as any);
-        cleaner = new LocalStorageCleaner({
-            settings,
-            supports: {
-                // fixme: removeLocalStorageByHostname: false?
-                removeLocalStorageByHostname: true,
-            },
-            storeUtils,
-            tabWatcher,
-        } as any);
-
-        const tabIds = [
-            browserMock.tabs.create(`http://${OPEN_DOMAIN}`, COOKIE_STORE_ID),
-            browserMock.tabs.create(`http://${OPEN_DOMAIN2}`, COOKIE_STORE_ID),
-        ];
-        browserMock.cookies.cookieStores = [{ id: COOKIE_STORE_ID, tabIds, incognito: false }];
-        settings.set("rules", [
-            { rule: WHITELISTED_DOMAIN, type: CleanupType.NEVER },
-            { rule: GRAYLISTED_DOMAIN, type: CleanupType.STARTUP },
-            { rule: BLACKLISTED_DOMAIN, type: CleanupType.INSTANTLY },
-        ]);
-        await settings.save();
+    afterEach(() => {
+        localStorageCleaner = null;
     });
 
     describe("cleanDomainOnLeave", () => {
-        booleanContext((domainLeaveEnabled, localStorageEnabled) => {
-            beforeEach(async () => {
-                settings.set("domainLeave.enabled", domainLeaveEnabled);
-                settings.set("domainLeave.localStorage", localStorageEnabled);
-                await settings.save();
-            });
-            if (domainLeaveEnabled && localStorageEnabled) {
-                it("should clean localstorage", async () => {
-                    await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-
-                    expect(browserMock.browsingData.remove.mock.calls).toEqual([
-                        [
-                            {
-                                originTypes: { unprotectedWeb: true },
-                                hostnames: [UNKNOWN_DOMAIN],
-                            },
-                            { localStorage: true },
-                        ],
-                    ]);
-                });
-                it("should not clean localstorage if the domain is protected", async () => {
-                    await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
-                    expect(browserMock.browsingData.remove).not.toHaveBeenCalled();
-
-                    await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
-                    expect(browserMock.browsingData.remove).not.toHaveBeenCalled();
-
-                    await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, GRAYLISTED_DOMAIN);
-                    expect(browserMock.browsingData.remove).not.toHaveBeenCalled();
-                });
-            } else {
-                it("should not do anything", async () => {
-                    await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, OPEN_DOMAIN);
-                    expect(browserMock.browsingData.remove).not.toHaveBeenCalled();
-
-                    await cleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, UNKNOWN_DOMAIN);
-                    expect(browserMock.browsingData.remove).not.toHaveBeenCalled();
-                });
-            }
+        it("does nothing if domainLeave.enabled = false", async () => {
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(false);
+            await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
+        });
+        it("does nothing if domainLeave.localStorage = false", async () => {
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(true);
+            mockContext.settings.get.expect("domainLeave.localStorage").andReturn(false);
+            await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
+        });
+        it("does nothing if protected", async () => {
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(true);
+            mockContext.settings.get.expect("domainLeave.localStorage").andReturn(true);
+            const isLocalStorageProtected = jest.fn(() => true);
+            localStorageCleaner!["isLocalStorageProtected"] = isLocalStorageProtected;
+            await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
+            expect(isLocalStorageProtected.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain"]]);
+        });
+        it("calls cleanDomain if not protected", async () => {
+            mockContext.settings.get.expect("domainLeave.enabled").andReturn(true);
+            mockContext.settings.get.expect("domainLeave.localStorage").andReturn(true);
+            const cleanDomain = jest.fn(() => Promise.resolve());
+            localStorageCleaner!["cleanDomain"] = cleanDomain;
+            const isLocalStorageProtected = jest.fn(() => false);
+            localStorageCleaner!["isLocalStorageProtected"] = isLocalStorageProtected;
+            await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
+            expect(isLocalStorageProtected.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain"]]);
+            expect(cleanDomain.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain"]]);
         });
     });
 
     describe("isLocalStorageProtected", () => {
-        it("should return true for an open domain and for protected domains, false otherwise", () => {
-            expect(cleaner!.isLocalStorageProtected(COOKIE_STORE_ID, OPEN_DOMAIN)).toBe(true);
-            expect(cleaner!.isLocalStorageProtected(COOKIE_STORE_ID, GRAYLISTED_DOMAIN)).toBe(true);
-            expect(cleaner!.isLocalStorageProtected(COOKIE_STORE_ID, WHITELISTED_DOMAIN)).toBe(true);
-            expect(cleaner!.isLocalStorageProtected(COOKIE_STORE_ID, UNKNOWN_DOMAIN)).toBe(false);
+        it("should return true for an open domains", () => {
+            mockContext.tabWatcher.cookieStoreContainsDomain
+                .expect(COOKIE_STORE_ID, "some-domain", true)
+                .andReturn(true);
+            expect(localStorageCleaner!["isLocalStorageProtected"](COOKIE_STORE_ID, "some-domain")).toBe(true);
         });
+        it.each([[CleanupType.NEVER], [CleanupType.STARTUP]])(
+            "should return true if cleanup type is %i",
+            (cleanupType) => {
+                mockContext.tabWatcher.cookieStoreContainsDomain
+                    .expect(COOKIE_STORE_ID, "some-domain", true)
+                    .andReturn(false);
+                mockContext.settings.getCleanupTypeForDomain.expect("some-domain").andReturn(cleanupType);
+                expect(localStorageCleaner!["isLocalStorageProtected"](COOKIE_STORE_ID, "some-domain")).toBe(true);
+            }
+        );
+        it.each([[CleanupType.LEAVE], [CleanupType.INSTANTLY]])(
+            "should return false if cleanup type is %i",
+            (cleanupType) => {
+                mockContext.tabWatcher.cookieStoreContainsDomain
+                    .expect(COOKIE_STORE_ID, "some-domain", true)
+                    .andReturn(false);
+                mockContext.settings.getCleanupTypeForDomain.expect("some-domain").andReturn(cleanupType);
+                expect(localStorageCleaner!["isLocalStorageProtected"](COOKIE_STORE_ID, "some-domain")).toBe(false);
+            }
+        );
     });
 
     describe("cleanDomain", () => {
-        beforeEach(async () => {
-            settings.set("domainLeave.enabled", false);
-            settings.set("domainLeave.localStorage", false);
-            await settings.save();
-        });
-        it("should clean regardless of rules and settings", async () => {
-            await cleaner!.cleanDomain(COOKIE_STORE_ID, WHITELISTED_DOMAIN);
-            expect(browserMock.browsingData.remove.mock.calls).toEqual([
-                [
-                    {
-                        originTypes: { unprotectedWeb: true },
-                        hostnames: [WHITELISTED_DOMAIN],
-                    },
-                    { localStorage: true },
-                ],
-            ]);
-        });
-        it("should remove hostnames from domainsToClean if they don't exist on the TabWatcher", async () => {
-            settings.set("domainsToClean", {
-                "google.com": true,
-                "www.google.com": true,
-                "wikipedia.org": true,
-            });
-            await settings.save();
-            await cleaner!.cleanDomain("firefox-default", "google.com");
-            expect(settings.get("domainsToClean")).toEqual({ "wikipedia.org": true, "www.google.com": true });
-        });
-        it("should not remove hostnames from domainsToClean if they exist on the TabWatcher", async () => {
-            settings.set("domainsToClean", {
-                "www.google.com": true,
-                [OPEN_DOMAIN]: true,
-                "wikipedia.org": true,
-            });
-            await settings.save();
-            await cleaner!.cleanDomain("firefox-default", OPEN_DOMAIN);
-            expect(settings.get("domainsToClean")).toEqual({
-                [OPEN_DOMAIN]: true,
-                "wikipedia.org": true,
-                "www.google.com": true,
-            });
+        it("should call cleanDomains and removeFromDomainsToClean", async () => {
+            const cleanDomains = jest.fn();
+            const removeFromDomainsToClean = jest.fn();
+            localStorageCleaner!["cleanDomains"] = cleanDomains;
+            localStorageCleaner!["removeFromDomainsToClean"] = removeFromDomainsToClean;
+            await localStorageCleaner!.cleanDomain(COOKIE_STORE_ID, "some-domain");
+            expect(cleanDomains.mock.calls).toEqual([[COOKIE_STORE_ID, ["some-domain"]]]);
+            expect(removeFromDomainsToClean.mock.calls).toEqual([[["some-domain"]]]);
         });
     });
 
     describe("cleanDomains", () => {
-        it("should call browser.browsingData.remove", async () => {
+        // eslint-disable-next-line jest/expect-expect
+        it("should do nothing if not supported", async () => {
             const hostnames = ["google.com", "amazon.de"];
-            await cleaner!["cleanDomains"]("firefox-default", hostnames);
-            expect(browserMock.browsingData.remove.mock.calls).toEqual([
-                [
-                    {
-                        originTypes: { unprotectedWeb: true },
-                        hostnames,
-                    },
-                    { localStorage: true },
-                ],
-            ]);
+            mockContext.supports.removeLocalStorageByHostname.mock(false);
+            await localStorageCleaner!["cleanDomains"](COOKIE_STORE_ID, hostnames);
+        });
+        it("should call browser.browsingData.remove if supported", async () => {
+            const hostnames = ["google.com", "amazon.de"];
+            mockContext.supports.removeLocalStorageByHostname.mock(true);
+            mockBrowser.browsingData.remove.expect(
+                {
+                    originTypes: { unprotectedWeb: true },
+                    hostnames,
+                },
+                { localStorage: true }
+            );
+            await localStorageCleaner!["cleanDomains"](COOKIE_STORE_ID, hostnames);
+        });
+    });
+
+    describe("removeFromDomainsToClean", () => {
+        it("removes hostnames from domainsToClean if not open", async () => {
+            mockContext.settings.get.expect("domainsToClean").andReturn({ a: true, b: true, c: true, d: true });
+            mockContext.tabWatcher.containsDomain.expect("a").andReturn(true);
+            mockContext.tabWatcher.containsDomain.expect("b").andReturn(false);
+            mockContext.tabWatcher.containsDomain.expect("c").andReturn(false);
+            mockContext.settings.set.expect("domainsToClean", { a: true, d: true });
+            mockContext.settings.save.expect().andResolve();
+            await localStorageCleaner!["removeFromDomainsToClean"](["a", "b", "c"]);
         });
     });
 });

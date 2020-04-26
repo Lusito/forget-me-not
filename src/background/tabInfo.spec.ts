@@ -6,6 +6,7 @@
 
 import { TabInfo, MIN_DEAD_FRAME_CHECK_INTERVAL } from "./tabInfo";
 import { advanceTime } from "../testUtils/time";
+import { mockAssimilate } from "../testUtils/deepMockAssimilate";
 
 describe("TabInfo", () => {
     const checkDomainLeaveSpy = jest.fn();
@@ -145,52 +146,42 @@ describe("TabInfo", () => {
     describe("scheduleDeadFramesCheck", () => {
         it("should run instantly if never run before", async () => {
             const tabInfo = createTabInfo();
-            const spy = jest.fn();
-            tabInfo["checkDeadFrames"] = spy;
+            const mock = mockAssimilate(
+                tabInfo,
+                ["checkDeadFrames"],
+                ["scheduleDeadFramesCheck", "scheduledDeadFrameCheck", "lastDeadFrameCheck"]
+            );
+            mock.checkDeadFrames.expect().andResolve();
             await tabInfo.scheduleDeadFramesCheck();
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
         // tslint:disable-next-line:only-arrow-functions
         it("should run delayed by 1s if just run", async () => {
             const tabInfo = createTabInfo();
-            const spy = jest.fn();
-            tabInfo["checkDeadFrames"] = spy;
+            const mock = mockAssimilate(tabInfo, ["checkDeadFrames"]);
             tabInfo["lastDeadFrameCheck"] = Date.now();
             await tabInfo.scheduleDeadFramesCheck();
-            expect(spy).not.toHaveBeenCalled();
             advanceTime(MIN_DEAD_FRAME_CHECK_INTERVAL - 1);
-            expect(spy).not.toHaveBeenCalled();
+            mock.checkDeadFrames.expect();
             advanceTime(1);
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
         it("should run delayed by 0.3s run 0.7s ago", async () => {
             const tabInfo = createTabInfo();
-            const spy = jest.fn();
-            tabInfo["checkDeadFrames"] = spy;
+            const mock = mockAssimilate(tabInfo, ["checkDeadFrames"]);
             tabInfo["lastDeadFrameCheck"] = Date.now() - 700;
             await tabInfo.scheduleDeadFramesCheck();
-            expect(spy).not.toHaveBeenCalled();
             advanceTime(299);
-            expect(spy).not.toHaveBeenCalled();
+            mock.checkDeadFrames.expect();
             advanceTime(1);
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
         it("should run only once if scheduled twice", async () => {
             const tabInfo = createTabInfo();
-            const spy = jest.fn();
-            tabInfo["checkDeadFrames"] = spy;
+            const mock = mockAssimilate(tabInfo, ["checkDeadFrames"]);
             tabInfo["lastDeadFrameCheck"] = Date.now();
             await tabInfo.scheduleDeadFramesCheck();
             await tabInfo.scheduleDeadFramesCheck();
-            expect(spy).not.toHaveBeenCalled();
             advanceTime(MIN_DEAD_FRAME_CHECK_INTERVAL - 1);
-            expect(spy).not.toHaveBeenCalled();
+            mock.checkDeadFrames.expect();
             advanceTime(1);
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
         it("should not reschedule itself if all frames are idle", async () => {
             const tabInfo = createTabInfo();
@@ -214,11 +205,10 @@ describe("TabInfo", () => {
             (tabInfo as any).frameInfos["0"].lastTimeStamp = 0;
             tabInfo.prepareNavigation(1, "amazon.com");
             const originalScheduleDeadFramesCheck = tabInfo.scheduleDeadFramesCheck.bind(tabInfo);
-            const spy = jest.fn();
-            tabInfo.scheduleDeadFramesCheck = spy;
+            
+            const mock = mockAssimilate(tabInfo, ["scheduleDeadFramesCheck"]);
+            mock.scheduleDeadFramesCheck.expect();
             await originalScheduleDeadFramesCheck();
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(); // called once with no params
         });
         describe("with executeScript returning no success", () => {
             it("should collect hostnames and call checkDomainLeave", async () => {

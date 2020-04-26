@@ -52,68 +52,59 @@ describe("CookieCleaner", () => {
             "should not do anything if cookies flag is false and startup=%j",
             async (startup) => {
                 typeSet.cookies = false;
-                const cleanCookiesWithRulesNow = jest.fn();
-                cookieCleaner!["cleanCookiesWithRulesNow"] = cleanCookiesWithRulesNow;
+                mockAssimilate(cookieCleaner!, [], ["cleanCookiesWithRulesNow", "clean"]);
                 await cookieCleaner!.clean(typeSet, startup);
                 expect(typeSet.cookies).toBe(false);
-                expect(cleanCookiesWithRulesNow).not.toHaveBeenCalled();
             }
         );
         it.each(booleanVariations(1))(
             "should not do anything if cookies flag is true and startup=%j with respective setting of false",
             async (startup) => {
-                const cleanCookiesWithRulesNow = jest.fn();
-                cookieCleaner!["cleanCookiesWithRulesNow"] = cleanCookiesWithRulesNow;
+                mockAssimilate(cookieCleaner!, [], ["cleanCookiesWithRulesNow", "clean", "settings"]);
                 mocks.settings.get
                     .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
                     .andReturn(false);
                 await cookieCleaner!.clean(typeSet, startup);
                 expect(typeSet.cookies).toBe(true);
-                expect(cleanCookiesWithRulesNow).not.toHaveBeenCalled();
             }
         );
         it.each(booleanVariations(2))(
             "should call cleanCookiesWithRulesNow if cookies flag is true and startup=%j with respective setting of true",
             async (startup, protectOpenDomains) => {
-                const cleanCookiesWithRulesNow = jest.fn();
-                cookieCleaner!["cleanCookiesWithRulesNow"] = cleanCookiesWithRulesNow;
+                const mock = mockAssimilate(
+                    cookieCleaner!,
+                    ["cleanCookiesWithRulesNow"],
+                    ["cleanCookiesWithRulesNow", "clean", "settings"]
+                );
                 mocks.settings.get
                     .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
                     .andReturn(true);
                 if (!startup) mocks.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
+                mock.cleanCookiesWithRulesNow.expect(startup, startup || protectOpenDomains);
                 await cookieCleaner!.clean(typeSet, startup);
                 expect(typeSet.cookies).toBe(false);
-                expect(cleanCookiesWithRulesNow.mock.calls).toEqual([[startup, startup || protectOpenDomains]]);
             }
         );
     });
 
     describe("cleanDomainOnLeave", () => {
         it("should not do anything if domainLeave.enabled = false", async () => {
-            const cleanDomainInternal = jest.fn();
-            cookieCleaner!["cleanDomainInternal"] = cleanDomainInternal;
+            mockAssimilate(cookieCleaner!, [], ["cleanDomainOnLeave", "settings"]);
             mocks.settings.get.expect("domainLeave.enabled").andReturn(false); // domainLeave.cookies
             await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
-
-            expect(cleanDomainInternal).not.toHaveBeenCalled();
         });
         it("should not do anything if domainLeave.enabled = true, but domainLeave.cookies = false", async () => {
-            const cleanDomainInternal = jest.fn();
-            cookieCleaner!["cleanDomainInternal"] = cleanDomainInternal;
+            mockAssimilate(cookieCleaner!, [], ["cleanDomainOnLeave", "settings"]);
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.cookies").andReturn(false);
             await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
-
-            expect(cleanDomainInternal).not.toHaveBeenCalled();
         });
         it("should call cleanDomainInternal if domainLeave.enabled = true, but domainLeave.cookies = true", async () => {
-            const cleanDomainInternal = jest.fn(() => Promise.resolve());
-            cookieCleaner!["cleanDomainInternal"] = cleanDomainInternal;
+            const mock = mockAssimilate(cookieCleaner!, ["cleanDomainInternal"], ["cleanDomainOnLeave", "settings"]);
+            mock.cleanDomainInternal.expect(COOKIE_STORE_ID, "some-domain.com", false).andResolve();
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.cookies").andReturn(true);
             await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
-
-            expect(cleanDomainInternal.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain.com", false]]);
         });
     });
 
@@ -316,15 +307,12 @@ describe("CookieCleaner", () => {
         describe.each(booleanVariations(2))("hasStore=%j, isThirdparty=%j", (hasStore, isThirdparty) => {
             const result = !hasStore && isThirdparty;
             it(`should return ${result}`, () => {
-                const isThirdpartyCookie = jest.fn();
-                cookieCleaner!["isThirdpartyCookie"] = isThirdpartyCookie;
+                const mock = mockAssimilate(cookieCleaner!, ["isThirdpartyCookie"]);
+
+                if (!hasStore) mock.isThirdpartyCookie.expect(cookie).andReturn(isThirdparty);
                 mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(hasStore);
-                if (!hasStore) isThirdpartyCookie.mockReturnValueOnce(isThirdparty);
 
                 expect(cookieCleaner!["isUnwantedThirdPartyCookie"](cookie)).toBe(result);
-
-                if (!hasStore) expect(isThirdpartyCookie.mock.calls).toEqual([[cookie]]);
-                else expect(isThirdpartyCookie).not.toHaveBeenCalled();
             });
         });
     });
@@ -384,17 +372,25 @@ describe("CookieCleaner", () => {
             });
             it("delegates the call to onCookieAddedSnoozing with snoozing=true", async () => {
                 cookieCleaner!["snoozing"] = true;
-                const onCookieAddedSnoozing = jest.fn();
-                cookieCleaner!["onCookieAddedSnoozing"] = onCookieAddedSnoozing;
+                const mock = mockAssimilate(
+                    cookieCleaner!,
+                    ["onCookieAddedSnoozing"],
+                    ["snoozing", "incognitoWatcher", "onCookieChanged"]
+                );
+                mock.onCookieAddedSnoozing.expect(cookie).andResolve();
                 await cookieCleaner!["onCookieChanged"](changeInfo);
-                expect(onCookieAddedSnoozing.mock.calls).toEqual([[cookie]]);
             });
             it("delegates the call to onCookieAddedAwake with snoozing=false", async () => {
                 cookieCleaner!["snoozing"] = false;
-                const onCookieAddedAwake = jest.fn();
-                cookieCleaner!["onCookieAddedAwake"] = onCookieAddedAwake;
+                
+                const mock = mockAssimilate(
+                    cookieCleaner!,
+                    ["onCookieAddedAwake"],
+                    ["snoozing", "incognitoWatcher", "onCookieChanged"]
+                );
+                mock.onCookieAddedAwake.expect(cookie).andResolve();
+
                 await cookieCleaner!["onCookieChanged"](changeInfo);
-                expect(onCookieAddedAwake.mock.calls).toEqual([[cookie]]);
             });
         });
     });

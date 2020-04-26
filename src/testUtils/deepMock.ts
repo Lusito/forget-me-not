@@ -101,5 +101,6 @@ export function quickDeepMock<T>(name: string) {
     const rootNode = new DeepMockNode(name);
     const proxy: T = rootNode.getProxy();
     const mock = deepMock<T>(rootNode);
+    // fixme: auto-disableAndVerify nodes
     return [proxy, mock, rootNode] as const;
 }

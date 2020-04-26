@@ -33,15 +33,15 @@ const assimilatedNodes: DeepMockNode[] = [];
 export function mockAssimilate<T extends { [s: string]: any }, TKey extends string>(
     instance: T,
     mockKeys: TKey[],
-    whitelist: string[]
+    whitelist?: string[]
 ): AssimilatedMockMap<Pick<T, TKey>> {
-    const [proxy, mock, node] = quickDeepMock<T>("assimilated");
+    const [proxy, mock, node] = quickDeepMock<T>("assimilated"); // fixme: name
     // fixme: validate, that every part of mocks is in property
     for (const property of getProperties(instance)) {
         if (mockKeys.includes(property as TKey)) {
             mock[property].mockAllowMethod();
             (instance as any)[property] = proxy[property];
-        } else if (!whitelist.includes(property as TKey)) denyPropertyAccess(instance, property);
+        } else if (whitelist && !whitelist.includes(property as TKey)) denyPropertyAccess(instance, property);
     }
 
     assimilatedNodes.push(node);

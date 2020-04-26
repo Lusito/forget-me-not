@@ -135,11 +135,12 @@ describe("TabWatcher", () => {
         });
         it("should call scheduleDeadFramesCheck on tab if it exists", () => {
             const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
-            const scheduleDeadFramesCheck = jest.fn();
-            tabWatcher!["tabInfos"][tab1.id!] = { scheduleDeadFramesCheck } as any;
+            const [tabInfo, mockTabInfo, mockTabInfoNode] = quickDeepMock<TabInfo>("tabInfo");
+            tabWatcher!["tabInfos"][tab1.id!] = tabInfo;
 
+            mockTabInfo.scheduleDeadFramesCheck.expect();
             tabWatcher!.completeNavigation(tab1.id!);
-            expect(scheduleDeadFramesCheck.mock.calls).toEqual([[]]);
+            mockTabInfoNode.verifyAndDisable();
         });
         it("should be called for frames", () => {
             const tab1 = prepareTab("http://www.amazon.com", "www.amazon.com", COOKIE_STORE_ID);

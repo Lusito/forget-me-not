@@ -97,10 +97,16 @@ export function deepMock<T>(rootNode: DeepMockNode): DeepMock<T> {
     return new Proxy({ path: "", children: {}, rootNode }, builderHandler) as any;
 }
 
+const quickNodes: DeepMockNode[] = [];
+
 export function quickDeepMock<T>(name: string) {
     const rootNode = new DeepMockNode(name);
     const proxy: T = rootNode.getProxy();
     const mock = deepMock<T>(rootNode);
-    // fixme: auto-disableAndVerify nodes
+    quickNodes.push(rootNode);
     return [proxy, mock, rootNode] as const;
 }
+
+afterEach(() => {
+    for (const node of quickNodes) node.verifyAndDisable();
+});

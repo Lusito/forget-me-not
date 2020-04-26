@@ -20,10 +20,10 @@ const ucFirst = (t: string) => t[0].toLowerCase() + t.substr(1);
 function prepareMock<T>(token: constructor<T>): DeepMock<T> {
     const [proxy, mock, rootNode] = quickDeepMock<T>(ucFirst((token as any).name));
     let disabled = true;
+    rootNode.disable();
 
     afterEach(() => {
         disabled = true;
-        rootNode.verifyAndDisable();
     });
 
     return new Proxy({} as any, {

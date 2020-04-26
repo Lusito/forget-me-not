@@ -97,10 +97,8 @@ describe("Recently Accessed Domains", () => {
         it("should call add() if non-incognito cookie was added", () => {
             createRAD(false);
             const mock = mockAssimilate(
-                recentlyAccessedDomains,
-                {
-                    add: recentlyAccessedDomains!["add"],
-                },
+                recentlyAccessedDomains!,
+                ["add"],
                 ["onCookieChanged", "incognitoWatcher", "domainUtils"]
             );
             mocks.domainUtils.removeLeadingDot.expect(".www.google.com").andReturn("www.google.com");

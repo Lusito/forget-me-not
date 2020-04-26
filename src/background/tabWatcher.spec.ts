@@ -38,27 +38,13 @@ describe("TabWatcher", () => {
 
     describe("init", () => {
         it("should add listeners", () => {
-            mockAssimilate(
-                tabWatcher,
-                {
-                    onTabCreated: tabWatcher!["onTabCreated"],
-                    onTabRemoved: tabWatcher!["onTabRemoved"],
-                },
-                ["init"]
-            );
+            mockAssimilate(tabWatcher!, ["onTabCreated", "onTabRemoved"], ["init"]);
             mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
             mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
             tabWatcher!.init([]);
         });
         it("should initialize existing tabs", () => {
-            const mock = mockAssimilate(
-                tabWatcher,
-                {
-                    onTabCreated: tabWatcher!["onTabCreated"],
-                    onTabRemoved: tabWatcher!["onTabRemoved"],
-                },
-                ["init"]
-            );
+            const mock = mockAssimilate(tabWatcher!, ["onTabCreated", "onTabRemoved"], ["init"]);
             mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
             mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
             const tab1 = quickTab("", COOKIE_STORE_ID, false);

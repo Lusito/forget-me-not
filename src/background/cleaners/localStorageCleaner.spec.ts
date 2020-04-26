@@ -9,6 +9,7 @@ import { container } from "tsyringe";
 import { LocalStorageCleaner } from "./localStorageCleaner";
 import { mocks } from "../../testUtils/mocks";
 import { CleanupType } from "../../shared/types";
+import { mockAssimilate } from "../../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
 
@@ -42,21 +43,23 @@ describe("LocalStorageCleaner", () => {
         it("does nothing if protected", async () => {
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.localStorage").andReturn(true);
-            const isLocalStorageProtected = jest.fn(() => true);
-            localStorageCleaner!["isLocalStorageProtected"] = isLocalStorageProtected;
+            const mock = mockAssimilate(localStorageCleaner!, ["isLocalStorageProtected"], ["cleanDomainOnLeave"]);
+            mock.isLocalStorageProtected.expect(COOKIE_STORE_ID, "some-domain").andReturn(true);
             await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
-            expect(isLocalStorageProtected.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain"]]);
         });
         it("calls cleanDomain if not protected", async () => {
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.localStorage").andReturn(true);
-            const cleanDomain = jest.fn(() => Promise.resolve());
-            localStorageCleaner!["cleanDomain"] = cleanDomain;
-            const isLocalStorageProtected = jest.fn(() => false);
-            localStorageCleaner!["isLocalStorageProtected"] = isLocalStorageProtected;
+
+            const mock = mockAssimilate(
+                localStorageCleaner!,
+                ["cleanDomain", "isLocalStorageProtected"],
+                ["cleanDomainOnLeave"]
+            );
+            mock.isLocalStorageProtected.expect(COOKIE_STORE_ID, "some-domain").andReturn(false);
+            mock.cleanDomain.expect(COOKIE_STORE_ID, "some-domain").andResolve();
+
             await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
-            expect(isLocalStorageProtected.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain"]]);
-            expect(cleanDomain.mock.calls).toEqual([[COOKIE_STORE_ID, "some-domain"]]);
         });
     });
 
@@ -89,13 +92,15 @@ describe("LocalStorageCleaner", () => {
 
     describe("cleanDomain", () => {
         it("should call cleanDomains and removeFromDomainsToClean", async () => {
-            const cleanDomains = jest.fn();
-            const removeFromDomainsToClean = jest.fn();
-            localStorageCleaner!["cleanDomains"] = cleanDomains;
-            localStorageCleaner!["removeFromDomainsToClean"] = removeFromDomainsToClean;
+            const mock = mockAssimilate(
+                localStorageCleaner!,
+                ["cleanDomains", "removeFromDomainsToClean"],
+                ["cleanDomainOnLeave"]
+            );
+            mock.removeFromDomainsToClean.expect(["some-domain"]).andResolve();
+            mock.cleanDomains.expect(COOKIE_STORE_ID, ["some-domain"]).andResolve();
+
             await localStorageCleaner!.cleanDomain(COOKIE_STORE_ID, "some-domain");
-            expect(cleanDomains.mock.calls).toEqual([[COOKIE_STORE_ID, ["some-domain"]]]);
-            expect(removeFromDomainsToClean.mock.calls).toEqual([[["some-domain"]]]);
         });
     });
 

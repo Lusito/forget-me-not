@@ -24,13 +24,7 @@ describe("Message Utility", () => {
 
     describe("sendSelf", () => {
         it("should delegate to emitCallbacks", () => {
-            const mock = mockAssimilate(
-                messageUtil,
-                {
-                    emitCallbacks: messageUtil["emitCallbacks"],
-                },
-                ["sendSelf"]
-            );
+            const mock = mockAssimilate(messageUtil, ["emitCallbacks"], ["sendSelf"]);
             mock.emitCallbacks.expect(event1, data1, {});
             messageUtil.sendSelf(event1, data1);
         });

@@ -38,7 +38,7 @@ export function mockAssimilate<T extends { [s: string]: any }, TKey extends stri
     const [proxy, mock, node] = quickDeepMock<T>("assimilated");
     // fixme: validate, that every part of mocks is in property
     for (const property of getProperties(instance)) {
-        if (Object.prototype.hasOwnProperty.call(mockKeys, property)) {
+        if (mockKeys.includes(property as TKey)) {
             mock[property].mockAllowMethod();
             (instance as any)[property] = proxy[property];
         } else if (!whitelist.includes(property as TKey)) denyPropertyAccess(instance, property);

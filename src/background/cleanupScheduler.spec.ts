@@ -3,11 +3,11 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
+import { container } from "tsyringe";
 
 import { CleanupScheduler } from "./cleanupScheduler";
 import { advanceTime } from "../testUtils/time";
-import { testContext, mockContext } from "../testUtils/mockContext";
-import { mockEvent } from "../testUtils/mockBrowser";
+import { mocks } from "../testUtils/mocks";
 
 describe("Cleanup Scheduler", () => {
     let handler: jest.Mock | null = null;
@@ -19,10 +19,16 @@ describe("Cleanup Scheduler", () => {
 
     function createScheduler(enabled: boolean, snoozing: boolean, delay = 1) {
         handler = jest.fn();
-        mockContext.settings.get.expect("domainLeave.enabled").andReturn(enabled);
-        mockContext.settings.get.expect("domainLeave.delay").andReturn(delay);
-        mockEvent(mockBrowser.runtime.onMessage);
-        cleanupScheduler = new CleanupScheduler(testContext, handler, snoozing);
+        mocks.settings.get.expect("domainLeave.enabled").andReturn(enabled);
+        mocks.settings.get.expect("domainLeave.delay").andReturn(delay);
+        mocks.messageUtil.mockAllow();
+
+        mocks.snoozeManager.isSnoozing.expect().andReturn(snoozing);
+        mocks.snoozeManager.listeners.add.expect(expect.anything());
+        cleanupScheduler = container.resolve(CleanupScheduler);
+
+        mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
+        cleanupScheduler.init(handler);
     }
 
     describe("schedule", () => {
@@ -125,8 +131,8 @@ describe("Cleanup Scheduler", () => {
                 await cleanupScheduler!.schedule("google.de");
                 await cleanupScheduler!.schedule("google.jp");
 
-                mockContext.settings.get.expect("domainLeave.enabled").andReturn(false);
-                mockContext.settings.get.expect("domainLeave.delay").andReturn(1000);
+                mocks.settings.get.expect("domainLeave.enabled").andReturn(false);
+                mocks.settings.get.expect("domainLeave.delay").andReturn(1000);
                 cleanupScheduler!["updateSettings"]();
                 expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
                 expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);

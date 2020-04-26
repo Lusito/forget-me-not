@@ -4,13 +4,19 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { getDomain } from "tldjs"; // fixme: export via utils?
 
 const allowedProtocols = /^https?:$/;
 
+@singleton()
 export class DomainUtils {
+    public removeLeadingDot(value: string) {
+        return value.startsWith(".") ? value.substr(1) : value;
+    }
+
     public getFirstPartyCookieDomain(domain: string) {
-        const rawDomain = domain.startsWith(".") ? domain.substr(1) : domain;
+        const rawDomain = this.removeLeadingDot(domain);
         return getDomain(rawDomain) || rawDomain;
     }
 

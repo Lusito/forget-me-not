@@ -1,11 +1,12 @@
 import { h } from "tsx-dom";
+import { container } from "tsyringe";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { CleanupType } from "../../lib/shared";
+import { CleanupType } from "../../shared/types";
 import { ExpressionHint } from "../expressionHint";
-import { ExtensionContext } from "../../lib/bootstrap";
-import { isValidExpression } from "../../lib/expressionUtils";
+import { isValidExpression } from "../../shared/expressionUtils";
 import { ConfirmDialog } from "./confirmDialog";
+import { Settings } from "../../shared/settings";
 
 export interface RuleDialogProps {
     expression?: string;
@@ -13,11 +14,11 @@ export interface RuleDialogProps {
     focusType: CleanupType | null;
     temporary: boolean;
     onConfirm: (type: CleanupType | false, expression: string, temporary: boolean) => void;
-    context: ExtensionContext;
 }
 
-export function RuleDialog({ expression, editable, focusType, temporary, onConfirm, context }: RuleDialogProps) {
-    const { settings } = context;
+export function RuleDialog({ expression, editable, focusType, temporary, onConfirm }: RuleDialogProps) {
+    const settings = container.resolve(Settings);
+
     function onCancel() {
         hideDialog(dialog);
         onConfirm(false, "", false);
@@ -85,7 +86,7 @@ export function RuleDialog({ expression, editable, focusType, temporary, onConfi
             <b data-i18n="rule_dialog_expression" />
             <div>
                 {expressionElement}
-                {editable ? <ExpressionHint input={expressionElement as HTMLInputElement} context={context} /> : null}
+                {editable ? <ExpressionHint input={expressionElement as HTMLInputElement} /> : null}
             </div>
         </div>
     ) : null;

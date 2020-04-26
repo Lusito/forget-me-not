@@ -1,10 +1,11 @@
 import { h } from "tsx-dom";
 import * as punycode from "punycode";
+import { container } from "tsyringe";
 
-import { CleanupType } from "../lib/shared";
+import { CleanupType } from "../shared/types";
 import { RuleDialog } from "./dialogs/ruleDialog";
-import { isValidExpression } from "../lib/expressionUtils";
-import { ExtensionContext } from "../lib/bootstrap";
+import { isValidExpression } from "../shared/expressionUtils";
+import { Settings } from "../shared/settings";
 
 export function appendPunycode(domain: string) {
     const punified = punycode.toUnicode(domain);
@@ -16,9 +17,9 @@ export function getSuggestedRuleExpression(domain: string, cookieName?: string) 
     return domain.startsWith(".") ? `*${domain}` : `*.${domain}`;
 }
 
-export function showAddRuleDialog(context: ExtensionContext, expression: string, next?: () => void) {
+export function showAddRuleDialog(expression: string, next?: () => void) {
     if (isValidExpression(expression)) {
-        const { settings } = context;
+        const settings = container.resolve(Settings);
         // eslint-disable-next-line no-inner-declarations
         function onConfirm(type: CleanupType | false, changedExpression: string, temporary: boolean) {
             if (changedExpression && type !== false) {
@@ -38,7 +39,6 @@ export function showAddRuleDialog(context: ExtensionContext, expression: string,
             focusType={focusType}
             temporary={temporary}
             onConfirm={onConfirm}
-            context={context}
         />;
     }
 }

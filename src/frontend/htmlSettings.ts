@@ -4,7 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { Settings } from "../lib/settings";
+import { container } from "tsyringe";
+
+import { Settings } from "../shared/settings";
 import { on } from "./htmlUtils";
 
 interface SettingsInfo {
@@ -14,7 +16,7 @@ interface SettingsInfo {
 }
 const settingsInfoMap: { [s: string]: SettingsInfo } = {};
 
-function connectInputSetting(element: HTMLInputElement | HTMLSelectElement, settings: Settings) {
+function connectInputSetting(element: HTMLInputElement | HTMLSelectElement) {
     const key = element.dataset.settingsKey;
     if (key) {
         if (settingsInfoMap[key]) {
@@ -23,6 +25,7 @@ function connectInputSetting(element: HTMLInputElement | HTMLSelectElement, sett
         }
         settingsInfoMap[key] = { element };
 
+        const settings = container.resolve(Settings);
         if (element.type === "checkbox") {
             on(element, "click", () => {
                 settings.set(key as any, (element as HTMLInputElement).checked);
@@ -40,11 +43,12 @@ function connectInputSetting(element: HTMLInputElement | HTMLSelectElement, sett
     }
 }
 
-export function updateFromSettings(settings: Settings) {
+export function updateFromSettings() {
     for (const key of Object.keys(settingsInfoMap)) {
         const info = settingsInfoMap[key];
         if (info) {
             if (!info.permanentlyUnchecked) {
+                const settings = container.resolve(Settings);
                 if (info.element.type === "checkbox") {
                     const input = info.element as HTMLInputElement;
                     input.checked = settings.get(key as any);
@@ -59,12 +63,12 @@ export function updateFromSettings(settings: Settings) {
     }
 }
 
-export function connectSettings(parent: HTMLElement, settings: Settings) {
+export function connectSettings(parent: HTMLElement) {
     for (const element of parent.querySelectorAll("input[data-settings-key]"))
-        connectInputSetting(element as HTMLInputElement, settings);
+        connectInputSetting(element as HTMLInputElement);
     for (const element of parent.querySelectorAll("select[data-settings-key]"))
-        connectInputSetting(element as HTMLSelectElement, settings);
-    updateFromSettings(settings);
+        connectInputSetting(element as HTMLSelectElement);
+    updateFromSettings();
 }
 
 export function permanentDisableSettings(keys: string[], uncheck?: boolean) {

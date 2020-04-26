@@ -61,6 +61,8 @@ describe("FrameInfo", () => {
         });
     });
 
+    // fixme: matchRegexFP
+
     describe("matchHostname", () => {
         it("should return true if hostname matches, no matter of the checkNext argument", () => {
             frameInfo!.commitNavigation("www.google.com");

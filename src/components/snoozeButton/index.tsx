@@ -1,12 +1,16 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
+import { container } from "tsyringe";
 
-import { messageUtil } from "../../lib/messageUtil";
-import "./style.scss";
 import { SnoozeDialog } from "../dialogs/snoozeDialog";
-import { ExtensionContextProps } from "../../lib/bootstrap";
+import { MessageUtil } from "../../shared/messageUtil";
+import "./style.scss";
+import { BrowserInfo } from "../../shared/browserInfo";
 
-export function SnoozeButton({ context: { browserInfo } }: ExtensionContextProps) {
+export function SnoozeButton() {
+    const messageUtil = container.resolve(MessageUtil);
+    const browserInfo = container.resolve(BrowserInfo);
+
     const button = (<button class="snooze_button" onClick={onClick} disabled />) as HTMLButtonElement;
     function toggleSnooze() {
         button.disabled = true;
@@ -14,7 +18,7 @@ export function SnoozeButton({ context: { browserInfo } }: ExtensionContextProps
     }
 
     function onClick() {
-        if (browserInfo.mobile) {
+        if (browserInfo.isMobile()) {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             <SnoozeDialog snoozing={button.classList.contains("is-active")} toggle={toggleSnooze} />;
         } else {

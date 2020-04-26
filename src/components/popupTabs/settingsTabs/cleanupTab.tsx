@@ -1,12 +1,13 @@
 import { h } from "tsx-dom";
+import { container } from "tsyringe";
 
 import { SettingsCheckbox } from "../../settingsCheckbox";
 import { SettingsNumber } from "../../settingsNumber";
 import { HelpLink } from "../../helpLink";
 import "./style.scss";
-import { SettingsKey } from "../../../lib/defaultSettings";
-import { ExtensionContextProps } from "../../../lib/bootstrap";
+import { SettingsKey } from "../../../shared/defaultSettings";
 import icons from "../../../icons";
+import { BrowserInfo } from "../../../shared/browserInfo";
 
 type CleanupRow = [string, SettingsKey, SettingsKey | null, SettingsKey | null, SettingsKey | null, SettingsKey | null];
 // prettier-ignore
@@ -24,8 +25,7 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
     ["setting_cache", "startup.cache", null, null, null, null],
 ];
 
-export function CleanupTab({ context }: ExtensionContextProps) {
-    const { browserInfo } = context;
+export function CleanupTab() {
     const rows = CLEANUP_SETTINGS.map(([i18n, startup, startupRules, domainLeave, instantly, instantlyRules]) => {
         return (
             <tr>
@@ -36,7 +36,6 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                             key={startup}
                             enabledBy="startup.enabled"
                             i18n="cleanup_type_startup_button?title"
-                            context={context}
                         />
                     )}
                 </td>
@@ -47,7 +46,6 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                             enabledBy={`startup.enabled ${startup}`}
                             i18n="setting_apply_rules?title"
                             i18nUnchecked="setting_ignore_rules?title"
-                            context={context}
                         />
                     )}
                 </td>
@@ -57,7 +55,6 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                             key={domainLeave}
                             enabledBy="domainLeave.enabled"
                             i18n="cleanup_type_leave_button?title"
-                            context={context}
                         />
                     )}
                 </td>
@@ -67,7 +64,6 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                             key={instantly}
                             enabledBy="instantly.enabled"
                             i18n="cleanup_type_instantly_button?title"
-                            context={context}
                         />
                     )}
                 </td>
@@ -78,7 +74,6 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                             enabledBy={`instantly.enabled ${instantly}`}
                             i18n="setting_apply_rules?title"
                             i18nUnchecked="setting_ignore_rules?title"
-                            context={context}
                         />
                     )}
                 </td>
@@ -86,7 +81,8 @@ export function CleanupTab({ context }: ExtensionContextProps) {
         );
     });
 
-    const legend = browserInfo.mobile && (
+    const browserInfo = container.resolve(BrowserInfo);
+    const legend = browserInfo.isMobile() && (
         <ul class="settings_legend">
             <li>
                 <img src={icons.power} /> <span data-i18n="cleanup_type_startup_button@title" />
@@ -135,26 +131,14 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                     <tr>
                         <th data-i18n="settings_enable" />
                         <th class="cleanup_type_startup">
-                            <SettingsCheckbox
-                                key="startup.enabled"
-                                i18n="cleanup_type_startup_button?title"
-                                context={context}
-                            />
+                            <SettingsCheckbox key="startup.enabled" i18n="cleanup_type_startup_button?title" />
                         </th>
                         <th class="cleanup_type_startup" />
                         <th class="cleanup_type_leave">
-                            <SettingsCheckbox
-                                key="domainLeave.enabled"
-                                i18n="cleanup_type_leave_button?title"
-                                context={context}
-                            />
+                            <SettingsCheckbox key="domainLeave.enabled" i18n="cleanup_type_leave_button?title" />
                         </th>
                         <th class="cleanup_type_instantly">
-                            <SettingsCheckbox
-                                key="instantly.enabled"
-                                i18n="cleanup_type_instantly_button?title"
-                                context={context}
-                            />
+                            <SettingsCheckbox key="instantly.enabled" i18n="cleanup_type_instantly_button?title" />
                         </th>
                         <th class="cleanup_type_instantly" />
                     </tr>
@@ -171,11 +155,7 @@ export function CleanupTab({ context }: ExtensionContextProps) {
                 />
             </div>
             <div class="split_equal">
-                <SettingsCheckbox
-                    key="cleanThirdPartyCookies.enabled"
-                    i18n="setting_remove_thirdparty"
-                    context={context}
-                />
+                <SettingsCheckbox key="cleanThirdPartyCookies.enabled" i18n="setting_remove_thirdparty" />
                 <SettingsNumber
                     key="cleanThirdPartyCookies.delay"
                     i18n="setting_delay_in_seconds"

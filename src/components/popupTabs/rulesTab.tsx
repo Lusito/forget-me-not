@@ -1,20 +1,22 @@
 import { h } from "tsx-dom";
 import { Key } from "ts-keycode-enum";
+import { container } from "tsyringe";
 
 import { SettingsCheckbox } from "../settingsCheckbox";
 import { on } from "../../frontend/htmlUtils";
 import { RuleButton } from "../ruleButton";
 import { RuleTable } from "../ruleTable";
-import { CleanupType } from "../../lib/shared";
+import { CleanupType } from "../../shared/types";
 import { HelpLink } from "../helpLink";
 import { ExpressionHint } from "../expressionHint";
 import { showAddRuleDialog } from "../helpers";
-import { ExtensionContextProps } from "../../lib/bootstrap";
-import { isValidExpression } from "../../lib/expressionUtils";
+import { isValidExpression } from "../../shared/expressionUtils";
+import { Settings } from "../../shared/settings";
 
-export function RulesTab({ context }: ExtensionContextProps) {
+export function RulesTab() {
     const filterInput = (<input data-i18n="rules_input?placeholder" />) as HTMLInputElement;
-    const { settings } = context;
+
+    const settings = container.resolve(Settings);
 
     function setFallbackRule(type: CleanupType) {
         settings.set("fallbackRule", type);
@@ -24,7 +26,7 @@ export function RulesTab({ context }: ExtensionContextProps) {
     function addRule() {
         const expression = filterInput.value.trim().toLowerCase();
         if (expression && isValidExpression(expression) && settings.getExactRuleDefinition(expression) === null) {
-            showAddRuleDialog(context, expression, () => {
+            showAddRuleDialog(expression, () => {
                 filterInput.value = "";
                 filterInput.dispatchEvent(new Event("input")); // force hint update
             });
@@ -47,23 +49,23 @@ export function RulesTab({ context }: ExtensionContextProps) {
             <div class="rules_input_wrapper">
                 <div>
                     {filterInput}
-                    <ExpressionHint input={filterInput} context={context} />
+                    <ExpressionHint input={filterInput} />
                 </div>
                 <button data-i18n="rules_add" onClick={addRule} />
             </div>
             <div class="rules_table_wrapper">
-                <RuleTable headerI18n="rules_column_expression" filterInput={filterInput} context={context} />
+                <RuleTable headerI18n="rules_column_expression" filterInput={filterInput} />
             </div>
             <div>
-                <SettingsCheckbox key="whitelistNoTLD" i18n="setting_whitelist_no_tld?text?title" context={context} />
+                <SettingsCheckbox key="whitelistNoTLD" i18n="setting_whitelist_no_tld?text?title" />
             </div>
             <div>
-                <SettingsCheckbox key="whitelistFileSystem" i18n="setting_whitelist_file_system" context={context} />
+                <SettingsCheckbox key="whitelistFileSystem" i18n="setting_whitelist_file_system" />
             </div>
             <div class="split_equal">
                 <span data-i18n="settings_fallback_rule" />
                 <span class="align_right">
-                    <RuleButton type={settings.get("fallbackRule")} onConfirm={setFallbackRule} context={context} />
+                    <RuleButton type={settings.get("fallbackRule")} onConfirm={setFallbackRule} />
                 </span>
             </div>
         </div>

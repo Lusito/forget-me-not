@@ -4,10 +4,12 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { Cookies, browser } from "webextension-polyfill-ts";
 
-import { messageUtil } from "../lib/messageUtil";
-import { ExtensionContext } from "../lib/bootstrap";
+import { SupportsInfo } from "../shared/supportsInfo";
+import { MessageUtil } from "../shared/messageUtil";
+import { DomainUtils } from "../shared/domainUtils";
 
 const cookieDomainRegexp = /^domain=/i;
 const keyValueRegexpSplit = /=(.+)/;
@@ -18,11 +20,16 @@ interface SetCookieHeader {
     domain: string;
 }
 
+@singleton()
 export class CookieUtils {
     private supportsFirstPartyIsolation: boolean;
 
-    public constructor(context: ExtensionContext) {
-        this.supportsFirstPartyIsolation = context.supports.firstPartyIsolation;
+    public constructor(
+        private readonly messageUtil: MessageUtil,
+        private readonly domainUtils: DomainUtils,
+        supports: SupportsInfo
+    ) {
+        this.supportsFirstPartyIsolation = supports.firstPartyIsolation;
     }
 
     private getCookieRemovalInfo(cookie: Cookies.Cookie) {
@@ -32,8 +39,8 @@ export class CookieUtils {
                 removedFrom: cookie.path,
             };
         }
-        const allowSubDomains = cookie.domain.startsWith(".");
-        const rawDomain = allowSubDomains ? cookie.domain.substr(1) : cookie.domain;
+
+        const rawDomain = this.domainUtils.removeLeadingDot(cookie.domain);
         return {
             url: (cookie.secure ? "https://" : "http://") + rawDomain + cookie.path,
             removedFrom: rawDomain,
@@ -50,7 +57,7 @@ export class CookieUtils {
         if (this.supportsFirstPartyIsolation) details.firstPartyDomain = cookie.firstPartyDomain;
 
         const result = await browser.cookies.remove(details);
-        messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
+        this.messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
         return result;
     }
 

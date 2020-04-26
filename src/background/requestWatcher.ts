@@ -4,27 +4,17 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { browser, WebRequest, WebNavigation } from "webextension-polyfill-ts";
 
-import { ExtensionContext } from "../lib/bootstrap";
+import { DomainUtils } from "../shared/domainUtils";
+import { TabWatcher } from "./tabWatcher";
 
 const WEB_REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] };
 
-export interface RequestWatcherListener {
-    prepareNavigation(tabId: number, frameId: number, hostname: string): void;
-    commitNavigation(tabId: number, frameId: number, hostname: string): void;
-    completeNavigation(tabId: number, frameId: number): void;
-}
-
+@singleton()
 export class RequestWatcher {
-    private readonly listener: RequestWatcherListener;
-
-    private context: ExtensionContext;
-
-    public constructor(listener: RequestWatcherListener, context: ExtensionContext) {
-        this.listener = listener;
-        this.context = context;
-
+    public constructor(private readonly domainUtils: DomainUtils, private readonly tabWatcher: TabWatcher) {
         browser.webNavigation.onBeforeNavigate.addListener(this.onBeforeNavigate);
         browser.webNavigation.onCommitted.addListener(this.onCommitted);
         browser.webNavigation.onCompleted.addListener(this.onCompleted);
@@ -32,30 +22,30 @@ export class RequestWatcher {
     }
 
     private onBeforeNavigate = (details: WebNavigation.OnBeforeNavigateDetailsType) => {
-        this.listener.prepareNavigation(
+        this.tabWatcher.prepareNavigation(
             details.tabId,
             details.frameId,
-            this.context.domainUtils.getValidHostname(details.url)
+            this.domainUtils.getValidHostname(details.url)
         );
     };
 
     private onCommitted = (details: WebNavigation.OnCommittedDetailsType) => {
-        this.listener.commitNavigation(
+        this.tabWatcher.commitNavigation(
             details.tabId,
             details.frameId,
-            this.context.domainUtils.getValidHostname(details.url)
+            this.domainUtils.getValidHostname(details.url)
         );
     };
 
     private onCompleted = (details: WebNavigation.OnCompletedDetailsType) => {
-        this.listener.completeNavigation(details.tabId, details.frameId);
+        this.tabWatcher.completeNavigation(details.tabId);
     };
 
     private onBeforeRedirect = (details: WebRequest.OnBeforeRedirectDetailsType) => {
-        this.listener.prepareNavigation(
+        this.tabWatcher.prepareNavigation(
             details.tabId,
             details.frameId,
-            this.context.domainUtils.getValidHostname(details.redirectUrl)
+            this.domainUtils.getValidHostname(details.redirectUrl)
         );
     };
 }

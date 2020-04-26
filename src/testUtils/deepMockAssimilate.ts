@@ -1,6 +1,7 @@
 import { AssimilatedMockMap } from "./deepMockTypes";
 import { DeepMockError } from "./deepMockUtils";
 import { quickDeepMock } from "./deepMock";
+import { DeepMockNode } from "./deepMockNode";
 
 export function denyPropertyAccess<T>(instance: T, property: string) {
     Object.defineProperty(instance, property, {
@@ -27,18 +28,26 @@ export function whitelistPropertyAccess(instance: any, ...whitelist: string[]) {
     }
 }
 
+const assimilatedNodes: DeepMockNode[] = [];
+
 export function mockAssimilate<T extends { [key: string]: (...args: any[]) => any }>(
     instance: any,
     mocks: T,
-    whitelist: string[]
-) {
+    whitelist?: string[]
+): AssimilatedMockMap<T> {
     const [proxy, mock, node] = quickDeepMock<T>("assimilated");
     // fixme: validate, that every part of mocks is in property
     for (const property of getProperties(instance)) {
         if (Object.prototype.hasOwnProperty.call(mocks, property)) {
             mock[property].mockAllowMethod();
             instance[property] = proxy[property];
-        } else if (!whitelist.includes(property)) denyPropertyAccess(instance, property);
+        } else if (!whitelist?.includes(property)) denyPropertyAccess(instance, property);
     }
-    return [mock as AssimilatedMockMap<T>, node] as const;
+
+    assimilatedNodes.push(node);
+    return mock;
 }
+
+afterEach(() => {
+    for (const node of assimilatedNodes) node.verifyAndDisable();
+});

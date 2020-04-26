@@ -7,8 +7,6 @@
 import { BrowsingData } from "webextension-polyfill-ts";
 
 export abstract class Cleaner {
-    protected snoozing = false;
-
     /**
      * Manual cleanup or startup cleanup
      */
@@ -29,9 +27,5 @@ export abstract class Cleaner {
      */
     public async cleanDomain(_storeId: string, _domain: string) {
         // Do nothing by default
-    }
-
-    public async setSnoozing(snoozing: boolean) {
-        this.snoozing = snoozing;
     }
 }

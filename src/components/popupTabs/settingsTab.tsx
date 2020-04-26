@@ -1,26 +1,28 @@
 import { h } from "tsx-dom";
+import { container } from "tsyringe";
 
 import { TabContainer, Tab } from "../tabContainer";
 import { GeneralTab } from "./settingsTabs/generalTab";
 import { CleanupTab } from "./settingsTabs/cleanupTab";
 import { ExperimentalTab } from "./settingsTabs/experimentalTab";
-import { ExtensionContextProps } from "../../lib/bootstrap";
+import { Settings } from "../../shared/settings";
 
-export function SettingsTab({ context }: ExtensionContextProps) {
+export function SettingsTab() {
+    const settings = container.resolve(Settings);
     const onTabSelected = (name: string) => {
-        context.settings.set("lastTab", name);
-        context.settings.save();
+        settings.set("lastTab", name);
+        settings.save();
     };
     return (
         <TabContainer defaultTab="settings/cleanup" onTabSelected={onTabSelected}>
             <Tab i18n="tabs_settings_general" name="settings/general">
-                <GeneralTab context={context} />
+                <GeneralTab />
             </Tab>
             <Tab i18n="tabs_settings_cleanup" name="settings/cleanup">
-                <CleanupTab context={context} />
+                <CleanupTab />
             </Tab>
             <Tab i18n="tabs_settings_experimental" name="settings/experimental">
-                <ExperimentalTab context={context} />
+                <ExperimentalTab />
             </Tab>
         </TabContainer>
     );

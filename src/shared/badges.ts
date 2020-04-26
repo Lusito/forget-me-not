@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { CleanupType } from "../lib/shared";
+import { CleanupType } from "./types";
 
 export interface BadgeInfo {
     className: string;

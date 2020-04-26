@@ -4,19 +4,23 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { browser } from "webextension-polyfill-ts";
+
+import { BrowserInfo } from "./browserInfo";
 
 const DEFAULT_COOKIE_STORE_ID_FIREFOX = "firefox-default";
 const DEFAULT_COOKIE_STORE_ID_OTHER = "0";
 
+@singleton()
 export class StoreUtils {
     public readonly defaultCookieStoreId: string;
 
     private isFirefox: boolean;
 
-    public constructor(isFirefox: boolean) {
-        this.isFirefox = isFirefox;
-        this.defaultCookieStoreId = isFirefox ? DEFAULT_COOKIE_STORE_ID_FIREFOX : DEFAULT_COOKIE_STORE_ID_OTHER;
+    public constructor(browserInfo: BrowserInfo) {
+        this.isFirefox = browserInfo.isFirefox();
+        this.defaultCookieStoreId = this.isFirefox ? DEFAULT_COOKIE_STORE_ID_FIREFOX : DEFAULT_COOKIE_STORE_ID_OTHER;
     }
 
     // Workaround for getAllCookieStores returning only active cookie stores.

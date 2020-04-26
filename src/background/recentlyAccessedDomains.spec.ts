@@ -4,10 +4,13 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { container } from "tsyringe";
+
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
-import { testContext, mockContext } from "../testUtils/mockContext";
 import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 import { quickCookie, quickHeadersReceivedDetails } from "../testUtils/quickHelpers";
+import { mocks } from "../testUtils/mocks";
+import { mockAssimilate, whitelistPropertyAccess } from "../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
 
@@ -17,7 +20,6 @@ describe("Recently Accessed Domains", () => {
     let onCookieChanged: EventMockOf<typeof mockBrowser.cookies.onChanged>;
 
     beforeEach(() => {
-        mockEvent(mockBrowser.runtime.onMessage);
         onHeadersReceived = mockEvent(mockBrowser.webRequest.onHeadersReceived);
         onCookieChanged = mockEvent(mockBrowser.cookies.onChanged);
     });
@@ -26,12 +28,18 @@ describe("Recently Accessed Domains", () => {
     });
 
     function prepareApplySettings(enabled: boolean, limit = 5) {
-        mockContext.settings.get.expect("logRAD.enabled").andReturn(enabled);
-        mockContext.settings.get.expect("logRAD.limit").andReturn(limit);
+        mocks.settings.get.expect("logRAD.enabled").andReturn(enabled);
+        mocks.settings.get.expect("logRAD.limit").andReturn(limit);
     }
     function createRAD(enabled: boolean, limit = 5) {
         prepareApplySettings(enabled, limit);
-        recentlyAccessedDomains = new RecentlyAccessedDomains(testContext);
+
+        mocks.messageUtil.receive.expect("getRecentlyAccessedDomains", expect.anything());
+        mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
+        mocks.messageUtil.mockAllow();
+        mocks.incognitoWatcher.mockAllow();
+        mocks.domainUtils.mockAllow();
+        recentlyAccessedDomains = container.resolve(RecentlyAccessedDomains);
     }
 
     // fixme: messageUtil listeners and events
@@ -88,24 +96,29 @@ describe("Recently Accessed Domains", () => {
         }
         it("should call add() if non-incognito cookie was added", () => {
             createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
-            mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
+            const mock = mockAssimilate(
+                recentlyAccessedDomains,
+                {
+                    add: recentlyAccessedDomains!["add"],
+                },
+                ["onCookieChanged", "incognitoWatcher", "domainUtils"]
+            );
+            mocks.domainUtils.removeLeadingDot.expect(".www.google.com").andReturn("www.google.com");
+            mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
+            mock.add.expect("www.google.com");
             fireOnCookieChanged(false);
-            expect(spy.mock.calls).toEqual([["www.google.com"]]);
         });
         it("should not call add() if non-incognito cookie was removed", () => {
             createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
+            whitelistPropertyAccess(recentlyAccessedDomains, "onCookieChanged");
             fireOnCookieChanged(true);
-            expect(spy).not.toHaveBeenCalled();
         });
         it("should not call add() if incognito cookie was added or removed", () => {
             createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains!, "add");
-            mockContext.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(true);
+            whitelistPropertyAccess(recentlyAccessedDomains, "onCookieChanged", "incognitoWatcher");
+            mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(true);
             fireOnCookieChanged(false);
             fireOnCookieChanged(true);
-            expect(spy).not.toHaveBeenCalled();
         });
     });
 
@@ -113,8 +126,8 @@ describe("Recently Accessed Domains", () => {
         it("should call add() if non-incognito tab received a header", () => {
             createRAD(false);
             const spy = jest.spyOn(recentlyAccessedDomains!, "add");
-            mockContext.incognitoWatcher.hasTab.expect(42).andReturn(false);
-            mockContext.domainUtils.getValidHostname.expect("http://www.google.com").andReturn("www.google.com");
+            mocks.incognitoWatcher.hasTab.expect(42).andReturn(false);
+            mocks.domainUtils.getValidHostname.expect("http://www.google.com").andReturn("www.google.com");
             recentlyAccessedDomains!["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith("www.google.com");
@@ -122,7 +135,7 @@ describe("Recently Accessed Domains", () => {
         it("should not call add() if incognito tab received a header", () => {
             createRAD(false);
             const spy = jest.spyOn(recentlyAccessedDomains!, "add");
-            mockContext.incognitoWatcher.hasTab.expect(42).andReturn(true);
+            mocks.incognitoWatcher.hasTab.expect(42).andReturn(true);
             recentlyAccessedDomains!["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
             expect(spy).not.toHaveBeenCalled();
         });

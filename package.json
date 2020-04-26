@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && parcel build src/*.{html,ts} -d build/dist --public-url . --no-source-maps",
+    "build:dev": "npm run build -- --no-minify",
     "clean": "rimraf build",
     "copy": "cpx {_locales,icons}/**/* build && cpx manifest.json build && cpx {LICENSE,README.md} build",
     "lint": "npm run lint:es && npm run lint:scss && npm run lint:package && npm run lint:style",
@@ -30,6 +31,7 @@
     "Firefox >= 57"
   ],
   "dependencies": {
+    "@abraham/reflection": "^0.7.0",
     "@lusito/eslint-config": "^1.0.4",
     "@lusito/eslint-config-react": "^1.0.4",
     "@lusito/prettier-config": "^1.0.0",
@@ -54,6 +56,7 @@
     "ts-jest": "^25.3.1",
     "ts-keycode-enum": "^1.0.6",
     "tsx-dom": "^0.8.3",
+    "tsyringe": "^4.1.0",
     "typeface-open-sans": "0.0.75",
     "typescript": "^3.8.3",
     "web-ext": "^4.1.0",

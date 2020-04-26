@@ -4,69 +4,51 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import "@abraham/reflection";
+import { container } from "tsyringe";
 import { browser } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 
-import { messageUtil } from "./lib/messageUtil";
-import bootstrap from "./lib/bootstrap";
-import { Background, CleanUrlNowConfig } from "./background/background";
-import { someItemsMatch } from "./background/backgroundShared";
-
-const UPDATE_NOTIFICATION_ID = "UpdateNotification";
-const BADGE_SETTINGS_KEYS = ["rules", "fallbackRule", "whitelistNoTLD", "whitelistFileSystem", "showBadge"];
+import bootstrap from "./shared/bootstrap";
+import { BadgeManager } from "./background/badgeManager";
+import { Settings } from "./shared/settings";
+import { SnoozeManager } from "./background/snoozeManager";
+import { CleanupManager } from "./background/cleanupManager";
+import { NotificationHandler } from "./background/notificationHandler";
+import { HeaderFilter } from "./background/headerFilter";
+import { RequestWatcher } from "./background/requestWatcher";
+import { RecentlyAccessedDomains } from "./background/recentlyAccessedDomains";
+import { TabWatcher } from "./background/tabWatcher";
+import { IncognitoWatcher } from "./background/incognitoWatcher";
+import { ExtensionInfo } from "./shared/extensionInfo";
 
 wetLayer.reset();
 
-bootstrap().then((context) => {
-    const { settings, version } = context;
-    const background = new Background(context);
-    messageUtil.receive("cleanAllNow", () => background.cleanAllNow());
-    messageUtil.receive("cleanUrlNow", (config: CleanUrlNowConfig) => background.cleanUrlNow(config));
-    messageUtil.receive("toggleSnoozingState", () => background.toggleSnoozingState());
-    messageUtil.receive("getSnoozingState", () => background.sendSnoozingState());
+bootstrap().then(async () => {
+    // fixme: handle exceptions in here
+    const { version } = container.resolve(ExtensionInfo);
+    const settings = container.resolve(Settings);
+    const notificationHandler = container.resolve(NotificationHandler);
+    const previousVersion = settings.get("version");
+    if (previousVersion !== version) {
+        settings.set("version", version);
+        settings.performUpgrade(previousVersion);
+        settings.rebuildRules();
+        await settings.save();
 
-    // listen for tab changes to update badge
-    const badgeUpdater = () => {
-        background.updateBadge();
-    };
-    browser.tabs.onActivated.addListener(badgeUpdater);
-    browser.tabs.onUpdated.addListener(badgeUpdater);
-    messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-        if (someItemsMatch(changedKeys, BADGE_SETTINGS_KEYS)) background.updateBadge();
-    });
-
-    browser.notifications.onClicked.addListener((id: string) => {
-        if (id === UPDATE_NOTIFICATION_ID) {
-            browser.tabs.create({
-                active: true,
-                url: `${browser.runtime.getURL("dist/readme.html")}#changelog`,
-            });
-        }
-    });
-
-    function showUpdateNotification() {
-        browser.notifications.create(UPDATE_NOTIFICATION_ID, {
-            type: "basic",
-            iconUrl: browser.extension.getURL("icons/icon96.png"),
-            title: wetLayer.getMessage("update_notification_title"),
-            message: wetLayer.getMessage("update_notification_message"),
-        });
+        if (settings.get("showUpdateNotification")) await notificationHandler.showUpdateNotification();
     }
-    wetLayer.addListener(showUpdateNotification);
 
-    const startup = async () => {
-        const previousVersion = settings.get("version");
-        if (previousVersion !== version) {
-            settings.set("version", version);
-            settings.performUpgrade(previousVersion);
-            settings.rebuildRules();
-            await settings.save();
+    container.resolve(BadgeManager);
 
-            if (settings.get("showUpdateNotification")) showUpdateNotification();
-        }
-        await background.onStartup();
-    };
-    setTimeout(() => {
-        startup();
-    }, 1000);
+    const tabs = await browser.tabs.query({});
+    container.resolve(TabWatcher).init(tabs);
+    container.resolve(IncognitoWatcher).init(tabs);
+
+    container.resolve(RecentlyAccessedDomains);
+    container.resolve(SnoozeManager);
+    container.resolve(HeaderFilter).init();
+    container.resolve(RequestWatcher);
+
+    await container.resolve(CleanupManager).init(tabs);
 });

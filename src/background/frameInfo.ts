@@ -25,7 +25,6 @@ export class FrameInfo {
         this.navigating && this.nextHostname && collector.add(this.nextHostname);
     }
 
-    // fixme: add tests
     public matchRegexFP(regex: RegExp) {
         return regex.test(this.hostname) || (this.navigating && regex.test(this.nextHostname));
     }

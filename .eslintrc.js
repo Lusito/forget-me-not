@@ -4,9 +4,13 @@ module.exports = {
     extends: ["@lusito/eslint-config-react"],
     rules: {
         "react/no-unknown-property": ["error", { ignore: ["class"] }],
+        "@typescript-eslint/no-parameter-properties": ["error", { allows: ["private readonly", "public readonly"] }],
         "@typescript-eslint/prefer-nullish-coalescing": "off",
         "@typescript-eslint/prefer-optional-chain": "warn",
         "react/static-property-placement": "off",
+        // fixme: move to shared config
+        "no-useless-constructor": "off",
+        "@typescript-eslint/no-useless-constructor": ["error"],
         ...utils.getA11yOffRules(), // just for now
     },
     settings: {
@@ -28,7 +32,7 @@ module.exports = {
                 "jest/expect-expect": [
                     "error",
                     {
-                        assertFunctionNames: ["expect", "**.expect", "**.expect.*"],
+                        assertFunctionNames: ["expect", "**.expect", "**.expect.*", "whitelistPropertyAccess"],
                     },
                 ],
             },

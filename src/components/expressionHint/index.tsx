@@ -1,17 +1,17 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
+import { container } from "tsyringe";
 
-import { ExtensionContext } from "../../lib/bootstrap";
-import { isValidExpression } from "../../lib/expressionUtils";
+import { isValidExpression } from "../../shared/expressionUtils";
 import { on } from "../../frontend/htmlUtils";
+import { Settings } from "../../shared/settings";
 import "./style.scss";
 
 interface ExpressionHintProps {
     input: HTMLInputElement;
-    context: ExtensionContext;
 }
 
-export function ExpressionHint({ input, context: { settings } }: ExpressionHintProps) {
+export function ExpressionHint({ input }: ExpressionHintProps) {
     const hint = <div class="expression_hint" />;
 
     function updateError(error: string) {
@@ -24,6 +24,7 @@ export function ExpressionHint({ input, context: { settings } }: ExpressionHintP
         else hint.removeAttribute("role");
     }
 
+    const settings = container.resolve(Settings);
     function validate() {
         const expression = input.value.trim().toLowerCase();
         const validExpression = !expression || isValidExpression(expression);

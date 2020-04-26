@@ -1,19 +1,19 @@
 import { h } from "tsx-dom";
 import { getDomain } from "tldjs";
 import { wetLayer } from "wet-layer";
+import { container } from "tsyringe";
 
 import { RuleTableRow } from "./ruleTableRow";
 import { removeAllChildren, translateChildren, on } from "../../frontend/htmlUtils";
-import { messageUtil } from "../../lib/messageUtil";
-import { RuleDefinition } from "../../lib/defaultSettings";
+import { RuleDefinition } from "../../shared/defaultSettings";
 import "./style.scss";
-import { ExtensionContext } from "../../lib/bootstrap";
+import { Settings } from "../../shared/settings";
+import { MessageUtil } from "../../shared/messageUtil";
 
 interface RuleTableProps {
     headerI18n: string;
     forDomain?: string;
     filterInput?: HTMLInputElement;
-    context: ExtensionContext;
 }
 
 function sortByRule(a: RuleDefinition, b: RuleDefinition) {
@@ -22,17 +22,12 @@ function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     return 0;
 }
 
-function rebuildRows(
-    context: ExtensionContext,
-    tbody: HTMLElement,
-    forDomain?: string,
-    filterInput?: HTMLInputElement
-) {
+function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLInputElement) {
     // fixme: rather than recreate, update existing dom-nodes
     removeAllChildren(tbody);
     let rules: RuleDefinition[];
     let chosenRulesForDomain: RuleDefinition[];
-    const { settings } = context;
+    const settings = container.resolve(Settings);
     if (forDomain) {
         chosenRulesForDomain = settings.getChosenRulesForDomain(forDomain);
         const domainFP = getDomain(forDomain) || forDomain;
@@ -47,7 +42,6 @@ function rebuildRows(
                     isChosen={!!chosenRule}
                     type={settings.getExactCleanupType(expression)}
                     temporary={temporary}
-                    context={context}
                 />
             );
         });
@@ -63,13 +57,7 @@ function rebuildRows(
     rules.forEach((rule) => {
         const isChosen = chosenRulesForDomain.some((r) => r.rule === rule.rule);
         tbody.appendChild(
-            <RuleTableRow
-                expression={rule.rule}
-                isChosen={isChosen}
-                type={rule.type}
-                temporary={rule.temporary}
-                context={context}
-            />
+            <RuleTableRow expression={rule.rule} isChosen={isChosen} type={rule.type} temporary={rule.temporary} />
         );
     });
 
@@ -92,14 +80,15 @@ function updateIsNotEmpty(tbody: HTMLElement) {
     tbody.className = tbody.querySelector("tr:not(.is-filtered)") ? "is-not-empty" : "";
 }
 
-export function RuleTable({ headerI18n, forDomain, filterInput, context }: RuleTableProps) {
+export function RuleTable({ headerI18n, forDomain, filterInput }: RuleTableProps) {
     const tbody = <tbody aria-live="polite" />;
 
+    const messageUtil = container.resolve(MessageUtil);
     messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-        if (changedKeys.includes("rules")) rebuildRows(context, tbody, forDomain, filterInput);
+        if (changedKeys.includes("rules")) rebuildRows(tbody, forDomain, filterInput);
     });
-    wetLayer.addListener(() => rebuildRows(context, tbody, forDomain, filterInput));
-    rebuildRows(context, tbody, forDomain, filterInput);
+    wetLayer.addListener(() => rebuildRows(tbody, forDomain, filterInput));
+    rebuildRows(tbody, forDomain, filterInput);
 
     if (filterInput) on(filterInput, "input", () => applyFilter(tbody, filterInput));
 

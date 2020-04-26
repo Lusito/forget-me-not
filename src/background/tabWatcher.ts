@@ -4,21 +4,23 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { browser, Tabs } from "webextension-polyfill-ts";
 
-import { RequestWatcherListener } from "./requestWatcher";
 import { TabInfo } from "./tabInfo";
-import { ExtensionContext } from "../lib/bootstrap";
+import { DomainUtils } from "../shared/domainUtils";
+import { StoreUtils } from "../shared/storeUtils";
 
 export interface TabWatcherListener {
     onDomainEnter(cookieStoreId: string, hostname: string): void;
     onDomainLeave(cookieStoreId: string, hostname: string): void;
 }
 
-export class TabWatcher implements RequestWatcherListener {
-    public destroy: () => void = () => undefined;
+type DomainEventListener = (cookieStoreId: string, hostname: string) => void;
 
-    private readonly listener: TabWatcherListener;
+@singleton()
+export class TabWatcher {
+    public destroy: () => void = () => undefined;
 
     private readonly tabInfos: { [s: string]: TabInfo } = {};
 
@@ -26,17 +28,16 @@ export class TabWatcher implements RequestWatcherListener {
 
     private readonly defaultCookieStoreId: string;
 
-    private context: ExtensionContext;
+    public readonly domainEnterListeners = new Set<DomainEventListener>();
 
-    public constructor(listener: TabWatcherListener, context: ExtensionContext) {
-        this.listener = listener;
-        this.context = context;
-        this.defaultCookieStoreId = context.storeUtils.defaultCookieStoreId;
+    public readonly domainLeaveListeners = new Set<DomainEventListener>();
+
+    public constructor(private readonly domainUtils: DomainUtils, storeUtils: StoreUtils) {
+        this.defaultCookieStoreId = storeUtils.defaultCookieStoreId;
     }
 
-    public async initializeExistingTabs() {
-        const tabs = await browser.tabs.query({});
-        for (const tab of tabs) this.onTabCreated(tab);
+    public init(tabs: Tabs.Tab[]) {
+        tabs.forEach((tab) => this.onTabCreated(tab));
         browser.tabs.onRemoved.addListener(this.onTabRemoved);
         browser.tabs.onCreated.addListener(this.onTabCreated);
     }
@@ -60,8 +61,9 @@ export class TabWatcher implements RequestWatcherListener {
     }
 
     private checkDomainEnter(cookieStoreId: string, hostname: string) {
-        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, false))
-            this.listener.onDomainEnter(cookieStoreId, hostname);
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, false)) {
+            for (const listener of this.domainEnterListeners) listener(cookieStoreId, hostname);
+        }
     }
 
     private checkDomainLeaveSet = (cookieStoreId: string, hostnames: Set<string>) => {
@@ -69,8 +71,9 @@ export class TabWatcher implements RequestWatcherListener {
     };
 
     private checkDomainLeave(cookieStoreId: string, hostname: string) {
-        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true))
-            this.listener.onDomainLeave(cookieStoreId, hostname);
+        if (hostname && !this.cookieStoreContainsDomain(cookieStoreId, hostname, true)) {
+            for (const listener of this.domainLeaveListeners) listener(cookieStoreId, hostname);
+        }
     }
 
     public cookieStoreContainsDomain(cookieStoreId: string, domain: string, checkNext: boolean) {
@@ -86,7 +89,6 @@ export class TabWatcher implements RequestWatcherListener {
         return false;
     }
 
-    // fixme: add tests
     public containsRuleFP(rule: RegExp) {
         for (const key of Object.keys(this.tabInfos)) {
             const ti = this.tabInfos[key];
@@ -109,9 +111,10 @@ export class TabWatcher implements RequestWatcherListener {
     };
 
     private onTabCreated = (tab: Tabs.Tab) => {
+        // fixme: ignore discarded and hidden tabs
         if (tab.id && !tab.incognito) {
             const cookieStoreId = tab.cookieStoreId || this.defaultCookieStoreId;
-            const hostname = tab.url ? this.context.domainUtils.getValidHostname(tab.url) : "";
+            const hostname = tab.url ? this.domainUtils.getValidHostname(tab.url) : "";
             this.checkDomainEnter(cookieStoreId, hostname);
 
             const tabInfo = new TabInfo(tab.id, hostname, cookieStoreId, this.checkDomainLeaveSet);
@@ -129,7 +132,7 @@ export class TabWatcher implements RequestWatcherListener {
     public isThirdPartyCookieOnTab(tabId: number, domain: string) {
         const tabInfo = this.tabInfos[tabId];
         if (!tabInfo) return false;
-        return !tabInfo.matchHostnameFP(this.context.domainUtils.getFirstPartyCookieDomain(domain));
+        return !tabInfo.matchHostnameFP(this.domainUtils.getFirstPartyCookieDomain(domain));
     }
 
     public cookieStoreContainsDomainFP(storeId: string, domainFP: string, deep: boolean) {

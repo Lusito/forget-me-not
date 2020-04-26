@@ -1,21 +1,21 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
+import { container } from "tsyringe";
 
 import { SettingsCheckbox } from "../settingsCheckbox";
 import { SettingsNumber } from "../settingsNumber";
-import { messageUtil } from "../../lib/messageUtil";
-import { CookieDomainInfo } from "../../lib/shared";
+import { CookieDomainInfo } from "../../shared/types";
 import { removeAllChildren } from "../../frontend/htmlUtils";
 import "./style.scss";
 import { appendPunycode, getSuggestedRuleExpression, showAddRuleDialog } from "../helpers";
-import { ExtensionContextProps } from "../../lib/bootstrap";
+import { MessageUtil } from "../../shared/messageUtil";
 
-export function LogTab({ context }: ExtensionContextProps) {
+export function LogTab() {
     const list = <ul id="recently_accessed_domains" />;
 
     function createListItem(info: CookieDomainInfo) {
         function addRule() {
-            showAddRuleDialog(context, getSuggestedRuleExpression(info.domain));
+            showAddRuleDialog(getSuggestedRuleExpression(info.domain));
         }
         const punified = appendPunycode(info.domain);
         const addRuleMessage = wetLayer.getMessage("button_log_add_rule");
@@ -37,6 +37,8 @@ export function LogTab({ context }: ExtensionContextProps) {
             </li>
         );
     }
+
+    const messageUtil = container.resolve(MessageUtil);
     messageUtil.receive("onRecentlyAccessedDomains", (domains: CookieDomainInfo[]) => {
         removeAllChildren(list);
         for (const info of domains) list.appendChild(createListItem(info));
@@ -50,7 +52,7 @@ export function LogTab({ context }: ExtensionContextProps) {
     return (
         <div>
             <div class="split_equal">
-                <SettingsCheckbox key="logRAD.enabled" i18n="setting_log_rad_enabled" context={context} />
+                <SettingsCheckbox key="logRAD.enabled" i18n="setting_log_rad_enabled" />
                 <SettingsNumber key="logRAD.limit" i18n="setting_log_rad_limit" class="align_right" />
             </div>
             <b data-i18n="recently_accessed_domains" class="top_margin" />

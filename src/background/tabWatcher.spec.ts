@@ -4,30 +4,25 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { container } from "tsyringe";
+
 import { TabWatcher } from "./tabWatcher";
-import { mockContext, testContext } from "../testUtils/mockContext";
-import { mockEvent } from "../testUtils/mockBrowser";
+import { mocks } from "../testUtils/mocks";
 import { quickTab } from "../testUtils/quickHelpers";
 import { booleanVariations } from "../testUtils/testHelpers";
 import { quickDeepMock } from "../testUtils/deepMock";
 import { TabInfo } from "./tabInfo";
+import { mockAssimilate } from "../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
 const COOKIE_STORE_ID2 = "mock2";
 
 describe("TabWatcher", () => {
-    let listener: {
-        onDomainEnter: jest.Mock;
-        onDomainLeave: jest.Mock;
-    };
     let tabWatcher: TabWatcher | null = null;
     beforeEach(() => {
-        listener = {
-            onDomainEnter: jest.fn(),
-            onDomainLeave: jest.fn(),
-        };
-        mockContext.storeUtils.defaultCookieStoreId.mock("default-mock-store");
-        tabWatcher = new TabWatcher(listener, testContext);
+        mocks.storeUtils.defaultCookieStoreId.mock("default-mock-store");
+        mocks.domainUtils.mockAllow();
+        tabWatcher = container.resolve(TabWatcher);
     });
 
     afterEach(() => {
@@ -36,90 +31,109 @@ describe("TabWatcher", () => {
 
     function prepareTab(url: string, domain: string, store: string) {
         const tab = quickTab(url, store, false);
-        if (url) mockContext.domainUtils.getValidHostname.expect(url).andReturn(domain);
+        if (url) mocks.domainUtils.getValidHostname.expect(url).andReturn(domain);
         tabWatcher!["onTabCreated"](tab);
         return tab;
     }
 
-    describe("initializeExistingTabs", () => {
-        it("should add listeners", async () => {
-            const onRemoved = mockEvent(mockBrowser.tabs.onRemoved);
-            const onCreated = mockEvent(mockBrowser.tabs.onCreated);
-            mockBrowser.tabs.query.expect({}).andResolve([]);
-            await tabWatcher!.initializeExistingTabs();
-            expect(onRemoved.hasListener(tabWatcher!["onTabRemoved"])).toBe(true);
-            expect(onCreated.hasListener(tabWatcher!["onTabCreated"])).toBe(true);
+    describe("init", () => {
+        it("should add listeners", () => {
+            mockAssimilate(
+                tabWatcher,
+                {
+                    onTabCreated: tabWatcher!["onTabCreated"],
+                    onTabRemoved: tabWatcher!["onTabRemoved"],
+                },
+                ["init"]
+            );
+            mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
+            mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
+            tabWatcher!.init([]);
         });
-        it("should initialize existing tabs", async () => {
+        it("should initialize existing tabs", () => {
+            const mock = mockAssimilate(
+                tabWatcher,
+                {
+                    onTabCreated: tabWatcher!["onTabCreated"],
+                    onTabRemoved: tabWatcher!["onTabRemoved"],
+                },
+                ["init"]
+            );
+            mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
+            mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
             const tab1 = quickTab("", COOKIE_STORE_ID, false);
             const tab2 = quickTab("", COOKIE_STORE_ID, true);
-            mockEvent(mockBrowser.tabs.onRemoved);
-            mockEvent(mockBrowser.tabs.onCreated);
-            const onTabCreated = jest.fn();
-            tabWatcher!["onTabCreated"] = onTabCreated;
-            mockBrowser.tabs.query.expect({}).andResolve([tab1, tab2]);
-            await tabWatcher!.initializeExistingTabs();
-            expect(onTabCreated.mock.calls).toEqual([[tab1], [tab2]]);
+            mock.onTabCreated.expect(tab1);
+            mock.onTabCreated.expect(tab2);
+            tabWatcher!.init([tab1, tab2]);
         });
     });
 
     describe("listener", () => {
+        const onDomainEnter = jest.fn();
+        const onDomainLeave = jest.fn();
+        beforeEach(() => {
+            tabWatcher!.domainEnterListeners.add(onDomainEnter);
+            tabWatcher!.domainLeaveListeners.add(onDomainLeave);
+            onDomainEnter.mockClear();
+            onDomainLeave.mockClear();
+        });
         it("should not do anything with incognito tabs", () => {
             quickTab("http://www.google.com", COOKIE_STORE_ID, true);
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
-            expect(listener.onDomainLeave).not.toHaveBeenCalled();
+            expect(onDomainEnter).not.toHaveBeenCalled();
+            expect(onDomainLeave).not.toHaveBeenCalled();
         });
         it("should be called on tab create and remove", () => {
             const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
-            listener.onDomainEnter.mockClear();
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            onDomainEnter.mockClear();
 
             const tab2 = prepareTab("http://www.google.de", "www.google.de", COOKIE_STORE_ID2);
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
 
             tabWatcher!["onTabRemoved"](tab1.id!);
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
-            listener.onDomainLeave.mockClear();
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            onDomainLeave.mockClear();
 
             tabWatcher!["onTabRemoved"](tab2.id!);
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
         });
         it("should be called only for new domains tab create and remove", () => {
             const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
-            listener.onDomainEnter.mockClear();
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            onDomainEnter.mockClear();
 
             const tab1b = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
+            expect(onDomainEnter).not.toHaveBeenCalled();
 
             const tab2 = prepareTab("http://www.google.de", "www.google.de", COOKIE_STORE_ID2);
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
-            listener.onDomainEnter.mockClear();
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
+            onDomainEnter.mockClear();
 
             const tab2b = prepareTab("http://www.google.de", "www.google.de", COOKIE_STORE_ID2);
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
+            expect(onDomainEnter).not.toHaveBeenCalled();
 
             tabWatcher!["onTabRemoved"](tab1.id!);
-            expect(listener.onDomainLeave).not.toHaveBeenCalled();
+            expect(onDomainLeave).not.toHaveBeenCalled();
             tabWatcher!["onTabRemoved"](tab1b.id!);
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
-            listener.onDomainLeave.mockClear();
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            onDomainLeave.mockClear();
 
             tabWatcher!["onTabRemoved"](tab2.id!);
-            expect(listener.onDomainLeave).not.toHaveBeenCalled();
+            expect(onDomainLeave).not.toHaveBeenCalled();
             tabWatcher!["onTabRemoved"](tab2b.id!);
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
         });
         it("should be called after web navigation commit", () => {
             const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
-            listener.onDomainEnter.mockClear();
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            onDomainEnter.mockClear();
             tabWatcher!.prepareNavigation(tab1.id!, 0, "www.google.de");
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
-            expect(listener.onDomainLeave).not.toHaveBeenCalled();
+            expect(onDomainEnter).not.toHaveBeenCalled();
+            expect(onDomainLeave).not.toHaveBeenCalled();
             tabWatcher!.commitNavigation(tab1.id!, 0, "www.google.de");
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.de"]]);
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.de"]]);
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
         });
         it("should be called when a navigation follows a navigation", () => {
             const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
@@ -127,7 +141,7 @@ describe("TabWatcher", () => {
             tabWatcher!.prepareNavigation(tab1.id!, 0, "www.google.jp");
             tabWatcher!.prepareNavigation(tab1.id!, 0, "www.amazon.com");
             tabWatcher!.prepareNavigation(tab1.id!, 0, "www.amazon.de");
-            expect(listener.onDomainLeave.mock.calls).toEqual([
+            expect(onDomainLeave.mock.calls).toEqual([
                 [COOKIE_STORE_ID, "www.google.de"],
                 [COOKIE_STORE_ID, "www.google.jp"],
                 [COOKIE_STORE_ID, "www.amazon.com"],
@@ -143,26 +157,26 @@ describe("TabWatcher", () => {
         });
         it("should be called for frames", () => {
             const tab1 = prepareTab("http://www.amazon.com", "www.amazon.com", COOKIE_STORE_ID);
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.amazon.com"]]);
-            listener.onDomainEnter.mockClear();
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.amazon.com"]]);
+            onDomainEnter.mockClear();
             tabWatcher!.prepareNavigation(tab1.id!, 1, "images.google.com");
             tabWatcher!.prepareNavigation(tab1.id!, 1, "www.google.com");
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "images.google.com"]]);
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
-            listener.onDomainLeave.mockClear();
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "images.google.com"]]);
+            expect(onDomainEnter).not.toHaveBeenCalled();
+            onDomainLeave.mockClear();
             tabWatcher!.commitNavigation(tab1.id!, 1, "www.google.com");
-            expect(listener.onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
-            listener.onDomainEnter.mockClear();
+            expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            onDomainEnter.mockClear();
 
             tabWatcher!.commitNavigation(tab1.id!, 1, "www.google.com");
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
+            expect(onDomainEnter).not.toHaveBeenCalled();
 
             tabWatcher!.prepareNavigation(tab1.id!, 1, "");
-            expect(listener.onDomainLeave).not.toHaveBeenCalled();
+            expect(onDomainLeave).not.toHaveBeenCalled();
             tabWatcher!.commitNavigation(tab1.id!, 1, "");
-            expect(listener.onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
+            expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
 
-            expect(listener.onDomainEnter).not.toHaveBeenCalled();
+            expect(onDomainEnter).not.toHaveBeenCalled();
         });
     });
     describe("cookieStoreContainsDomain", () => {
@@ -229,6 +243,9 @@ describe("TabWatcher", () => {
             expect(tabWatcher!.containsDomain("www.google.de")).toBe(true);
         });
     });
+
+    // fixme: containsRuleFP
+
     describe("isThirdPartyCookieOnTab", () => {
         it("should return false for non-existing tabs", () => {
             expect(tabWatcher!.isThirdPartyCookieOnTab(1, "google.com")).toBe(false);
@@ -239,10 +256,10 @@ describe("TabWatcher", () => {
             const [tabInfo, mockTabInfo, mockTabInfoNode] = quickDeepMock<TabInfo>("tabInfo");
             tabWatcher!["tabInfos"]["42"] = tabInfo;
             mockTabInfo.matchHostnameFP.expect("outgoing.com").andReturn(true);
-            mockContext.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
+            mocks.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
             expect(tabWatcher!.isThirdPartyCookieOnTab(42, ".incoming.com")).toBe(false);
             mockTabInfo.matchHostnameFP.expect("outgoing.com").andReturn(false);
-            mockContext.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
+            mocks.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
             expect(tabWatcher!.isThirdPartyCookieOnTab(42, ".incoming.com")).toBe(true);
             mockTabInfoNode.verifyAndDisable();
         });

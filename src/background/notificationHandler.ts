@@ -4,19 +4,22 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { browser } from "webextension-polyfill-ts";
 import { wetLayer } from "wet-layer";
 
-import { ExtensionBackgroundContext } from "./backgroundShared";
-import DelayedExecution from "../lib/delayedExecution";
-import { messageUtil } from "../lib/messageUtil";
+import DelayedExecution from "../shared/delayedExecution";
+import { Settings } from "../shared/settings";
+import { MessageUtil } from "../shared/messageUtil";
 
 const COOKIE_CLEANUP_NOTIFICATION_ID = "CookieCleanupNotification";
+const UPDATE_NOTIFICATION_ID = "UpdateNotification";
 
 const CLEAR_NOTIFICATION_TIME = 3000;
 const DELAY_NOTIFICATION_UPDATE_ON_START = 100;
 const DELAY_NOTIFICATION = 500;
 
+@singleton()
 export class NotificationHandler {
     private enabled: boolean;
 
@@ -32,7 +35,7 @@ export class NotificationHandler {
 
     private updateOnStart = false;
 
-    public constructor({ settings }: ExtensionBackgroundContext) {
+    public constructor(settings: Settings, messageUtil: MessageUtil) {
         browser.notifications.onClosed.addListener(this.onNotificationClosed);
 
         this.enabled = settings.get("showCookieRemovalNotification");
@@ -40,6 +43,32 @@ export class NotificationHandler {
             this.enabled = settings.get("showCookieRemovalNotification");
         });
         messageUtil.receive("cookieRemoved", this.onCookieRemoved);
+
+        wetLayer.addListener(() => {
+            this.showUpdateNotification();
+        });
+
+        browser.notifications.onClicked.addListener((id: string) => {
+            this.onClick(id);
+        });
+    }
+
+    private async onClick(id: string) {
+        if (id === UPDATE_NOTIFICATION_ID) {
+            await browser.tabs.create({
+                active: true,
+                url: `${browser.runtime.getURL("dist/readme.html")}#changelog`,
+            });
+        }
+    }
+
+    public async showUpdateNotification() {
+        browser.notifications.create(UPDATE_NOTIFICATION_ID, {
+            type: "basic",
+            iconUrl: browser.extension.getURL("icons/icon96.png"),
+            title: wetLayer.getMessage("update_notification_title"),
+            message: wetLayer.getMessage("update_notification_message"),
+        });
     }
 
     private onNotificationClosed = () => {

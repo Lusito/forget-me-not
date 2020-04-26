@@ -1,9 +1,11 @@
 import { h } from "tsx-dom";
+import { container } from "tsyringe";
 
 import { Dialog, showDialog, hideDialog } from "./dialog";
-import { ExtensionContextProps } from "../../lib/bootstrap";
+import { Settings } from "../../shared/settings";
 
-export function ResetDialog({ context: { settings } }: ExtensionContextProps) {
+export function ResetDialog() {
+    const settings = container.resolve(Settings);
     function onResetSettingsAndRules() {
         hideDialog(dialog);
         settings.setAll({

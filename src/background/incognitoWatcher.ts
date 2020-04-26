@@ -4,10 +4,12 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { browser, Tabs } from "webextension-polyfill-ts";
 
-import { ExtensionContext } from "../lib/bootstrap";
+import { StoreUtils } from "../shared/storeUtils";
 
+@singleton()
 export class IncognitoWatcher {
     private cookieStores = new Set<string>();
 
@@ -15,25 +17,24 @@ export class IncognitoWatcher {
 
     private readonly defaultCookieStoreId: string;
 
-    public constructor(context: ExtensionContext) {
-        this.defaultCookieStoreId = context.storeUtils.defaultCookieStoreId;
-        browser.tabs.onRemoved.addListener(this.onRemoved);
-        browser.tabs.onCreated.addListener(this.onCreated);
+    public constructor(storeUtils: StoreUtils) {
+        this.defaultCookieStoreId = storeUtils.defaultCookieStoreId;
     }
 
-    public async initializeExistingTabs() {
-        const tabs = await browser.tabs.query({});
-        tabs.forEach(this.onCreated);
+    public init(tabs: Tabs.Tab[]) {
+        tabs.forEach(this.onTabCreated);
+        browser.tabs.onRemoved.addListener(this.onTabRemoved);
+        browser.tabs.onCreated.addListener(this.onTabCreated);
     }
 
-    private onCreated = (tab: Tabs.Tab) => {
+    private onTabCreated = (tab: Tabs.Tab) => {
         if (tab.id && tab.incognito) {
             this.tabs.add(tab.id);
             this.cookieStores.add(tab.cookieStoreId || this.defaultCookieStoreId);
         }
     };
 
-    private onRemoved = (tabId: number) => {
+    private onTabRemoved = (tabId: number) => {
         this.tabs.delete(tabId);
     };
 

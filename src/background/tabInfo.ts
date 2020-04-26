@@ -129,7 +129,6 @@ export class TabInfo {
         return false;
     }
 
-    // fixme: add tests
     public containsRuleFP(regex: RegExp) {
         return this.getFrameInfo(0).matchRegexFP(regex);
     }

@@ -1,19 +1,19 @@
 import { h } from "tsx-dom";
 import * as punycode from "punycode";
+import { container } from "tsyringe";
 
-import { CleanupType } from "../../../lib/shared";
+import { CleanupType } from "../../../shared/types";
 import { RuleButton } from "../../ruleButton";
-import { ExtensionContext } from "../../../lib/bootstrap";
+import { Settings } from "../../../shared/settings";
 
 interface RuleTableRowProps {
     expression: string;
     type: CleanupType | null;
     temporary?: boolean;
     isChosen?: boolean;
-    context: ExtensionContext;
 }
 
-export function RuleTableRow({ expression, type, temporary, isChosen, context }: RuleTableRowProps) {
+export function RuleTableRow({ expression, type, temporary, isChosen }: RuleTableRowProps) {
     const punified = punycode.toUnicode(expression);
     const content = [<span>{expression}</span>];
     if (temporary) {
@@ -25,7 +25,7 @@ export function RuleTableRow({ expression, type, temporary, isChosen, context }:
     const classes = isChosen ? ["is-chosen-rule"] : [];
     if (expression.includes("@")) classes.push("is-cookie-rule");
 
-    const { settings } = context;
+    const settings = container.resolve(Settings);
     return (
         <tr class={classes.length ? classes.join(" ") : undefined}>
             <td title={title}>
@@ -39,7 +39,6 @@ export function RuleTableRow({ expression, type, temporary, isChosen, context }:
                     onConfirm={(newType, newExpression, newTemporary) =>
                         settings.setRule(newExpression, newType, newTemporary)
                     }
-                    context={context}
                 />
             </td>
             <td>

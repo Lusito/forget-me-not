@@ -100,6 +100,8 @@ describe("TabInfo", () => {
         });
     });
 
+    // fixme: containsRuleFP
+
     describe("matchHostnameFP", () => {
         it("should return true only for first party domains on frame 0", () => {
             const tabInfo = createTabInfo();

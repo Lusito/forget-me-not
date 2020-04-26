@@ -8,6 +8,16 @@ import { DomainUtils } from "./domainUtils";
 
 describe("Domain Utils", () => {
     const utils = new DomainUtils();
+
+    describe("removeLeadingDot", () => {
+        it("should remove the leading dot of a domain", () => {
+            expect(utils.removeLeadingDot(".hello.com")).toBe("hello.com");
+        });
+        it("should return the domain unchanged if it contains no leading dot", () => {
+            expect(utils.removeLeadingDot("www.hello.com")).toBe("www.hello.com");
+        });
+    });
+
     describe("getFirstPartyCookieDomain", () => {
         it("should return first party domains for valid cookie domains", () => {
             expect(utils.getFirstPartyCookieDomain("www.google.com")).toBe("google.com");

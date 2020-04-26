@@ -4,41 +4,52 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { ExtensionContext } from "../lib/bootstrap";
-import { messageUtil } from "../lib/messageUtil";
+import { injectable } from "tsyringe";
+
 import { someItemsMatch } from "./backgroundShared";
+import { Settings } from "../shared/settings";
+import { MessageUtil } from "../shared/messageUtil";
+import { SnoozeManager } from "./snoozeManager";
 
 const DOMAIN_LEAVE_SETTINGS_KEYS = ["domainLeave.enabled", "domainLeave.delay"];
 
+@injectable()
 export class CleanupScheduler {
     private delayTime = 0;
 
     private enabled = false;
 
-    private readonly handler: (domain: string) => Promise<void>;
+    private handler: (domain: string) => Promise<void> = () => Promise.resolve();
 
     private domainTimeouts: { [s: string]: ReturnType<typeof setTimeout> } = {};
 
     private snoozing: boolean;
 
-    private readonly snoozedDomains: { [s: string]: boolean } = {};
+    private snoozedDomains: { [s: string]: boolean } = {};
 
-    private readonly context: ExtensionContext;
+    public constructor(
+        private readonly settings: Settings,
+        private readonly messageUtil: MessageUtil,
+        snoozeManager: SnoozeManager
+    ) {
+        this.snoozing = snoozeManager.isSnoozing();
 
-    public constructor(context: ExtensionContext, handler: (domain: string) => Promise<void>, snoozing: boolean) {
-        this.context = context;
-        this.snoozing = snoozing;
+        snoozeManager.listeners.add((snoozing) => {
+            this.setSnoozing(snoozing);
+        });
+    }
+
+    public init(handler: (domain: string) => Promise<void>) {
         this.handler = handler;
 
         this.updateSettings();
-        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        this.messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, DOMAIN_LEAVE_SETTINGS_KEYS)) this.updateSettings();
         });
     }
 
     private updateSettings() {
-        const { settings } = this.context;
-        const enabled = settings.get("domainLeave.enabled");
+        const enabled = this.settings.get("domainLeave.enabled");
         if (enabled !== this.enabled) {
             this.enabled = enabled;
             if (!enabled) {
@@ -46,7 +57,7 @@ export class CleanupScheduler {
                 for (const domain of Object.keys(this.snoozedDomains)) delete this.snoozedDomains[domain];
             }
         }
-        this.delayTime = settings.get("domainLeave.delay") * 1000;
+        this.delayTime = this.settings.get("domainLeave.delay") * 1000;
     }
 
     private clearAllTimeouts() {
@@ -76,21 +87,19 @@ export class CleanupScheduler {
         }
     }
 
-    public setSnoozing(snoozing: boolean) {
+    public async setSnoozing(snoozing: boolean) {
         this.snoozing = snoozing;
         if (snoozing) {
             // cancel countdowns and remember them for later
             for (const domain of Object.keys(this.domainTimeouts)) {
                 this.snoozedDomains[domain] = true;
                 clearTimeout(this.domainTimeouts[domain]);
-                delete this.domainTimeouts[domain];
             }
+            this.domainTimeouts = {};
         } else {
             // reschedule
-            for (const domain of Object.keys(this.snoozedDomains)) {
-                this.schedule(domain);
-                delete this.snoozedDomains[domain];
-            }
+            await Promise.all(Object.keys(this.snoozedDomains).map(async (domain) => this.schedule(domain)));
+            this.snoozedDomains = {};
         }
     }
 

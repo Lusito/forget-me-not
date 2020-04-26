@@ -6,16 +6,18 @@
 
 // import { browser } from "webextension-polyfill-ts";
 
+import { container } from "tsyringe";
+
 import { Settings, SettingsMap } from "./settings";
 import { clone, booleanVariations } from "../testUtils/testHelpers";
-import { SettingsKey, RuleDefinition } from "./defaultSettings";
-import { CleanupType } from "./shared";
-import { quickDefaultSettings } from "../testUtils/quickHelpers";
+import { SettingsKey, RuleDefinition, DefaultSettingsProvider } from "./defaultSettings";
+import { CleanupType } from "./types";
 import { mockEvent } from "../testUtils/mockBrowser";
+import { mocks } from "../testUtils/mocks";
 
 describe("Settings", () => {
     let settings: Settings | null = null;
-    const defaultSettings = quickDefaultSettings();
+    const defaultSettings = new DefaultSettingsProvider({ get: () => [] } as any, { version: "2.0.0" } as any).get();
 
     // generate settings map that is unequal to default settings
     const testOverrides: SettingsMap = {};
@@ -45,7 +47,9 @@ describe("Settings", () => {
     beforeEach(() => {
         mockEvent(mockBrowser.storage.onChanged);
         mockBrowser.storage.local.mockAllow();
-        settings = new Settings(defaultSettings);
+        mocks.defaultSettings.get.expect().andReturn(defaultSettings);
+        mocks.messageUtil.receive.expect("importSettings", expect.anything());
+        settings = container.resolve(Settings);
     });
 
     afterEach(() => {
@@ -90,13 +94,11 @@ describe("Settings", () => {
 
     describe("setAll", () => {
         it("should override the default settings", async () => {
-            mockBrowser.runtime.getManifest.expect().andReturn({ version: "2.0.0" } as any);
             mockBrowser.storage.local.set.expect(expect.anything());
             await settings!.setAll(clone(testOverrides));
             expect(settings!.getAll()).toEqual(testOverrides);
         });
         it("should not override the default settings if the values are invalid types", async () => {
-            mockBrowser.runtime.getManifest.expect().andReturn({ version: "2.0.0" } as any);
             mockBrowser.storage.local.set.expect(expect.anything());
             mockBrowser.storage.local.remove.expect(expect.anything());
             await settings!.setAll(clone(invalidOverrides));
@@ -106,7 +108,6 @@ describe("Settings", () => {
 
     describe("restoreDefaults", () => {
         it("should restore the default settings", async () => {
-            mockBrowser.runtime.getManifest.expect().andReturn({ version: "2.0.0" } as any);
             mockBrowser.storage.local.set.expect(expect.anything());
             await settings!.setAll(clone(testOverrides));
             mockBrowser.storage.local.set.expect(expect.anything());
@@ -316,6 +317,8 @@ describe("Settings", () => {
             expect(settings!.getCleanupTypeForCookie("", "hello")).toBe(CleanupType.LEAVE);
         });
     });
+
+    // fixme: getExactRuleDefinition, getRulesForDomain
 
     describe("getExactCleanupType", () => {
         it("should return exact matches only", async () => {

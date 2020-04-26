@@ -4,17 +4,22 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
 import { browser, Cookies, WebRequest } from "webextension-polyfill-ts";
 
-import { messageUtil } from "../lib/messageUtil";
-import { CookieDomainInfo } from "../lib/shared";
-import { getBadgeForCleanupType } from "./backgroundHelpers";
-import { someItemsMatch, ExtensionBackgroundContext } from "./backgroundShared";
+import { CookieDomainInfo } from "../shared/types";
+import { getBadgeForCleanupType } from "../shared/badges";
+import { someItemsMatch } from "./backgroundShared";
+import { Settings } from "../shared/settings";
+import { IncognitoWatcher } from "./incognitoWatcher";
+import { DomainUtils } from "../shared/domainUtils";
+import { MessageUtil } from "../shared/messageUtil";
 
 const APPLY_SETTINGS_KEYS = ["logRAD.enabled", "logRAD.limit"];
 const UPDATE_SETTINGS_KEYS = ["fallbackRule", "rules", "whitelistNoTLD", "whitelistFileSystem"];
 const WEB_REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] };
 
+@singleton()
 export class RecentlyAccessedDomains {
     private enabled = false;
 
@@ -22,10 +27,12 @@ export class RecentlyAccessedDomains {
 
     private domains: string[] = [];
 
-    private readonly context: ExtensionBackgroundContext;
-
-    public constructor(context: ExtensionBackgroundContext) {
-        this.context = context;
+    public constructor(
+        private readonly settings: Settings,
+        private readonly incognitoWatcher: IncognitoWatcher,
+        private readonly domainUtils: DomainUtils,
+        messageUtil: MessageUtil
+    ) {
         messageUtil.receive("getRecentlyAccessedDomains", () => {
             messageUtil.send("onRecentlyAccessedDomains", this.get());
         });
@@ -59,14 +66,13 @@ export class RecentlyAccessedDomains {
     }
 
     private applySettings = () => {
-        const { settings } = this.context;
-        const enabled = settings.get("logRAD.enabled");
+        const enabled = this.settings.get("logRAD.enabled");
         if (this.enabled !== enabled) {
             this.enabled = enabled;
             if (this.enabled) this.addListeners();
             else this.removeListeners();
         }
-        this.limit = settings.get("logRAD.limit");
+        this.limit = this.settings.get("logRAD.limit");
         this.applyLimit();
     };
 
@@ -76,10 +82,9 @@ export class RecentlyAccessedDomains {
     }
 
     public get() {
-        const { settings } = this.context;
         const result: CookieDomainInfo[] = [];
         for (const domain of this.domains) {
-            const badge = getBadgeForCleanupType(settings.getCleanupTypeForDomain(domain));
+            const badge = getBadgeForCleanupType(this.settings.getCleanupTypeForDomain(domain));
             if (badge) {
                 result.push({
                     domain,
@@ -104,14 +109,14 @@ export class RecentlyAccessedDomains {
     }
 
     private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
-        if (!changeInfo.removed && !this.context.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
+        if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
             const { domain } = changeInfo.cookie;
-            this.add(domain.startsWith(".") ? domain.substr(1) : domain);
+            this.add(this.domainUtils.removeLeadingDot(domain));
         }
     };
 
     private onHeadersReceived = (details: WebRequest.OnHeadersReceivedDetailsType) => {
-        if (details.tabId >= 0 && !details.incognito && !this.context.incognitoWatcher.hasTab(details.tabId))
-            this.add(this.context.domainUtils.getValidHostname(details.url));
+        if (details.tabId >= 0 && !details.incognito && !this.incognitoWatcher.hasTab(details.tabId))
+            this.add(this.domainUtils.getValidHostname(details.url));
     };
 }

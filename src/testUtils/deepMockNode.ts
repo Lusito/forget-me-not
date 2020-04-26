@@ -200,12 +200,14 @@ export class DeepMockNode {
     }
 
     public disable() {
-        this.disabled = true;
-        for (const key of Object.keys(this.children)) {
-            const child = this.children[key];
-            if (child.type === "node") child.node.disable();
+        if (!this.disabled) {
+            this.disabled = true;
+            for (const key of Object.keys(this.children)) {
+                const child = this.children[key];
+                if (child.type === "node") child.node.disable();
+            }
+            this.children = {};
         }
-        this.children = {};
     }
 
     public enable() {
@@ -236,10 +238,12 @@ export class DeepMockNode {
     }
 
     public verifyAndDisable() {
-        try {
-            this.verify();
-        } finally {
-            this.disable();
+        if (!this.disabled) {
+            try {
+                this.verify();
+            } finally {
+                this.disable();
+            }
         }
     }
 }

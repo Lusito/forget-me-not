@@ -1,15 +1,19 @@
 import { h } from "tsx-dom";
 import { browser } from "webextension-polyfill-ts";
+import { container } from "tsyringe";
 
 import { SettingsCheckbox } from "../../settingsCheckbox";
-import { loadJSONFile, saveJSONFile } from "../../../lib/fileHelper";
+import { loadJSONFile, saveJSONFile } from "../../../shared/fileHelper";
 import { ResetDialog } from "../../dialogs/resetDialog";
-import { EXPORT_IGNORE_KEYS } from "../../../lib/defaultSettings";
-import { ExtensionContext, ExtensionContextProps } from "../../../lib/bootstrap";
+import { EXPORT_IGNORE_KEYS } from "../../../shared/defaultSettings";
+import { Settings } from "../../../shared/settings";
+import { BrowserInfo, BrowserType } from "../../../shared/browserInfo";
 
-function onImport({ browserInfo, settings }: ExtensionContext) {
+function onImport() {
+    const browserInfo = container.resolve(BrowserInfo);
+
     // desktop firefox closes popup when dialog is shown
-    if (browserInfo.firefox && !browserInfo.mobile) {
+    if (browserInfo.type === BrowserType.FIREFOX) {
         browser.tabs.create({
             url: browser.runtime.getURL("dist/import.html"),
             active: true,
@@ -17,12 +21,13 @@ function onImport({ browserInfo, settings }: ExtensionContext) {
         window.close();
     } else {
         loadJSONFile((json) => {
-            json && settings.setAll(json);
+            json && container.resolve(Settings).setAll(json);
         });
     }
 }
 
-function onExport({ settings }: ExtensionContext) {
+function onExport() {
+    const settings = container.resolve(Settings);
     const exported = settings.getAll();
     EXPORT_IGNORE_KEYS.forEach((key) => delete exported[key]);
     // Remove temporary rules
@@ -30,30 +35,22 @@ function onExport({ settings }: ExtensionContext) {
     saveJSONFile(exported, "forget-me-not-settings.json");
 }
 
-function onReset(context: ExtensionContext) {
+function onReset() {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    <ResetDialog context={context} />;
+    <ResetDialog />;
 }
 
-export function GeneralTab({ context }: ExtensionContextProps) {
+export function GeneralTab() {
     return (
         <div>
             <div>
-                <SettingsCheckbox
-                    key="showUpdateNotification"
-                    i18n="setting_show_update_notification"
-                    context={context}
-                />
+                <SettingsCheckbox key="showUpdateNotification" i18n="setting_show_update_notification" />
             </div>
             <div>
-                <SettingsCheckbox
-                    key="showCookieRemovalNotification"
-                    i18n="setting_show_cookie_removal_notification"
-                    context={context}
-                />
+                <SettingsCheckbox key="showCookieRemovalNotification" i18n="setting_show_cookie_removal_notification" />
             </div>
             <div>
-                <SettingsCheckbox key="showBadge" i18n="setting_show_badge" context={context} />
+                <SettingsCheckbox key="showBadge" i18n="setting_show_badge" />
             </div>
             <div>
                 <label>
@@ -68,9 +65,9 @@ export function GeneralTab({ context }: ExtensionContextProps) {
                 </label>
             </div>
             <div class="split_equal split_wrap top_margin">
-                <button data-i18n="button_import" onClick={() => onImport(context)} />
-                <button data-i18n="button_export" onClick={() => onExport(context)} />
-                <button data-i18n="button_reset" onClick={() => onReset(context)} />
+                <button data-i18n="button_import" onClick={() => onImport()} />
+                <button data-i18n="button_export" onClick={() => onExport()} />
+                <button data-i18n="button_reset" onClick={() => onReset()} />
             </div>
         </div>
     );

@@ -6,28 +6,6 @@
 
 import { WebRequest, Cookies, Tabs } from "webextension-polyfill-ts";
 
-import { Settings } from "../lib/settings";
-import { createDefaultSettings } from "../lib/defaultSettings";
-import { IncognitoWatcher } from "../background/incognitoWatcher";
-
-export function quickIncognito(incognitoWatcher: IncognitoWatcher, id: number, cookieStoreId = "firefox-private") {
-    // eslint-disable-next-line dot-notation
-    incognitoWatcher["onCreated"]({ id, incognito: true, cookieStoreId } as any);
-}
-
-export const quickDefaultSettings = () =>
-    createDefaultSettings({
-        version: "2.0.0",
-        browserInfo: {
-            mobile: false,
-        },
-        supports: {
-            removeLocalStorageByHostname: true,
-        },
-    } as any);
-
-export const quickSettings = () => new Settings(quickDefaultSettings());
-
 let nextTabId = 1000;
 
 export function quickTab(url: string, cookieStoreId: string, incognito = false): Tabs.Tab {
@@ -47,38 +25,6 @@ export function quickTab(url: string, cookieStoreId: string, incognito = false):
     };
 }
 
-export function quickCookieDomainInfo(domain: string, type: "never" | "startup" | "leave" | "instantly") {
-    const className = `cleanup_type_${type}`;
-    return {
-        domain,
-        className,
-        i18nBadge: `${className}_badge`,
-        i18nButton: `${className}_button`,
-    };
-}
-
-// export function quickSetCookie(
-//     domain: string,
-//     name: string,
-//     value: string,
-//     path: string,
-//     storeId: string,
-//     firstPartyDomain: string,
-//     secure = false
-// ) {
-//     return browser.cookies.set({
-//         url: "mock",
-//         name,
-//         value,
-//         domain,
-//         path,
-//         storeId,
-//         firstPartyDomain,
-//         secure,
-//     });
-// }
-
-// fixme: rename to quickCookie
 export function quickCookie(
     domain: string,
     name: string,
@@ -87,7 +33,6 @@ export function quickCookie(
     firstPartyDomain: string,
     secure = false
 ): Cookies.Cookie {
-    // fixme: removeCookie()
     return {
         name,
         domain,
@@ -144,12 +89,5 @@ export function quickBeforeRedirectDetails(
         statusCode: 200,
         redirectUrl,
         statusLine: "OK",
-    };
-}
-
-export function quickHttpHeader(name: string, value?: string) {
-    return {
-        name,
-        value,
     };
 }

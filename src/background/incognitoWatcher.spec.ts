@@ -3,12 +3,13 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
+import { container } from "tsyringe";
 
 import { IncognitoWatcher } from "./incognitoWatcher";
 import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 import { quickTab } from "../testUtils/quickHelpers";
 import { booleanVariations } from "../testUtils/testHelpers";
-import { mockContext, testContext } from "../testUtils/mockContext";
+import { mocks } from "../testUtils/mocks";
 
 const COOKIE_STORE_ID = "mock";
 
@@ -24,23 +25,23 @@ describe("Incognito Watcher", () => {
     beforeEach(() => {
         onRemoved = mockEvent(mockBrowser.tabs.onRemoved);
         onCreated = mockEvent(mockBrowser.tabs.onCreated);
-        mockContext.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
-        incognitoWatcher = new IncognitoWatcher(testContext);
+        mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
+        incognitoWatcher = container.resolve(IncognitoWatcher);
     });
 
     describe("listeners", () => {
-        it("should add listeners on creation", () => {
-            expect(onRemoved.hasListener(incognitoWatcher!["onRemoved"])).toBe(true);
-            expect(onCreated.hasListener(incognitoWatcher!["onCreated"])).toBe(true);
+        it("should add listeners after init", () => {
+            incognitoWatcher!.init([]);
+            expect(onRemoved.hasListener(incognitoWatcher!["onTabRemoved"])).toBe(true);
+            expect(onCreated.hasListener(incognitoWatcher!["onTabCreated"])).toBe(true);
         });
     });
 
-    describe("initializeExistingTabs", () => {
-        it("should query for and add existing incognito tabs", async () => {
+    describe("init", () => {
+        it("should add existing incognito tabs", () => {
             const tab1 = quickTab("", COOKIE_STORE_ID, false);
             const tab2 = quickTab("", COOKIE_STORE_ID, true);
-            mockBrowser.tabs.query.expect({}).andResolve([tab1, tab2]);
-            await incognitoWatcher!.initializeExistingTabs();
+            incognitoWatcher!.init([tab1, tab2]);
             expect(incognitoWatcher!.hasTab(tab1.id!)).toBe(false);
             expect(incognitoWatcher!.hasTab(tab2.id!)).toBe(true);
         });
@@ -53,6 +54,7 @@ describe("Incognito Watcher", () => {
         });
         describe.each(booleanVariations(1))("with incognito = %s", (incognito) => {
             it(`should return ${incognito} for the tab when it exists`, () => {
+                incognitoWatcher!.init([]);
                 const tab = quickTab("", COOKIE_STORE_ID, incognito);
                 onCreated.emit(tab);
                 expect(incognitoWatcher!.hasTab(tab.id!)).toBe(incognito);
@@ -64,11 +66,13 @@ describe("Incognito Watcher", () => {
 
     describe("hasCookieStore", () => {
         it("should return false for non-existing cookie-stores", () => {
+            incognitoWatcher!.init([]);
             onCreated.emit(quickTab("", COOKIE_STORE_ID, true));
             expect(incognitoWatcher!.hasCookieStore("not-existing")).toBe(false);
         });
         describe.each(booleanVariations(1))("with incognito = %s", (incognito) => {
             it(`should return ${incognito} for the cookie store, even after the tab was removed`, () => {
+                incognitoWatcher!.init([]);
                 const tab = quickTab("", COOKIE_STORE_ID, incognito);
                 onCreated.emit(tab);
                 expect(incognitoWatcher!.hasCookieStore(COOKIE_STORE_ID)).toBe(incognito);

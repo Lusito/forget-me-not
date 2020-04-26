@@ -1,18 +1,16 @@
 import { h } from "tsx-dom";
 
-import { CleanupType } from "../../lib/shared";
-import { getBadgeForCleanupType } from "../../background/backgroundHelpers";
+import { CleanupType } from "../../shared/types";
+import { getBadgeForCleanupType } from "../../shared/badges";
 import { translateElement } from "../../frontend/htmlUtils";
 import { RuleDialog } from "../dialogs/ruleDialog";
-import { cleanupTypeForElement } from "../../lib/settings";
-import { ExtensionContext } from "../../lib/bootstrap";
+import { cleanupTypeForElement } from "../../shared/settings";
 
 interface RuleButtonProps {
     expression?: string;
     type: CleanupType | null;
     temporary?: boolean;
     onConfirm: (type: CleanupType, expression: string, temporary: boolean) => void;
-    context: ExtensionContext;
 }
 
 function updateRuleButton(button: HTMLElement, type: CleanupType | null) {
@@ -23,7 +21,7 @@ function updateRuleButton(button: HTMLElement, type: CleanupType | null) {
     // fixme: aria label
 }
 
-export function RuleButton({ expression, type, temporary, onConfirm, context }: RuleButtonProps) {
+export function RuleButton({ expression, type, temporary, onConfirm }: RuleButtonProps) {
     function onChangeProxy(changedType: CleanupType | false, changedExpression: string, changedTemporary: boolean) {
         if (changedType !== false) {
             updateRuleButton(button, changedType);
@@ -39,7 +37,6 @@ export function RuleButton({ expression, type, temporary, onConfirm, context }: 
             focusType={cleanupTypeForElement(button)}
             temporary={temporary || false}
             onConfirm={onChangeProxy}
-            context={context}
         />;
     }
 

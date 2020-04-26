@@ -4,10 +4,10 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { badges, getBadgeForCleanupType } from "./backgroundHelpers";
-import { CleanupType } from "../lib/shared";
+import { badges, getBadgeForCleanupType } from "./badges";
+import { CleanupType } from "./types";
 
-describe("Background Helpers", () => {
+describe("Badges", () => {
     describe("getBadgeForCleanupType", () => {
         it.each([
             [CleanupType.NEVER, badges.never],

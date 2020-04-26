@@ -4,44 +4,75 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
-import { BrowsingData, browser } from "webextension-polyfill-ts";
+import { singleton } from "tsyringe";
+import { BrowsingData, browser, Tabs } from "webextension-polyfill-ts";
 
 import { Cleaner } from "./cleaner";
-import { CleanupType } from "../../lib/shared";
-import { ExtensionBackgroundContext } from "../backgroundShared";
+import { CleanupType } from "../../shared/types";
+import { Settings } from "../../shared/settings";
+import { StoreUtils } from "../../shared/storeUtils";
+import { TabWatcher } from "../tabWatcher";
+import { SupportsInfo } from "../../shared/supportsInfo";
+import { IncognitoWatcher } from "../incognitoWatcher";
+import { DomainUtils } from "../../shared/domainUtils";
 
+@singleton()
 export class LocalStorageCleaner extends Cleaner {
-    private readonly context: ExtensionBackgroundContext;
-
-    public constructor(context: ExtensionBackgroundContext) {
+    public constructor(
+        private readonly settings: Settings,
+        private readonly storeUtils: StoreUtils,
+        private readonly domainUtils: DomainUtils,
+        private readonly tabWatcher: TabWatcher,
+        private readonly incognitoWatcher: IncognitoWatcher,
+        private readonly supports: SupportsInfo
+    ) {
         super();
-        this.context = context;
     }
 
+    public init(tabs: Tabs.Tab[]) {
+        if (this.supports.removeLocalStorageByHostname) {
+            const { defaultCookieStoreId } = this.storeUtils;
+            for (const tab of tabs) {
+                if (tab.url && tab.id && !tab.incognito) {
+                    const hostname = this.domainUtils.getValidHostname(tab.url);
+                    this.onDomainEnter(tab.cookieStoreId || defaultCookieStoreId, hostname);
+                }
+            }
+            this.tabWatcher.domainEnterListeners.add(this.onDomainEnter);
+        }
+    }
+
+    private onDomainEnter = (cookieStoreId: string, hostname: string) => {
+        if (!this.incognitoWatcher.hasCookieStore(cookieStoreId)) {
+            const domainsToClean = { ...this.settings.get("domainsToClean") };
+            domainsToClean[hostname] = true;
+            this.settings.set("domainsToClean", domainsToClean);
+            this.settings.save();
+        }
+    };
+
     public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
-        const { settings, supports, storeUtils } = this.context;
-        if (typeSet.localStorage && supports.removeLocalStorageByHostname) {
-            const protectOpenDomains = startup || settings.get("cleanAll.protectOpenDomains");
-            if (settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
+        if (typeSet.localStorage && this.supports.removeLocalStorageByHostname) {
+            const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
+            if (this.settings.get(startup ? "startup.localStorage.applyRules" : "cleanAll.localStorage.applyRules")) {
                 typeSet.localStorage = false;
-                const ids = await storeUtils.getAllCookieStoreIds();
+                const ids = await this.storeUtils.getAllCookieStoreIds();
                 const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
                 if (hostnames.length) {
                     await this.removeFromDomainsToClean(hostnames);
                     await Promise.all(ids.map((id) => this.cleanDomains(id, hostnames)));
                 }
             } else {
-                settings.set("domainsToClean", {});
-                await settings.save();
+                this.settings.set("domainsToClean", {});
+                await this.settings.save();
             }
         }
     }
 
     public async cleanDomainOnLeave(storeId: string, domain: string) {
-        const { settings } = this.context;
         if (
-            settings.get("domainLeave.enabled") &&
-            settings.get("domainLeave.localStorage") &&
+            this.settings.get("domainLeave.enabled") &&
+            this.settings.get("domainLeave.localStorage") &&
             !this.isLocalStorageProtected(storeId, domain)
         ) {
             await this.cleanDomain(storeId, domain);
@@ -55,18 +86,17 @@ export class LocalStorageCleaner extends Cleaner {
     }
 
     private async removeFromDomainsToClean(hostnames: string[]) {
-        const { settings, tabWatcher } = this.context;
-        const domainsToClean = { ...settings.get("domainsToClean") };
+        const domainsToClean = { ...this.settings.get("domainsToClean") };
         for (const hostname of hostnames) {
-            if (!tabWatcher.containsDomain(hostname)) delete domainsToClean[hostname];
+            if (!this.tabWatcher.containsDomain(hostname)) delete domainsToClean[hostname];
         }
-        settings.set("domainsToClean", domainsToClean);
-        await settings.save();
+        this.settings.set("domainsToClean", domainsToClean);
+        await this.settings.save();
     }
 
     private async cleanDomains(storeId: string, hostnames: string[]) {
         // Fixme: use cookieStoreId when it's supported by firefox
-        if (this.context.supports.removeLocalStorageByHostname) {
+        if (this.supports.removeLocalStorageByHostname) {
             await browser.browsingData.remove(
                 {
                     originTypes: { unprotectedWeb: true },
@@ -78,12 +108,12 @@ export class LocalStorageCleaner extends Cleaner {
     }
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        if (protectOpenDomains && this.context.tabWatcher.containsDomain(domain)) return true;
-        return this.context.settings.isDomainProtected(domain, ignoreStartupType);
+        if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
+        return this.settings.isDomainProtected(domain, ignoreStartupType);
     }
 
     private getDomainsToClean(ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        const domainsToClean = this.context.settings.get("domainsToClean");
+        const domainsToClean = this.settings.get("domainsToClean");
         const result = [];
         for (const domain in domainsToClean) {
             if (domain in domainsToClean && !this.isDomainProtected(domain, ignoreStartupType, protectOpenDomains))
@@ -93,8 +123,8 @@ export class LocalStorageCleaner extends Cleaner {
     }
 
     private isLocalStorageProtected(storeId: string, domain: string) {
-        if (this.context.tabWatcher.cookieStoreContainsDomain(storeId, domain, true)) return true;
-        const type = this.context.settings.getCleanupTypeForDomain(domain);
+        if (this.tabWatcher.cookieStoreContainsDomain(storeId, domain, true)) return true;
+        const type = this.settings.getCleanupTypeForDomain(domain);
         return type === CleanupType.NEVER || type === CleanupType.STARTUP;
     }
 }

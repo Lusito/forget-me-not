@@ -1,3 +1,5 @@
+// fixme: store actual calls and let the caller retrieve them?
+
 export interface Expectation {
     stack: string;
     spy?: (...args: any[]) => any;

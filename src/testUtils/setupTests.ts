@@ -1,10 +1,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { stringify } from "jest-matcher-utils";
 import { parse as parseUrl, UrlWithStringQuery } from "url";
+import "@abraham/reflection";
+import { container } from "tsyringe";
 
 import { browser } from "./mockBrowser";
+
 import "./time";
-import { messageUtil } from "../lib/messageUtil";
 
 jest.mock("webextension-polyfill-ts", () => ({ browser }));
 
@@ -66,5 +68,5 @@ expect.extend({
 });
 
 beforeEach(() => {
-    messageUtil.clearCallbacksMap();
+    container.reset();
 });

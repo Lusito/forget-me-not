@@ -4,24 +4,24 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 
+import { singleton } from "tsyringe";
+
 import { Cleaner } from "./cleaner";
-import { ExtensionBackgroundContext } from "../backgroundShared";
+import { Settings } from "../../shared/settings";
+import { TabWatcher } from "../tabWatcher";
 
 // fixme: add tests
+@singleton()
 export class TemporaryRuleCleaner extends Cleaner {
-    private readonly context: ExtensionBackgroundContext;
-
-    public constructor(context: ExtensionBackgroundContext) {
+    public constructor(private readonly settings: Settings, private readonly tabWatcher: TabWatcher) {
         super();
-        this.context = context;
     }
 
     public async cleanDomainOnLeave() {
-        const { settings, tabWatcher } = this.context;
-        const temporaryRules = settings.getTemporaryRules();
+        const temporaryRules = this.settings.getTemporaryRules();
         const rulesToRemove = temporaryRules
-            .filter((rule) => !tabWatcher.containsRuleFP(rule.regex))
+            .filter((rule) => !this.tabWatcher.containsRuleFP(rule.regex))
             .map((rule) => rule.definition.rule);
-        if (rulesToRemove.length) await settings.removeRules(rulesToRemove);
+        if (rulesToRemove.length) await this.settings.removeRules(rulesToRemove);
     }
 }

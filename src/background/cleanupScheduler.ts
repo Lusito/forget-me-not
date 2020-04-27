@@ -98,7 +98,7 @@ export class CleanupScheduler {
             this.domainTimeouts = {};
         } else {
             // reschedule
-            await Promise.all(Object.keys(this.snoozedDomains).map(async (domain) => this.schedule(domain)));
+            await Promise.all(Object.keys(this.snoozedDomains).map((domain) => this.schedule(domain)));
             this.snoozedDomains = {};
         }
     }

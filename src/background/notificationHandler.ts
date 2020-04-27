@@ -63,7 +63,7 @@ export class NotificationHandler {
     }
 
     public async showUpdateNotification() {
-        browser.notifications.create(UPDATE_NOTIFICATION_ID, {
+        await browser.notifications.create(UPDATE_NOTIFICATION_ID, {
             type: "basic",
             iconUrl: browser.extension.getURL("icons/icon96.png"),
             title: wetLayer.getMessage("update_notification_title"),

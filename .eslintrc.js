@@ -9,6 +9,7 @@ module.exports = {
         "@typescript-eslint/prefer-optional-chain": "warn",
         "react/static-property-placement": "off",
         // fixme: move to shared config
+        "require-await": "error",
         "no-useless-constructor": "off",
         "@typescript-eslint/no-useless-constructor": ["error"],
         ...utils.getA11yOffRules(), // just for now

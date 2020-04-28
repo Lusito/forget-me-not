@@ -1,7 +1,6 @@
 import { Browser } from "webextension-polyfill-ts";
-
-import { DeepMock } from "./deepMockTypes";
+import { MockzillaDeep } from "mockzilla";
 
 declare global {
-    export const mockBrowser: DeepMock<Browser>;
+    export const mockBrowser: MockzillaDeep<Browser>;
 }

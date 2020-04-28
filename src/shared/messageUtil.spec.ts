@@ -5,9 +5,9 @@
  */
 
 import { container } from "tsyringe";
+import { mockAssimilate } from "mockzilla";
 
 import { MessageUtil } from "./messageUtil";
-import { mockAssimilate } from "../testUtils/deepMockAssimilate";
 
 describe("Message Utility", () => {
     const event1 = "event1";
@@ -24,7 +24,10 @@ describe("Message Utility", () => {
 
     describe("sendSelf", () => {
         it("should delegate to emitCallbacks", () => {
-            const mock = mockAssimilate(messageUtil, ["emitCallbacks"], ["sendSelf"]);
+            const mock = mockAssimilate(messageUtil, "messageUtil", {
+                mock: ["emitCallbacks"],
+                whitelist: ["sendSelf"]
+            });
             mock.emitCallbacks.expect(event1, data1, {});
             messageUtil.sendSelf(event1, data1);
         });

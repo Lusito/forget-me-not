@@ -5,11 +5,11 @@
  */
 
 import { container } from "tsyringe";
+import { mockAssimilate } from "mockzilla";
 
 import { LocalStorageCleaner } from "./localStorageCleaner";
 import { mocks } from "../../testUtils/mocks";
 import { CleanupType } from "../../shared/types";
-import { mockAssimilate } from "../../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
 
@@ -43,7 +43,10 @@ describe("LocalStorageCleaner", () => {
         it("does nothing if protected", async () => {
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.localStorage").andReturn(true);
-            const mock = mockAssimilate(localStorageCleaner!, ["isLocalStorageProtected"], ["cleanDomainOnLeave", "settings"]);
+            const mock = mockAssimilate(localStorageCleaner!, "localStorageCleaner", {
+                mock: ["isLocalStorageProtected"],
+                whitelist: ["cleanDomainOnLeave", "settings"],
+            });
             mock.isLocalStorageProtected.expect(COOKIE_STORE_ID, "some-domain").andReturn(true);
             await localStorageCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
         });
@@ -51,11 +54,10 @@ describe("LocalStorageCleaner", () => {
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.localStorage").andReturn(true);
 
-            const mock = mockAssimilate(
-                localStorageCleaner!,
-                ["cleanDomain", "isLocalStorageProtected"],
-                ["cleanDomainOnLeave", "settings"]
-            );
+            const mock = mockAssimilate(localStorageCleaner!, "localStorageCleaner", {
+                mock: ["cleanDomain", "isLocalStorageProtected"],
+                whitelist: ["cleanDomainOnLeave", "settings"],
+            });
             mock.isLocalStorageProtected.expect(COOKIE_STORE_ID, "some-domain").andReturn(false);
             mock.cleanDomain.expect(COOKIE_STORE_ID, "some-domain").andResolve();
 
@@ -92,11 +94,10 @@ describe("LocalStorageCleaner", () => {
 
     describe("cleanDomain", () => {
         it("should call cleanDomains and removeFromDomainsToClean", async () => {
-            const mock = mockAssimilate(
-                localStorageCleaner!,
-                ["cleanDomains", "removeFromDomainsToClean"],
-                ["cleanDomain"]
-            );
+            const mock = mockAssimilate(localStorageCleaner!, "localStorageCleaner", {
+                mock: ["cleanDomains", "removeFromDomainsToClean"],
+                whitelist: ["cleanDomain"],
+            });
             mock.removeFromDomainsToClean.expect(["some-domain"]).andResolve();
             mock.cleanDomains.expect(COOKIE_STORE_ID, ["some-domain"]).andResolve();
 

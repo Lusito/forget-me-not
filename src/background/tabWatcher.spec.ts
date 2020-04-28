@@ -5,14 +5,13 @@
  */
 
 import { container } from "tsyringe";
+import { deepMock, mockAssimilate } from "mockzilla";
 
 import { TabWatcher } from "./tabWatcher";
 import { mocks } from "../testUtils/mocks";
 import { quickTab } from "../testUtils/quickHelpers";
 import { booleanVariations } from "../testUtils/testHelpers";
-import { quickDeepMock } from "../testUtils/deepMock";
 import { TabInfo } from "./tabInfo";
-import { mockAssimilate } from "../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
 const COOKIE_STORE_ID2 = "mock2";
@@ -38,13 +37,19 @@ describe("TabWatcher", () => {
 
     describe("init", () => {
         it("should add listeners", () => {
-            mockAssimilate(tabWatcher!, ["onTabCreated", "onTabRemoved"], ["init"]);
+            mockAssimilate(tabWatcher!, "tabWatcher", {
+                mock: ["onTabCreated", "onTabRemoved"],
+                whitelist: ["init"]
+            });
             mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
             mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
             tabWatcher!.init([]);
         });
         it("should initialize existing tabs", () => {
-            const mock = mockAssimilate(tabWatcher!, ["onTabCreated", "onTabRemoved"], ["init"]);
+            const mock = mockAssimilate(tabWatcher!, "tabWatcher", {
+                mock: ["onTabCreated", "onTabRemoved"],
+                whitelist: ["init"]
+            });
             mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
             mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
             const tab1 = quickTab("", COOKIE_STORE_ID, false);
@@ -135,7 +140,7 @@ describe("TabWatcher", () => {
         });
         it("should call scheduleDeadFramesCheck on tab if it exists", () => {
             const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
-            const [tabInfo, mockTabInfo] = quickDeepMock<TabInfo>("tabInfo");
+            const [tabInfo, mockTabInfo] = deepMock<TabInfo>("tabInfo");
             tabWatcher!["tabInfos"][tab1.id!] = tabInfo;
 
             mockTabInfo.scheduleDeadFramesCheck.expect();
@@ -177,8 +182,8 @@ describe("TabWatcher", () => {
                 expect(tabWatcher!.cookieStoreContainsDomain(COOKIE_STORE_ID, "www.google.com", checkNext)).toBe(false);
             });
             it("should forward request to tabInfo.contains", () => {
-                const [tabInfo1, mockTabInfo1] = quickDeepMock<TabInfo>("tabInfo1");
-                const [tabInfo2, mockTabInfo2] = quickDeepMock<TabInfo>("tabInfo2");
+                const [tabInfo1, mockTabInfo1] = deepMock<TabInfo>("tabInfo1");
+                const [tabInfo2, mockTabInfo2] = deepMock<TabInfo>("tabInfo2");
                 tabWatcher!["tabInfosByCookieStore"][COOKIE_STORE_ID] = [tabInfo1, tabInfo2];
                 mockTabInfo1.contains.expect("www.google.com", checkNext).andReturn(true);
                 expect(tabWatcher!.cookieStoreContainsDomain(COOKIE_STORE_ID, "www.google.com", checkNext)).toBe(true);
@@ -237,7 +242,7 @@ describe("TabWatcher", () => {
             expect(tabWatcher!.isThirdPartyCookieOnTab(1, "google.de")).toBe(false);
         });
         it("should forward request to tabInfo.matchHostnameFP", () => {
-            const [tabInfo, mockTabInfo] = quickDeepMock<TabInfo>("tabInfo");
+            const [tabInfo, mockTabInfo] = deepMock<TabInfo>("tabInfo");
             tabWatcher!["tabInfos"]["42"] = tabInfo;
             mockTabInfo.matchHostnameFP.expect("outgoing.com").andReturn(true);
             mocks.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
@@ -264,8 +269,8 @@ describe("TabWatcher", () => {
             });
         });
         it("should forward request to tabInfo.containsHostnameFP if deep=true", () => {
-            const [tabInfo1, mockTabInfo1] = quickDeepMock<TabInfo>("tabInfo1");
-            const [tabInfo2, mockTabInfo2] = quickDeepMock<TabInfo>("tabInfo2");
+            const [tabInfo1, mockTabInfo1] = deepMock<TabInfo>("tabInfo1");
+            const [tabInfo2, mockTabInfo2] = deepMock<TabInfo>("tabInfo2");
             tabWatcher!["tabInfosByCookieStore"][COOKIE_STORE_ID] = [tabInfo1, tabInfo2];
             mockTabInfo1.containsHostnameFP.expect("firstparty.com").andReturn(true);
             expect(tabWatcher!.cookieStoreContainsDomainFP(COOKIE_STORE_ID, "firstparty.com", true)).toBe(true);
@@ -277,8 +282,8 @@ describe("TabWatcher", () => {
             expect(tabWatcher!.cookieStoreContainsDomainFP(COOKIE_STORE_ID, "firstparty.com", true)).toBe(false);
         });
         it("should forward request to tabInfo.matchHostnameFP if deep=false", () => {
-            const [tabInfo1, mockTabInfo1] = quickDeepMock<TabInfo>("tabInfo1");
-            const [tabInfo2, mockTabInfo2] = quickDeepMock<TabInfo>("tabInfo2");
+            const [tabInfo1, mockTabInfo1] = deepMock<TabInfo>("tabInfo1");
+            const [tabInfo2, mockTabInfo2] = deepMock<TabInfo>("tabInfo2");
             tabWatcher!["tabInfosByCookieStore"][COOKIE_STORE_ID] = [tabInfo1, tabInfo2];
             mockTabInfo1.matchHostnameFP.expect("firstparty.com").andReturn(true);
             expect(tabWatcher!.cookieStoreContainsDomainFP(COOKIE_STORE_ID, "firstparty.com", false)).toBe(true);

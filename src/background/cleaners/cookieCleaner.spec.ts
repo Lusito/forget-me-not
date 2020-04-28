@@ -6,13 +6,13 @@
 
 import { BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
+import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
 
 import { booleanVariations } from "../../testUtils/testHelpers";
 import { CookieCleaner } from "./cookieCleaner";
 import { mockEvent } from "../../testUtils/mockBrowser";
 import { quickCookie } from "../../testUtils/quickHelpers";
 import { CleanupType } from "../../shared/types";
-import { mockAssimilate, whitelistPropertyAccess } from "../../testUtils/deepMockAssimilate";
 import { mocks } from "../../testUtils/mocks";
 
 const COOKIE_STORE_ID = "mock";
@@ -52,7 +52,10 @@ describe("CookieCleaner", () => {
             "should not do anything if cookies flag is false and startup=%j",
             async (startup) => {
                 typeSet.cookies = false;
-                mockAssimilate(cookieCleaner!, [], ["cleanCookiesWithRulesNow", "clean"]);
+                mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: [],
+                    whitelist: ["cleanCookiesWithRulesNow", "clean"],
+                });
                 await cookieCleaner!.clean(typeSet, startup);
                 expect(typeSet.cookies).toBe(false);
             }
@@ -60,7 +63,10 @@ describe("CookieCleaner", () => {
         it.each(booleanVariations(1))(
             "should not do anything if cookies flag is true and startup=%j with respective setting of false",
             async (startup) => {
-                mockAssimilate(cookieCleaner!, [], ["cleanCookiesWithRulesNow", "clean", "settings"]);
+                mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: [],
+                    whitelist: ["cleanCookiesWithRulesNow", "clean", "settings"],
+                });
                 mocks.settings.get
                     .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
                     .andReturn(false);
@@ -71,11 +77,10 @@ describe("CookieCleaner", () => {
         it.each(booleanVariations(2))(
             "should call cleanCookiesWithRulesNow if cookies flag is true and startup=%j with respective setting of true",
             async (startup, protectOpenDomains) => {
-                const mock = mockAssimilate(
-                    cookieCleaner!,
-                    ["cleanCookiesWithRulesNow"],
-                    ["cleanCookiesWithRulesNow", "clean", "settings"]
-                );
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["cleanCookiesWithRulesNow"],
+                    whitelist: ["cleanCookiesWithRulesNow", "clean", "settings"],
+                });
                 mocks.settings.get
                     .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
                     .andReturn(true);
@@ -89,18 +94,27 @@ describe("CookieCleaner", () => {
 
     describe("cleanDomainOnLeave", () => {
         it("should not do anything if domainLeave.enabled = false", async () => {
-            mockAssimilate(cookieCleaner!, [], ["cleanDomainOnLeave", "settings"]);
+            mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: [],
+                whitelist: ["cleanDomainOnLeave", "settings"],
+            });
             mocks.settings.get.expect("domainLeave.enabled").andReturn(false); // domainLeave.cookies
             await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
         });
         it("should not do anything if domainLeave.enabled = true, but domainLeave.cookies = false", async () => {
-            mockAssimilate(cookieCleaner!, [], ["cleanDomainOnLeave", "settings"]);
+            mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: [],
+                whitelist: ["cleanDomainOnLeave", "settings"],
+            });
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.cookies").andReturn(false);
             await cookieCleaner!.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain.com");
         });
         it("should call cleanDomainInternal if domainLeave.enabled = true, but domainLeave.cookies = true", async () => {
-            const mock = mockAssimilate(cookieCleaner!, ["cleanDomainInternal"], ["cleanDomainOnLeave", "settings"]);
+            const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: ["cleanDomainInternal"],
+                whitelist: ["cleanDomainOnLeave", "settings"],
+            });
             mock.cleanDomainInternal.expect(COOKIE_STORE_ID, "some-domain.com", false).andResolve();
             mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
             mocks.settings.get.expect("domainLeave.cookies").andReturn(true);
@@ -220,18 +234,17 @@ describe("CookieCleaner", () => {
                     it(`removes ${parts.join(" and ")}`, async () => {
                         cookieCleaner!["snoozedThirdpartyCookies"].push(cookie1, cookie2);
                         cookieCleaner!["snoozedInstantlyCookies"].push(cookie3, cookie4);
-                        const mock = mockAssimilate(
-                            cookieCleaner!,
-                            ["removeCookieIfThirdparty", "isUnwantedThirdPartyCookie"],
-                            [
+                        const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                            mock: ["removeCookieIfThirdparty", "isUnwantedThirdPartyCookie"],
+                            whitelist: [
                                 "settings",
                                 "cookieUtils",
                                 "snoozing",
                                 "setSnoozing",
                                 "snoozedThirdpartyCookies",
                                 "snoozedInstantlyCookies",
-                            ]
-                        );
+                            ],
+                        });
 
                         mocks.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(enabled);
                         if (enabled) {
@@ -307,7 +320,9 @@ describe("CookieCleaner", () => {
         describe.each(booleanVariations(2))("hasStore=%j, isThirdparty=%j", (hasStore, isThirdparty) => {
             const result = !hasStore && isThirdparty;
             it(`should return ${result}`, () => {
-                const mock = mockAssimilate(cookieCleaner!, ["isThirdpartyCookie"]);
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["isThirdpartyCookie"],
+                });
 
                 if (!hasStore) mock.isThirdpartyCookie.expect(cookie).andReturn(isThirdparty);
                 mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(hasStore);
@@ -372,22 +387,20 @@ describe("CookieCleaner", () => {
             });
             it("delegates the call to onCookieAddedSnoozing with snoozing=true", async () => {
                 cookieCleaner!["snoozing"] = true;
-                const mock = mockAssimilate(
-                    cookieCleaner!,
-                    ["onCookieAddedSnoozing"],
-                    ["snoozing", "incognitoWatcher", "onCookieChanged"]
-                );
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["onCookieAddedSnoozing"],
+                    whitelist: ["snoozing", "incognitoWatcher", "onCookieChanged"],
+                });
                 mock.onCookieAddedSnoozing.expect(cookie).andResolve();
                 await cookieCleaner!["onCookieChanged"](changeInfo);
             });
             it("delegates the call to onCookieAddedAwake with snoozing=false", async () => {
                 cookieCleaner!["snoozing"] = false;
-                
-                const mock = mockAssimilate(
-                    cookieCleaner!,
-                    ["onCookieAddedAwake"],
-                    ["snoozing", "incognitoWatcher", "onCookieChanged"]
-                );
+
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["onCookieAddedAwake"],
+                    whitelist: ["snoozing", "incognitoWatcher", "onCookieChanged"],
+                });
                 mock.onCookieAddedAwake.expect(cookie).andResolve();
 
                 await cookieCleaner!["onCookieChanged"](changeInfo);
@@ -399,7 +412,10 @@ describe("CookieCleaner", () => {
         const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
         describe("with isUnwantedThirdPartyCookie=false", () => {
             it("does nothing", async () => {
-                const mock = mockAssimilate(cookieCleaner!, ["isUnwantedThirdPartyCookie"], ["onCookieAddedSnoozing"]);
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["isUnwantedThirdPartyCookie"],
+                    whitelist: ["onCookieAddedSnoozing"],
+                });
                 mock.isUnwantedThirdPartyCookie.expect(cookie).andReturn(false);
 
                 await cookieCleaner!["onCookieAddedSnoozing"](cookie);
@@ -408,11 +424,10 @@ describe("CookieCleaner", () => {
 
         describe("with isUnwantedThirdPartyCookie=true", () => {
             it("does nothing with cleanThirdPartyCookies.beforeCreation=false and cleanThirdPartyCookies.enabled=false", async () => {
-                const mock = mockAssimilate(
-                    cookieCleaner!,
-                    ["isUnwantedThirdPartyCookie"],
-                    ["onCookieAddedSnoozing", "settings"]
-                );
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["isUnwantedThirdPartyCookie"],
+                    whitelist: ["onCookieAddedSnoozing", "settings"],
+                });
                 mock.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
                 mocks.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(false);
@@ -420,11 +435,10 @@ describe("CookieCleaner", () => {
                 await cookieCleaner!["onCookieAddedSnoozing"](cookie);
             });
             it("adds the cookie to snoozedInstantlyCookies with cleanThirdPartyCookies.beforeCreation=true", async () => {
-                const mock = mockAssimilate(
-                    cookieCleaner!,
-                    ["isUnwantedThirdPartyCookie"],
-                    ["onCookieAddedSnoozing", "settings", "snoozedInstantlyCookies"]
-                );
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["isUnwantedThirdPartyCookie"],
+                    whitelist: ["onCookieAddedSnoozing", "settings", "snoozedInstantlyCookies"],
+                });
                 mock.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(true);
 
@@ -432,11 +446,10 @@ describe("CookieCleaner", () => {
                 expect(cookieCleaner!["snoozedInstantlyCookies"]).toEqual([cookie]);
             });
             it("schedules the cookie to be removed with cleanThirdPartyCookies.beforeCreation=false and cleanThirdPartyCookies.enabled=true", async () => {
-                const mock = mockAssimilate(
-                    cookieCleaner!,
-                    ["isUnwantedThirdPartyCookie", "removeCookieIfThirdparty"],
-                    ["onCookieAddedSnoozing", "settings"]
-                );
+                const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                    mock: ["isUnwantedThirdPartyCookie", "removeCookieIfThirdparty"],
+                    whitelist: ["onCookieAddedSnoozing", "settings"],
+                });
                 mock.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
                 mock.removeCookieIfThirdparty.expect(cookie).andResolve();
 
@@ -451,33 +464,30 @@ describe("CookieCleaner", () => {
     describe("onCookieAddedAwake", () => {
         const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
         it("does nothing with shouldRemoveCookieInstantly=false and cleanThirdPartyCookies.enabled=false", async () => {
-            const mock = mockAssimilate(
-                cookieCleaner!,
-                ["shouldRemoveCookieInstantly"],
-                ["onCookieAddedAwake", "settings"]
-            );
+            const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: ["shouldRemoveCookieInstantly"],
+                whitelist: ["onCookieAddedAwake", "settings"],
+            });
             mock.shouldRemoveCookieInstantly.expect(cookie).andReturn(false);
             mocks.settings.get.expect("cleanThirdPartyCookies.enabled").andReturn(false);
 
             await cookieCleaner!["onCookieAddedAwake"](cookie);
         });
         it("removes the cookie with shouldRemoveCookieInstantly=true", async () => {
-            const mock = mockAssimilate(
-                cookieCleaner!,
-                ["shouldRemoveCookieInstantly"],
-                ["onCookieAddedAwake", "cookieUtils"]
-            );
+            const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: ["shouldRemoveCookieInstantly"],
+                whitelist: ["onCookieAddedAwake", "cookieUtils"],
+            });
             mock.shouldRemoveCookieInstantly.expect(cookie).andReturn(true);
             mocks.cookieUtils.removeCookie.expect(cookie).andResolve({} as any);
 
             await cookieCleaner!["onCookieAddedAwake"](cookie);
         });
         it("delegates to removeCookieIfThirdparty with shouldRemoveCookieInstantly=false and cleanThirdPartyCookies.enabled=true", async () => {
-            const mock = mockAssimilate(
-                cookieCleaner!,
-                ["shouldRemoveCookieInstantly", "removeCookieIfThirdparty"],
-                ["onCookieAddedAwake", "settings"]
-            );
+            const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: ["shouldRemoveCookieInstantly", "removeCookieIfThirdparty"],
+                whitelist: ["onCookieAddedAwake", "settings"],
+            });
             mock.shouldRemoveCookieInstantly.expect(cookie).andReturn(false);
             mock.removeCookieIfThirdparty.expect(cookie).andResolve();
 
@@ -490,17 +500,19 @@ describe("CookieCleaner", () => {
     describe("removeCookieIfThirdparty", () => {
         const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
         it("does nothing with isUnwantedThirdPartyCookie=false", async () => {
-            const mock = mockAssimilate(cookieCleaner!, ["isUnwantedThirdPartyCookie"], ["removeCookieIfThirdparty"]);
+            const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: ["isUnwantedThirdPartyCookie"],
+                whitelist: ["removeCookieIfThirdparty"],
+            });
             mock.isUnwantedThirdPartyCookie.expect(cookie).andReturn(false);
 
             await cookieCleaner!["removeCookieIfThirdparty"](cookie);
         });
         it("delegates to scheduleThirdpartyCookieRemove with isUnwantedThirdPartyCookie=true", async () => {
-            const mock = mockAssimilate(
-                cookieCleaner!,
-                ["isUnwantedThirdPartyCookie", "scheduleThirdpartyCookieRemove"],
-                ["removeCookieIfThirdparty"]
-            );
+            const mock = mockAssimilate(cookieCleaner!, "cookieCleaner", {
+                mock: ["isUnwantedThirdPartyCookie", "scheduleThirdpartyCookieRemove"],
+                whitelist: ["removeCookieIfThirdparty"],
+            });
             mock.isUnwantedThirdPartyCookie.expect(cookie).andReturn(true);
             mock.scheduleThirdpartyCookieRemove.expect(cookie).andResolve();
 
@@ -561,9 +573,10 @@ describe("CookieCleaner", () => {
             [false, { storeId }],
             [true, { storeId, firstPartyDomain: null }],
         ])(
-            "removes cookies where test returns true firstPartyIsolation=%j",
+            "removes cookies where test returns true with firstPartyIsolation=%j",
             async (firstPartyIsolation, expectedDetails) => {
                 mocks.supports.firstPartyIsolation.mock(firstPartyIsolation);
+                expect(cookieCleaner!["supports"].firstPartyIsolation).toBe(firstPartyIsolation);
                 mockBrowser.cookies.getAll.expect(expectedDetails).andResolve(allCookies);
                 testCookies.forEach((cookie) => mocks.cookieUtils.removeCookie.expect(cookie).andResolve({} as any));
                 await cookieCleaner!["removeCookies"](storeId, (cookie) => testCookies.includes(cookie));

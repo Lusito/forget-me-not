@@ -3,10 +3,9 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/forget-me-not
  */
+import { advanceTime, mockAssimilate } from "mockzilla";
 
 import { TabInfo, MIN_DEAD_FRAME_CHECK_INTERVAL } from "./tabInfo";
-import { advanceTime } from "../testUtils/time";
-import { mockAssimilate } from "../testUtils/deepMockAssimilate";
 
 describe("TabInfo", () => {
     const checkDomainLeaveSpy = jest.fn();
@@ -146,18 +145,19 @@ describe("TabInfo", () => {
     describe("scheduleDeadFramesCheck", () => {
         it("should run instantly if never run before", async () => {
             const tabInfo = createTabInfo();
-            const mock = mockAssimilate(
-                tabInfo,
-                ["checkDeadFrames"],
-                ["scheduleDeadFramesCheck", "scheduledDeadFrameCheck", "lastDeadFrameCheck"]
-            );
+            const mock = mockAssimilate(tabInfo, "tabInfo", {
+                mock: ["checkDeadFrames"],
+                whitelist: ["scheduleDeadFramesCheck", "scheduledDeadFrameCheck", "lastDeadFrameCheck"],
+            });
             mock.checkDeadFrames.expect().andResolve();
             await tabInfo.scheduleDeadFramesCheck();
         });
         // tslint:disable-next-line:only-arrow-functions
         it("should run delayed by 1s if just run", async () => {
             const tabInfo = createTabInfo();
-            const mock = mockAssimilate(tabInfo, ["checkDeadFrames"]);
+            const mock = mockAssimilate(tabInfo, "tabInfo", {
+                mock: ["checkDeadFrames"],
+            });
             tabInfo["lastDeadFrameCheck"] = Date.now();
             await tabInfo.scheduleDeadFramesCheck();
             advanceTime(MIN_DEAD_FRAME_CHECK_INTERVAL - 1);
@@ -166,7 +166,9 @@ describe("TabInfo", () => {
         });
         it("should run delayed by 0.3s run 0.7s ago", async () => {
             const tabInfo = createTabInfo();
-            const mock = mockAssimilate(tabInfo, ["checkDeadFrames"]);
+            const mock = mockAssimilate(tabInfo, "tabInfo", {
+                mock: ["checkDeadFrames"],
+            });
             tabInfo["lastDeadFrameCheck"] = Date.now() - 700;
             await tabInfo.scheduleDeadFramesCheck();
             advanceTime(299);
@@ -175,7 +177,9 @@ describe("TabInfo", () => {
         });
         it("should run only once if scheduled twice", async () => {
             const tabInfo = createTabInfo();
-            const mock = mockAssimilate(tabInfo, ["checkDeadFrames"]);
+            const mock = mockAssimilate(tabInfo, "tabInfo", {
+                mock: ["checkDeadFrames"],
+            });
             tabInfo["lastDeadFrameCheck"] = Date.now();
             await tabInfo.scheduleDeadFramesCheck();
             await tabInfo.scheduleDeadFramesCheck();
@@ -205,8 +209,10 @@ describe("TabInfo", () => {
             (tabInfo as any).frameInfos["0"].lastTimeStamp = 0;
             tabInfo.prepareNavigation(1, "amazon.com");
             const originalScheduleDeadFramesCheck = tabInfo.scheduleDeadFramesCheck.bind(tabInfo);
-            
-            const mock = mockAssimilate(tabInfo, ["scheduleDeadFramesCheck"]);
+
+            const mock = mockAssimilate(tabInfo, "tabInfo", {
+                mock: ["scheduleDeadFramesCheck"],
+            });
             mock.scheduleDeadFramesCheck.expect();
             await originalScheduleDeadFramesCheck();
         });

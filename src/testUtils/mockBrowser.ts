@@ -6,10 +6,7 @@
  */
 
 import { Browser, Events } from "webextension-polyfill-ts";
-
-import { deepMock } from "./deepMock";
-import { DeepMockNode } from "./deepMockNode";
-import { DeepMock } from "./deepMockTypes";
+import { MockzillaDeep, deepMock } from "mockzilla";
 
 export class EventMock<T extends (...args: any[]) => any> {
     private listeners: Function[] = [];
@@ -64,19 +61,19 @@ export type MockEventFunction<T> = T extends Events.Event<infer TFun>
     ? (...args: MockEventParameters<TFun>) => void
     : (...args: any[]) => void;
 
-export type EventMockOf<T> = T extends DeepMock<infer TD> ? EventMock<MockEventFunction<TD>> : unknown;
+export type EventMockOf<T> = T extends MockzillaDeep<infer TD> ? EventMock<MockEventFunction<TD>> : unknown;
 
-export function mockEvent<T>(builder: DeepMock<T>) {
+export function mockEvent<T>(builder: MockzillaDeep<T>) {
     const mock = new EventMock<MockEventFunction<T>>(builder.mockPath);
     builder.mock(mock as any);
     return mock;
 }
 
-export const mockBrowserNode = new DeepMockNode("browser");
+const [browser, mockBrowser, mockBrowserNode] = deepMock<Browser>("browser", false);
 
-export const browser = mockBrowserNode.getProxy() as Browser;
+export { browser };
 
-(window as any).mockBrowser = deepMock<Browser>(mockBrowserNode);
+(window as any).mockBrowser = mockBrowser;
 
 beforeEach(() => {
     mockBrowserNode.enable();

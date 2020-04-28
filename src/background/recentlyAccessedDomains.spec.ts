@@ -5,12 +5,12 @@
  */
 
 import { container } from "tsyringe";
+import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
 
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
 import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 import { quickCookie, quickHeadersReceivedDetails } from "../testUtils/quickHelpers";
 import { mocks } from "../testUtils/mocks";
-import { mockAssimilate, whitelistPropertyAccess } from "../testUtils/deepMockAssimilate";
 
 const COOKIE_STORE_ID = "mock";
 
@@ -96,11 +96,10 @@ describe("Recently Accessed Domains", () => {
         }
         it("should call add() if non-incognito cookie was added", () => {
             createRAD(false);
-            const mock = mockAssimilate(
-                recentlyAccessedDomains!,
-                ["add"],
-                ["onCookieChanged", "incognitoWatcher", "domainUtils"]
-            );
+            const mock = mockAssimilate(recentlyAccessedDomains!, "recentlyAccessedDomains", {
+                mock: ["add"],
+                whitelist: ["onCookieChanged", "incognitoWatcher", "domainUtils"],
+            });
             mocks.domainUtils.removeLeadingDot.expect(".www.google.com").andReturn("www.google.com");
             mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
             mock.add.expect("www.google.com");

@@ -6,11 +6,11 @@
 
 import { WebRequest } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
+import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
 
 import { CleanupType } from "../shared/types";
 import { HeaderFilter } from "./headerFilter";
 import { mocks } from "../testUtils/mocks";
-import { mockAssimilate, whitelistPropertyAccess } from "../testUtils/deepMockAssimilate";
 
 describe("Header Filter", () => {
     let headerFilter: HeaderFilter | null = null;
@@ -35,11 +35,10 @@ describe("Header Filter", () => {
     describe("init()", () => {
         describe("with supports.requestFilterIncognito=true", () => {
             it("should update settings, register listeners and set filter.incognito=false", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["updateSettings"],
-                    ["init", "supports", "filter", "messageUtil", "snoozeManager"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["updateSettings"],
+                    whitelist: ["init", "supports", "filter", "messageUtil", "snoozeManager"],
+                });
 
                 mock.updateSettings.expect();
                 mocks.supports.requestFilterIncognito.mock(true);
@@ -50,11 +49,10 @@ describe("Header Filter", () => {
         });
         describe("with supports.requestFilterIncognito=false", () => {
             it("should update settings, register listeners and leave filter untouched", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["updateSettings"],
-                    ["init", "supports", "messageUtil", "snoozeManager"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["updateSettings"],
+                    whitelist: ["init", "supports", "messageUtil", "snoozeManager"],
+                });
                 mock.updateSettings.expect();
                 mocks.supports.requestFilterIncognito.mock(false);
                 mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
@@ -105,11 +103,10 @@ describe("Header Filter", () => {
                 const fallbackDomain = "some-fallback.com";
 
                 it("should call filterResponseHeaders()", () => {
-                    const mock = mockAssimilate(
-                        headerFilter!,
-                        ["filterResponseHeaders"],
-                        ["incognitoWatcher", "domainUtils", "onHeadersReceived"]
-                    );
+                    const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                        mock: ["filterResponseHeaders"],
+                        whitelist: ["incognitoWatcher", "domainUtils", "onHeadersReceived"],
+                    });
                     if (hasTab === false) mocks.incognitoWatcher.hasTab.expect(42).andReturn(hasTab);
 
                     mocks.domainUtils.getValidHostname.expect(details.url).andReturn(fallbackDomain);
@@ -146,18 +143,20 @@ describe("Header Filter", () => {
             [false, false],
         ])("with enabled=%j and isEnabled=%j", (enabled, isEnabled) => {
             it("should do nothing", () => {
-                const mock = mockAssimilate(headerFilter!, ["isEnabled"], ["setEnabled"]);
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["isEnabled"],
+                    whitelist: ["setEnabled"],
+                });
                 mock.isEnabled.expect().andReturn(isEnabled);
                 headerFilter!["setEnabled"](enabled);
             });
         });
         describe("with enabled=true and isEnabled=false", () => {
             it("should add an onHeadersReceived listener", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["isEnabled"],
-                    ["setEnabled", "onHeadersReceived", "filter"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["isEnabled"],
+                    whitelist: ["setEnabled", "onHeadersReceived", "filter"],
+                });
                 mockBrowser.webRequest.onHeadersReceived.addListener.expect(
                     headerFilter!["onHeadersReceived"],
                     headerFilter!["filter"],
@@ -169,7 +168,10 @@ describe("Header Filter", () => {
         });
         describe("with enabled=false and isEnabled=true", () => {
             it("should add an onHeadersReceived listener", () => {
-                const mock = mockAssimilate(headerFilter!, ["isEnabled"], ["setEnabled", "onHeadersReceived"]);
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["isEnabled"],
+                    whitelist: ["setEnabled", "onHeadersReceived"],
+                });
                 mockBrowser.webRequest.onHeadersReceived.removeListener.expect(headerFilter!["onHeadersReceived"]);
                 mock.isEnabled.expect().andReturn(true);
                 headerFilter!["setEnabled"](false);
@@ -180,7 +182,10 @@ describe("Header Filter", () => {
     describe("updateSettings", () => {
         describe("with snoozing=true", () => {
             it("should only call setEnabled(false)", () => {
-                const mock = mockAssimilate(headerFilter!, ["setEnabled"], ["updateSettings", "snoozeManager"]);
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["setEnabled"],
+                    whitelist: ["updateSettings", "snoozeManager"],
+                });
                 mocks.snoozeManager.isSnoozing.expect().andReturn(true);
                 mock.setEnabled.expect(false);
                 headerFilter!["updateSettings"]();
@@ -191,22 +196,20 @@ describe("Header Filter", () => {
                 mocks.snoozeManager.isSnoozing.expect().andReturn(false);
             });
             it("should call setEnabled(true) if beforeCreation=true", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["setEnabled"],
-                    ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["setEnabled"],
+                    whitelist: ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"],
+                });
                 mock.setEnabled.expect(true);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(true);
                 headerFilter!["updateSettings"]();
                 expect(headerFilter!["blockThirdpartyCookies"]).toBe(true);
             });
             it("should call setEnabled(true) if instantly.enabled=true and hasBlockingRule=true", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["setEnabled"],
-                    ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["setEnabled"],
+                    whitelist: ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"],
+                });
                 mock.setEnabled.expect(true);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
@@ -215,11 +218,10 @@ describe("Header Filter", () => {
                 expect(headerFilter!["blockThirdpartyCookies"]).toBe(false);
             });
             it("should call setEnabled(false) if instantly.enabled=true and hasBlockingRule=false", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["setEnabled"],
-                    ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["setEnabled"],
+                    whitelist: ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"],
+                });
                 mock.setEnabled.expect(false);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
@@ -228,11 +230,10 @@ describe("Header Filter", () => {
                 expect(headerFilter!["blockThirdpartyCookies"]).toBe(false);
             });
             it("should call setEnabled(false) if instantly.enabled=false", () => {
-                const mock = mockAssimilate(
-                    headerFilter!,
-                    ["setEnabled"],
-                    ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"]
-                );
+                const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                    mock: ["setEnabled"],
+                    whitelist: ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"],
+                });
                 mock.setEnabled.expect(false);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
                 mocks.settings.get.expect("instantly.enabled").andReturn(false);
@@ -322,11 +323,10 @@ describe("Header Filter", () => {
 
             mocks.messageUtil.sendSelf.expect("cookieRemoved", "c.com").times(3);
 
-            const mock = mockAssimilate(
-                headerFilter!,
-                ["shouldCookieBeBlocked"],
-                ["filterResponseHeaders", "cookieUtils", "messageUtil", "domainUtils"]
-            );
+            const mock = mockAssimilate(headerFilter!, "headerFilter", {
+                mock: ["shouldCookieBeBlocked"],
+                whitelist: ["filterResponseHeaders", "cookieUtils", "messageUtil", "domainUtils"],
+            });
             mocks.domainUtils.removeLeadingDot.expect(".c.com").andReturn("c.com").times(5);
             mock.shouldCookieBeBlocked.expect(42, "c.com", "free").andReturn(false);
             mock.shouldCookieBeBlocked.expect(42, "c.com", "a").andReturn(true);

@@ -4,9 +4,9 @@
  * @see https://github.com/Lusito/forget-me-not
  */
 import { container } from "tsyringe";
+import { advanceTime } from "mockzilla";
 
 import { CleanupScheduler } from "./cleanupScheduler";
-import { advanceTime } from "../testUtils/time";
 import { mocks } from "../testUtils/mocks";
 
 describe("Cleanup Scheduler", () => {

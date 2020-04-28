@@ -3,10 +3,11 @@ import { stringify } from "jest-matcher-utils";
 import { parse as parseUrl, UrlWithStringQuery } from "url";
 import "@abraham/reflection";
 import { container } from "tsyringe";
+import { mockTime, verifyAndDisableTimeouts, performAutoCleanup } from "mockzilla";
 
 import { browser } from "./mockBrowser";
 
-import "./time";
+mockTime();
 
 jest.mock("webextension-polyfill-ts", () => ({ browser }));
 
@@ -69,4 +70,12 @@ expect.extend({
 
 beforeEach(() => {
     container.reset();
+});
+
+afterEach(() => {
+    try {
+        verifyAndDisableTimeouts();
+    } finally {
+        performAutoCleanup();
+    }
 });

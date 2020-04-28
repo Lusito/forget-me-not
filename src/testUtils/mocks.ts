@@ -1,10 +1,9 @@
 import { container } from "tsyringe";
 import { constructor } from "tsyringe/dist/typings/types";
+import { deepMock, MockzillaDeep } from "mockzilla";
 
-import { quickDeepMock } from "./deepMock";
 import { MessageUtil } from "../shared/messageUtil";
 import { DefaultSettingsProvider } from "../shared/defaultSettings";
-import { DeepMock } from "./deepMockTypes";
 import { SupportsInfo } from "../shared/supportsInfo";
 import { IncognitoWatcher } from "../background/incognitoWatcher";
 import { TabWatcher } from "../background/tabWatcher";
@@ -17,19 +16,15 @@ import { BrowserInfo } from "../shared/browserInfo";
 
 const ucFirst = (t: string) => t[0].toLowerCase() + t.substr(1);
 
-function prepareMock<T>(token: constructor<T>): DeepMock<T> {
-    const [proxy, mock, rootNode] = quickDeepMock<T>(ucFirst((token as any).name));
-    let disabled = true;
+function prepareMock<T>(token: constructor<T>): MockzillaDeep<T> {
+    const [proxy, mock, rootNode] = deepMock<T>(ucFirst((token as any).name), false);
     rootNode.disable();
 
-    afterEach(() => {
-        disabled = true;
-    });
+    afterEach(() => rootNode.verifyAndDisable());
 
     return new Proxy({} as any, {
         get(target: any, prop: string) {
-            if (disabled) {
-                disabled = false;
+            if (rootNode.isDisabled()) {
                 rootNode.enable();
                 container.register(token, { useValue: proxy });
             }

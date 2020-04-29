@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { singleton } from "tsyringe";
 import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
 

@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { WebRequest, Cookies, Tabs } from "webextension-polyfill-ts";
 
 let nextTabId = 1000;

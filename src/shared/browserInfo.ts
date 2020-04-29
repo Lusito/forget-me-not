@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { browser } from "webextension-polyfill-ts";
 
 export enum BrowserType {

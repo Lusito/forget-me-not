@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { container } from "tsyringe";
 import { mockAssimilate } from "mockzilla";
 
@@ -26,7 +20,7 @@ describe("Message Utility", () => {
         it("should delegate to emitCallbacks", () => {
             const mock = mockAssimilate(messageUtil, "messageUtil", {
                 mock: ["emitCallbacks"],
-                whitelist: ["sendSelf"]
+                whitelist: ["sendSelf"],
             });
             mock.emitCallbacks.expect(event1, data1, {});
             messageUtil.sendSelf(event1, data1);

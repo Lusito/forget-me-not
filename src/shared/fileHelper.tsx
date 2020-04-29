@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { h } from "tsx-dom";
 
 export function readJSONFile(file: File, callback: (json: any) => void) {

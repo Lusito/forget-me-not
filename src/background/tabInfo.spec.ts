@@ -1,8 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
 import { advanceTime, mockAssimilate } from "mockzilla";
 
 import { TabInfo, MIN_DEAD_FRAME_CHECK_INTERVAL } from "./tabInfo";

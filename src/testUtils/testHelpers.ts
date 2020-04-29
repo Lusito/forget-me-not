@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 export const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 export function booleanVariations(count: number) {

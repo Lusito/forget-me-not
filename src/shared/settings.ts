@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 // This file manages all settings, their defaults and changes
 
 import { browser, Storage } from "webextension-polyfill-ts";

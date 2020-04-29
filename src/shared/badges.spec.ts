@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { badges, getBadgeForCleanupType } from "./badges";
 import { CleanupType } from "./types";
 

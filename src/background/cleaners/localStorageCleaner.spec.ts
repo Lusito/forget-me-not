@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { container } from "tsyringe";
 import { mockAssimilate } from "mockzilla";
 

@@ -1,8 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
 import { getDomain } from "tldjs";
 
 const FRAME_IDLE_TIME = 1000;

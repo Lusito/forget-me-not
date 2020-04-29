@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 // This file converts rule expressions to regular expressions
 
 export function ruleToRegExString(rule: string) {

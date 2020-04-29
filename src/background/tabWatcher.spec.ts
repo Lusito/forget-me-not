@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { container } from "tsyringe";
 import { deepMock, mockAssimilate } from "mockzilla";
 
@@ -39,7 +33,7 @@ describe("TabWatcher", () => {
         it("should add listeners", () => {
             mockAssimilate(tabWatcher!, "tabWatcher", {
                 mock: ["onTabCreated", "onTabRemoved"],
-                whitelist: ["init"]
+                whitelist: ["init"],
             });
             mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
             mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);
@@ -48,7 +42,7 @@ describe("TabWatcher", () => {
         it("should initialize existing tabs", () => {
             const mock = mockAssimilate(tabWatcher!, "tabWatcher", {
                 mock: ["onTabCreated", "onTabRemoved"],
-                whitelist: ["init"]
+                whitelist: ["init"],
             });
             mockBrowser.tabs.onCreated.addListener.expect(tabWatcher!["onTabCreated"]);
             mockBrowser.tabs.onRemoved.addListener.expect(tabWatcher!["onTabRemoved"]);

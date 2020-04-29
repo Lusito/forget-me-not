@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import "@abraham/reflection";
 import { wetLayer } from "wet-layer";
 import { h } from "tsx-dom";

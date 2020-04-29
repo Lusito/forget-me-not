@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { singleton } from "tsyringe";
 import { getDomain } from "tldjs"; // fixme: export via utils?
 

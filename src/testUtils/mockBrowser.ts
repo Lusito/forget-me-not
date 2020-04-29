@@ -1,10 +1,4 @@
 /* eslint-disable max-classes-per-file */
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import { Browser, Events } from "webextension-polyfill-ts";
 import { MockzillaDeep, deepMock } from "mockzilla";
 

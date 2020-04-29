@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
- */
-
 import "@abraham/reflection";
 import { container } from "tsyringe";
 import { browser } from "webextension-polyfill-ts";

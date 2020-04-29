@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/leave-me-not
- */
-
 import { WebRequest } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
 import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";

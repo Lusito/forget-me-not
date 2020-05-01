@@ -1,16 +1,16 @@
 import { container } from "tsyringe";
+import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { RequestWatcher } from "./requestWatcher";
 import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
-import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 import { mocks } from "../testUtils/mocks";
 
 describe("Request Watcher", () => {
     let requestWatcher: RequestWatcher | null = null;
-    let onBeforeNavigate: EventMockOf<typeof mockBrowser.webNavigation.onBeforeNavigate>;
-    let onCommitted: EventMockOf<typeof mockBrowser.webNavigation.onCommitted>;
-    let onCompleted: EventMockOf<typeof mockBrowser.webNavigation.onCompleted>;
-    let onBeforeRedirect: EventMockOf<typeof mockBrowser.webRequest.onBeforeRedirect>;
+    let onBeforeNavigate: MockzillaEventOf<typeof mockBrowser.webNavigation.onBeforeNavigate>;
+    let onCommitted: MockzillaEventOf<typeof mockBrowser.webNavigation.onCommitted>;
+    let onCompleted: MockzillaEventOf<typeof mockBrowser.webNavigation.onCompleted>;
+    let onBeforeRedirect: MockzillaEventOf<typeof mockBrowser.webRequest.onBeforeRedirect>;
 
     afterEach(() => {
         requestWatcher = null;

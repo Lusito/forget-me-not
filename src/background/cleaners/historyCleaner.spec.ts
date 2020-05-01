@@ -1,9 +1,9 @@
 import { BrowsingData, History } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
+import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { HistoryCleaner } from "./historyCleaner";
 import { mocks } from "../../testUtils/mocks";
-import { mockEvent, EventMockOf } from "../../testUtils/mockBrowser";
 import { booleanVariations } from "../../testUtils/testHelpers";
 
 describe("HistoryCleaner", () => {
@@ -29,7 +29,7 @@ describe("HistoryCleaner", () => {
     // fixme: cleanDomainOnLeave
 
     describe("with history API", () => {
-        let onVisited: EventMockOf<typeof mockBrowser.history.onVisited>;
+        let onVisited: MockzillaEventOf<typeof mockBrowser.history.onVisited>;
         beforeEach(() => {
             onVisited = mockEvent(mockBrowser.history.onVisited);
 

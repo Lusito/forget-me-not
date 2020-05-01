@@ -1,10 +1,10 @@
 import { BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
 import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
+import { mockEvent } from "mockzilla-webextension";
 
 import { booleanVariations } from "../../testUtils/testHelpers";
 import { CookieCleaner } from "./cookieCleaner";
-import { mockEvent } from "../../testUtils/mockBrowser";
 import { quickCookie } from "../../testUtils/quickHelpers";
 import { CleanupType } from "../../shared/types";
 import { mocks } from "../../testUtils/mocks";

@@ -1,7 +1,7 @@
 import { container } from "tsyringe";
+import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { IncognitoWatcher } from "./incognitoWatcher";
-import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 import { quickTab } from "../testUtils/quickHelpers";
 import { booleanVariations } from "../testUtils/testHelpers";
 import { mocks } from "../testUtils/mocks";
@@ -10,8 +10,8 @@ const COOKIE_STORE_ID = "mock";
 
 describe("Incognito Watcher", () => {
     let incognitoWatcher: IncognitoWatcher | null = null;
-    let onRemoved: EventMockOf<typeof mockBrowser.tabs.onRemoved>;
-    let onCreated: EventMockOf<typeof mockBrowser.tabs.onCreated>;
+    let onRemoved: MockzillaEventOf<typeof mockBrowser.tabs.onRemoved>;
+    let onCreated: MockzillaEventOf<typeof mockBrowser.tabs.onCreated>;
 
     afterEach(() => {
         incognitoWatcher = null;

@@ -1,8 +1,8 @@
 import { container } from "tsyringe";
 import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
+import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
-import { mockEvent, EventMockOf } from "../testUtils/mockBrowser";
 import { quickCookie, quickHeadersReceivedDetails } from "../testUtils/quickHelpers";
 import { mocks } from "../testUtils/mocks";
 
@@ -10,8 +10,8 @@ const COOKIE_STORE_ID = "mock";
 
 describe("Recently Accessed Domains", () => {
     let recentlyAccessedDomains: RecentlyAccessedDomains | null = null;
-    let onHeadersReceived: EventMockOf<typeof mockBrowser.webRequest.onHeadersReceived>;
-    let onCookieChanged: EventMockOf<typeof mockBrowser.cookies.onChanged>;
+    let onHeadersReceived: MockzillaEventOf<typeof mockBrowser.webRequest.onHeadersReceived>;
+    let onCookieChanged: MockzillaEventOf<typeof mockBrowser.cookies.onChanged>;
 
     beforeEach(() => {
         onHeadersReceived = mockEvent(mockBrowser.webRequest.onHeadersReceived);

@@ -3,13 +3,11 @@ import { stringify } from "jest-matcher-utils";
 import { parse as parseUrl, UrlWithStringQuery } from "url";
 import "@abraham/reflection";
 import { container } from "tsyringe";
-import { mockTime, verifyAndDisableTimeouts, performAutoCleanup } from "mockzilla";
+import { mockTime } from "mockzilla";
 
-import { browser } from "./mockBrowser";
+import "mockzilla-webextension";
 
 mockTime();
-
-jest.mock("webextension-polyfill-ts", () => ({ browser }));
 
 (window as any).URL = function URL(url: string) {
     const parsed = parseUrl(url);
@@ -70,12 +68,4 @@ expect.extend({
 
 beforeEach(() => {
     container.reset();
-});
-
-afterEach(() => {
-    try {
-        verifyAndDisableTimeouts();
-    } finally {
-        performAutoCleanup();
-    }
 });

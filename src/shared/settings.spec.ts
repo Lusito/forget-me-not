@@ -1,12 +1,10 @@
-// import { browser } from "webextension-polyfill-ts";
-
 import { container } from "tsyringe";
+import { mockEvent } from "mockzilla-webextension";
 
 import { Settings, SettingsMap } from "./settings";
 import { clone, booleanVariations } from "../testUtils/testHelpers";
 import { SettingsKey, RuleDefinition, DefaultSettingsProvider } from "./defaultSettings";
 import { CleanupType } from "./types";
-import { mockEvent } from "../testUtils/mockBrowser";
 import { mocks } from "../testUtils/mocks";
 
 describe("Settings", () => {

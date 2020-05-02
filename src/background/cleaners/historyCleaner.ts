@@ -41,7 +41,12 @@ export class HistoryCleaner extends Cleaner {
     }
 
     public async cleanDomainOnLeave(storeId: string, domain: string) {
-        if (this.settings.get("domainLeave.enabled") && this.settings.get("domainLeave.history")) {
+        if (
+            this.settings.get("domainLeave.enabled") &&
+            this.settings.get("domainLeave.history") &&
+            // Other stores might still contain the domain and we can't clean per-store yet
+            !this.tabWatcher.containsDomain(domain)
+        ) {
             const domainFP = getDomain(domain) || domain;
             const items = await browser.history.search({ text: domainFP });
             const filteredItems = items.filter((item) => {

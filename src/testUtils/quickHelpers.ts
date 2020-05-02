@@ -2,7 +2,7 @@ import { WebRequest, Cookies, Tabs } from "webextension-polyfill-ts";
 
 let nextTabId = 1000;
 
-export function quickTab(url: string, cookieStoreId: string, incognito = false): Tabs.Tab {
+export function quickTab(url: string, cookieStoreId: string, incognito = false): Tabs.Tab & { id: number } {
     return {
         active: true,
         cookieStoreId,

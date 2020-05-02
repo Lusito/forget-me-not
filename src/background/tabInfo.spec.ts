@@ -14,8 +14,8 @@ describe("TabInfo", () => {
     describe("constructor", () => {
         it("should initialize with the parameters", () => {
             const tabInfo = createTabInfo();
-            expect((tabInfo as any).tabId).toBe(42);
-            expect(Object.keys((tabInfo as any).frameInfos)).toHaveSameMembers(["0"]);
+            expect(tabInfo["tabId"]).toBe(42);
+            expect(Object.keys(tabInfo["frameInfos"])).toHaveSameMembers(["0"]);
             expect(tabInfo.contains("first.amazon.com", false)).toBe(true);
             expect(tabInfo.contains("first.amazon.com", true)).toBe(true);
             expect(tabInfo.contains("amazon.com", false)).toBe(false);
@@ -201,7 +201,7 @@ describe("TabInfo", () => {
         it("should reschedule itself if not all frames are idle", async () => {
             const tabInfo = createTabInfo();
             // ensure main frame is in idle
-            (tabInfo as any).frameInfos["0"].lastTimeStamp = 0;
+            tabInfo["frameInfos"]["0"]["lastTimeStamp"] = 0;
             tabInfo.prepareNavigation(1, "amazon.com");
             const originalScheduleDeadFramesCheck = tabInfo.scheduleDeadFramesCheck.bind(tabInfo);
 

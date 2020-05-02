@@ -6,15 +6,11 @@ import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
 import { mocks } from "../testUtils/mocks";
 
 describe("Request Watcher", () => {
-    let requestWatcher: RequestWatcher | null = null;
+    let requestWatcher: RequestWatcher;
     let onBeforeNavigate: MockzillaEventOf<typeof mockBrowser.webNavigation.onBeforeNavigate>;
     let onCommitted: MockzillaEventOf<typeof mockBrowser.webNavigation.onCommitted>;
     let onCompleted: MockzillaEventOf<typeof mockBrowser.webNavigation.onCompleted>;
     let onBeforeRedirect: MockzillaEventOf<typeof mockBrowser.webRequest.onBeforeRedirect>;
-
-    afterEach(() => {
-        requestWatcher = null;
-    });
 
     beforeEach(() => {
         onBeforeNavigate = mockEvent(mockBrowser.webNavigation.onBeforeNavigate);
@@ -28,12 +24,12 @@ describe("Request Watcher", () => {
 
     describe("listeners", () => {
         it("should add listeners on creation", () => {
-            expect(onBeforeNavigate.addListener.mock.calls).toEqual([[(requestWatcher as any).onBeforeNavigate]]);
-            expect(onCommitted.addListener.mock.calls).toEqual([[(requestWatcher as any).onCommitted]]);
-            expect(onCompleted.addListener.mock.calls).toEqual([[(requestWatcher as any).onCompleted]]);
+            expect(onBeforeNavigate.addListener.mock.calls).toEqual([[requestWatcher["onBeforeNavigate"]]]);
+            expect(onCommitted.addListener.mock.calls).toEqual([[requestWatcher["onCommitted"]]]);
+            expect(onCompleted.addListener.mock.calls).toEqual([[requestWatcher["onCompleted"]]]);
             expect(onBeforeRedirect.addListener.mock.calls).toEqual([
                 [
-                    (requestWatcher as any).onBeforeRedirect,
+                    requestWatcher["onBeforeRedirect"],
                     { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] },
                 ],
             ]);

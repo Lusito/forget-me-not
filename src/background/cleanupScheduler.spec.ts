@@ -5,12 +5,8 @@ import { CleanupScheduler } from "./cleanupScheduler";
 import { mocks } from "../testUtils/mocks";
 
 describe("Cleanup Scheduler", () => {
-    let handler: jest.Mock | null = null;
-    let cleanupScheduler: CleanupScheduler | null = null;
-
-    afterEach(() => {
-        cleanupScheduler = null;
-    });
+    let handler: jest.Mock;
+    let cleanupScheduler: CleanupScheduler;
 
     function createScheduler(enabled: boolean, snoozing: boolean, delay = 1) {
         handler = jest.fn();
@@ -31,12 +27,12 @@ describe("Cleanup Scheduler", () => {
             beforeEach(() => createScheduler(false, false));
 
             it("should neither schedule nor remember domains", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.com");
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.jp");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.com");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.jp");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveLength(0);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
                 expect(handler).not.toHaveBeenCalled();
             });
         });
@@ -44,12 +40,12 @@ describe("Cleanup Scheduler", () => {
             beforeEach(() => createScheduler(true, true));
 
             it("should schedule domain cleans", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.com");
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.jp");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveSameMembers([
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.com");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.jp");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveLength(0);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveSameMembers([
                     "google.de",
                     "google.com",
                     "google.jp",
@@ -61,32 +57,32 @@ describe("Cleanup Scheduler", () => {
             beforeEach(() => createScheduler(true, false));
 
             it("should remember domains to clean", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.com");
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.jp");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers([
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.com");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.jp");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveSameMembers([
                     "google.de",
                     "google.com",
                     "google.jp",
                 ]);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
                 advanceTime(999);
                 expect(handler).not.toHaveBeenCalled();
                 advanceTime(1);
                 expect(handler?.mock.calls).toEqual([["google.com"], ["google.de"], ["google.jp"]]);
             });
             it("should call handler with little difference in expected duration", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.com");
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.jp");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers([
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.com");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.jp");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveSameMembers([
                     "google.de",
                     "google.com",
                     "google.jp",
                 ]);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
                 advanceTime(999);
                 expect(handler).not.toHaveBeenCalled();
                 advanceTime(1);
@@ -97,19 +93,19 @@ describe("Cleanup Scheduler", () => {
             beforeEach(() => createScheduler(true, false));
 
             it("should remember domains to clean", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.com");
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.jp");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers([
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.com");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.jp");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveSameMembers([
                     "google.de",
                     "google.com",
                     "google.jp",
                 ]);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
-                cleanupScheduler!.setSnoozing(true);
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveSameMembers([
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
+                cleanupScheduler.setSnoozing(true);
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveLength(0);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveSameMembers([
                     "google.de",
                     "google.com",
                     "google.jp",
@@ -121,16 +117,16 @@ describe("Cleanup Scheduler", () => {
             beforeEach(() => createScheduler(true, false));
 
             it("should forget domains and remove timeouts", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.com");
-                await cleanupScheduler!.schedule("google.de");
-                await cleanupScheduler!.schedule("google.jp");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.com");
+                await cleanupScheduler.schedule("google.de");
+                await cleanupScheduler.schedule("google.jp");
 
                 mocks.settings.get.expect("domainLeave.enabled").andReturn(false);
                 mocks.settings.get.expect("domainLeave.delay").andReturn(1000);
-                cleanupScheduler!["updateSettings"]();
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveLength(0);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                cleanupScheduler["updateSettings"]();
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveLength(0);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
                 expect(handler).not.toHaveBeenCalled();
             });
         });
@@ -138,21 +134,21 @@ describe("Cleanup Scheduler", () => {
             beforeEach(() => createScheduler(true, false, 0.4));
 
             it("should call handler with little difference in expected duration", async () => {
-                await cleanupScheduler!.schedule("google.de");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers(["google.de"]);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                await cleanupScheduler.schedule("google.de");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveSameMembers(["google.de"]);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
                 advanceTime(200);
-                await cleanupScheduler!.schedule("google.com");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers(["google.de", "google.com"]);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
+                await cleanupScheduler.schedule("google.com");
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveSameMembers(["google.de", "google.com"]);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
                 advanceTime(199);
                 expect(handler).not.toHaveBeenCalled();
                 advanceTime(1);
                 expect(handler).toHaveBeenCalledTimes(1);
                 expect(handler).toHaveBeenCalledWith("google.de");
-                expect(cleanupScheduler!.getScheduledDomainsToClean()).toHaveSameMembers(["google.com"]);
-                expect(cleanupScheduler!.getSnoozedDomainsToClean()).toHaveLength(0);
-                handler!.mockClear();
+                expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveSameMembers(["google.com"]);
+                expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
+                handler.mockClear();
                 advanceTime(199);
                 expect(handler).not.toHaveBeenCalled();
                 advanceTime(1);

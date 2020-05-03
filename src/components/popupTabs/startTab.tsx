@@ -8,6 +8,7 @@ import { on } from "../../frontend/htmlUtils";
 import { RuleTable } from "../ruleTable";
 import { DomainUtils } from "../../shared/domainUtils";
 import { MessageUtil } from "../../shared/messageUtil";
+import { StoreUtils } from "../../shared/storeUtils";
 
 class StartTabManager {
     private hostname = "";
@@ -20,6 +21,8 @@ class StartTabManager {
 
     private ruleTableContainer: HTMLElement;
 
+    private readonly defaultCookieStoreId: string;
+
     public constructor(
         cleanButton: HTMLElement,
         urlLabel: HTMLElement,
@@ -30,6 +33,7 @@ class StartTabManager {
         this.urlLabel = urlLabel;
         this.punifiedUrlLabel = punifiedUrlLabel;
         this.ruleTableContainer = ruleTableContainer;
+        this.defaultCookieStoreId = container.resolve(StoreUtils).defaultCookieStoreId;
         this.initCurrentTab();
 
         wetLayer.addListener(() => this.setCurrentTabLabel(this.hostname || false));
@@ -59,6 +63,10 @@ class StartTabManager {
             if (!hostname) {
                 this.setInvalidTab();
             } else {
+                const ruleFilter = {
+                    domain: hostname,
+                    storeId: tab.cookieStoreId || this.defaultCookieStoreId,
+                };
                 this.hostname = hostname;
                 this.setCurrentTabLabel(hostname);
                 const messageUtil = container.resolve(MessageUtil);
@@ -66,7 +74,7 @@ class StartTabManager {
                     messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
                 });
                 this.ruleTableContainer.appendChild(
-                    <RuleTable forDomain={hostname} headerI18n="rules_column_matching_expression" />
+                    <RuleTable ruleFilter={ruleFilter} headerI18n="rules_column_matching_expression" />
                 );
             }
         } else {

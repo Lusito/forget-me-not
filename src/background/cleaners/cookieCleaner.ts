@@ -12,6 +12,7 @@ import { IncognitoWatcher } from "../incognitoWatcher";
 import { StoreUtils } from "../../shared/storeUtils";
 import { SupportsInfo } from "../../shared/supportsInfo";
 import { SnoozeManager } from "../snoozeManager";
+import { RuleManager } from "../../shared/ruleManager";
 
 @singleton()
 export class CookieCleaner extends Cleaner {
@@ -23,6 +24,7 @@ export class CookieCleaner extends Cleaner {
 
     public constructor(
         private readonly settings: Settings,
+        private readonly ruleManager: RuleManager,
         private readonly domainUtils: DomainUtils,
         private readonly cookieUtils: CookieUtils,
         private readonly tabWatcher: TabWatcher,
@@ -114,7 +116,7 @@ export class CookieCleaner extends Cleaner {
     private shouldRemoveCookieInstantly(cookie: Cookies.Cookie) {
         if (!this.settings.get("instantly.enabled") || !this.settings.get("instantly.cookies")) return false;
         const rawDomain = this.domainUtils.removeLeadingDot(cookie.domain);
-        return this.settings.getCleanupTypeForCookie(rawDomain, cookie.name) === CleanupType.INSTANTLY;
+        return this.ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, cookie.name) === CleanupType.INSTANTLY;
     }
 
     private async onCookieChanged(changeInfo: Cookies.OnChangedChangeInfoType) {
@@ -194,7 +196,7 @@ export class CookieCleaner extends Cleaner {
         protectSubFrames: boolean
     ) {
         const rawDomain = this.domainUtils.removeLeadingDot(cookie.domain);
-        const type = this.settings.getCleanupTypeForCookie(rawDomain, cookie.name);
+        const type = this.ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, cookie.name);
         if (type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType)) return true;
         if (type === CleanupType.INSTANTLY || !protectOpenDomains) return false;
         if (cookie.firstPartyDomain)

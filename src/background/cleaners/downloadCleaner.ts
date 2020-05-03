@@ -5,12 +5,14 @@ import { Cleaner } from "./cleaner";
 import { DomainUtils } from "../../shared/domainUtils";
 import { Settings } from "../../shared/settings";
 import { TabWatcher } from "../tabWatcher";
+import { RuleManager } from "../../shared/ruleManager";
 
 @singleton()
 export class DownloadCleaner extends Cleaner {
     public constructor(
         private readonly domainUtils: DomainUtils,
         private readonly settings: Settings,
+        private readonly ruleManager: RuleManager,
         private readonly tabWatcher: TabWatcher
     ) {
         super();
@@ -22,7 +24,7 @@ export class DownloadCleaner extends Cleaner {
         if (domain) {
             if (this.settings.get("instantly.enabled") && this.settings.get("instantly.downloads")) {
                 const applyRules = this.settings.get("instantly.downloads.applyRules");
-                if (!applyRules || this.settings.isDomainBlocked(domain)) {
+                if (!applyRules || this.ruleManager.isDomainInstantly(domain, false)) {
                     this.cleanupUrl(url);
                     return;
                 }
@@ -31,7 +33,7 @@ export class DownloadCleaner extends Cleaner {
                 !incognito &&
                 this.settings.get("startup.enabled") &&
                 this.settings.get("startup.downloads") &&
-                !this.settings.isDomainProtected(domain, false)
+                !this.ruleManager.isDomainProtected(domain, false, false)
             ) {
                 const downloadsToClean = { ...this.settings.get("downloadsToClean") };
                 downloadsToClean[url] = true;
@@ -65,7 +67,7 @@ export class DownloadCleaner extends Cleaner {
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean): boolean {
         if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
-        return this.settings.isDomainProtected(domain, ignoreStartupType);
+        return this.ruleManager.isDomainProtected(domain, false, ignoreStartupType);
     }
 
     private getUrlsToClean(

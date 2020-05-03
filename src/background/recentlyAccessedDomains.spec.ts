@@ -1,5 +1,5 @@
 import { container } from "tsyringe";
-import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
+import { whitelistPropertyAccess, mockAssimilate, denyPropertyAccess } from "mockzilla";
 import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { RecentlyAccessedDomains } from "./recentlyAccessedDomains";
@@ -30,6 +30,7 @@ describe("Recently Accessed Domains", () => {
         mocks.messageUtil.mockAllow();
         mocks.incognitoWatcher.mockAllow();
         mocks.domainUtils.mockAllow();
+        mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
         recentlyAccessedDomains = container.resolve(RecentlyAccessedDomains);
     }
 
@@ -93,7 +94,7 @@ describe("Recently Accessed Domains", () => {
             });
             mocks.domainUtils.removeLeadingDot.expect(".www.google.com").andReturn("www.google.com");
             mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
-            mock.add.expect("www.google.com");
+            mock.add.expect("www.google.com", COOKIE_STORE_ID);
             fireOnCookieChanged(false);
         });
         it("should not call add() if non-incognito cookie was removed", () => {
@@ -113,67 +114,65 @@ describe("Recently Accessed Domains", () => {
     describe("onHeadersReceived", () => {
         it("should call add() if non-incognito tab received a header", () => {
             createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains, "add");
+            const mock = mockAssimilate(recentlyAccessedDomains, "recentlyAccessedDomains", {
+                mock: ["add"],
+            });
+            mock.add.expect("www.google.com", COOKIE_STORE_ID);
             mocks.incognitoWatcher.hasTab.expect(42).andReturn(false);
             mocks.domainUtils.getValidHostname.expect("http://www.google.com").andReturn("www.google.com");
             recentlyAccessedDomains["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith("www.google.com");
         });
         it("should not call add() if incognito tab received a header", () => {
-            createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains, "add");
+            denyPropertyAccess(recentlyAccessedDomains, "add");
             mocks.incognitoWatcher.hasTab.expect(42).andReturn(true);
             recentlyAccessedDomains["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
-            expect(spy).not.toHaveBeenCalled();
         });
         it("should not call add() if tab with incognito attribute received a header", () => {
             createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains, "add");
+            denyPropertyAccess(recentlyAccessedDomains, "add");
             recentlyAccessedDomains["onHeadersReceived"]({
                 ...quickHeadersReceivedDetails("http://www.google.com", 42),
                 incognito: true,
             });
-            expect(spy).not.toHaveBeenCalled();
         });
         it("should not call add() if a header was received on a negative tab id", () => {
             createRAD(false);
-            const spy = jest.spyOn(recentlyAccessedDomains, "add");
+            denyPropertyAccess(recentlyAccessedDomains, "add");
             recentlyAccessedDomains["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", -1));
-            expect(spy).not.toHaveBeenCalled();
         });
     });
 
     describe("add", () => {
+        const prepareLog = (domains: string[]) => domains.map((domain) => ({ domain, storeId: COOKIE_STORE_ID }));
         it("should not do anything if not enabled", () => {
             createRAD(false);
-            recentlyAccessedDomains["domains"] = ["a", "b", "c", "d", "e", "f"];
-            recentlyAccessedDomains.add("woop");
-            expect(recentlyAccessedDomains["domains"]).toEqual(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["log"] = prepareLog(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["add"]("woop", COOKIE_STORE_ID);
+            expect(recentlyAccessedDomains["log"]).toEqual(prepareLog(["a", "b", "c", "d", "e", "f"]));
         });
         it("should not do anything if enabled, but domain is empty", () => {
             createRAD(true);
-            recentlyAccessedDomains["domains"] = ["a", "b", "c", "d", "e", "f"];
-            recentlyAccessedDomains.add("");
-            expect(recentlyAccessedDomains["domains"]).toEqual(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["log"] = prepareLog(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["add"]("", COOKIE_STORE_ID);
+            expect(recentlyAccessedDomains["log"]).toEqual(prepareLog(["a", "b", "c", "d", "e", "f"]));
         });
         it("should not do anything if domain already at the top spot", () => {
             createRAD(true);
-            recentlyAccessedDomains["domains"] = ["a", "b", "c", "d", "e", "f"];
-            recentlyAccessedDomains.add("a");
-            expect(recentlyAccessedDomains["domains"]).toEqual(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["log"] = prepareLog(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["add"]("a", COOKIE_STORE_ID);
+            expect(recentlyAccessedDomains["log"]).toEqual(prepareLog(["a", "b", "c", "d", "e", "f"]));
         });
         it("should move existing domain to the top spot", () => {
             createRAD(true);
-            recentlyAccessedDomains["domains"] = ["a", "b", "c", "d"];
-            recentlyAccessedDomains.add("c");
-            expect(recentlyAccessedDomains["domains"]).toEqual(["c", "a", "b", "d"]);
+            recentlyAccessedDomains["log"] = prepareLog(["a", "b", "c", "d"]);
+            recentlyAccessedDomains["add"]("c", COOKIE_STORE_ID);
+            expect(recentlyAccessedDomains["log"]).toEqual(prepareLog(["c", "a", "b", "d"]));
         });
         it("should insert at the top spot and apply limits", () => {
             createRAD(true);
-            recentlyAccessedDomains["domains"] = ["a", "b", "c", "d", "e", "f"];
-            recentlyAccessedDomains.add("woop");
-            expect(recentlyAccessedDomains["domains"]).toEqual(["woop", "a", "b", "c", "d"]);
+            recentlyAccessedDomains["log"] = prepareLog(["a", "b", "c", "d", "e", "f"]);
+            recentlyAccessedDomains["add"]("woop", COOKIE_STORE_ID);
+            expect(recentlyAccessedDomains["log"]).toEqual(prepareLog(["woop", "a", "b", "c", "d"]));
         });
     });
 });

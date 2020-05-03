@@ -4,7 +4,7 @@ import { container } from "tsyringe";
 
 import { isValidExpression } from "../../shared/expressionUtils";
 import { on } from "../../frontend/htmlUtils";
-import { Settings } from "../../shared/settings";
+import { RuleManager } from "../../shared/ruleManager";
 import "./style.scss";
 
 interface ExpressionHintProps {
@@ -24,12 +24,12 @@ export function ExpressionHint({ input }: ExpressionHintProps) {
         else hint.removeAttribute("role");
     }
 
-    const settings = container.resolve(Settings);
+    const ruleManager = container.resolve(RuleManager);
     function validate() {
         const expression = input.value.trim().toLowerCase();
         const validExpression = !expression || isValidExpression(expression);
         if (!validExpression) updateError(wetLayer.getMessage("expression_hint_invalid"));
-        else if (settings.getExactRuleDefinition(expression) !== null)
+        else if (ruleManager.getExactRuleDefinition(expression) !== null)
             updateError(wetLayer.getMessage("expression_hint_exists"));
         else updateError("");
     }

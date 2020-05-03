@@ -12,11 +12,13 @@ import { ExpressionHint } from "../expressionHint";
 import { showAddRuleDialog } from "../helpers";
 import { isValidExpression } from "../../shared/expressionUtils";
 import { Settings } from "../../shared/settings";
+import { RuleManager } from "../../shared/ruleManager";
 
 export function RulesTab() {
     const filterInput = (<input data-i18n="rules_input?placeholder" />) as HTMLInputElement;
 
     const settings = container.resolve(Settings);
+    const ruleManager = container.resolve(RuleManager);
 
     function setFallbackRule(type: CleanupType) {
         settings.set("fallbackRule", type);
@@ -25,7 +27,7 @@ export function RulesTab() {
 
     function addRule() {
         const expression = filterInput.value.trim().toLowerCase();
-        if (expression && isValidExpression(expression) && settings.getExactRuleDefinition(expression) === null) {
+        if (expression && isValidExpression(expression) && ruleManager.getExactRuleDefinition(expression) === null) {
             showAddRuleDialog(expression, () => {
                 filterInput.value = "";
                 filterInput.dispatchEvent(new Event("input")); // force hint update

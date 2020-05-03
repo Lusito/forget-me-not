@@ -6,6 +6,8 @@ import { CleanupType } from "../shared/types";
 import { HeaderFilter } from "./headerFilter";
 import { mocks } from "../testUtils/mocks";
 
+const COOKIE_STORE_ID = "mock";
+
 describe("Header Filter", () => {
     let headerFilter: HeaderFilter;
 
@@ -18,6 +20,8 @@ describe("Header Filter", () => {
         mocks.settings.mockAllow();
         mocks.supports.mockAllow();
         mocks.snoozeManager.mockAllow();
+        mocks.ruleManager.mockAllow();
+        mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
 
         headerFilter = container.resolve(HeaderFilter);
     });
@@ -86,6 +90,7 @@ describe("Header Filter", () => {
                 const details: WebRequest.OnHeadersReceivedDetailsType = {
                     responseHeaders,
                     incognito,
+                    cookieStoreId: COOKIE_STORE_ID,
                     url: "http://some-domain.com",
                     tabId: 42,
                 } as any;
@@ -101,7 +106,7 @@ describe("Header Filter", () => {
 
                     mocks.domainUtils.getValidHostname.expect(details.url).andReturn(fallbackDomain);
                     mock.filterResponseHeaders
-                        .expect(responseHeaders, fallbackDomain, 42)
+                        .expect(responseHeaders, fallbackDomain, COOKIE_STORE_ID, 42)
                         .andReturn(filteredResponseHeaders);
 
                     expect(headerFilter["onHeadersReceived"](details)).toEqual({
@@ -198,24 +203,24 @@ describe("Header Filter", () => {
             it("should call setEnabled(true) if instantly.enabled=true and hasBlockingRule=true", () => {
                 const mock = mockAssimilate(headerFilter, "headerFilter", {
                     mock: ["setEnabled"],
-                    whitelist: ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"],
+                    whitelist: ["updateSettings", "settings", "ruleManager", "blockThirdpartyCookies", "snoozeManager"],
                 });
                 mock.setEnabled.expect(true);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
-                mocks.settings.hasBlockingRule.expect().andReturn(true);
+                mocks.ruleManager.hasBlockingRule.expect().andReturn(true);
                 headerFilter["updateSettings"]();
                 expect(headerFilter["blockThirdpartyCookies"]).toBe(false);
             });
             it("should call setEnabled(false) if instantly.enabled=true and hasBlockingRule=false", () => {
                 const mock = mockAssimilate(headerFilter, "headerFilter", {
                     mock: ["setEnabled"],
-                    whitelist: ["updateSettings", "settings", "blockThirdpartyCookies", "snoozeManager"],
+                    whitelist: ["updateSettings", "settings", "ruleManager", "blockThirdpartyCookies", "snoozeManager"],
                 });
                 mock.setEnabled.expect(false);
                 mocks.settings.get.expect("cleanThirdPartyCookies.beforeCreation").andReturn(false);
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
-                mocks.settings.hasBlockingRule.expect().andReturn(false);
+                mocks.ruleManager.hasBlockingRule.expect().andReturn(false);
                 headerFilter["updateSettings"]();
                 expect(headerFilter["blockThirdpartyCookies"]).toBe(false);
             });
@@ -235,40 +240,52 @@ describe("Header Filter", () => {
 
     describe("shouldCookieBeBlocked", () => {
         it.each([[CleanupType.NEVER], [CleanupType.STARTUP]])(
-            "should return false if getCleanupTypeForCookie returns %i",
+            "should return false if getCleanupTypeFor returns %i",
             (cleanupType) => {
-                mocks.settings.getCleanupTypeForCookie.expect("some-domain.com", "cookie-name").andReturn(cleanupType);
-                expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(false);
+                mocks.ruleManager.getCleanupTypeFor
+                    .expect("some-domain.com", COOKIE_STORE_ID, "cookie-name")
+                    .andReturn(cleanupType);
+                expect(
+                    headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", COOKIE_STORE_ID, "cookie-name")
+                ).toBe(false);
             }
         );
-        it("should return true if getCleanupTypeForCookie returns INSTANTLY", () => {
-            mocks.settings.getCleanupTypeForCookie
-                .expect("some-domain.com", "cookie-name")
+        it("should return true if getCleanupTypeFor returns INSTANTLY", () => {
+            mocks.ruleManager.getCleanupTypeFor
+                .expect("some-domain.com", COOKIE_STORE_ID, "cookie-name")
                 .andReturn(CleanupType.INSTANTLY);
-            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(true);
+            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", COOKIE_STORE_ID, "cookie-name")).toBe(
+                true
+            );
         });
-        it("should return true if getCleanupTypeForCookie returns LEAVE, blockThirdpartyCookies=true and is third party cookie", () => {
+        it("should return true if getCleanupTypeFor returns LEAVE, blockThirdpartyCookies=true and is third party cookie", () => {
             headerFilter["blockThirdpartyCookies"] = true;
             mocks.tabWatcher.isThirdPartyCookieOnTab.expect(42, "some-domain.com").andReturn(true);
-            mocks.settings.getCleanupTypeForCookie
-                .expect("some-domain.com", "cookie-name")
+            mocks.ruleManager.getCleanupTypeFor
+                .expect("some-domain.com", COOKIE_STORE_ID, "cookie-name")
                 .andReturn(CleanupType.LEAVE);
-            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(true);
+            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", COOKIE_STORE_ID, "cookie-name")).toBe(
+                true
+            );
         });
-        it("should return false if getCleanupTypeForCookie returns LEAVE, blockThirdpartyCookies=true and is not third party cookie", () => {
+        it("should return false if getCleanupTypeFor returns LEAVE, blockThirdpartyCookies=true and is not third party cookie", () => {
             headerFilter["blockThirdpartyCookies"] = true;
             mocks.tabWatcher.isThirdPartyCookieOnTab.expect(42, "some-domain.com").andReturn(false);
-            mocks.settings.getCleanupTypeForCookie
-                .expect("some-domain.com", "cookie-name")
+            mocks.ruleManager.getCleanupTypeFor
+                .expect("some-domain.com", COOKIE_STORE_ID, "cookie-name")
                 .andReturn(CleanupType.LEAVE);
-            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(false);
+            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", COOKIE_STORE_ID, "cookie-name")).toBe(
+                false
+            );
         });
-        it("should return false if getCleanupTypeForCookie returns LEAVE and blockThirdpartyCookies=false", () => {
+        it("should return false if getCleanupTypeFor returns LEAVE and blockThirdpartyCookies=false", () => {
             headerFilter["blockThirdpartyCookies"] = false;
-            mocks.settings.getCleanupTypeForCookie
-                .expect("some-domain.com", "cookie-name")
+            mocks.ruleManager.getCleanupTypeFor
+                .expect("some-domain.com", COOKIE_STORE_ID, "cookie-name")
                 .andReturn(CleanupType.LEAVE);
-            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", "cookie-name")).toBe(false);
+            expect(headerFilter["shouldCookieBeBlocked"](42, "some-domain.com", COOKIE_STORE_ID, "cookie-name")).toBe(
+                false
+            );
         });
     });
 
@@ -318,11 +335,11 @@ describe("Header Filter", () => {
                 whitelist: ["filterResponseHeaders", "cookieUtils", "messageUtil", "domainUtils"],
             });
             mocks.domainUtils.removeLeadingDot.expect(".c.com").andReturn("c.com").times(5);
-            mock.shouldCookieBeBlocked.expect(42, "c.com", "free").andReturn(false);
-            mock.shouldCookieBeBlocked.expect(42, "c.com", "a").andReturn(true);
-            mock.shouldCookieBeBlocked.expect(42, "c.com", "a").andReturn(true);
-            mock.shouldCookieBeBlocked.expect(42, "c.com", "free").andReturn(false);
-            mock.shouldCookieBeBlocked.expect(42, "c.com", "a").andReturn(true);
+            mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "free").andReturn(false);
+            mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "a").andReturn(true);
+            mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "a").andReturn(true);
+            mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "free").andReturn(false);
+            mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "a").andReturn(true);
             mocks.cookieUtils.parseSetCookieHeader
                 .expect("free=b", "fallback-domain.com")
                 .andReturn({ domain: ".c.com", name: "free", value: "" });
@@ -338,7 +355,7 @@ describe("Header Filter", () => {
             mocks.cookieUtils.parseSetCookieHeader
                 .expect("a=b", "fallback-domain.com")
                 .andReturn({ domain: ".c.com", name: "a", value: "" });
-            expect(headerFilter["filterResponseHeaders"](headers, "fallback-domain.com", 42)).toEqual(
+            expect(headerFilter["filterResponseHeaders"](headers, "fallback-domain.com", COOKIE_STORE_ID, 42)).toEqual(
                 remainingHeaders
             );
         });

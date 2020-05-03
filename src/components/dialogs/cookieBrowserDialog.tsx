@@ -11,7 +11,7 @@ import { getBadgeForCleanupType, BadgeInfo } from "../../shared/badges";
 import { appendPunycode, showAddRuleDialog, getSuggestedRuleExpression } from "../helpers";
 import { StoreUtils } from "../../shared/storeUtils";
 import { SupportsInfo } from "../../shared/supportsInfo";
-import { Settings } from "../../shared/settings";
+import { RuleManager } from "../../shared/ruleManager";
 import { DomainUtils } from "../../shared/domainUtils";
 
 interface CookieListCookie {
@@ -50,7 +50,7 @@ async function getCookieList() {
     const domainUtils = container.resolve(DomainUtils);
     const storeUtils = container.resolve(StoreUtils);
     const supports = container.resolve(SupportsInfo);
-    const settings = container.resolve(Settings);
+    const ruleManager = container.resolve(RuleManager);
 
     const cookieStores = await storeUtils.getAllCookieStoreIds();
     const nestedCookies = await Promise.all(
@@ -66,7 +66,7 @@ async function getCookieList() {
     for (const cookie of cookies) {
         const rawDomain = domainUtils.removeLeadingDot(cookie.domain);
         const firstPartyDomain = getDomain(rawDomain) || rawDomain;
-        const cleanupTypeForCookie = settings.getCleanupTypeForCookie(rawDomain, cookie.name);
+        const cleanupTypeForCookie = ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, cookie.name);
         const badge = getBadgeForCleanupType(cleanupTypeForCookie);
         const byDomain = cookiesByDomain[cookie.domain];
         const mapped = { badge, cookie };
@@ -74,7 +74,8 @@ async function getCookieList() {
             byDomain.cookies.push(mapped);
         } else {
             cookiesByDomain[cookie.domain] = {
-                badge: getBadgeForCleanupType(settings.getCleanupTypeForDomain(rawDomain)),
+                // fixme: might be multiple stores
+                badge: getBadgeForCleanupType(ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, false)),
                 domain: cookie.domain,
                 firstPartyDomain,
                 cookies: [mapped],

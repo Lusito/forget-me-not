@@ -16,6 +16,7 @@ describe("LocalStorageCleaner", () => {
         mocks.domainUtils.mockAllow();
         mocks.tabWatcher.mockAllow();
         mocks.incognitoWatcher.mockAllow();
+        mocks.ruleManager.mockAllow();
         mocks.supports.mockAllow();
         localStorageCleaner = container.resolve(LocalStorageCleaner);
     });
@@ -37,7 +38,7 @@ describe("LocalStorageCleaner", () => {
                 mock: ["isLocalStorageProtected"],
                 whitelist: ["cleanDomainOnLeave", "settings"],
             });
-            mock.isLocalStorageProtected.expect(COOKIE_STORE_ID, "some-domain").andReturn(true);
+            mock.isLocalStorageProtected.expect("some-domain").andReturn(true);
             await localStorageCleaner.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
         });
         it("calls cleanDomain if not protected", async () => {
@@ -48,7 +49,7 @@ describe("LocalStorageCleaner", () => {
                 mock: ["cleanDomain", "isLocalStorageProtected"],
                 whitelist: ["cleanDomainOnLeave", "settings"],
             });
-            mock.isLocalStorageProtected.expect(COOKIE_STORE_ID, "some-domain").andReturn(false);
+            mock.isLocalStorageProtected.expect("some-domain").andReturn(false);
             mock.cleanDomain.expect(COOKIE_STORE_ID, "some-domain").andResolve();
 
             await localStorageCleaner.cleanDomainOnLeave(COOKIE_STORE_ID, "some-domain");
@@ -57,27 +58,23 @@ describe("LocalStorageCleaner", () => {
 
     describe("isLocalStorageProtected", () => {
         it("should return true for an open domains", () => {
-            mocks.tabWatcher.cookieStoreContainsDomain.expect(COOKIE_STORE_ID, "some-domain", true).andReturn(true);
-            expect(localStorageCleaner["isLocalStorageProtected"](COOKIE_STORE_ID, "some-domain")).toBe(true);
+            mocks.tabWatcher.containsDomain.expect("some-domain").andReturn(true);
+            expect(localStorageCleaner["isLocalStorageProtected"]("some-domain")).toBe(true);
         });
         it.each([[CleanupType.NEVER], [CleanupType.STARTUP]])(
             "should return true if cleanup type is %i",
             (cleanupType) => {
-                mocks.tabWatcher.cookieStoreContainsDomain
-                    .expect(COOKIE_STORE_ID, "some-domain", true)
-                    .andReturn(false);
-                mocks.settings.getCleanupTypeForDomain.expect("some-domain").andReturn(cleanupType);
-                expect(localStorageCleaner["isLocalStorageProtected"](COOKIE_STORE_ID, "some-domain")).toBe(true);
+                mocks.tabWatcher.containsDomain.expect("some-domain").andReturn(false);
+                mocks.ruleManager.getCleanupTypeFor.expect("some-domain", false, false).andReturn(cleanupType);
+                expect(localStorageCleaner["isLocalStorageProtected"]("some-domain")).toBe(true);
             }
         );
         it.each([[CleanupType.LEAVE], [CleanupType.INSTANTLY]])(
             "should return false if cleanup type is %i",
             (cleanupType) => {
-                mocks.tabWatcher.cookieStoreContainsDomain
-                    .expect(COOKIE_STORE_ID, "some-domain", true)
-                    .andReturn(false);
-                mocks.settings.getCleanupTypeForDomain.expect("some-domain").andReturn(cleanupType);
-                expect(localStorageCleaner["isLocalStorageProtected"](COOKIE_STORE_ID, "some-domain")).toBe(false);
+                mocks.tabWatcher.containsDomain.expect("some-domain").andReturn(false);
+                mocks.ruleManager.getCleanupTypeFor.expect("some-domain", false, false).andReturn(cleanupType);
+                expect(localStorageCleaner["isLocalStorageProtected"]("some-domain")).toBe(false);
             }
         );
     });

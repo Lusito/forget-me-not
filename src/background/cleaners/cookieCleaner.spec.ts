@@ -24,6 +24,7 @@ describe("CookieCleaner", () => {
         mocks.cookieUtils.mockAllow();
         mocks.storeUtils.mockAllow();
         mocks.snoozeManager.mockAllow();
+        mocks.ruleManager.mockAllow();
 
         mocks.snoozeManager.isSnoozing.expect().andReturn(false);
         mocks.snoozeManager.listeners.add.expect(expect.anything());
@@ -345,7 +346,9 @@ describe("CookieCleaner", () => {
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
                 mocks.settings.get.expect("instantly.cookies").andReturn(true);
                 mocks.domainUtils.removeLeadingDot.expect(".www.some-domain.com").andReturn("www.some-domain.com");
-                mocks.settings.getCleanupTypeForCookie.expect("www.some-domain.com", "name1").andReturn(cleanupType);
+                mocks.ruleManager.getCleanupTypeFor
+                    .expect("www.some-domain.com", COOKIE_STORE_ID, "name1")
+                    .andReturn(cleanupType);
                 expect(cookieCleaner["shouldRemoveCookieInstantly"](cookie)).toBe(result);
             });
         });
@@ -606,10 +609,10 @@ describe("CookieCleaner", () => {
             it.each(booleanVariations(3))(
                 `should return ${expectedReturnType} for ignoreStartupType=%j, protectOpenDomains=%j, protectSubFrames=%j`,
                 (ignoreStartupType: boolean, protectOpenDomains: boolean, protectSubFrames: boolean) => {
-                    mocks.settings.getCleanupTypeForCookie
-                        .expect("www.some-domain.com", cookie.name)
+                    mocks.ruleManager.getCleanupTypeFor
+                        .expect("www.some-domain.com", cookie.storeId, cookie.name)
                         .andReturn(cleanupType);
-                    whitelistPropertyAccess(cookieCleaner, "settings", "isCookieAllowed", "domainUtils");
+                    whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed", "domainUtils");
 
                     expect(
                         cookieCleaner["isCookieAllowed"](
@@ -627,10 +630,10 @@ describe("CookieCleaner", () => {
             it.each(booleanVariations(2))(
                 "should return true for protectOpenDomains=%j, protectSubFrames=%j",
                 (protectOpenDomains: boolean, protectSubFrames: boolean) => {
-                    mocks.settings.getCleanupTypeForCookie
-                        .expect("www.some-domain.com", cookie.name)
+                    mocks.ruleManager.getCleanupTypeFor
+                        .expect("www.some-domain.com", cookie.storeId, cookie.name)
                         .andReturn(CleanupType.STARTUP);
-                    whitelistPropertyAccess(cookieCleaner, "settings", "isCookieAllowed", "domainUtils");
+                    whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed", "domainUtils");
 
                     expect(cookieCleaner["isCookieAllowed"](cookie, false, protectOpenDomains, protectSubFrames)).toBe(
                         true
@@ -648,10 +651,10 @@ describe("CookieCleaner", () => {
                 "with protectOpenDomains=false, protectSubFrames=%j",
                 (protectSubFrames: boolean) => {
                     it("should return false", () => {
-                        mocks.settings.getCleanupTypeForCookie
-                            .expect("www.some-domain.com", cookie.name)
+                        mocks.ruleManager.getCleanupTypeFor
+                            .expect("www.some-domain.com", cookie.storeId, cookie.name)
                             .andReturn(cleanupType);
-                        whitelistPropertyAccess(cookieCleaner, "settings", "isCookieAllowed", "domainUtils");
+                        whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed", "domainUtils");
 
                         expect(
                             cookieCleaner["isCookieAllowed"](cookie, ignoreStartupType, false, protectSubFrames)
@@ -675,12 +678,12 @@ describe("CookieCleaner", () => {
                             it.each([[true], [false]])(
                                 "should return %j if cookieStoreContainsDomainFP does",
                                 (expectedReturn) => {
-                                    mocks.settings.getCleanupTypeForCookie
-                                        .expect("www.some-domain.com", cookie2.name)
+                                    mocks.ruleManager.getCleanupTypeFor
+                                        .expect("www.some-domain.com", cookie2.storeId, cookie2.name)
                                         .andReturn(cleanupType);
                                     whitelistPropertyAccess(
                                         cookieCleaner,
-                                        "settings",
+                                        "ruleManager",
                                         "tabWatcher",
                                         "domainUtils",
                                         "isCookieAllowed"

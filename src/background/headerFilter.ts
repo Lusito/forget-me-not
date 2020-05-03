@@ -12,6 +12,8 @@ import { CookieUtils } from "./cookieUtils";
 import { SupportsInfo } from "../shared/supportsInfo";
 import { MessageUtil } from "../shared/messageUtil";
 import { SnoozeManager } from "./snoozeManager";
+import { StoreUtils } from "../shared/storeUtils";
+import { RuleManager } from "../shared/ruleManager";
 
 const LISTENER_OPTIONS: WebRequest.OnHeadersReceivedOptions[] = ["responseHeaders", "blocking"];
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = [
@@ -27,16 +29,22 @@ export class HeaderFilter {
 
     private blockThirdpartyCookies = false;
 
+    private readonly defaultCookieStoredId: string;
+
     public constructor(
         private readonly settings: Settings,
+        private readonly ruleManager: RuleManager,
         private readonly incognitoWatcher: IncognitoWatcher,
         private readonly tabWatcher: TabWatcher,
         private readonly domainUtils: DomainUtils,
         private readonly cookieUtils: CookieUtils,
         private readonly messageUtil: MessageUtil,
         private readonly snoozeManager: SnoozeManager,
-        private readonly supports: SupportsInfo
-    ) {}
+        private readonly supports: SupportsInfo,
+        storeUtils: StoreUtils
+    ) {
+        this.defaultCookieStoredId = storeUtils.defaultCookieStoreId;
+    }
 
     public init() {
         if (this.supports.requestFilterIncognito) this.filter.incognito = false;
@@ -53,6 +61,7 @@ export class HeaderFilter {
                 responseHeaders: this.filterResponseHeaders(
                     details.responseHeaders,
                     this.domainUtils.getValidHostname(details.url),
+                    details.cookieStoreId || this.defaultCookieStoredId,
                     details.tabId
                 ),
             };
@@ -60,8 +69,8 @@ export class HeaderFilter {
         return {};
     };
 
-    private shouldCookieBeBlocked(tabId: number, domain: string, name: string) {
-        const type = this.settings.getCleanupTypeForCookie(domain, name);
+    private shouldCookieBeBlocked(tabId: number, domain: string, storeId: string, name: string) {
+        const type = this.ruleManager.getCleanupTypeFor(domain, storeId, name);
         if (type === CleanupType.NEVER || type === CleanupType.STARTUP) return false;
         return (
             type === CleanupType.INSTANTLY ||
@@ -72,6 +81,7 @@ export class HeaderFilter {
     private filterResponseHeaders(
         responseHeaders: WebRequest.HttpHeaders,
         fallbackDomain: string,
+        storeId: string,
         tabId: number
     ): WebRequest.HttpHeaders {
         return responseHeaders.filter((x) => {
@@ -80,7 +90,7 @@ export class HeaderFilter {
                     const cookieInfo = this.cookieUtils.parseSetCookieHeader(value.trim(), fallbackDomain);
                     if (cookieInfo) {
                         const domain = this.domainUtils.removeLeadingDot(cookieInfo.domain);
-                        if (this.shouldCookieBeBlocked(tabId, domain, cookieInfo.name)) {
+                        if (this.shouldCookieBeBlocked(tabId, domain, storeId, cookieInfo.name)) {
                             this.messageUtil.sendSelf("cookieRemoved", domain);
                             return false;
                         }
@@ -101,7 +111,7 @@ export class HeaderFilter {
             this.blockThirdpartyCookies = this.settings.get("cleanThirdPartyCookies.beforeCreation");
 
             if (this.blockThirdpartyCookies) this.setEnabled(true);
-            else this.setEnabled(this.settings.get("instantly.enabled") && this.settings.hasBlockingRule());
+            else this.setEnabled(this.settings.get("instantly.enabled") && this.ruleManager.hasBlockingRule());
         }
     }
 

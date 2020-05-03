@@ -28,10 +28,7 @@ describe("Request Watcher", () => {
             expect(onCommitted.addListener.mock.calls).toEqual([[requestWatcher["onCommitted"]]]);
             expect(onCompleted.addListener.mock.calls).toEqual([[requestWatcher["onCompleted"]]]);
             expect(onBeforeRedirect.addListener.mock.calls).toEqual([
-                [
-                    requestWatcher["onBeforeRedirect"],
-                    { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] },
-                ],
+                [requestWatcher["onBeforeRedirect"], { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] }],
             ]);
         });
     });

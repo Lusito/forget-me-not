@@ -13,6 +13,7 @@ import { CookieUtils } from "../background/cookieUtils";
 import { StoreUtils } from "../shared/storeUtils";
 import { SnoozeManager } from "../background/snoozeManager";
 import { BrowserInfo } from "../shared/browserInfo";
+import { RuleManager } from "../shared/ruleManager";
 
 const ucFirst = (t: string) => t[0].toLowerCase() + t.substr(1);
 
@@ -41,6 +42,7 @@ export const mocks = {
     tabWatcher: prepareMock(TabWatcher),
     settings: prepareMock(Settings),
     domainUtils: prepareMock(DomainUtils),
+    ruleManager: prepareMock(RuleManager),
     cookieUtils: prepareMock(CookieUtils),
     storeUtils: prepareMock(StoreUtils),
     snoozeManager: prepareMock(SnoozeManager),

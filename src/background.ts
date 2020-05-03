@@ -27,13 +27,12 @@ bootstrap().then(async () => {
     if (previousVersion !== version) {
         settings.set("version", version);
         settings.performUpgrade(previousVersion);
-        settings.rebuildRules();
         await settings.save();
 
         if (settings.get("showUpdateNotification")) await notificationHandler.showUpdateNotification();
     }
 
-    container.resolve(BadgeManager);
+    await container.resolve(BadgeManager).init();
 
     const tabs = await browser.tabs.query({});
     container.resolve(TabWatcher).init(tabs);

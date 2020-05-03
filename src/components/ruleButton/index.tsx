@@ -4,7 +4,7 @@ import { CleanupType } from "../../shared/types";
 import { getBadgeForCleanupType } from "../../shared/badges";
 import { translateElement } from "../../frontend/htmlUtils";
 import { RuleDialog } from "../dialogs/ruleDialog";
-import { cleanupTypeForElement } from "../../shared/settings";
+import { cleanupTypeForElement } from "../../shared/ruleUtils";
 
 interface RuleButtonProps {
     expression?: string;

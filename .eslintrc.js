@@ -33,7 +33,13 @@ module.exports = {
                 "jest/expect-expect": [
                     "error",
                     {
-                        assertFunctionNames: ["expect", "**.expect", "**.expect.*", "whitelistPropertyAccess"],
+                        assertFunctionNames: [
+                            "expect",
+                            "**.expect",
+                            "**.expect.*",
+                            "whitelistPropertyAccess",
+                            "denyPropertyAccess",
+                        ],
                     },
                 ],
             },

@@ -6,11 +6,13 @@ import { Cleaner } from "./cleaner";
 import { Settings } from "../../shared/settings";
 import { DomainUtils } from "../../shared/domainUtils";
 import { TabWatcher } from "../tabWatcher";
+import { RuleManager } from "../../shared/ruleManager";
 
 @singleton()
 export class HistoryCleaner extends Cleaner {
     public constructor(
         private readonly settings: Settings,
+        private readonly ruleManager: RuleManager,
         private readonly domainUtils: DomainUtils,
         private readonly tabWatcher: TabWatcher
     ) {
@@ -21,7 +23,11 @@ export class HistoryCleaner extends Cleaner {
     private onVisited = ({ url }: History.HistoryItem) => {
         if (url && this.settings.get("instantly.enabled") && this.settings.get("instantly.history")) {
             const domain = this.domainUtils.getValidHostname(url);
-            if (domain && (!this.settings.get("instantly.history.applyRules") || this.settings.isDomainBlocked(domain)))
+            if (
+                domain &&
+                (!this.settings.get("instantly.history.applyRules") ||
+                    this.ruleManager.isDomainInstantly(domain, false))
+            )
                 browser.history.deleteUrl({ url });
         }
     };
@@ -61,7 +67,7 @@ export class HistoryCleaner extends Cleaner {
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
         if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
-        return this.settings.isDomainProtected(domain, ignoreStartupType);
+        return this.ruleManager.isDomainProtected(domain, false, ignoreStartupType);
     }
 
     private getUrlsToClean(items: History.HistoryItem[], ignoreStartupType: boolean, protectOpenDomains: boolean) {

@@ -5,6 +5,7 @@ import { container } from "tsyringe";
 import { CleanupType } from "../../../shared/types";
 import { RuleButton } from "../../ruleButton";
 import { Settings } from "../../../shared/settings";
+import { splitExpression } from "../../../shared/expressionUtils";
 
 interface RuleTableRowProps {
     expression: string;
@@ -23,7 +24,9 @@ export function RuleTableRow({ expression, type, temporary, isChosen }: RuleTabl
     if (punified !== expression) content.push(<i> ({punified})</i>);
     const title = content.map((e) => e.textContent).join("");
     const classes = isChosen ? ["is-chosen-rule"] : [];
-    if (expression.includes("@")) classes.push("is-cookie-rule");
+    const split = splitExpression(expression);
+    if ("cookie" in split) classes.push("is-cookie-rule");
+    if ("container" in split) classes.push("is-container-rule");
 
     const settings = container.resolve(Settings);
     return (

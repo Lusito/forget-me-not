@@ -6,6 +6,7 @@ import { CleanupType } from "../shared/types";
 import { RuleDialog } from "./dialogs/ruleDialog";
 import { isValidExpression } from "../shared/expressionUtils";
 import { Settings } from "../shared/settings";
+import { RuleManager } from "../shared/ruleManager";
 
 export function appendPunycode(domain: string) {
     const punified = punycode.toUnicode(domain);
@@ -19,16 +20,15 @@ export function getSuggestedRuleExpression(domain: string, cookieName?: string) 
 
 export function showAddRuleDialog(expression: string, next?: () => void) {
     if (isValidExpression(expression)) {
-        const settings = container.resolve(Settings);
         // eslint-disable-next-line no-inner-declarations
         function onConfirm(type: CleanupType | false, changedExpression: string, temporary: boolean) {
             if (changedExpression && type !== false) {
-                settings.setRule(changedExpression, type, temporary);
+                container.resolve(Settings).setRule(changedExpression, type, temporary);
                 next?.();
             }
         }
 
-        const definition = settings.getExactRuleDefinition(expression);
+        const definition = container.resolve(RuleManager).getExactRuleDefinition(expression);
         const focusType = definition ? definition.type : CleanupType.NEVER;
         const temporary = definition?.temporary || false;
 

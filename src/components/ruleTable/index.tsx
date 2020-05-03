@@ -9,10 +9,12 @@ import { RuleDefinition } from "../../shared/defaultSettings";
 import "./style.scss";
 import { Settings } from "../../shared/settings";
 import { MessageUtil } from "../../shared/messageUtil";
+import { DomainAndStore } from "../../shared/types";
+import { RuleManager } from "../../shared/ruleManager";
 
 interface RuleTableProps {
     headerI18n: string;
-    forDomain?: string;
+    ruleFilter?: DomainAndStore;
     filterInput?: HTMLInputElement;
 }
 
@@ -22,17 +24,19 @@ function sortByRule(a: RuleDefinition, b: RuleDefinition) {
     return 0;
 }
 
-function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLInputElement) {
+function rebuildRows(tbody: HTMLElement, ruleFilter?: DomainAndStore, filterInput?: HTMLInputElement) {
     // fixme: rather than recreate, update existing dom-nodes
     removeAllChildren(tbody);
     let rules: RuleDefinition[];
     let chosenRulesForDomain: RuleDefinition[];
     const settings = container.resolve(Settings);
-    if (forDomain) {
-        chosenRulesForDomain = settings.getChosenRulesForDomain(forDomain);
-        const domainFP = getDomain(forDomain) || forDomain;
+    if (ruleFilter) {
+        const ruleManager = container.resolve(RuleManager);
+        const { domain, storeId } = ruleFilter;
+        chosenRulesForDomain = ruleManager.getChosenRulesForDomain(domain, storeId);
+        const domainFP = getDomain(domain) || domain;
         const expressions = [`*.${domainFP}`];
-        if (domainFP !== forDomain) expressions.push(`*.${forDomain}`);
+        if (domainFP !== domain) expressions.push(`*.${ruleFilter}`);
         expressions.forEach((expression) => {
             const chosenRule = chosenRulesForDomain.find((r) => r.rule === expression);
             const temporary = chosenRule?.temporary || false;
@@ -40,13 +44,13 @@ function rebuildRows(tbody: HTMLElement, forDomain?: string, filterInput?: HTMLI
                 <RuleTableRow
                     expression={expression}
                     isChosen={!!chosenRule}
-                    type={settings.getExactCleanupType(expression)}
+                    type={ruleManager.getExactCleanupType(expression)}
                     temporary={temporary}
                 />
             );
         });
 
-        rules = settings.getRulesForDomain(forDomain).filter((rule) => !expressions.includes(rule.rule));
+        rules = ruleManager.getRulesForDomain(domain, storeId).filter((rule) => !expressions.includes(rule.rule));
     } else {
         chosenRulesForDomain = [];
         rules = settings.get("rules").slice();
@@ -80,19 +84,19 @@ function updateIsNotEmpty(tbody: HTMLElement) {
     tbody.className = tbody.querySelector("tr:not(.is-filtered)") ? "is-not-empty" : "";
 }
 
-export function RuleTable({ headerI18n, forDomain, filterInput }: RuleTableProps) {
+export function RuleTable({ headerI18n, ruleFilter, filterInput }: RuleTableProps) {
     const tbody = <tbody aria-live="polite" />;
 
     const messageUtil = container.resolve(MessageUtil);
     messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
-        if (changedKeys.includes("rules")) rebuildRows(tbody, forDomain, filterInput);
+        if (changedKeys.includes("rules")) rebuildRows(tbody, ruleFilter, filterInput);
     });
-    wetLayer.addListener(() => rebuildRows(tbody, forDomain, filterInput));
-    rebuildRows(tbody, forDomain, filterInput);
+    wetLayer.addListener(() => rebuildRows(tbody, ruleFilter, filterInput));
+    rebuildRows(tbody, ruleFilter, filterInput);
 
     if (filterInput) on(filterInput, "input", () => applyFilter(tbody, filterInput));
 
-    const className = `rules_table${forDomain ? " rules_table_for_domain" : ""}`;
+    const className = `rules_table${ruleFilter ? " rules_table_for_domain" : ""}`;
 
     return (
         <table class={className}>

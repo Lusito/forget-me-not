@@ -45,7 +45,7 @@
         margin: 15px 0 10px;
 
         tbody {
-            > tr:not(.is-chosen-rule):not(.is-cookie-rule):not(:hover) {
+            > tr:not(.is-chosen-rule):not(.is-cookie-rule):not(.is-container-rule):not(:hover) {
                 opacity: 0.82;
             }
 

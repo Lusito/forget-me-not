@@ -6,7 +6,7 @@ import { CleanupType } from "../../shared/types";
 import { ExpressionHint } from "../expressionHint";
 import { isValidExpression } from "../../shared/expressionUtils";
 import { ConfirmDialog } from "./confirmDialog";
-import { Settings } from "../../shared/settings";
+import { RuleManager } from "../../shared/ruleManager";
 
 export interface RuleDialogProps {
     expression?: string;
@@ -17,7 +17,7 @@ export interface RuleDialogProps {
 }
 
 export function RuleDialog({ expression, editable, focusType, temporary, onConfirm }: RuleDialogProps) {
-    const settings = container.resolve(Settings);
+    const ruleManager = container.resolve(RuleManager);
 
     function onCancel() {
         hideDialog(dialog);
@@ -25,7 +25,7 @@ export function RuleDialog({ expression, editable, focusType, temporary, onConfi
     }
 
     function confirmAndHideChecked(type: CleanupType, changedExpression: string) {
-        if (editable && changedExpression && settings.getExactRuleDefinition(changedExpression) !== null) {
+        if (editable && changedExpression && ruleManager.getExactRuleDefinition(changedExpression) !== null) {
             // eslint-disable-next-line no-inner-declarations
             function onConfirmClose(value: boolean) {
                 if (value) {
@@ -113,7 +113,7 @@ export function RuleDialog({ expression, editable, focusType, temporary, onConfi
     );
 
     let focusElement = focusType === null ? cleanupTypeButtons[CleanupType.NEVER] : cleanupTypeButtons[focusType];
-    if (editable && expression && settings.getExactRuleDefinition(expression) !== null)
+    if (editable && expression && ruleManager.getExactRuleDefinition(expression) !== null)
         focusElement = expressionElement;
     return showDialog(dialog, focusElement);
 }

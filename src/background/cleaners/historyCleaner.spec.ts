@@ -10,6 +10,7 @@ describe("HistoryCleaner", () => {
     let historyCleaner: HistoryCleaner;
     beforeEach(() => {
         mocks.settings.mockAllow();
+        mocks.ruleManager.mockAllow();
         mocks.domainUtils.mockAllow();
         mocks.tabWatcher.mockAllow();
     });
@@ -72,7 +73,7 @@ describe("HistoryCleaner", () => {
                 mocks.domainUtils.getValidHostname.expect(url).andReturn("google.com");
                 mockBrowser.history.deleteUrl.expect({ url });
                 mocks.settings.get.expect("instantly.history.applyRules").andReturn(true);
-                mocks.settings.isDomainBlocked.expect("google.com").andReturn(true);
+                mocks.ruleManager.isDomainInstantly.expect("google.com", false).andReturn(true);
                 historyCleaner["onVisited"]({ id: "mock", url });
             });
             it("does not delete the URL if applyRules = true and the domain is not blocked", () => {
@@ -80,7 +81,7 @@ describe("HistoryCleaner", () => {
                 mocks.settings.get.expect("instantly.history").andReturn(true);
                 mocks.domainUtils.getValidHostname.expect(url).andReturn("google.com");
                 mocks.settings.get.expect("instantly.history.applyRules").andReturn(true);
-                mocks.settings.isDomainBlocked.expect("google.com").andReturn(false);
+                mocks.ruleManager.isDomainInstantly.expect("google.com", false).andReturn(false);
                 historyCleaner["onVisited"]({ id: "mock", url });
             });
         });
@@ -156,8 +157,8 @@ describe("HistoryCleaner", () => {
                             mocks.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
                         data.forEach((entry) => {
                             if (!(startup || protectOpenDomains) || entry.tabExists)
-                                mocks.settings.isDomainProtected
-                                    .expect(entry.hostname, startup)
+                                mocks.ruleManager.isDomainProtected
+                                    .expect(entry.hostname, false, startup)
                                     .andReturn(entry.protected);
                             if (entry.deleted) mockBrowser.history.deleteUrl.expect({ url: entry.url }).andResolve();
                             mocks.domainUtils.getValidHostname.expect(entry.url).andReturn(entry.hostname);

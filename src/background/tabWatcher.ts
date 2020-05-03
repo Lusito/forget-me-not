@@ -75,18 +75,22 @@ export class TabWatcher {
         return list ? list.some((ti) => ti.contains(domain, checkNext)) : false;
     }
 
-    public containsDomain(domain: string) {
+    public containsDomain(domain: string, storeId: string | false = false) {
         for (const key of Object.keys(this.tabInfos)) {
             const ti = this.tabInfos[key];
-            if (ti.contains(domain, true)) return true;
+            if (storeId === false || ti.cookieStoreId === storeId) {
+                if (ti.contains(domain, true)) return true;
+            }
         }
         return false;
     }
 
-    public containsRuleFP(rule: RegExp) {
+    public containsRuleFP(rule: RegExp, storeId: string | false = false) {
         for (const key of Object.keys(this.tabInfos)) {
             const ti = this.tabInfos[key];
-            if (ti.containsRuleFP(rule)) return true;
+            if (storeId === false || ti.cookieStoreId === storeId) {
+                if (ti.containsRuleFP(rule)) return true;
+            }
         }
         return false;
     }

@@ -9,11 +9,13 @@ import { TabWatcher } from "../tabWatcher";
 import { SupportsInfo } from "../../shared/supportsInfo";
 import { IncognitoWatcher } from "../incognitoWatcher";
 import { DomainUtils } from "../../shared/domainUtils";
+import { RuleManager } from "../../shared/ruleManager";
 
 @singleton()
 export class LocalStorageCleaner extends Cleaner {
     public constructor(
         private readonly settings: Settings,
+        private readonly ruleManager: RuleManager,
         private readonly storeUtils: StoreUtils,
         private readonly domainUtils: DomainUtils,
         private readonly tabWatcher: TabWatcher,
@@ -67,7 +69,7 @@ export class LocalStorageCleaner extends Cleaner {
         if (
             this.settings.get("domainLeave.enabled") &&
             this.settings.get("domainLeave.localStorage") &&
-            !this.isLocalStorageProtected(storeId, domain)
+            !this.isLocalStorageProtected(domain)
         ) {
             await this.cleanDomain(storeId, domain);
         }
@@ -103,7 +105,7 @@ export class LocalStorageCleaner extends Cleaner {
 
     private isDomainProtected(domain: string, ignoreStartupType: boolean, protectOpenDomains: boolean) {
         if (protectOpenDomains && this.tabWatcher.containsDomain(domain)) return true;
-        return this.settings.isDomainProtected(domain, ignoreStartupType);
+        return this.ruleManager.isDomainProtected(domain, false, ignoreStartupType);
     }
 
     private getDomainsToClean(ignoreStartupType: boolean, protectOpenDomains: boolean) {
@@ -116,9 +118,9 @@ export class LocalStorageCleaner extends Cleaner {
         return result;
     }
 
-    private isLocalStorageProtected(storeId: string, domain: string) {
-        if (this.tabWatcher.cookieStoreContainsDomain(storeId, domain, true)) return true;
-        const type = this.settings.getCleanupTypeForDomain(domain);
+    private isLocalStorageProtected(domain: string) {
+        if (this.tabWatcher.containsDomain(domain)) return true;
+        const type = this.ruleManager.getCleanupTypeFor(domain, false, false);
         return type === CleanupType.NEVER || type === CleanupType.STARTUP;
     }
 }

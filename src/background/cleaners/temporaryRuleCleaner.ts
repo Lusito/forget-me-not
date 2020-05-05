@@ -5,7 +5,6 @@ import { Settings } from "../../shared/settings";
 import { TabWatcher } from "../tabWatcher";
 import { RuleManager } from "../../shared/ruleManager";
 
-// fixme: add tests
 @singleton()
 export class TemporaryRuleCleaner extends Cleaner {
     public constructor(

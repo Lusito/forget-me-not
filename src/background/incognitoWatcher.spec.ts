@@ -8,7 +8,7 @@ import { mocks } from "../testUtils/mocks";
 
 const COOKIE_STORE_ID = "mock";
 
-describe("Incognito Watcher", () => {
+describe("IncognitoWatcher", () => {
     let incognitoWatcher: IncognitoWatcher;
     let onRemoved: MockzillaEventOf<typeof mockBrowser.tabs.onRemoved>;
     let onCreated: MockzillaEventOf<typeof mockBrowser.tabs.onCreated>;

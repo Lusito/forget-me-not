@@ -8,7 +8,7 @@ import { mocks } from "../testUtils/mocks";
 
 const COOKIE_STORE_ID = "mock";
 
-describe("Header Filter", () => {
+describe("HeaderFilter", () => {
     let headerFilter: HeaderFilter;
 
     beforeEach(() => {

@@ -1,6 +1,6 @@
 import { DomainUtils } from "./domainUtils";
 
-describe("Domain Utils", () => {
+describe("DomainUtils", () => {
     const utils = new DomainUtils();
 
     describe("removeLeadingDot", () => {

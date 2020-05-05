@@ -3,7 +3,7 @@ import { singleton } from "tsyringe";
 
 import { RuleDefinition } from "./defaultSettings";
 import { CleanupType } from "./types";
-import { getRegExForRule } from "./regexp";
+import { getRegExForRule } from "./regexUtils";
 import { splitExpression } from "./expressionUtils";
 import {
     CompiledRuleDefinition,

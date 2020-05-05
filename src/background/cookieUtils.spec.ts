@@ -6,7 +6,7 @@ import { mocks } from "../testUtils/mocks";
 
 const MOCK_STORE_ID = "mock-store";
 
-describe("Cookie Utils", () => {
+describe("CookieUtils", () => {
     let utils: CookieUtils;
 
     beforeEach(() => {

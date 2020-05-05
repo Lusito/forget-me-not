@@ -4,7 +4,7 @@ import { advanceTime } from "mockzilla";
 import { CleanupScheduler } from "./cleanupScheduler";
 import { mocks } from "../testUtils/mocks";
 
-describe("Cleanup Scheduler", () => {
+describe("CleanupScheduler", () => {
     let handler: jest.Mock;
     let cleanupScheduler: CleanupScheduler;
 

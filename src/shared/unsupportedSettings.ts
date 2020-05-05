@@ -9,6 +9,7 @@ export class UnsupportedSettings {
     private unsupported: SettingsKey[];
 
     public constructor(browserInfo: BrowserInfo, supports: SupportsInfo) {
+        // Only boolean values currently supported. See defaultSettings
         this.unsupported =
             browserInfo.type === BrowserType.FENNEC
                 ? [

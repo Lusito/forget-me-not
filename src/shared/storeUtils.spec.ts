@@ -3,7 +3,7 @@ import { container } from "tsyringe";
 import { StoreUtils } from "./storeUtils";
 import { mocks } from "../testUtils/mocks";
 
-describe("Misc functionality", () => {
+describe("StoreUtils", () => {
     describe("getAllCookieStoreIds", () => {
         beforeEach(() => {
             mockBrowser.cookies.getAllCookieStores

@@ -3,7 +3,7 @@ import { mockAssimilate } from "mockzilla";
 
 import { MessageUtil } from "./messageUtil";
 
-describe("Message Utility", () => {
+describe("MessageUtil", () => {
     const event1 = "event1";
     const event2 = "event2";
     const data1 = "mydata1";

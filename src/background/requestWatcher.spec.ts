@@ -5,7 +5,7 @@ import { RequestWatcher } from "./requestWatcher";
 import { quickBeforeRedirectDetails } from "../testUtils/quickHelpers";
 import { mocks } from "../testUtils/mocks";
 
-describe("Request Watcher", () => {
+describe("RequestWatcher", () => {
     let requestWatcher: RequestWatcher;
     let onBeforeNavigate: MockzillaEventOf<typeof mockBrowser.webNavigation.onBeforeNavigate>;
     let onCommitted: MockzillaEventOf<typeof mockBrowser.webNavigation.onCommitted>;

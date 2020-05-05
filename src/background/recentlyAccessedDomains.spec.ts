@@ -8,7 +8,7 @@ import { mocks } from "../testUtils/mocks";
 
 const COOKIE_STORE_ID = "mock";
 
-describe("Recently Accessed Domains", () => {
+describe("RecentlyAccessedDomains", () => {
     let recentlyAccessedDomains: RecentlyAccessedDomains;
     let onHeadersReceived: MockzillaEventOf<typeof mockBrowser.webRequest.onHeadersReceived>;
     let onCookieChanged: MockzillaEventOf<typeof mockBrowser.cookies.onChanged>;

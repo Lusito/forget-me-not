@@ -4,7 +4,7 @@
   "description": "__MSG_extensionDescription__",
   "author": "Santo Pfingsten",
   "default_locale": "en",
-  "version": "2.2.7",
+  "version": "3.0.0",
   "applications": {
     "gecko": {
       "id": "forget-me-not@lusito.info",
@@ -28,16 +28,16 @@
       "96": "icons/icon96.png",
       "128": "icons/icon128.png"
     },
-    "default_popup": "dist/popup.html",
+    "default_popup": "data/popup.html",
     "default_title": "__MSG_actionTitle__"
   },
   "background": {
-    "scripts": ["dist/background.js"]
+    "scripts": ["data/background.js"]
   },
   "content_scripts": [
     {
       "matches": ["https://lusito.github.io/web-ext-translator/*"],
-      "js": ["dist/wetLayerContent.js"],
+      "js": ["data/wetLayerContent.js"],
       "run_at": "document_idle"
     }
   ],

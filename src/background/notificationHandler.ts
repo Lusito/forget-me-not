@@ -51,7 +51,7 @@ export class NotificationHandler {
         if (id === UPDATE_NOTIFICATION_ID) {
             await browser.tabs.create({
                 active: true,
-                url: `${browser.runtime.getURL("dist/readme.html")}#changelog`,
+                url: `${browser.runtime.getURL("data/readme.html")}#changelog`,
             });
         }
     }

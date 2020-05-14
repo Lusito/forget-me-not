@@ -15,7 +15,7 @@ function onImport() {
     // desktop firefox closes popup when dialog is shown
     if (browserInfo.type === BrowserType.FIREFOX) {
         browser.tabs.create({
-            url: browser.runtime.getURL("dist/import.html"),
+            url: browser.runtime.getURL("data/import.html"),
             active: true,
         });
         window.close();

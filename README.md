@@ -26,5 +26,11 @@ If you have problems, questions or other feedback, please [create an issue](http
 
 If you like it, please [write a review](https://addons.mozilla.org/firefox/addon/forget_me_not/).
 
+## Instructions for Mozilla Reviewers:
+
+- run `npm ci`
+- run `npm run release`
+- check `web-ext-artifacts` directory
+
 ## License
 The code of this add-on has been released under the [zlib/libpng License](https://github.com/Lusito/forget-me-not/blob/master/LICENSE)

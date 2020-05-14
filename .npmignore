@@ -1,0 +1,5 @@
+!package-lock.json
+.cache
+build
+web-ext-artifacts
+*.tgz

@@ -5,5 +5,13 @@ module.exports = {
     testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
     moduleFileExtensions: ["ts", "js"],
     setupFilesAfterEnv: ["./src/testUtils/setupTests.ts"],
-    // collectCoverage: true,
+    collectCoverageFrom: [
+        "src/**/*.ts",
+        // ignore entry points
+        "!src/*.ts",
+        // ignore definition files
+        "!src/**/*.d.ts",
+        // ignore test utils
+        "!src/testUtils/*.ts",
+    ],
 };

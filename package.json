@@ -26,7 +26,8 @@
     "lint:style:fix": "npm run lint:style:base -- --write",
     "release": "npm run clean && npm run copy && npm run build && npm run build:zip && npm pack",
     "start": "web-ext run -s build",
-    "test": "jest"
+    "test": "jest --watch",
+    "test:ci": "jest --coverage"
   },
   "browserslist": [
     "Firefox >= 57"

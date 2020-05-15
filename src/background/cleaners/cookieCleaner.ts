@@ -1,6 +1,5 @@
 import { singleton } from "tsyringe";
 import { BrowsingData, Cookies, browser } from "webextension-polyfill-ts";
-import { getDomain } from "tldjs";
 
 import { Cleaner } from "./cleaner";
 import { CleanupType } from "../../shared/types";
@@ -37,8 +36,8 @@ export class CookieCleaner extends Cleaner {
 
         this.snoozing = snoozeManager.isSnoozing();
 
-        browser.cookies.onChanged.addListener((cookie) => {
-            this.onCookieChanged(cookie);
+        browser.cookies.onChanged.addListener((changeInfo) => {
+            this.onCookieChanged(changeInfo);
         });
         snoozeManager.listeners.add((snoozing) => {
             this.setSnoozing(snoozing);
@@ -66,7 +65,7 @@ export class CookieCleaner extends Cleaner {
     }
 
     private async cleanDomainInternal(storeId: string, domain: string, ignoreRules: boolean) {
-        const domainFP = getDomain(domain) || domain;
+        const domainFP = this.domainUtils.getFirstPartyDomain(domain);
         await this.removeCookies(storeId, (cookie) => {
             if (this.shouldPurgeExpiredCookie(cookie)) return true;
             const match = cookie.firstPartyDomain
@@ -205,7 +204,7 @@ export class CookieCleaner extends Cleaner {
                 cookie.firstPartyDomain,
                 protectSubFrames
             );
-        const firstPartyDomain = getDomain(rawDomain) || rawDomain;
+        const firstPartyDomain = this.domainUtils.getFirstPartyDomain(rawDomain);
         return this.tabWatcher.cookieStoreContainsDomainFP(cookie.storeId, firstPartyDomain, protectSubFrames);
     }
 }

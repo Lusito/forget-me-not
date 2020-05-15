@@ -9,6 +9,10 @@ export class DomainUtils {
         return value.startsWith(".") ? value.substr(1) : value;
     }
 
+    public getFirstPartyDomain(domain: string) {
+        return getDomain(domain) || domain;
+    }
+
     public getFirstPartyCookieDomain(domain: string) {
         const rawDomain = this.removeLeadingDot(domain);
         return getDomain(rawDomain) || rawDomain;

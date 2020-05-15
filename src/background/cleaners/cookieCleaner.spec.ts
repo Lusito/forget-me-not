@@ -1,21 +1,25 @@
 import { BrowsingData, Cookies } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
-import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
-import { mockEvent } from "mockzilla-webextension";
+import { whitelistPropertyAccess, mockAssimilate, advanceTime } from "mockzilla";
+import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { booleanVariations } from "../../testUtils/testHelpers";
 import { CookieCleaner } from "./cookieCleaner";
 import { quickCookie } from "../../testUtils/quickHelpers";
 import { CleanupType } from "../../shared/types";
 import { mocks } from "../../testUtils/mocks";
+import { mockListenerSet, MockzillaListenerSetOf } from "../../testUtils/mockListenerSet";
 
 const COOKIE_STORE_ID = "mock";
 
 describe("CookieCleaner", () => {
     let cookieCleaner: CookieCleaner;
+    let onCookieChanged: MockzillaEventOf<typeof mockBrowser.cookies.onChanged>;
+    let snoozeListener: MockzillaListenerSetOf<typeof mocks.snoozeManager.listeners>;
 
     beforeEach(() => {
-        mockEvent(mockBrowser.cookies.onChanged);
+        onCookieChanged = mockEvent(mockBrowser.cookies.onChanged);
+        snoozeListener = mockListenerSet(mocks.snoozeManager.listeners);
         mocks.incognitoWatcher.mockAllow();
         mocks.tabWatcher.mockAllow();
         mocks.settings.mockAllow();
@@ -27,8 +31,28 @@ describe("CookieCleaner", () => {
         mocks.ruleManager.mockAllow();
 
         mocks.snoozeManager.isSnoozing.expect().andReturn(false);
-        mocks.snoozeManager.listeners.add.expect(expect.anything());
         cookieCleaner = container.resolve(CookieCleaner);
+    });
+
+    describe("constructor", () => {
+        it("should register onCookieChanged correctly", () => {
+            const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+                mock: ["onCookieChanged"],
+                whitelist: [""],
+            });
+            const changeInfo = {} as any;
+            mock.onCookieChanged.expect(changeInfo);
+            onCookieChanged.emit(changeInfo);
+        });
+        it("should register snoozeListener correctly", () => {
+            const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+                mock: ["setSnoozing"],
+                whitelist: [""],
+            });
+            const snoozing = {} as any;
+            mock.setSnoozing.expect(snoozing);
+            snoozeListener.emit(snoozing);
+        });
     });
 
     describe("clean", () => {
@@ -83,6 +107,17 @@ describe("CookieCleaner", () => {
         );
     });
 
+    describe("cleanDomain", () => {
+        it("should delegate to cleanDomainInternal", async () => {
+            const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+                mock: ["cleanDomainInternal"],
+                whitelist: ["cleanDomain"],
+            });
+            mock.cleanDomainInternal.expect(COOKIE_STORE_ID, "some-domain.com", true);
+            await cookieCleaner.cleanDomain(COOKIE_STORE_ID, "some-domain.com");
+        });
+    });
+
     describe("cleanDomainOnLeave", () => {
         it("should not do anything if domainLeave.enabled = false", async () => {
             mockAssimilate(cookieCleaner, "cookieCleaner", {
@@ -126,6 +161,9 @@ describe("CookieCleaner", () => {
             cookieCleaner["shouldPurgeExpiredCookie"] = spy;
             return spy;
         }
+        beforeEach(() => {
+            mocks.domainUtils.getFirstPartyDomain.expect("www.some-domain.com").andReturn("some-domain.com");
+        });
         describe("callback with shouldPurgeExpiredCookie=true", () => {
             it.each(booleanVariations(1))("should return true with ignoreRules=%j", (ignoreRules) => {
                 const callback = prepareCleanDomainInternal(ignoreRules);
@@ -513,7 +551,101 @@ describe("CookieCleaner", () => {
         });
     });
 
-    // fixme: scheduleThirdpartyCookieRemove, delayedScheduleThirdpartyCookieRemove
+    describe("scheduleThirdpartyCookieRemove", () => {
+        describe.each([[0], [-10], [42]])("with delay=%i", (delay) => {
+            describe("with snoozing=true", () => {
+                it("should push the cookie to snoozedThirdpartyCookies", async () => {
+                    const firstCookie = {} as any;
+                    cookieCleaner["snoozedThirdpartyCookies"].push(firstCookie);
+                    cookieCleaner["snoozing"] = true;
+                    whitelistPropertyAccess(
+                        cookieCleaner,
+                        "snoozedThirdpartyCookies",
+                        "scheduleThirdpartyCookieRemove",
+                        "snoozing"
+                    );
+                    const cookie = {} as any;
+                    await cookieCleaner["scheduleThirdpartyCookieRemove"](cookie);
+                    expect(cookieCleaner["snoozedThirdpartyCookies"]).toHaveSameOrderedMembers([
+                        firstCookie,
+                        cookie,
+                    ]);
+                });
+            });
+            describe("with snoozing=false", () => {
+                if (delay > 0) {
+                    it("should call delayedScheduleThirdpartyCookieRemove delayed", async () => {
+                        cookieCleaner["snoozing"] = false;
+                        const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+                            mock: ["delayedScheduleThirdpartyCookieRemove"],
+                            whitelist: ["snoozing", "settings", "scheduleThirdpartyCookieRemove"],
+                        });
+                        const cookie = {} as any;
+                        mocks.settings.get.expect("cleanThirdPartyCookies.delay").andReturn(delay);
+                        await cookieCleaner["scheduleThirdpartyCookieRemove"](cookie);
+                        advanceTime((delay*1000)-1);
+                        mock.delayedScheduleThirdpartyCookieRemove.expect(cookie).andResolve();
+                        advanceTime(1);
+                    });
+                } else {
+                    it("should call delayedScheduleThirdpartyCookieRemove immediately", async () => {
+                        cookieCleaner["snoozing"] = false;
+                        const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+                            mock: ["delayedScheduleThirdpartyCookieRemove"],
+                            whitelist: ["snoozing", "settings", "scheduleThirdpartyCookieRemove"],
+                        });
+                        const cookie = {} as any;
+                        mocks.settings.get.expect("cleanThirdPartyCookies.delay").andReturn(delay);
+                        mock.delayedScheduleThirdpartyCookieRemove.expect(cookie).andResolve();
+                        await cookieCleaner["scheduleThirdpartyCookieRemove"](cookie);
+                    });
+                }
+            });
+        });
+    });
+
+    describe("delayedScheduleThirdpartyCookieRemove", () => {
+        describe.each(booleanVariations(2))(
+            "with isThirdpartyCookie=%j and isCookieAllowed=%j",
+            (isThirdpartyCookie, isCookieAllowed) => {
+                describe("with snoozing=true", () => {
+                    it("should push the cookie to snoozedThirdpartyCookies", async () => {
+                        const firstCookie = {} as any;
+                        cookieCleaner["snoozedThirdpartyCookies"].push(firstCookie);
+                        cookieCleaner["snoozing"] = true;
+                        whitelistPropertyAccess(
+                            cookieCleaner,
+                            "snoozedThirdpartyCookies",
+                            "delayedScheduleThirdpartyCookieRemove",
+                            "snoozing"
+                        );
+                        const cookie = {} as any;
+                        await cookieCleaner["delayedScheduleThirdpartyCookieRemove"](cookie);
+                        expect(cookieCleaner["snoozedThirdpartyCookies"]).toHaveSameOrderedMembers([
+                            firstCookie,
+                            cookie,
+                        ]);
+                    });
+                });
+                describe("with snoozing=false", () => {
+                    const remove = isThirdpartyCookie && !isCookieAllowed;
+                    it(`should ${remove ? "remove" : "not remove"} the cookie`, async () => {
+                        cookieCleaner["snoozing"] = false;
+                        const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+                            mock: ["isThirdpartyCookie", "isCookieAllowed"],
+                            whitelist: ["snoozing", "cookieUtils", "delayedScheduleThirdpartyCookieRemove"],
+                        });
+                        const cookie = {} as any;
+                        mock.isThirdpartyCookie.expect(cookie).andReturn(isThirdpartyCookie);
+                        if (isThirdpartyCookie)
+                            mock.isCookieAllowed.expect(cookie, false, false, false).andReturn(isCookieAllowed);
+                        if (remove) mocks.cookieUtils.removeCookie.expect(cookie).andResolve({} as any);
+                        await cookieCleaner["delayedScheduleThirdpartyCookieRemove"](cookie);
+                    });
+                });
+            }
+        );
+    });
 
     describe("isThirdpartyCookie", () => {
         describe("with firstPartyDomain on cookie", () => {
@@ -689,6 +821,8 @@ describe("CookieCleaner", () => {
                                         "isCookieAllowed"
                                     );
                                     const expectedFirstPartyDomain = firstPartyDomain || "some-domain.com";
+                                    if (!firstPartyDomain)
+                                        mocks.domainUtils.getFirstPartyDomain.expect("www.some-domain.com").andReturn("some-domain.com");
                                     mocks.tabWatcher.cookieStoreContainsDomainFP
                                         .expect(COOKIE_STORE_ID, expectedFirstPartyDomain, protectSubFrames)
                                         .andReturn(expectedReturn);

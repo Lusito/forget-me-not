@@ -9,6 +9,9 @@ module.exports = {
         "src/**/*.ts",
         // ignore entry points
         "!src/*.ts",
+        // ignore frontend code
+        "!src/frontend/*.ts",
+        "!src/icons/index.ts",
         // ignore definition files
         "!src/**/*.d.ts",
         // ignore test utils

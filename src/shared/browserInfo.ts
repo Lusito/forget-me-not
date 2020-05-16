@@ -4,7 +4,6 @@ export enum BrowserType {
     FIREFOX,
     FENNEC,
     OPERA,
-    NODE,
     IE,
     UNKNOWN,
 }
@@ -36,9 +35,6 @@ export class BrowserInfo {
 export const isNodeTest = process.env.JEST_WORKER_ID !== undefined;
 
 export async function getBrowserInfo() {
-    // if not in a browser, assume we're in a test
-    if (isNodeTest) return new BrowserInfo("NodeTest", "1.0.0", 1, BrowserType.NODE);
-
     if (browser.runtime.getBrowserInfo) {
         const browserInfo = await browser.runtime.getBrowserInfo();
         return new BrowserInfo(

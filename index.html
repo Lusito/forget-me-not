@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div><b>Cookie:</b><span id="cookiesResult"></span></div>
+    <div><b>Local Storage:</b><span id="storageResult"></span></div>
+    <div><b>IndexedDB:</b><span id="idbResult"></span></div>
+    <div><b>ServiceWorker:</b><span id="swResult"></span></div>
+    <script>
+        const setResult = (id, text) => document.getElementById(id).textContent = text;
+        const applyResult = (id, value) => setResult(id, value ? " I remember you" : " I don't remember you");
+        const trySafely = (id, cb) => {
+            try {
+                cb();
+            } catch(e) {
+                console.error(e);
+                setResult(id, "Error: " + e);
+            }
+        }
+        trySafely('cookiesResult', () => {
+            applyResult('cookiesResult', document.cookie.length > 0);
+            document.cookie = 'test=gotcha';
+        });
+        trySafely('storageResult', () => {
+            applyResult('storageResult', window.localStorage.length > 0);
+            window.localStorage.setItem('test', 'gotcha');
+        });
+        trySafely('idbResult', () => {
+            const idbOpen = window.indexedDB.open("newDatabase", 1);
+            idbOpen.onsuccess = (event) => {
+                const db = idbOpen.result;
+                const idbGet = db.transaction(["employee"]).objectStore("employee").get("1");
+                idbGet.onsuccess = (event) => {
+                    applyResult('idbResult', !!idbGet.result);
+                    
+                    db.transaction(["employee"], "readwrite")
+                        .objectStore("employee")
+                        .add({ id: "1", name: "test" });
+                };
+                idbGet.onerror = () => {
+                    setResult('idbResult', "Error on get");
+                }
+            };
+            idbOpen.onerror = () => {
+                setResult('idbResult', "Error on open");
+            }
+
+            idbOpen.onupgradeneeded = (event) => trySafely('idbResult', () => {
+                const db = event.target.result;
+                const objectStore = db.createObjectStore("employee", { keyPath: "id" });
+            });
+        });
+
+        trySafely('swResult', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('SW registered!', reg))
+                .catch(e => setResult('swResult', 'Error: ' + e));
+
+            setResult('swResult', 'Testing');
+            setTimeout(async () => {
+                const response = await fetch("/test.txt");
+                applyResult('swResult', response.status === 418);
+            }, 10);
+        });
+    </script>
+</body>
+
+</html>

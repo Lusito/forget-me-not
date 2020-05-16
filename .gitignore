@@ -1,0 +1,5 @@
+**/*
+!.gitignore
+!index.html
+!sw.js
+!.nojekyll

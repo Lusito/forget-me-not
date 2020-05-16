@@ -59,7 +59,7 @@
         });
 
         trySafely('swResult', () => {
-            navigator.serviceWorker.register('/sw.js')
+            navigator.serviceWorker.register('/forget-me-not/sw.js')
                 .then(reg => console.log('SW registered!', reg))
                 .catch(e => setResult('swResult', 'Error: ' + e));
 

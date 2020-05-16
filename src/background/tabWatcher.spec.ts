@@ -14,13 +14,11 @@ describe("TabWatcher", () => {
     let tabWatcher: TabWatcher;
     beforeEach(() => {
         mocks.storeUtils.defaultCookieStoreId.mock("default-mock-store");
-        mocks.domainUtils.mockAllow();
         tabWatcher = container.resolve(TabWatcher);
     });
 
-    function prepareTab(url: string, domain: string, store: string) {
+    function prepareTab(url: string, store: string) {
         const tab = quickTab(url, store, false);
-        if (url) mocks.domainUtils.getValidHostname.expect(url).andReturn(domain);
         tabWatcher["onTabCreated"](tab);
         return tab;
     }
@@ -65,11 +63,11 @@ describe("TabWatcher", () => {
             expect(onDomainLeave).not.toHaveBeenCalled();
         });
         it("should be called on tab create and remove", () => {
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
             onDomainEnter.mockClear();
 
-            const tab2 = prepareTab("http://www.google.de", "www.google.de", COOKIE_STORE_ID2);
+            const tab2 = prepareTab("http://www.google.de", COOKIE_STORE_ID2);
             expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
 
             tabWatcher["onTabRemoved"](tab1.id);
@@ -80,18 +78,18 @@ describe("TabWatcher", () => {
             expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
         });
         it("should be called only for new domains tab create and remove", () => {
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
             onDomainEnter.mockClear();
 
-            const tab1b = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1b = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             expect(onDomainEnter).not.toHaveBeenCalled();
 
-            const tab2 = prepareTab("http://www.google.de", "www.google.de", COOKIE_STORE_ID2);
+            const tab2 = prepareTab("http://www.google.de", COOKIE_STORE_ID2);
             expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
             onDomainEnter.mockClear();
 
-            const tab2b = prepareTab("http://www.google.de", "www.google.de", COOKIE_STORE_ID2);
+            const tab2b = prepareTab("http://www.google.de", COOKIE_STORE_ID2);
             expect(onDomainEnter).not.toHaveBeenCalled();
 
             tabWatcher["onTabRemoved"](tab1.id);
@@ -106,7 +104,7 @@ describe("TabWatcher", () => {
             expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID2, "www.google.de"]]);
         });
         it("should be called after web navigation commit", () => {
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
             onDomainEnter.mockClear();
             tabWatcher.prepareNavigation(tab1.id, 0, "www.google.de");
@@ -117,7 +115,7 @@ describe("TabWatcher", () => {
             expect(onDomainLeave.mock.calls).toEqual([[COOKIE_STORE_ID, "www.google.com"]]);
         });
         it("should be called when a navigation follows a navigation", () => {
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             tabWatcher.prepareNavigation(tab1.id, 0, "www.google.de");
             tabWatcher.prepareNavigation(tab1.id, 0, "www.google.jp");
             tabWatcher.prepareNavigation(tab1.id, 0, "www.amazon.com");
@@ -129,7 +127,7 @@ describe("TabWatcher", () => {
             ]);
         });
         it("should call scheduleDeadFramesCheck on tab if it exists", () => {
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             const [tabInfo, mockTabInfo] = deepMock<TabInfo>("tabInfo");
             tabWatcher["tabInfos"][tab1.id] = tabInfo;
 
@@ -137,7 +135,7 @@ describe("TabWatcher", () => {
             tabWatcher.completeNavigation(tab1.id);
         });
         it("should be called for frames", () => {
-            const tab1 = prepareTab("http://www.amazon.com", "www.amazon.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.amazon.com", COOKIE_STORE_ID);
             expect(onDomainEnter.mock.calls).toEqual([[COOKIE_STORE_ID, "www.amazon.com"]]);
             onDomainEnter.mockClear();
             tabWatcher.prepareNavigation(tab1.id, 1, "images.google.com");
@@ -163,11 +161,11 @@ describe("TabWatcher", () => {
     describe("cookieStoreContainsDomain", () => {
         describe.each(booleanVariations(1))("with checkNext=%j", (checkNext) => {
             it("should return false for non-existing cookie stores", () => {
-                prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+                prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 expect(tabWatcher.cookieStoreContainsDomain("non-existing", "www.google.com", checkNext)).toBe(false);
             });
             it("should return false for empty cookie stores", () => {
-                const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+                const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 tabWatcher["onTabRemoved"](tab1.id);
                 expect(tabWatcher.cookieStoreContainsDomain(COOKIE_STORE_ID, "www.google.com", checkNext)).toBe(false);
             });
@@ -190,11 +188,11 @@ describe("TabWatcher", () => {
         it("should work with multiple cookie stores", () => {
             expect(tabWatcher.containsDomain("www.google.com")).toBe(false);
 
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             expect(tabWatcher.containsDomain("www.google.com")).toBe(true);
             expect(tabWatcher.containsDomain("www.google.de")).toBe(false);
 
-            const tab2 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab2 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             expect(tabWatcher.containsDomain("www.google.com")).toBe(true);
 
             tabWatcher["onTabRemoved"](tab1.id);
@@ -203,7 +201,7 @@ describe("TabWatcher", () => {
             expect(tabWatcher.containsDomain("www.google.com")).toBe(false);
         });
         it("should work during navigation", () => {
-            const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+            const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
             tabWatcher.prepareNavigation(tab1.id, 0, "www.google.de");
             expect(tabWatcher.containsDomain("www.google.com")).toBe(true);
             expect(tabWatcher.containsDomain("www.google.de")).toBe(true);
@@ -212,7 +210,7 @@ describe("TabWatcher", () => {
             expect(tabWatcher.containsDomain("www.google.de")).toBe(true);
         });
         it("should work with frames", () => {
-            const tab1 = prepareTab("", "", COOKIE_STORE_ID);
+            const tab1 = prepareTab("", COOKIE_STORE_ID);
             tabWatcher.commitNavigation(tab1.id, 1, "www.google.com");
             tabWatcher.prepareNavigation(tab1.id, 1, "www.google.de");
             expect(tabWatcher.containsDomain("www.google.com")).toBe(true);
@@ -234,27 +232,25 @@ describe("TabWatcher", () => {
         it("should forward request to tabInfo.matchHostnameFP", () => {
             const [tabInfo, mockTabInfo] = deepMock<TabInfo>("tabInfo");
             tabWatcher["tabInfos"]["42"] = tabInfo;
-            mockTabInfo.matchHostnameFP.expect("outgoing.com").andReturn(true);
-            mocks.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
-            expect(tabWatcher.isThirdPartyCookieOnTab(42, ".incoming.com")).toBe(false);
-            mockTabInfo.matchHostnameFP.expect("outgoing.com").andReturn(false);
-            mocks.domainUtils.getFirstPartyCookieDomain.expect(".incoming.com").andReturn("outgoing.com");
-            expect(tabWatcher.isThirdPartyCookieOnTab(42, ".incoming.com")).toBe(true);
+            mockTabInfo.matchHostnameFP.expect("some-domain.com").andReturn(true);
+            expect(tabWatcher.isThirdPartyCookieOnTab(42, ".some-domain.com")).toBe(false);
+            mockTabInfo.matchHostnameFP.expect("some-domain.com").andReturn(false);
+            expect(tabWatcher.isThirdPartyCookieOnTab(42, ".some-domain.com")).toBe(true);
         });
     });
     describe("cookieStoreContainsDomainFP", () => {
         describe.each(booleanVariations(1))("with deep=%j", (deep) => {
             it("should return false for non-existing cookie stores", () => {
-                prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+                prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 expect(tabWatcher.cookieStoreContainsDomainFP("non-existing", "google.com", deep)).toBe(false);
             });
             it("should return false for empty cookie stores", () => {
-                const tab1 = prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+                const tab1 = prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 tabWatcher["onTabRemoved"](tab1.id);
                 expect(tabWatcher.cookieStoreContainsDomainFP(COOKIE_STORE_ID, "google.com", deep)).toBe(false);
             });
             it("should return true for a cookie store with said fp domain", () => {
-                prepareTab("http://www.google.com", "www.google.com", COOKIE_STORE_ID);
+                prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 expect(tabWatcher.cookieStoreContainsDomainFP(COOKIE_STORE_ID, "google.com", deep)).toBe(true);
             });
         });

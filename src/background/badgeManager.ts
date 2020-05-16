@@ -4,7 +4,7 @@ import { wetLayer } from "wet-layer";
 
 import { getBadgeForCleanupType, badges } from "../shared/badges";
 import { Settings } from "../shared/settings";
-import { DomainUtils } from "../shared/domainUtils";
+import { getValidHostname } from "../shared/domainUtils";
 import { SnoozeManager } from "./snoozeManager";
 import { MessageUtil } from "../shared/messageUtil";
 import { someItemsMatch } from "./backgroundShared";
@@ -22,7 +22,6 @@ export class BadgeManager {
     public constructor(
         private readonly settings: Settings,
         private readonly ruleManager: RuleManager,
-        private readonly domainUtils: DomainUtils,
         private readonly snoozeManager: SnoozeManager,
         private readonly messageUtil: MessageUtil,
         storeUtils: StoreUtils
@@ -59,7 +58,7 @@ export class BadgeManager {
 
     private async updateBadgeForTab(tab: Tabs.Tab) {
         if (tab?.url && !tab.incognito && tab.active) {
-            const hostname = this.domainUtils.getValidHostname(tab.url);
+            const hostname = getValidHostname(tab.url);
             const badge = hostname
                 ? getBadgeForCleanupType(
                       this.ruleManager.getCleanupTypeFor(

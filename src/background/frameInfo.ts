@@ -1,5 +1,7 @@
 import { getDomain } from "tldjs";
 
+import { getFirstPartyDomain } from "../shared/domainUtils";
+
 const FRAME_IDLE_TIME = 1000;
 
 export class FrameInfo {
@@ -45,7 +47,7 @@ export class FrameInfo {
     public commitNavigation(hostname: string) {
         if (this.hostname !== hostname) {
             this.hostname = hostname;
-            this.hostnameFP = getDomain(hostname) || hostname;
+            this.hostnameFP = getFirstPartyDomain(hostname);
         }
         this.nextHostname = "";
         this.nextHostnameFP = "";

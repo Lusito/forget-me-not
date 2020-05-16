@@ -4,7 +4,7 @@ import { BrowsingData, Cookies, browser } from "webextension-polyfill-ts";
 import { Cleaner } from "./cleaner";
 import { CleanupType } from "../../shared/types";
 import { Settings } from "../../shared/settings";
-import { DomainUtils } from "../../shared/domainUtils";
+import { getFirstPartyDomain, getFirstPartyCookieDomain, removeLeadingDot } from "../../shared/domainUtils";
 import { CookieUtils } from "../cookieUtils";
 import { TabWatcher } from "../tabWatcher";
 import { IncognitoWatcher } from "../incognitoWatcher";
@@ -24,7 +24,6 @@ export class CookieCleaner extends Cleaner {
     public constructor(
         private readonly settings: Settings,
         private readonly ruleManager: RuleManager,
-        private readonly domainUtils: DomainUtils,
         private readonly cookieUtils: CookieUtils,
         private readonly tabWatcher: TabWatcher,
         private readonly incognitoWatcher: IncognitoWatcher,
@@ -65,12 +64,12 @@ export class CookieCleaner extends Cleaner {
     }
 
     private async cleanDomainInternal(storeId: string, domain: string, ignoreRules: boolean) {
-        const domainFP = this.domainUtils.getFirstPartyDomain(domain);
+        const domainFP = getFirstPartyDomain(domain);
         await this.removeCookies(storeId, (cookie) => {
             if (this.shouldPurgeExpiredCookie(cookie)) return true;
             const match = cookie.firstPartyDomain
                 ? cookie.firstPartyDomain === domainFP
-                : this.domainUtils.getFirstPartyCookieDomain(cookie.domain) === domainFP;
+                : getFirstPartyCookieDomain(cookie.domain) === domainFP;
             return match && (ignoreRules || !this.isCookieAllowed(cookie, false, true, true));
         });
     }
@@ -114,7 +113,7 @@ export class CookieCleaner extends Cleaner {
 
     private shouldRemoveCookieInstantly(cookie: Cookies.Cookie) {
         if (!this.settings.get("instantly.enabled") || !this.settings.get("instantly.cookies")) return false;
-        const rawDomain = this.domainUtils.removeLeadingDot(cookie.domain);
+        const rawDomain = removeLeadingDot(cookie.domain);
         return this.ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, cookie.name) === CleanupType.INSTANTLY;
     }
 
@@ -166,7 +165,7 @@ export class CookieCleaner extends Cleaner {
     }
 
     private isThirdpartyCookie(cookie: Cookies.Cookie) {
-        const firstPartyDomain = this.domainUtils.getFirstPartyCookieDomain(cookie.domain);
+        const firstPartyDomain = getFirstPartyCookieDomain(cookie.domain);
         if (cookie.firstPartyDomain) return cookie.firstPartyDomain !== firstPartyDomain;
         return !this.tabWatcher.cookieStoreContainsDomainFP(cookie.storeId, firstPartyDomain, false);
     }
@@ -194,7 +193,7 @@ export class CookieCleaner extends Cleaner {
         protectOpenDomains: boolean,
         protectSubFrames: boolean
     ) {
-        const rawDomain = this.domainUtils.removeLeadingDot(cookie.domain);
+        const rawDomain = removeLeadingDot(cookie.domain);
         const type = this.ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, cookie.name);
         if (type === CleanupType.NEVER || (type === CleanupType.STARTUP && !ignoreStartupType)) return true;
         if (type === CleanupType.INSTANTLY || !protectOpenDomains) return false;
@@ -204,7 +203,7 @@ export class CookieCleaner extends Cleaner {
                 cookie.firstPartyDomain,
                 protectSubFrames
             );
-        const firstPartyDomain = this.domainUtils.getFirstPartyDomain(rawDomain);
+        const firstPartyDomain = getFirstPartyDomain(rawDomain);
         return this.tabWatcher.cookieStoreContainsDomainFP(cookie.storeId, firstPartyDomain, protectSubFrames);
     }
 }

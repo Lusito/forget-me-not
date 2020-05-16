@@ -1,6 +1,5 @@
 import { h } from "tsx-dom";
 import { Cookies, browser, ContextualIdentities } from "webextension-polyfill-ts";
-import { getDomain } from "tldjs";
 import { wetLayer } from "wet-layer";
 import { container } from "tsyringe";
 
@@ -12,7 +11,7 @@ import { appendPunycode, showAddRuleDialog, getSuggestedRuleExpression } from ".
 import { StoreUtils } from "../../shared/storeUtils";
 import { SupportsInfo } from "../../shared/supportsInfo";
 import { RuleManager } from "../../shared/ruleManager";
-import { DomainUtils } from "../../shared/domainUtils";
+import { removeLeadingDot, getFirstPartyDomain } from "../../shared/domainUtils";
 
 interface CookieListCookie {
     badge: BadgeInfo;
@@ -47,7 +46,6 @@ function compareCookieName(a: CookieListCookie, b: CookieListCookie) {
 const noopToArray = () => [];
 
 async function getCookieList() {
-    const domainUtils = container.resolve(DomainUtils);
     const storeUtils = container.resolve(StoreUtils);
     const supports = container.resolve(SupportsInfo);
     const ruleManager = container.resolve(RuleManager);
@@ -64,8 +62,8 @@ async function getCookieList() {
 
     const cookiesByDomain: { [s: string]: CookieListForDomain } = {};
     for (const cookie of cookies) {
-        const rawDomain = domainUtils.removeLeadingDot(cookie.domain);
-        const firstPartyDomain = getDomain(rawDomain) || rawDomain;
+        const rawDomain = removeLeadingDot(cookie.domain);
+        const firstPartyDomain = getFirstPartyDomain(rawDomain);
         const cleanupTypeForCookie = ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, cookie.name);
         const badge = getBadgeForCleanupType(cleanupTypeForCookie);
         const byDomain = cookiesByDomain[cookie.domain];

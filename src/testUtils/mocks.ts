@@ -8,7 +8,6 @@ import { SupportsInfo } from "../shared/supportsInfo";
 import { IncognitoWatcher } from "../background/incognitoWatcher";
 import { TabWatcher } from "../background/tabWatcher";
 import { Settings } from "../shared/settings";
-import { DomainUtils } from "../shared/domainUtils";
 import { CookieUtils } from "../background/cookieUtils";
 import { StoreUtils } from "../shared/storeUtils";
 import { SnoozeManager } from "../background/snoozeManager";
@@ -41,7 +40,6 @@ export const mocks = {
     incognitoWatcher: prepareMock(IncognitoWatcher),
     tabWatcher: prepareMock(TabWatcher),
     settings: prepareMock(Settings),
-    domainUtils: prepareMock(DomainUtils),
     ruleManager: prepareMock(RuleManager),
     cookieUtils: prepareMock(CookieUtils),
     storeUtils: prepareMock(StoreUtils),

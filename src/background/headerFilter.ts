@@ -6,7 +6,6 @@ import { CleanupType } from "../shared/types";
 import { someItemsMatch } from "./backgroundShared";
 import { Settings } from "../shared/settings";
 import { IncognitoWatcher } from "./incognitoWatcher";
-import { DomainUtils } from "../shared/domainUtils";
 import { TabWatcher } from "./tabWatcher";
 import { CookieUtils } from "./cookieUtils";
 import { SupportsInfo } from "../shared/supportsInfo";
@@ -14,6 +13,7 @@ import { MessageUtil } from "../shared/messageUtil";
 import { SnoozeManager } from "./snoozeManager";
 import { StoreUtils } from "../shared/storeUtils";
 import { RuleManager } from "../shared/ruleManager";
+import { getValidHostname, removeLeadingDot } from "../shared/domainUtils";
 
 const LISTENER_OPTIONS: WebRequest.OnHeadersReceivedOptions[] = ["responseHeaders", "blocking"];
 const HEADER_FILTER_SETTINGS_KEYS: SettingsKey[] = [
@@ -36,7 +36,6 @@ export class HeaderFilter {
         private readonly ruleManager: RuleManager,
         private readonly incognitoWatcher: IncognitoWatcher,
         private readonly tabWatcher: TabWatcher,
-        private readonly domainUtils: DomainUtils,
         private readonly cookieUtils: CookieUtils,
         private readonly messageUtil: MessageUtil,
         private readonly snoozeManager: SnoozeManager,
@@ -60,7 +59,7 @@ export class HeaderFilter {
             return {
                 responseHeaders: this.filterResponseHeaders(
                     details.responseHeaders,
-                    this.domainUtils.getValidHostname(details.url),
+                    getValidHostname(details.url),
                     details.cookieStoreId || this.defaultCookieStoredId,
                     details.tabId
                 ),
@@ -89,7 +88,7 @@ export class HeaderFilter {
                 const filtered = x.value.split("\n").filter((value) => {
                     const cookieInfo = this.cookieUtils.parseSetCookieHeader(value.trim(), fallbackDomain);
                     if (cookieInfo) {
-                        const domain = this.domainUtils.removeLeadingDot(cookieInfo.domain);
+                        const domain = removeLeadingDot(cookieInfo.domain);
                         if (this.shouldCookieBeBlocked(tabId, domain, storeId, cookieInfo.name)) {
                             this.messageUtil.sendSelf("cookieRemoved", domain);
                             return false;

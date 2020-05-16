@@ -6,7 +6,7 @@ export class MockzillaListenerSet<T extends (...args: any[]) => any> {
 
     public readonly delete: jest.SpyInstance<boolean, [T]>;
 
-    private readonly set: Set<T>
+    private readonly set: Set<T>;
 
     public constructor(set: Set<T>) {
         this.set = set;
@@ -16,11 +16,13 @@ export class MockzillaListenerSet<T extends (...args: any[]) => any> {
 
     public emit(...args: Parameters<T>) {
         this.set.forEach((listener) => listener(...args));
-    };
+    }
 }
 
 export type MockzillaListenerSetOf<T> = T extends MockzillaDeep<Set<infer TD>>
-    ? TD extends (...args: any[]) => any ? MockzillaListenerSet<TD> : unknown
+    ? TD extends (...args: any[]) => any
+        ? MockzillaListenerSet<TD>
+        : unknown
     : unknown;
 
 export function mockListenerSet<T extends (...args: any[]) => any>(builder: MockzillaDeep<Set<T>>) {

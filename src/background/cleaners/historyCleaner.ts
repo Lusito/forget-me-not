@@ -4,7 +4,7 @@ import { getDomain } from "tldjs";
 
 import { Cleaner } from "./cleaner";
 import { Settings } from "../../shared/settings";
-import { DomainUtils } from "../../shared/domainUtils";
+import { getValidHostname, getFirstPartyDomain } from "../../shared/domainUtils";
 import { TabWatcher } from "../tabWatcher";
 import { RuleManager } from "../../shared/ruleManager";
 
@@ -13,7 +13,6 @@ export class HistoryCleaner extends Cleaner {
     public constructor(
         private readonly settings: Settings,
         private readonly ruleManager: RuleManager,
-        private readonly domainUtils: DomainUtils,
         private readonly tabWatcher: TabWatcher
     ) {
         super();
@@ -22,7 +21,7 @@ export class HistoryCleaner extends Cleaner {
 
     private onVisited = ({ url }: History.HistoryItem) => {
         if (url && this.settings.get("instantly.enabled") && this.settings.get("instantly.history")) {
-            const domain = this.domainUtils.getValidHostname(url);
+            const domain = getValidHostname(url);
             if (
                 domain &&
                 (!this.settings.get("instantly.history.applyRules") ||
@@ -53,11 +52,11 @@ export class HistoryCleaner extends Cleaner {
             // Other stores might still contain the domain and we can't clean per-store yet
             !this.tabWatcher.containsDomain(domain)
         ) {
-            const domainFP = getDomain(domain) || domain;
+            const domainFP = getFirstPartyDomain(domain);
             const items = await browser.history.search({ text: domainFP });
             const filteredItems = items.filter((item) => {
                 if (!item.url) return false;
-                const hostname = this.domainUtils.getValidHostname(item.url);
+                const hostname = getValidHostname(item.url);
                 return hostname === domain || getDomain(hostname) === domainFP;
             });
             const urlsToClean = this.getUrlsToClean(filteredItems, false, true);
@@ -72,8 +71,7 @@ export class HistoryCleaner extends Cleaner {
 
     private getUrlsToClean(items: History.HistoryItem[], ignoreStartupType: boolean, protectOpenDomains: boolean) {
         const unprotected = (url: string | undefined) =>
-            !!url &&
-            !this.isDomainProtected(this.domainUtils.getValidHostname(url), ignoreStartupType, protectOpenDomains);
+            !!url && !this.isDomainProtected(getValidHostname(url), ignoreStartupType, protectOpenDomains);
         return items.map((item) => item.url).filter(unprotected) as string[];
     }
 }

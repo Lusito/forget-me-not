@@ -2,7 +2,7 @@ import { singleton } from "tsyringe";
 import { browser, Downloads, BrowsingData } from "webextension-polyfill-ts";
 
 import { Cleaner } from "./cleaner";
-import { DomainUtils } from "../../shared/domainUtils";
+import { getValidHostname } from "../../shared/domainUtils";
 import { Settings } from "../../shared/settings";
 import { TabWatcher } from "../tabWatcher";
 import { RuleManager } from "../../shared/ruleManager";
@@ -10,7 +10,6 @@ import { RuleManager } from "../../shared/ruleManager";
 @singleton()
 export class DownloadCleaner extends Cleaner {
     public constructor(
-        private readonly domainUtils: DomainUtils,
         private readonly settings: Settings,
         private readonly ruleManager: RuleManager,
         private readonly tabWatcher: TabWatcher
@@ -20,7 +19,7 @@ export class DownloadCleaner extends Cleaner {
     }
 
     private onCreated = ({ url, incognito }: Downloads.DownloadItem) => {
-        const domain = this.domainUtils.getValidHostname(url);
+        const domain = getValidHostname(url);
         if (domain) {
             if (this.settings.get("instantly.enabled") && this.settings.get("instantly.downloads")) {
                 const applyRules = this.settings.get("instantly.downloads.applyRules");
@@ -85,11 +84,7 @@ export class DownloadCleaner extends Cleaner {
         let urls = Object.keys(downloadsToClean);
         if (applyRules) {
             urls = urls.filter((url) => {
-                const isProtected = this.isDomainProtected(
-                    this.domainUtils.getValidHostname(url),
-                    startup,
-                    protectOpenDomains
-                );
+                const isProtected = this.isDomainProtected(getValidHostname(url), startup, protectOpenDomains);
                 if (isProtected) newDownloadsToClean[url] = true;
                 return !isProtected;
             });

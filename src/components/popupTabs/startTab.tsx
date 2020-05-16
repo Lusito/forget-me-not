@@ -6,7 +6,7 @@ import { container } from "tsyringe";
 
 import { on } from "../../frontend/htmlUtils";
 import { RuleTable } from "../ruleTable";
-import { DomainUtils } from "../../shared/domainUtils";
+import { getValidHostname } from "../../shared/domainUtils";
 import { MessageUtil } from "../../shared/messageUtil";
 import { StoreUtils } from "../../shared/storeUtils";
 
@@ -58,8 +58,7 @@ class StartTabManager {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
         const tab = tabs.length ? tabs[0] : null;
         if (tab?.url && !tab.incognito) {
-            const domainUtils = container.resolve(DomainUtils);
-            const hostname = domainUtils.getValidHostname(tab.url);
+            const hostname = getValidHostname(tab.url);
             if (!hostname) {
                 this.setInvalidTab();
             } else {

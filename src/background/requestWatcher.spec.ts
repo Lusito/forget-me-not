@@ -17,7 +17,6 @@ describe("RequestWatcher", () => {
         onCommitted = mockEvent(mockBrowser.webNavigation.onCommitted);
         onCompleted = mockEvent(mockBrowser.webNavigation.onCompleted);
         onBeforeRedirect = mockEvent(mockBrowser.webRequest.onBeforeRedirect);
-        mocks.domainUtils.mockAllow();
         mocks.tabWatcher.mockAllow();
         requestWatcher = container.resolve(RequestWatcher);
     });
@@ -35,7 +34,6 @@ describe("RequestWatcher", () => {
 
     describe("onBeforeNavigate", () => {
         it("should call listener.prepareNavigation", () => {
-            mocks.domainUtils.getValidHostname.expect("http://www.amazon.com").andReturn("www.amazon.com");
             mocks.tabWatcher.prepareNavigation.expect(42, 1337, "www.amazon.com");
             onBeforeNavigate.emit({
                 tabId: 42,
@@ -49,7 +47,6 @@ describe("RequestWatcher", () => {
 
     describe("onCommitted", () => {
         it("should call listener.commitNavigation", () => {
-            mocks.domainUtils.getValidHostname.expect("http://www.amazon.com").andReturn("www.amazon.com");
             mocks.tabWatcher.commitNavigation.expect(42, 1337, "www.amazon.com");
             onCommitted.emit({
                 tabId: 42,
@@ -74,7 +71,6 @@ describe("RequestWatcher", () => {
 
     describe("onBeforeRedirect", () => {
         it("should call listener.prepareNavigation", () => {
-            mocks.domainUtils.getValidHostname.expect("http://www.amazon.com").andReturn("www.amazon.com");
             mocks.tabWatcher.prepareNavigation.expect(42, 1337, "www.amazon.com");
             onBeforeRedirect.emit(
                 quickBeforeRedirectDetails("http://www.amazon.de", "http://www.amazon.com", 42, 1337)

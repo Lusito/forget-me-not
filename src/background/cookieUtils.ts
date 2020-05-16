@@ -3,7 +3,7 @@ import { Cookies, browser } from "webextension-polyfill-ts";
 
 import { SupportsInfo } from "../shared/supportsInfo";
 import { MessageUtil } from "../shared/messageUtil";
-import { DomainUtils } from "../shared/domainUtils";
+import { removeLeadingDot } from "../shared/domainUtils";
 
 const cookieDomainRegexp = /^domain=/i;
 const keyValueRegexpSplit = /=(.+)/;
@@ -18,11 +18,7 @@ interface SetCookieHeader {
 export class CookieUtils {
     private supportsFirstPartyIsolation: boolean;
 
-    public constructor(
-        private readonly messageUtil: MessageUtil,
-        private readonly domainUtils: DomainUtils,
-        supports: SupportsInfo
-    ) {
+    public constructor(private readonly messageUtil: MessageUtil, supports: SupportsInfo) {
         this.supportsFirstPartyIsolation = supports.firstPartyIsolation;
     }
 
@@ -34,7 +30,7 @@ export class CookieUtils {
             };
         }
 
-        const rawDomain = this.domainUtils.removeLeadingDot(cookie.domain);
+        const rawDomain = removeLeadingDot(cookie.domain);
         return {
             url: (cookie.secure ? "https://" : "http://") + rawDomain + cookie.path,
             removedFrom: rawDomain,

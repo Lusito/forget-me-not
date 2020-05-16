@@ -11,7 +11,6 @@ describe("CookieUtils", () => {
 
     beforeEach(() => {
         mocks.messageUtil.mockAllow();
-        mocks.domainUtils.mockAllow();
         mocks.supports.mockAllow();
     });
 
@@ -28,7 +27,6 @@ describe("CookieUtils", () => {
             it("should reject if cookie does not exist", async () => {
                 const error = new Error("Cookie did not exist");
                 mockBrowser.cookies.remove.expect.andReject(error);
-                mocks.domainUtils.removeLeadingDot.expect(domain).andReturn(domainNoLeadingDot);
                 await expect(utils.removeCookie(quickCookie(domain, "fox", "", MOCK_STORE_ID, ""))).rejects.toEqual(
                     error
                 );
@@ -45,7 +43,6 @@ describe("CookieUtils", () => {
                         firstPartyDomain: "fpd",
                     })
                     .andResolve(result as any);
-                mocks.domainUtils.removeLeadingDot.expect(domain).andReturn(domainNoLeadingDot);
                 await expect(utils.removeCookie(quickCookie(domain, "fox", "", MOCK_STORE_ID, "fpd"))).resolves.toEqual(
                     result
                 );
@@ -62,7 +59,6 @@ describe("CookieUtils", () => {
                         firstPartyDomain: "fpd",
                     })
                     .andResolve(result as any);
-                mocks.domainUtils.removeLeadingDot.expect(domain).andReturn(domainNoLeadingDot);
                 await expect(
                     utils.removeCookie(quickCookie(domain, "fox", "/some-path", MOCK_STORE_ID, "fpd", true))
                 ).resolves.toEqual(result);
@@ -101,7 +97,6 @@ describe("CookieUtils", () => {
                         storeId: MOCK_STORE_ID,
                     })
                     .andResolve(result as any);
-                mocks.domainUtils.removeLeadingDot.expect(domain).andReturn(domainNoLeadingDot);
                 await expect(utils.removeCookie(quickCookie(domain, "fox", "", MOCK_STORE_ID, "fpd"))).resolves.toEqual(
                     result
                 );

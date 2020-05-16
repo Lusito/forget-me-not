@@ -63,13 +63,7 @@ describe("StoreUtils", () => {
                     const utils = container.resolve(StoreUtils);
 
                     const ids = await utils.getAllCookieStoreIds();
-                    expect(ids).toHaveSameMembers([
-                        "firefox-default",
-                        "firefox-private",
-                        "ci-1",
-                        "ci-2",
-                        "ci-4",
-                    ]);
+                    expect(ids).toHaveSameMembers(["firefox-default", "firefox-private", "ci-1", "ci-2", "ci-4"]);
                 });
             });
         });

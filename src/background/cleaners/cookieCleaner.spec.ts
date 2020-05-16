@@ -24,7 +24,6 @@ describe("CookieCleaner", () => {
         mocks.tabWatcher.mockAllow();
         mocks.settings.mockAllow();
         mocks.supports.mockAllow();
-        mocks.domainUtils.mockAllow();
         mocks.cookieUtils.mockAllow();
         mocks.storeUtils.mockAllow();
         mocks.snoozeManager.mockAllow();
@@ -161,9 +160,6 @@ describe("CookieCleaner", () => {
             cookieCleaner["shouldPurgeExpiredCookie"] = spy;
             return spy;
         }
-        beforeEach(() => {
-            mocks.domainUtils.getFirstPartyDomain.expect("www.some-domain.com").andReturn("some-domain.com");
-        });
         describe("callback with shouldPurgeExpiredCookie=true", () => {
             it.each(booleanVariations(1))("should return true with ignoreRules=%j", (ignoreRules) => {
                 const callback = prepareCleanDomainInternal(ignoreRules);
@@ -215,9 +211,6 @@ describe("CookieCleaner", () => {
                 it(`should return ${result} with a matching domain->firstPartyDomain`, () => {
                     const callback = prepareCleanDomainInternal(ignoreRules);
                     const cookie = quickCookie("xxx.some-domain.com", "hello", "", COOKIE_STORE_ID, "");
-                    mocks.domainUtils.getFirstPartyCookieDomain
-                        .expect("xxx.some-domain.com")
-                        .andReturn("some-domain.com");
                     const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(false);
                     const isCookieAllowedSpy = prepareIsCookieAllowed();
                     expect(callback(cookie)).toBe(result);
@@ -227,9 +220,6 @@ describe("CookieCleaner", () => {
                 it("should return false with no matching domain->firstPartyDomain", () => {
                     const callback = prepareCleanDomainInternal(ignoreRules);
                     const cookie = quickCookie("xxx.some-other-domain.com", "hello", "", COOKIE_STORE_ID, "");
-                    mocks.domainUtils.getFirstPartyCookieDomain
-                        .expect("xxx.some-other-domain.com")
-                        .andReturn("some-other-domain.com");
                     const shouldPurgeExpiredCookie = prepareShouldPurgeExpiredCookie(false);
                     const isCookieAllowedSpy = prepareIsCookieAllowed();
                     expect(callback(cookie)).toBe(false);
@@ -383,7 +373,6 @@ describe("CookieCleaner", () => {
             ])("returns %j for cleanupType=%i", (result, cleanupType) => {
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
                 mocks.settings.get.expect("instantly.cookies").andReturn(true);
-                mocks.domainUtils.removeLeadingDot.expect(".www.some-domain.com").andReturn("www.some-domain.com");
                 mocks.ruleManager.getCleanupTypeFor
                     .expect("www.some-domain.com", COOKIE_STORE_ID, "name1")
                     .andReturn(cleanupType);
@@ -566,10 +555,7 @@ describe("CookieCleaner", () => {
                     );
                     const cookie = {} as any;
                     await cookieCleaner["scheduleThirdpartyCookieRemove"](cookie);
-                    expect(cookieCleaner["snoozedThirdpartyCookies"]).toHaveSameOrderedMembers([
-                        firstCookie,
-                        cookie,
-                    ]);
+                    expect(cookieCleaner["snoozedThirdpartyCookies"]).toHaveSameOrderedMembers([firstCookie, cookie]);
                 });
             });
             describe("with snoozing=false", () => {
@@ -583,7 +569,7 @@ describe("CookieCleaner", () => {
                         const cookie = {} as any;
                         mocks.settings.get.expect("cleanThirdPartyCookies.delay").andReturn(delay);
                         await cookieCleaner["scheduleThirdpartyCookieRemove"](cookie);
-                        advanceTime((delay*1000)-1);
+                        advanceTime(delay * 1000 - 1);
                         mock.delayedScheduleThirdpartyCookieRemove.expect(cookie).andResolve();
                         advanceTime(1);
                     });
@@ -649,16 +635,15 @@ describe("CookieCleaner", () => {
 
     describe("isThirdpartyCookie", () => {
         describe("with firstPartyDomain on cookie", () => {
-            const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
             it("returns false if firstPartyDomain matches", () => {
-                whitelistPropertyAccess(cookieCleaner, "domainUtils", "isThirdpartyCookie");
-                mocks.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-domain.com");
+                const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
+                whitelistPropertyAccess(cookieCleaner, "isThirdpartyCookie");
 
                 expect(cookieCleaner["isThirdpartyCookie"](cookie)).toBe(false);
             });
             it("returns true if firstPartyDomain does not match", () => {
-                whitelistPropertyAccess(cookieCleaner, "domainUtils", "isThirdpartyCookie");
-                mocks.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-other-domain.com");
+                const cookie = quickCookie("www.other-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
+                whitelistPropertyAccess(cookieCleaner, "isThirdpartyCookie");
 
                 expect(cookieCleaner["isThirdpartyCookie"](cookie)).toBe(true);
             });
@@ -666,8 +651,7 @@ describe("CookieCleaner", () => {
         describe("without firstPartyDomain on cookie", () => {
             const cookie = quickCookie("www.some-domain.com", "name1", "", COOKIE_STORE_ID, "");
             it("returns true if cookieStoreContainsDomainFP returns false", () => {
-                whitelistPropertyAccess(cookieCleaner, "domainUtils", "tabWatcher", "isThirdpartyCookie");
-                mocks.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-domain.com");
+                whitelistPropertyAccess(cookieCleaner, "tabWatcher", "isThirdpartyCookie");
                 mocks.tabWatcher.cookieStoreContainsDomainFP
                     .expect(cookie.storeId, "some-domain.com", false)
                     .andReturn(false);
@@ -675,8 +659,7 @@ describe("CookieCleaner", () => {
                 expect(cookieCleaner["isThirdpartyCookie"](cookie)).toBe(true);
             });
             it("returns false if cookieStoreContainsDomainFP returns true", () => {
-                whitelistPropertyAccess(cookieCleaner, "domainUtils", "tabWatcher", "isThirdpartyCookie");
-                mocks.domainUtils.getFirstPartyCookieDomain.expect(cookie.domain).andReturn("some-domain.com");
+                whitelistPropertyAccess(cookieCleaner, "tabWatcher", "isThirdpartyCookie");
                 mocks.tabWatcher.cookieStoreContainsDomainFP
                     .expect(cookie.storeId, "some-domain.com", false)
                     .andReturn(true);
@@ -730,10 +713,6 @@ describe("CookieCleaner", () => {
     describe("isCookieAllowed", () => {
         const cookie = quickCookie(".www.some-domain.com", "name1", "", COOKIE_STORE_ID, "some-domain.com");
 
-        beforeEach(() => {
-            mocks.domainUtils.removeLeadingDot.expect(".www.some-domain.com").andReturn("www.some-domain.com");
-        });
-
         describe.each([
             [CleanupType.NEVER, true],
             [CleanupType.INSTANTLY, false],
@@ -744,7 +723,7 @@ describe("CookieCleaner", () => {
                     mocks.ruleManager.getCleanupTypeFor
                         .expect("www.some-domain.com", cookie.storeId, cookie.name)
                         .andReturn(cleanupType);
-                    whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed", "domainUtils");
+                    whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed");
 
                     expect(
                         cookieCleaner["isCookieAllowed"](
@@ -765,7 +744,7 @@ describe("CookieCleaner", () => {
                     mocks.ruleManager.getCleanupTypeFor
                         .expect("www.some-domain.com", cookie.storeId, cookie.name)
                         .andReturn(CleanupType.STARTUP);
-                    whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed", "domainUtils");
+                    whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed");
 
                     expect(cookieCleaner["isCookieAllowed"](cookie, false, protectOpenDomains, protectSubFrames)).toBe(
                         true
@@ -786,7 +765,7 @@ describe("CookieCleaner", () => {
                         mocks.ruleManager.getCleanupTypeFor
                             .expect("www.some-domain.com", cookie.storeId, cookie.name)
                             .andReturn(cleanupType);
-                        whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed", "domainUtils");
+                        whitelistPropertyAccess(cookieCleaner, "ruleManager", "isCookieAllowed");
 
                         expect(
                             cookieCleaner["isCookieAllowed"](cookie, ignoreStartupType, false, protectSubFrames)
@@ -817,12 +796,9 @@ describe("CookieCleaner", () => {
                                         cookieCleaner,
                                         "ruleManager",
                                         "tabWatcher",
-                                        "domainUtils",
                                         "isCookieAllowed"
                                     );
                                     const expectedFirstPartyDomain = firstPartyDomain || "some-domain.com";
-                                    if (!firstPartyDomain)
-                                        mocks.domainUtils.getFirstPartyDomain.expect("www.some-domain.com").andReturn("some-domain.com");
                                     mocks.tabWatcher.cookieStoreContainsDomainFP
                                         .expect(COOKIE_STORE_ID, expectedFirstPartyDomain, protectSubFrames)
                                         .andReturn(expectedReturn);

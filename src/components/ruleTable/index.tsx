@@ -1,5 +1,4 @@
 import { h } from "tsx-dom";
-import { getDomain } from "tldjs";
 import { wetLayer } from "wet-layer";
 import { container } from "tsyringe";
 
@@ -11,6 +10,7 @@ import { Settings } from "../../shared/settings";
 import { MessageUtil } from "../../shared/messageUtil";
 import { DomainAndStore } from "../../shared/types";
 import { RuleManager } from "../../shared/ruleManager";
+import { getFirstPartyDomain } from "../../shared/domainUtils";
 
 interface RuleTableProps {
     headerI18n: string;
@@ -34,7 +34,7 @@ function rebuildRows(tbody: HTMLElement, ruleFilter?: DomainAndStore, filterInpu
         const ruleManager = container.resolve(RuleManager);
         const { domain, storeId } = ruleFilter;
         chosenRulesForDomain = ruleManager.getChosenRulesForDomain(domain, storeId);
-        const domainFP = getDomain(domain) || domain;
+        const domainFP = getFirstPartyDomain(domain);
         const expressions = [`*.${domainFP}`];
         if (domainFP !== domain) expressions.push(`*.${ruleFilter}`);
         expressions.forEach((expression) => {

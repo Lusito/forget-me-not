@@ -2,7 +2,7 @@ import { singleton } from "tsyringe";
 import { browser, Tabs } from "webextension-polyfill-ts";
 
 import { TabInfo } from "./tabInfo";
-import { DomainUtils } from "../shared/domainUtils";
+import { getValidHostname, getFirstPartyCookieDomain } from "../shared/domainUtils";
 import { StoreUtils } from "../shared/storeUtils";
 
 export interface TabWatcherListener {
@@ -26,7 +26,7 @@ export class TabWatcher {
 
     public readonly domainLeaveListeners = new Set<DomainEventListener>();
 
-    public constructor(private readonly domainUtils: DomainUtils, storeUtils: StoreUtils) {
+    public constructor(storeUtils: StoreUtils) {
         this.defaultCookieStoreId = storeUtils.defaultCookieStoreId;
     }
 
@@ -112,7 +112,7 @@ export class TabWatcher {
         // fixme: ignore discarded and hidden tabs
         if (tab.id && !tab.incognito) {
             const cookieStoreId = tab.cookieStoreId || this.defaultCookieStoreId;
-            const hostname = tab.url ? this.domainUtils.getValidHostname(tab.url) : "";
+            const hostname = tab.url ? getValidHostname(tab.url) : "";
             this.checkDomainEnter(cookieStoreId, hostname);
 
             const tabInfo = new TabInfo(tab.id, hostname, cookieStoreId, this.checkDomainLeaveSet);
@@ -130,7 +130,7 @@ export class TabWatcher {
     public isThirdPartyCookieOnTab(tabId: number, domain: string) {
         const tabInfo = this.tabInfos[tabId];
         if (!tabInfo) return false;
-        return !tabInfo.matchHostnameFP(this.domainUtils.getFirstPartyCookieDomain(domain));
+        return !tabInfo.matchHostnameFP(getFirstPartyCookieDomain(domain));
     }
 
     public cookieStoreContainsDomainFP(storeId: string, domainFP: string, deep: boolean) {

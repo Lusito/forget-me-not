@@ -8,7 +8,7 @@ import { StoreUtils } from "../../shared/storeUtils";
 import { TabWatcher } from "../tabWatcher";
 import { SupportsInfo } from "../../shared/supportsInfo";
 import { IncognitoWatcher } from "../incognitoWatcher";
-import { DomainUtils } from "../../shared/domainUtils";
+import { getValidHostname } from "../../shared/domainUtils";
 import { RuleManager } from "../../shared/ruleManager";
 
 @singleton()
@@ -17,7 +17,6 @@ export class LocalStorageCleaner extends Cleaner {
         private readonly settings: Settings,
         private readonly ruleManager: RuleManager,
         private readonly storeUtils: StoreUtils,
-        private readonly domainUtils: DomainUtils,
         private readonly tabWatcher: TabWatcher,
         private readonly incognitoWatcher: IncognitoWatcher,
         private readonly supports: SupportsInfo
@@ -30,7 +29,7 @@ export class LocalStorageCleaner extends Cleaner {
             const { defaultCookieStoreId } = this.storeUtils;
             for (const tab of tabs) {
                 if (tab.url && tab.id && !tab.incognito) {
-                    const hostname = this.domainUtils.getValidHostname(tab.url);
+                    const hostname = getValidHostname(tab.url);
                     this.onDomainEnter(tab.cookieStoreId || defaultCookieStoreId, hostname);
                 }
             }

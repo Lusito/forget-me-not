@@ -1,14 +1,14 @@
 import { singleton } from "tsyringe";
 import { browser, WebRequest, WebNavigation } from "webextension-polyfill-ts";
 
-import { DomainUtils } from "../shared/domainUtils";
+import { getValidHostname } from "../shared/domainUtils";
 import { TabWatcher } from "./tabWatcher";
 
 const WEB_REQUEST_FILTER: WebRequest.RequestFilter = { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] };
 
 @singleton()
 export class RequestWatcher {
-    public constructor(private readonly domainUtils: DomainUtils, private readonly tabWatcher: TabWatcher) {
+    public constructor(private readonly tabWatcher: TabWatcher) {
         browser.webNavigation.onBeforeNavigate.addListener(this.onBeforeNavigate);
         browser.webNavigation.onCommitted.addListener(this.onCommitted);
         browser.webNavigation.onCompleted.addListener(this.onCompleted);
@@ -16,19 +16,11 @@ export class RequestWatcher {
     }
 
     private onBeforeNavigate = (details: WebNavigation.OnBeforeNavigateDetailsType) => {
-        this.tabWatcher.prepareNavigation(
-            details.tabId,
-            details.frameId,
-            this.domainUtils.getValidHostname(details.url)
-        );
+        this.tabWatcher.prepareNavigation(details.tabId, details.frameId, getValidHostname(details.url));
     };
 
     private onCommitted = (details: WebNavigation.OnCommittedDetailsType) => {
-        this.tabWatcher.commitNavigation(
-            details.tabId,
-            details.frameId,
-            this.domainUtils.getValidHostname(details.url)
-        );
+        this.tabWatcher.commitNavigation(details.tabId, details.frameId, getValidHostname(details.url));
     };
 
     private onCompleted = (details: WebNavigation.OnCompletedDetailsType) => {
@@ -36,10 +28,6 @@ export class RequestWatcher {
     };
 
     private onBeforeRedirect = (details: WebRequest.OnBeforeRedirectDetailsType) => {
-        this.tabWatcher.prepareNavigation(
-            details.tabId,
-            details.frameId,
-            this.domainUtils.getValidHostname(details.redirectUrl)
-        );
+        this.tabWatcher.prepareNavigation(details.tabId, details.frameId, getValidHostname(details.redirectUrl));
     };
 }

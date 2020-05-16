@@ -13,7 +13,6 @@ describe("LocalStorageCleaner", () => {
     beforeEach(() => {
         mocks.settings.mockAllow();
         mocks.storeUtils.mockAllow();
-        mocks.domainUtils.mockAllow();
         mocks.tabWatcher.mockAllow();
         mocks.incognitoWatcher.mockAllow();
         mocks.ruleManager.mockAllow();

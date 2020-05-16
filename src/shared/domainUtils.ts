@@ -1,29 +1,25 @@
-import { singleton } from "tsyringe";
 import { getDomain } from "tldjs"; // fixme: export via utils?
 
 const allowedProtocols = /^https?:$/;
 
-@singleton()
-export class DomainUtils {
-    public removeLeadingDot(value: string) {
-        return value.startsWith(".") ? value.substr(1) : value;
-    }
+export function removeLeadingDot(value: string) {
+    return value.startsWith(".") ? value.substr(1) : value;
+}
 
-    public getFirstPartyDomain(domain: string) {
-        return getDomain(domain) || domain;
-    }
+export function getFirstPartyDomain(domain: string) {
+    return getDomain(domain) || domain;
+}
 
-    public getFirstPartyCookieDomain(domain: string) {
-        const rawDomain = this.removeLeadingDot(domain);
-        return getDomain(rawDomain) || rawDomain;
-    }
+export function getFirstPartyCookieDomain(domain: string) {
+    const rawDomain = removeLeadingDot(domain);
+    return getDomain(rawDomain) || rawDomain;
+}
 
-    public getValidHostname(url: string) {
-        try {
-            const parsedUrl = new URL(url);
-            return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : "";
-        } catch (e) {
-            return "";
-        }
+export function getValidHostname(url: string) {
+    try {
+        const parsedUrl = new URL(url);
+        return allowedProtocols.test(parsedUrl.protocol) ? parsedUrl.hostname : "";
+    } catch (e) {
+        return "";
     }
 }

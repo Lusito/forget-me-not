@@ -29,7 +29,6 @@ describe("RecentlyAccessedDomains", () => {
         mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
         mocks.messageUtil.mockAllow();
         mocks.incognitoWatcher.mockAllow();
-        mocks.domainUtils.mockAllow();
         mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
         recentlyAccessedDomains = container.resolve(RecentlyAccessedDomains);
     }
@@ -90,9 +89,8 @@ describe("RecentlyAccessedDomains", () => {
             createRAD(false);
             const mock = mockAssimilate(recentlyAccessedDomains, "recentlyAccessedDomains", {
                 mock: ["add"],
-                whitelist: ["onCookieChanged", "incognitoWatcher", "domainUtils"],
+                whitelist: ["onCookieChanged", "incognitoWatcher"],
             });
-            mocks.domainUtils.removeLeadingDot.expect(".www.google.com").andReturn("www.google.com");
             mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(false);
             mock.add.expect("www.google.com", COOKIE_STORE_ID);
             fireOnCookieChanged(false);
@@ -119,7 +117,6 @@ describe("RecentlyAccessedDomains", () => {
             });
             mock.add.expect("www.google.com", COOKIE_STORE_ID);
             mocks.incognitoWatcher.hasTab.expect(42).andReturn(false);
-            mocks.domainUtils.getValidHostname.expect("http://www.google.com").andReturn("www.google.com");
             recentlyAccessedDomains["onHeadersReceived"](quickHeadersReceivedDetails("http://www.google.com", 42));
         });
         it("should not call add() if incognito tab received a header", () => {

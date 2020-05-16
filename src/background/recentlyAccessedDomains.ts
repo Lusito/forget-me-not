@@ -6,7 +6,7 @@ import { getBadgeForCleanupType } from "../shared/badges";
 import { someItemsMatch } from "./backgroundShared";
 import { Settings } from "../shared/settings";
 import { IncognitoWatcher } from "./incognitoWatcher";
-import { DomainUtils } from "../shared/domainUtils";
+import { removeLeadingDot, getValidHostname } from "../shared/domainUtils";
 import { MessageUtil } from "../shared/messageUtil";
 import { StoreUtils } from "../shared/storeUtils";
 import { RuleManager } from "../shared/ruleManager";
@@ -29,7 +29,6 @@ export class RecentlyAccessedDomains {
         private readonly settings: Settings,
         private readonly ruleManager: RuleManager,
         private readonly incognitoWatcher: IncognitoWatcher,
-        private readonly domainUtils: DomainUtils,
         storeUtils: StoreUtils,
         messageUtil: MessageUtil
     ) {
@@ -117,15 +116,12 @@ export class RecentlyAccessedDomains {
     private onCookieChanged = (changeInfo: Cookies.OnChangedChangeInfoType) => {
         if (!changeInfo.removed && !this.incognitoWatcher.hasCookieStore(changeInfo.cookie.storeId)) {
             const { domain } = changeInfo.cookie;
-            this.add(this.domainUtils.removeLeadingDot(domain), changeInfo.cookie.storeId);
+            this.add(removeLeadingDot(domain), changeInfo.cookie.storeId);
         }
     };
 
     private onHeadersReceived = (details: WebRequest.OnHeadersReceivedDetailsType) => {
         if (details.tabId >= 0 && !details.incognito && !this.incognitoWatcher.hasTab(details.tabId))
-            this.add(
-                this.domainUtils.getValidHostname(details.url),
-                details.cookieStoreId || this.defaultCookieStoreId
-            );
+            this.add(getValidHostname(details.url), details.cookieStoreId || this.defaultCookieStoreId);
     };
 }

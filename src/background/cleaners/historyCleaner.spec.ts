@@ -11,7 +11,6 @@ describe("HistoryCleaner", () => {
     beforeEach(() => {
         mocks.settings.mockAllow();
         mocks.ruleManager.mockAllow();
-        mocks.domainUtils.mockAllow();
         mocks.tabWatcher.mockAllow();
     });
 
@@ -34,7 +33,7 @@ describe("HistoryCleaner", () => {
         });
 
         describe("onVisited", () => {
-            const url = `https://google.com/some/path.html`;
+            const url = "https://google.com/some/path.html";
 
             it("adds listeners correctly", () => {
                 expect(onVisited.addListener.mock.calls).toEqual([[historyCleaner["onVisited"]]]);
@@ -56,13 +55,11 @@ describe("HistoryCleaner", () => {
             it("does nothing without a valid hostname", () => {
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
                 mocks.settings.get.expect("instantly.history").andReturn(true);
-                mocks.domainUtils.getValidHostname.expect(url).andReturn("");
-                historyCleaner["onVisited"]({ id: "mock", url });
+                historyCleaner["onVisited"]({ id: "mock", url: "nope://hello.com" });
             });
             it("deletes the URL if applyRules = false", () => {
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
                 mocks.settings.get.expect("instantly.history").andReturn(true);
-                mocks.domainUtils.getValidHostname.expect(url).andReturn("google.com");
                 mockBrowser.history.deleteUrl.expect({ url });
                 mocks.settings.get.expect("instantly.history.applyRules").andReturn(false);
                 historyCleaner["onVisited"]({ id: "mock", url });
@@ -70,7 +67,6 @@ describe("HistoryCleaner", () => {
             it("deletes the URL if applyRules = true, but the domain is blocked", () => {
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
                 mocks.settings.get.expect("instantly.history").andReturn(true);
-                mocks.domainUtils.getValidHostname.expect(url).andReturn("google.com");
                 mockBrowser.history.deleteUrl.expect({ url });
                 mocks.settings.get.expect("instantly.history.applyRules").andReturn(true);
                 mocks.ruleManager.isDomainInstantly.expect("google.com", false).andReturn(true);
@@ -79,7 +75,6 @@ describe("HistoryCleaner", () => {
             it("does not delete the URL if applyRules = true and the domain is not blocked", () => {
                 mocks.settings.get.expect("instantly.enabled").andReturn(true);
                 mocks.settings.get.expect("instantly.history").andReturn(true);
-                mocks.domainUtils.getValidHostname.expect(url).andReturn("google.com");
                 mocks.settings.get.expect("instantly.history.applyRules").andReturn(true);
                 mocks.ruleManager.isDomainInstantly.expect("google.com", false).andReturn(false);
                 historyCleaner["onVisited"]({ id: "mock", url });
@@ -161,7 +156,6 @@ describe("HistoryCleaner", () => {
                                     .expect(entry.hostname, false, startup)
                                     .andReturn(entry.protected);
                             if (entry.deleted) mockBrowser.history.deleteUrl.expect({ url: entry.url }).andResolve();
-                            mocks.domainUtils.getValidHostname.expect(entry.url).andReturn(entry.hostname);
                             if (startup || protectOpenDomains)
                                 mocks.tabWatcher.containsDomain.expect(entry.hostname).andReturn(entry.tabExists);
                         });

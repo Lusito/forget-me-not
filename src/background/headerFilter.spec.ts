@@ -14,7 +14,6 @@ describe("HeaderFilter", () => {
     beforeEach(() => {
         mocks.incognitoWatcher.mockAllow();
         mocks.tabWatcher.mockAllow();
-        mocks.domainUtils.mockAllow();
         mocks.cookieUtils.mockAllow();
         mocks.messageUtil.mockAllow();
         mocks.settings.mockAllow();
@@ -95,18 +94,17 @@ describe("HeaderFilter", () => {
                     tabId: 42,
                 } as any;
                 const filteredResponseHeaders: WebRequest.HttpHeaders = [{ name: "filtered-headers" }];
-                const fallbackDomain = "some-fallback.com";
+                const hostname = "some-domain.com";
 
                 it("should call filterResponseHeaders()", () => {
                     const mock = mockAssimilate(headerFilter, "headerFilter", {
                         mock: ["filterResponseHeaders"],
-                        whitelist: ["incognitoWatcher", "domainUtils", "onHeadersReceived"],
+                        whitelist: ["incognitoWatcher", "onHeadersReceived"],
                     });
                     if (hasTab === false) mocks.incognitoWatcher.hasTab.expect(42).andReturn(hasTab);
 
-                    mocks.domainUtils.getValidHostname.expect(details.url).andReturn(fallbackDomain);
                     mock.filterResponseHeaders
-                        .expect(responseHeaders, fallbackDomain, COOKIE_STORE_ID, 42)
+                        .expect(responseHeaders, hostname, COOKIE_STORE_ID, 42)
                         .andReturn(filteredResponseHeaders);
 
                     expect(headerFilter["onHeadersReceived"](details)).toEqual({
@@ -332,9 +330,8 @@ describe("HeaderFilter", () => {
 
             const mock = mockAssimilate(headerFilter, "headerFilter", {
                 mock: ["shouldCookieBeBlocked"],
-                whitelist: ["filterResponseHeaders", "cookieUtils", "messageUtil", "domainUtils"],
+                whitelist: ["filterResponseHeaders", "cookieUtils", "messageUtil"],
             });
-            mocks.domainUtils.removeLeadingDot.expect(".c.com").andReturn("c.com").times(5);
             mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "free").andReturn(false);
             mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "a").andReturn(true);
             mock.shouldCookieBeBlocked.expect(42, "c.com", COOKIE_STORE_ID, "a").andReturn(true);

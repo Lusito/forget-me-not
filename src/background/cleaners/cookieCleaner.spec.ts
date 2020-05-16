@@ -33,25 +33,23 @@ describe("CookieCleaner", () => {
         cookieCleaner = container.resolve(CookieCleaner);
     });
 
-    describe("constructor", () => {
-        it("should register onCookieChanged correctly", () => {
-            const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
-                mock: ["onCookieChanged"],
-                whitelist: [""],
-            });
-            const changeInfo = {} as any;
-            mock.onCookieChanged.expect(changeInfo);
-            onCookieChanged.emit(changeInfo);
+    it("should register onCookieChanged correctly", () => {
+        const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+            mock: ["onCookieChanged"],
+            whitelist: [""],
         });
-        it("should register snoozeListener correctly", () => {
-            const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
-                mock: ["setSnoozing"],
-                whitelist: [""],
-            });
-            const snoozing = {} as any;
-            mock.setSnoozing.expect(snoozing);
-            snoozeListener.emit(snoozing);
+        const changeInfo = {} as any;
+        mock.onCookieChanged.expect(changeInfo);
+        onCookieChanged.emit(changeInfo);
+    });
+    it("should register snoozeListener correctly", () => {
+        const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
+            mock: ["setSnoozing"],
+            whitelist: [""],
         });
+        const snoozing = {} as any;
+        mock.setSnoozing.expect(snoozing);
+        snoozeListener.emit(snoozing);
     });
 
     describe("clean", () => {

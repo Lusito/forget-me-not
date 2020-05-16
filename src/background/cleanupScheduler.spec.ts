@@ -1,26 +1,63 @@
 import { container } from "tsyringe";
-import { advanceTime } from "mockzilla";
+import { advanceTime, mockAssimilate, whitelistPropertyAccess } from "mockzilla";
 
 import { CleanupScheduler } from "./cleanupScheduler";
 import { mocks } from "../testUtils/mocks";
+import { mockListenerSet, MockzillaListenerSetOf } from "../testUtils/mockListenerSet";
 
 describe("CleanupScheduler", () => {
     let handler: jest.Mock;
     let cleanupScheduler: CleanupScheduler;
+    let snoozeListener: MockzillaListenerSetOf<typeof mocks.snoozeManager.listeners>;
 
     function createScheduler(enabled: boolean, snoozing: boolean, delay = 1) {
+        snoozeListener = mockListenerSet(mocks.snoozeManager.listeners);
         handler = jest.fn();
         mocks.settings.get.expect("domainLeave.enabled").andReturn(enabled);
         mocks.settings.get.expect("domainLeave.delay").andReturn(delay);
         mocks.messageUtil.mockAllow();
 
         mocks.snoozeManager.isSnoozing.expect().andReturn(snoozing);
-        mocks.snoozeManager.listeners.add.expect(expect.anything());
         cleanupScheduler = container.resolve(CleanupScheduler);
 
         mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
         cleanupScheduler.init(handler);
     }
+    afterEach(() => {
+        cleanupScheduler = undefined as any;
+    });
+
+    it("should register snoozeListener correctly", () => {
+        createScheduler(false, false);
+        const mock = mockAssimilate(cleanupScheduler, "cleanupScheduler", {
+            mock: ["setSnoozing"],
+            whitelist: [],
+        });
+        const snoozing = {} as any;
+        mock.setSnoozing.expect(snoozing);
+        snoozeListener.emit(snoozing);
+    });
+
+    it("should register settingsChanged listener correctly", () => {
+        createScheduler(false, false);
+        const mock = mockAssimilate(cleanupScheduler, "cleanupScheduler", {
+            mock: ["updateSettings"],
+            whitelist: [],
+        });
+        const sender = {} as any;
+        const callback = mocks.messageUtil.receive.getMockCalls()[0][1];
+
+        // Do nothing if unknown property
+        callback(["instantly.enabled"], sender);
+        callback([], sender);
+        
+        // Call updateSettings if a matching settings updated
+        mock.updateSettings.expect().times(4);
+        callback(["domainLeave.enabled", "domainLeave.delay"], sender);
+        callback(["domainLeave.delay"], sender);
+        callback(["domainLeave.enabled"], sender);
+        callback(["instantly.enabled", "domainLeave.enabled"], sender);
+    });
 
     describe("schedule", () => {
         describe("domainLeave.enabled = false", () => {
@@ -103,7 +140,7 @@ describe("CleanupScheduler", () => {
                     "google.jp",
                 ]);
                 expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveLength(0);
-                cleanupScheduler.setSnoozing(true);
+                cleanupScheduler["setSnoozing"](true);
                 expect(cleanupScheduler.getScheduledDomainsToClean()).toHaveLength(0);
                 expect(cleanupScheduler.getSnoozedDomainsToClean()).toHaveSameMembers([
                     "google.de",
@@ -154,6 +191,46 @@ describe("CleanupScheduler", () => {
                 advanceTime(1);
                 expect(handler).toHaveBeenCalledTimes(1);
                 expect(handler).toHaveBeenCalledWith("google.com");
+            });
+        });
+    });
+
+    describe("setSnoozing", () => {
+        beforeEach(() => createScheduler(false, false));
+
+        it("should set snoozing", async () => {
+            await cleanupScheduler["setSnoozing"](true);
+            expect(cleanupScheduler["snoozing"]).toBe(true);
+            await cleanupScheduler["setSnoozing"](false);
+            expect(cleanupScheduler["snoozing"]).toBe(false);
+        });
+        describe("with snoozing=true", () => {
+            it("should cancel countdowns and remember them for later", async () => {
+                whitelistPropertyAccess(cleanupScheduler, "snoozedDomains", "domainTimeouts", "setSnoozing", "snoozing");
+                cleanupScheduler["snoozedDomains"].c = true;
+                cleanupScheduler["domainTimeouts"].a = 10 as any;
+                cleanupScheduler["domainTimeouts"].b = 11 as any;
+                await cleanupScheduler["setSnoozing"](true);
+                expect(cleanupScheduler["snoozedDomains"]).toEqual({
+                    a: true,
+                    b: true,
+                    c: true,
+                });
+                expect(cleanupScheduler["domainTimeouts"]).toEqual({});
+            });
+        });
+        describe("with snoozing=false", () => {
+            it("should reschedule cleanups", async () => {
+                cleanupScheduler["snoozedDomains"].a = true;
+                cleanupScheduler["snoozedDomains"].b = true;
+                const mock = mockAssimilate(cleanupScheduler, "cleanupScheduler", {
+                    mock: ["schedule"],
+                    whitelist: ["setSnoozing", "snoozing", "snoozedDomains"]
+                });
+                mock.schedule.expect("a").andResolve();
+                mock.schedule.expect("b").andResolve();
+                await cleanupScheduler["setSnoozing"](false);
+                expect(cleanupScheduler["snoozedDomains"]).toEqual({});
             });
         });
     });

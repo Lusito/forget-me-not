@@ -81,7 +81,7 @@ export class CleanupScheduler {
         }
     }
 
-    public async setSnoozing(snoozing: boolean) {
+    private async setSnoozing(snoozing: boolean) {
         this.snoozing = snoozing;
         if (snoozing) {
             // cancel countdowns and remember them for later

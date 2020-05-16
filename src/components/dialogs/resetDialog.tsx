@@ -6,18 +6,20 @@ import { Settings } from "../../shared/settings";
 
 export function ResetDialog() {
     const settings = container.resolve(Settings);
+    const getCleanupDataToKeep = () => ({
+        "domainsToClean": settings.get("domainsToClean"),
+        "domainsToClean.indexedDB": settings.get("domainsToClean.indexedDB"),
+        "domainsToClean.serviceWorkers": settings.get("domainsToClean.serviceWorkers"),
+        "downloadsToClean": settings.get("downloadsToClean"),
+    });
     function onResetSettingsAndRules() {
         hideDialog(dialog);
-        settings.setAll({
-            domainsToClean: settings.get("domainsToClean"),
-            downloadsToClean: settings.get("downloadsToClean"),
-        });
+        settings.setAll(getCleanupDataToKeep());
     }
     function onResetSettings() {
         hideDialog(dialog);
         settings.setAll({
-            domainsToClean: settings.get("domainsToClean"),
-            downloadsToClean: settings.get("downloadsToClean"),
+            ...getCleanupDataToKeep(),
             rules: settings.get("rules"),
             fallbackRule: settings.get("fallbackRule"),
             whitelistNoTLD: settings.get("whitelistNoTLD"),

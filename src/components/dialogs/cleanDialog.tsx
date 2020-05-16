@@ -15,19 +15,39 @@ interface CleanDialogProps {
     button: HTMLElement;
 }
 
-type CleanupRow = [string, SettingsKey, SettingsKey | null];
+interface CleanupRow {
+    i18n: string;
+    manualCleanup: SettingsKey;
+    manualCleanupRules?: SettingsKey;
+}
+
 const CLEANUP_SETTINGS: CleanupRow[] = [
-    // i18n, manualCleanup, manualCleanupRules
-    ["setting_cookies", "cleanAll.cookies", "cleanAll.cookies.applyRules"],
-    ["setting_local_storage", "cleanAll.localStorage", "cleanAll.localStorage.applyRules"],
-    ["setting_history", "cleanAll.history", "cleanAll.history.applyRules"],
-    ["setting_downloads", "cleanAll.downloads", "cleanAll.downloads.applyRules"],
-    ["setting_form_data", "cleanAll.formData", null],
-    ["setting_passwords", "cleanAll.passwords", null],
-    ["setting_indexed_db", "cleanAll.indexedDB", null],
-    ["setting_plugin_data", "cleanAll.pluginData", null],
-    ["setting_service_workers", "cleanAll.serviceWorkers", null],
-    ["setting_cache", "cleanAll.cache", null],
+    { i18n: "setting_cookies", manualCleanup: "cleanAll.cookies", manualCleanupRules: "cleanAll.cookies.applyRules" },
+    {
+        i18n: "setting_local_storage",
+        manualCleanup: "cleanAll.localStorage",
+        manualCleanupRules: "cleanAll.localStorage.applyRules",
+    },
+    { i18n: "setting_history", manualCleanup: "cleanAll.history", manualCleanupRules: "cleanAll.history.applyRules" },
+    {
+        i18n: "setting_downloads",
+        manualCleanup: "cleanAll.downloads",
+        manualCleanupRules: "cleanAll.downloads.applyRules",
+    },
+    { i18n: "setting_form_data", manualCleanup: "cleanAll.formData" },
+    { i18n: "setting_passwords", manualCleanup: "cleanAll.passwords" },
+    {
+        i18n: "setting_indexed_db",
+        manualCleanup: "cleanAll.indexedDB",
+        manualCleanupRules: "cleanAll.indexedDB.applyRules",
+    },
+    { i18n: "setting_plugin_data", manualCleanup: "cleanAll.pluginData" },
+    {
+        i18n: "setting_service_workers",
+        manualCleanup: "cleanAll.serviceWorkers",
+        manualCleanupRules: "cleanAll.serviceWorkers.applyRules",
+    },
+    { i18n: "setting_cache", manualCleanup: "cleanAll.cache" },
 ];
 
 export function CleanDialog({ button }: CleanDialogProps) {
@@ -39,7 +59,7 @@ export function CleanDialog({ button }: CleanDialogProps) {
         hideDialog(dialog);
     }
 
-    const rows = CLEANUP_SETTINGS.map(([i18n, manualCleanup, manualCleanupRules]) => {
+    const rows = CLEANUP_SETTINGS.map(({ i18n, manualCleanup, manualCleanupRules }) => {
         return (
             <tr>
                 <td data-i18n={i18n} />

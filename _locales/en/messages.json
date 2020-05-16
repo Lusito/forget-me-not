@@ -122,7 +122,7 @@
 
   "__WET_GROUP__3": { "message": "Settings" },
   "settings_unsupported_checkbox@title": {
-    "message": "Unsupported on this platform."
+    "message": "This browser does not support this option (yet)"
   },
   "perform_manual_cleanup": {
     "message": "Perform manual cleanup"

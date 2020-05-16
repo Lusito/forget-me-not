@@ -9,24 +9,65 @@ import { SettingsKey } from "../../../shared/defaultSettings";
 import icons from "../../../icons";
 import { BrowserInfo } from "../../../shared/browserInfo";
 
-type CleanupRow = [string, SettingsKey, SettingsKey | null, SettingsKey | null, SettingsKey | null, SettingsKey | null];
-// prettier-ignore
+interface CleanupRow {
+    i18n: string;
+    startup: SettingsKey;
+    startupRules?: SettingsKey;
+    domainLeave?: SettingsKey;
+    instantly?: SettingsKey;
+    instantlyRules?: SettingsKey;
+}
+
 const CLEANUP_SETTINGS: CleanupRow[] = [
-    // i18n, startup, startupRules, domainLeave, instantly, instantlyRules
-    ["setting_cookies", "startup.cookies", "startup.cookies.applyRules", "domainLeave.cookies", "instantly.cookies", null],
-    ["setting_local_storage", "startup.localStorage", "startup.localStorage.applyRules", "domainLeave.localStorage", null, null],
-    ["setting_history", "startup.history", "startup.history.applyRules", "domainLeave.history", "instantly.history", "instantly.history.applyRules"],
-    ["setting_downloads", "startup.downloads", "startup.downloads.applyRules", "domainLeave.downloads", "instantly.downloads", "instantly.downloads.applyRules"],
-    ["setting_form_data", "startup.formData", null, null, null, null],
-    ["setting_passwords", "startup.passwords", null, null, null, null],
-    ["setting_indexed_db", "startup.indexedDB", null, null, null, null],
-    ["setting_plugin_data", "startup.pluginData", null, null, null, null],
-    ["setting_service_workers", "startup.serviceWorkers", null, null, null, null],
-    ["setting_cache", "startup.cache", null, null, null, null],
+    {
+        i18n: "setting_cookies",
+        startup: "startup.cookies",
+        startupRules: "startup.cookies.applyRules",
+        domainLeave: "domainLeave.cookies",
+        instantly: "instantly.cookies",
+    },
+    {
+        i18n: "setting_local_storage",
+        startup: "startup.localStorage",
+        startupRules: "startup.localStorage.applyRules",
+        domainLeave: "domainLeave.localStorage",
+    },
+    {
+        i18n: "setting_history",
+        startup: "startup.history",
+        startupRules: "startup.history.applyRules",
+        domainLeave: "domainLeave.history",
+        instantly: "instantly.history",
+        instantlyRules: "instantly.history.applyRules",
+    },
+    {
+        i18n: "setting_downloads",
+        startup: "startup.downloads",
+        startupRules: "startup.downloads.applyRules",
+        domainLeave: "domainLeave.downloads",
+        instantly: "instantly.downloads",
+        instantlyRules: "instantly.downloads.applyRules",
+    },
+    { i18n: "setting_form_data", startup: "startup.formData" },
+    { i18n: "setting_passwords", startup: "startup.passwords" },
+    {
+        i18n: "setting_indexed_db",
+        startup: "startup.indexedDB",
+        startupRules: "startup.indexedDB.applyRules",
+        domainLeave: "domainLeave.indexedDB",
+    },
+    { i18n: "setting_plugin_data", startup: "startup.pluginData" },
+    {
+        i18n: "setting_service_workers",
+        startup: "startup.serviceWorkers",
+        startupRules: "startup.serviceWorkers.applyRules",
+        domainLeave: "domainLeave.serviceWorkers",
+    },
+    { i18n: "setting_cache", startup: "startup.cache" },
 ];
 
 export function CleanupTab() {
-    const rows = CLEANUP_SETTINGS.map(([i18n, startup, startupRules, domainLeave, instantly, instantlyRules]) => {
+    const rows = CLEANUP_SETTINGS.map(({ i18n, startup, startupRules, domainLeave, instantly, instantlyRules }) => {
         return (
             <tr>
                 <td data-i18n={i18n} />

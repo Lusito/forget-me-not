@@ -1,10 +1,13 @@
-import { BrowserType } from "./browserInfo";
+import { BrowserType, BrowserInfo } from "./browserInfo";
 import { getSupports } from "./supportsInfo";
 
 const HIGHEST_VERSION = 999999;
 
 describe("getSupports", () => {
-    describe.each([["firefox", BrowserType.FIREFOX], ["firefox", BrowserType.FENNEC]])("with browser=%s", (_, type) => {
+    describe.each([
+        ["firefox", BrowserType.FIREFOX],
+        ["firefox", BrowserType.FENNEC],
+    ])("with browser=%s", (_, type) => {
         const isFirefox = type === BrowserType.FIREFOX;
         describe.each([
             [
@@ -99,14 +102,18 @@ describe("getSupports", () => {
         });
     });
 
-    describe.each([["opera", BrowserType.OPERA], ["internet explorer", BrowserType.IE], ["unknown", BrowserType.UNKNOWN]])("with browser=%s", (type) => {
+    describe.each([
+        ["opera", BrowserType.OPERA],
+        ["internet explorer", BrowserType.IE],
+        ["unknown", BrowserType.UNKNOWN],
+    ])("with browser=%s", (_, type) => {
         // eslint-disable-next-line jest/no-identical-title
         it("should return the correct supports info", () => {
             expect(
                 getSupports({
                     type,
                     versionAsNumber: HIGHEST_VERSION,
-                } as any)
+                } as Partial<BrowserInfo> as any)
             ).toEqual({
                 removeLocalStorageByHostname: false,
                 firstPartyIsolation: false,

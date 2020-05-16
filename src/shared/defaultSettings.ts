@@ -10,7 +10,12 @@ export interface RuleDefinition {
     temporary?: true;
 }
 
-export const EXPORT_IGNORE_KEYS: SettingsKey[] = ["domainsToClean", "downloadsToClean"];
+export const EXPORT_IGNORE_KEYS: SettingsKey[] = [
+    "domainsToClean",
+    "domainsToClean.indexedDB",
+    "domainsToClean.serviceWorkers",
+    "downloadsToClean",
+];
 
 export type BooleanMap = { [s: string]: boolean };
 
@@ -31,6 +36,8 @@ export class DefaultSettingsProvider {
             "whitelistFileSystem": true,
             "fallbackRule": CleanupType.LEAVE,
             "domainsToClean": {} as BooleanMap,
+            "domainsToClean.indexedDB": {} as BooleanMap,
+            "domainsToClean.serviceWorkers": {} as BooleanMap,
             "downloadsToClean": {} as BooleanMap,
             "showBadge": true,
             "initialTab": "this_tab",
@@ -47,8 +54,10 @@ export class DefaultSettingsProvider {
             "cleanAll.formData": false,
             "cleanAll.passwords": false,
             "cleanAll.indexedDB": true,
+            "cleanAll.indexedDB.applyRules": true,
             "cleanAll.pluginData": true,
             "cleanAll.serviceWorkers": true,
+            "cleanAll.serviceWorkers.applyRules": true,
             "cleanAll.serverBoundCertificates": false,
             "cleanAll.cache": false,
 
@@ -60,6 +69,8 @@ export class DefaultSettingsProvider {
             "domainLeave.delay": 120,
             "domainLeave.cookies": true,
             "domainLeave.localStorage": true,
+            "domainLeave.indexedDB": true,
+            "domainLeave.serviceWorkers": true,
             "domainLeave.history": false,
             "domainLeave.downloads": false,
 
@@ -82,8 +93,10 @@ export class DefaultSettingsProvider {
             "startup.formData": false,
             "startup.passwords": false,
             "startup.indexedDB": true,
+            "startup.indexedDB.applyRules": true,
             "startup.pluginData": true,
             "startup.serviceWorkers": true,
+            "startup.serviceWorkers.applyRules": true,
             "startup.serverBoundCertificates": false,
             "startup.cache": false,
 

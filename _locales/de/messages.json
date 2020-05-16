@@ -159,7 +159,7 @@
 
   "__WET_GROUP__3": { "message": "Settings" },
   "settings_unsupported_checkbox@title": {
-    "message": "Auf dieser Plattform nicht verfügbar.",
+    "message": "Dieser Browser unterstützt diese Option (noch) nicht",
     "hash": "99286998bff7ecef26245d3858e4fe0f"
   },
   "perform_manual_cleanup": {

@@ -4,6 +4,8 @@ import { browser, BrowsingData, Tabs } from "webextension-polyfill-ts";
 import { CleanupScheduler } from "./cleanupScheduler";
 import { DownloadCleaner } from "./cleaners/downloadCleaner";
 import { LocalStorageCleaner } from "./cleaners/localStorageCleaner";
+import { IndexedDbCleaner } from "./cleaners/indexedDbCleaner";
+import { ServiceWorkerCleaner } from "./cleaners/serviceWorkerCleaner";
 import { CookieCleaner } from "./cleaners/cookieCleaner";
 import { Cleaner } from "./cleaners/cleaner";
 import { HistoryCleaner } from "./cleaners/historyCleaner";
@@ -33,6 +35,8 @@ export class CleanupManager {
         private readonly settings: Settings,
         private readonly cleanupSchedulerFactory: CleanupSchedulerFactory,
         private readonly localStorageCleaner: LocalStorageCleaner,
+        private readonly indexedDbCleaner: IndexedDbCleaner,
+        private readonly serviceWorkerCleaner: ServiceWorkerCleaner,
         storeUtils: StoreUtils,
         temporaryRuleCleaner: TemporaryRuleCleaner,
         downloadCleaner: DownloadCleaner,
@@ -47,6 +51,8 @@ export class CleanupManager {
         this.cleaners.push(downloadCleaner);
         this.cleaners.push(cookieCleaner);
         this.cleaners.push(localStorageCleaner);
+        this.cleaners.push(indexedDbCleaner);
+        this.cleaners.push(serviceWorkerCleaner);
 
         tabWatcher.domainLeaveListeners.add((cookieStoreId, hostname) => {
             this.getCleanupScheduler(cookieStoreId).schedule(hostname);
@@ -58,6 +64,8 @@ export class CleanupManager {
     public async init(tabs: Tabs.Tab[]) {
         await this.settings.removeTemporaryRules();
         this.localStorageCleaner.init(tabs);
+        this.indexedDbCleaner.init(tabs);
+        this.serviceWorkerCleaner.init(tabs);
 
         if (this.settings.get("startup.enabled")) {
             setTimeout(() => {

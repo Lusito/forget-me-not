@@ -9,7 +9,7 @@ import { RuleManager } from "../../shared/ruleManager";
 import { AbstractStorageCleaner } from "./abstractStorageCleaner";
 
 @singleton()
-export class LocalStorageCleaner extends AbstractStorageCleaner {
+export class IndexedDbCleaner extends AbstractStorageCleaner {
     constructor(
         settings: Settings,
         ruleManager: RuleManager,
@@ -18,12 +18,12 @@ export class LocalStorageCleaner extends AbstractStorageCleaner {
         incognitoWatcher: IncognitoWatcher,
         supports: SupportsInfo
     ) {
-        super(settings, ruleManager, storeUtils, tabWatcher, incognitoWatcher, supports.removeLocalStorageByHostname, {
-            dataType: "localStorage",
-            domainsToClean: "domainsToClean",
-            startupApplyRules: "startup.localStorage.applyRules",
-            cleanAllApplyRules: "cleanAll.localStorage.applyRules",
-            domainLeave: "domainLeave.localStorage",
+        super(settings, ruleManager, storeUtils, tabWatcher, incognitoWatcher, supports.removeIndexedDbByHostname, {
+            dataType: "indexedDB",
+            domainsToClean: "domainsToClean.indexedDB",
+            startupApplyRules: "startup.indexedDB.applyRules",
+            cleanAllApplyRules: "cleanAll.indexedDB.applyRules",
+            domainLeave: "domainLeave.indexedDB",
         });
     }
 }

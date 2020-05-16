@@ -50,7 +50,7 @@ describe("CleanupScheduler", () => {
         // Do nothing if unknown property
         callback(["instantly.enabled"], sender);
         callback([], sender);
-        
+
         // Call updateSettings if a matching settings updated
         mock.updateSettings.expect().times(4);
         callback(["domainLeave.enabled", "domainLeave.delay"], sender);
@@ -206,7 +206,13 @@ describe("CleanupScheduler", () => {
         });
         describe("with snoozing=true", () => {
             it("should cancel countdowns and remember them for later", async () => {
-                whitelistPropertyAccess(cleanupScheduler, "snoozedDomains", "domainTimeouts", "setSnoozing", "snoozing");
+                whitelistPropertyAccess(
+                    cleanupScheduler,
+                    "snoozedDomains",
+                    "domainTimeouts",
+                    "setSnoozing",
+                    "snoozing"
+                );
                 cleanupScheduler["snoozedDomains"].c = true;
                 cleanupScheduler["domainTimeouts"].a = 10 as any;
                 cleanupScheduler["domainTimeouts"].b = 11 as any;
@@ -225,7 +231,7 @@ describe("CleanupScheduler", () => {
                 cleanupScheduler["snoozedDomains"].b = true;
                 const mock = mockAssimilate(cleanupScheduler, "cleanupScheduler", {
                     mock: ["schedule"],
-                    whitelist: ["setSnoozing", "snoozing", "snoozedDomains"]
+                    whitelist: ["setSnoozing", "snoozing", "snoozedDomains"],
                 });
                 mock.schedule.expect("a").andResolve();
                 mock.schedule.expect("b").andResolve();

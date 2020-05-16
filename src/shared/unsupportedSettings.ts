@@ -26,11 +26,17 @@ export class UnsupportedSettings {
                       "cleanAll.passwords",
                       "startup.passwords",
                       "cleanAll.indexedDB",
+                      "cleanAll.indexedDB.applyRules",
                       "startup.indexedDB",
+                      "startup.indexedDB.applyRules",
+                      "domainLeave.indexedDB",
                       "cleanAll.pluginData",
                       "startup.pluginData",
                       "cleanAll.serviceWorkers",
+                      "cleanAll.serviceWorkers.applyRules",
                       "startup.serviceWorkers",
+                      "startup.serviceWorkers.applyRules",
+                      "domainLeave.serviceWorkers",
                   ]
                 : [];
 
@@ -38,6 +44,16 @@ export class UnsupportedSettings {
             this.unsupported.push("cleanAll.localStorage.applyRules");
             this.unsupported.push("domainLeave.localStorage");
             this.unsupported.push("startup.localStorage.applyRules");
+        }
+        if (!supports.removeIndexedDbByHostname) {
+            this.unsupported.push("cleanAll.indexedDB.applyRules");
+            this.unsupported.push("domainLeave.indexedDB");
+            this.unsupported.push("startup.indexedDB.applyRules");
+        }
+        if (!supports.removeServiceWorkersByHostname) {
+            this.unsupported.push("cleanAll.serviceWorkers.applyRules");
+            this.unsupported.push("domainLeave.serviceWorkers");
+            this.unsupported.push("startup.serviceWorkers.applyRules");
         }
     }
 

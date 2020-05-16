@@ -1,4 +1,4 @@
-import { removeLeadingDot, getFirstPartyCookieDomain, getValidHostname } from "./domainUtils";
+import { removeLeadingDot, getFirstPartyCookieDomain, getValidHostname, getFirstPartyDomain } from "./domainUtils";
 
 describe("DomainUtils", () => {
     describe("removeLeadingDot", () => {
@@ -10,6 +10,12 @@ describe("DomainUtils", () => {
         });
     });
 
+    describe("getFirstPartyDomain", () => {
+        it("should return an invalid domain as is", () => {
+            expect(getFirstPartyDomain("@")).toBe("@");
+        });
+    });
+
     describe("getFirstPartyCookieDomain", () => {
         it("should return first party domains for valid cookie domains", () => {
             expect(getFirstPartyCookieDomain("www.google.com")).toBe("google.com");
@@ -18,6 +24,9 @@ describe("DomainUtils", () => {
             expect(getFirstPartyCookieDomain(".michelgagne.blogspot.de")).toBe("michelgagne.blogspot.de");
             expect(getFirstPartyCookieDomain("michelgagne.blogspot.de")).toBe("michelgagne.blogspot.de");
             expect(getFirstPartyCookieDomain("hello.michelgagne.blogspot.de")).toBe("michelgagne.blogspot.de");
+        });
+        it("should return an invalid domain as is", () => {
+            expect(getFirstPartyCookieDomain(".@")).toBe("@");
         });
     });
 

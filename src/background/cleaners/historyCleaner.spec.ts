@@ -4,6 +4,7 @@ import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { HistoryCleaner } from "./historyCleaner";
 import { mocks } from "../../testUtils/mocks";
+import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
 
 describe("HistoryCleaner", () => {
     let historyCleaner: HistoryCleaner;
@@ -20,8 +21,6 @@ describe("HistoryCleaner", () => {
             historyCleaner = container.resolve(HistoryCleaner);
         });
     });
-
-    // fixme: cleanDomainOnLeave
 
     describe("with history API", () => {
         let onVisited: MockzillaEventOf<typeof mockBrowser.history.onVisited>;
@@ -162,6 +161,51 @@ describe("HistoryCleaner", () => {
                         expect(typeSet.history).toBe(false);
                     });
                 });
+            });
+        });
+        describe("cleanDomainOnLeave", () => {
+            it("does nothing if domainLeave.enabled=false", async () => {
+                whitelistPropertyAccess(historyCleaner, "settings", "cleanDomainOnLeave");
+                mocks.settings.get.expect("domainLeave.enabled").andReturn(false);
+                await historyCleaner.cleanDomainOnLeave("mock", "www.some-domain.com");
+            });
+            it("does nothing if domainLeave.history=false", async () => {
+                whitelistPropertyAccess(historyCleaner, "settings", "cleanDomainOnLeave");
+                mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
+                mocks.settings.get.expect("domainLeave.history").andReturn(false);
+                await historyCleaner.cleanDomainOnLeave("mock", "www.some-domain.com");
+            });
+            it("does nothing if tabWatcher.containsDomain returns true", async () => {
+                whitelistPropertyAccess(historyCleaner, "settings", "tabWatcher", "cleanDomainOnLeave");
+                mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
+                mocks.settings.get.expect("domainLeave.history").andReturn(true);
+                mocks.tabWatcher.containsDomain.expect("www.some-domain.com").andReturn(true);
+                await historyCleaner.cleanDomainOnLeave("mock", "www.some-domain.com");
+            });
+            it("deletes history entries if tabWatcher.containsDomain returns false", async () => {
+                const mock = mockAssimilate(historyCleaner, "historyCleaner", {
+                    mock: ["getUrlsToClean"],
+                    whitelist: ["settings", "tabWatcher", "cleanDomainOnLeave"],
+                });
+                mocks.settings.get.expect("domainLeave.enabled").andReturn(true);
+                mocks.settings.get.expect("domainLeave.history").andReturn(true);
+                mocks.tabWatcher.containsDomain.expect("www.some-domain.com").andReturn(false);
+
+                const items = [
+                    { url: "http://www.some-domain.com", id: "0" },
+                    { url: "http://xxx.some-domain.com", id: "1" },
+                    { url: "http://www.other-domain.com", id: "2" },
+                    { url: "", id: "3" },
+                ];
+                mockBrowser.history.search.expect({ text: "some-domain.com" }).andResolve(items);
+
+                const urlsToClean = ["http://www.some-domain.com", "http://xxx.some-domain.com"];
+                mock.getUrlsToClean.expect(items.slice(0, 2), false, true).andReturn(urlsToClean);
+
+                mockBrowser.history.deleteUrl.expect({ url: "http://www.some-domain.com" }).andResolve();
+                mockBrowser.history.deleteUrl.expect({ url: "http://xxx.some-domain.com" }).andResolve();
+
+                await historyCleaner.cleanDomainOnLeave("mock", "www.some-domain.com");
             });
         });
     });

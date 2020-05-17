@@ -110,10 +110,10 @@ describe("getSupports", () => {
         // eslint-disable-next-line jest/no-identical-title
         it("should return the correct supports info", () => {
             expect(
-                getSupports({
+                getSupports(({
                     type,
                     versionAsNumber: HIGHEST_VERSION,
-                } as Partial<BrowserInfo> as any)
+                } as Partial<BrowserInfo>) as any)
             ).toEqual({
                 removeLocalStorageByHostname: false,
                 firstPartyIsolation: false,

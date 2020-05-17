@@ -129,7 +129,7 @@ describe("AbstractStorageCleaner", () => {
                     mock.updateDomainsToClean.expect({}).andResolve();
                     (abstractStorageCleaner as any).supportsCleanupByHostname = true;
                     mocks.settings.get.expect(settingsKey as SettingsKey).andReturn(false);
-                    
+
                     const typeSet = { mockStorage: true };
 
                     await abstractStorageCleaner.clean(typeSet as any, startup);
@@ -157,7 +157,7 @@ describe("AbstractStorageCleaner", () => {
             it("should do nothing if no domains to clean", async () => {
                 const mock = mockAssimilate(abstractStorageCleaner, "abstractStorageCleaner", {
                     mock: ["getDomainsToClean"],
-                    whitelist: ["cleanWithRules"]
+                    whitelist: ["cleanWithRules"],
                 });
                 mock.getDomainsToClean.expect(startup).andReturn([]);
                 await abstractStorageCleaner["cleanWithRules"](startup);
@@ -167,7 +167,7 @@ describe("AbstractStorageCleaner", () => {
                 it("should call removeFromDomainsToClean and cleanDomains for every cookie store", async () => {
                     const mock = mockAssimilate(abstractStorageCleaner, "abstractStorageCleaner", {
                         mock: ["getDomainsToClean", "removeFromDomainsToClean", "cleanDomains"],
-                        whitelist: ["cleanWithRules", "storeUtils"]
+                        whitelist: ["cleanWithRules", "storeUtils"],
                     });
                     mock.getDomainsToClean.expect(startup).andReturn(hostnames);
                     mock.removeFromDomainsToClean.expect(hostnames).andResolve();

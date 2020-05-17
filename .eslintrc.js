@@ -8,6 +8,7 @@ module.exports = {
         "@typescript-eslint/prefer-nullish-coalescing": "off",
         "@typescript-eslint/prefer-optional-chain": "warn",
         "react/static-property-placement": "off",
+        "jest/no-standalone-expect": "off", // https://github.com/jest-community/eslint-plugin-jest/issues/354
         // fixme: move to shared config
         "require-await": "error",
         "no-useless-constructor": "off",

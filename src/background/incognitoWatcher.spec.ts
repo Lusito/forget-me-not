@@ -3,7 +3,6 @@ import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { IncognitoWatcher } from "./incognitoWatcher";
 import { quickTab } from "../testUtils/quickHelpers";
-import { booleanVariations } from "../testUtils/testHelpers";
 import { mocks } from "../testUtils/mocks";
 
 const COOKIE_STORE_ID = "mock";
@@ -43,7 +42,7 @@ describe("IncognitoWatcher", () => {
             onCreated.emit(quickTab("", COOKIE_STORE_ID, true));
             expect(incognitoWatcher.hasTab(42)).toBe(false);
         });
-        describe.each(booleanVariations(1))("with incognito = %s", (incognito) => {
+        describe.each.boolean("with %s", (incognito) => {
             it(`should return ${incognito} for the tab when it exists`, () => {
                 incognitoWatcher.init([]);
                 const tab = quickTab("", COOKIE_STORE_ID, incognito);
@@ -61,7 +60,7 @@ describe("IncognitoWatcher", () => {
             onCreated.emit(quickTab("", COOKIE_STORE_ID, true));
             expect(incognitoWatcher.hasCookieStore("not-existing")).toBe(false);
         });
-        describe.each(booleanVariations(1))("with incognito = %s", (incognito) => {
+        describe.each.boolean("with %s", (incognito) => {
             it(`should return ${incognito} for the cookie store, even after the tab was removed`, () => {
                 incognitoWatcher.init([]);
                 const tab = quickTab("", COOKIE_STORE_ID, incognito);

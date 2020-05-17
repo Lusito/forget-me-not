@@ -4,7 +4,6 @@ import { deepMock, mockAssimilate } from "mockzilla";
 import { TabWatcher } from "./tabWatcher";
 import { mocks } from "../testUtils/mocks";
 import { quickTab } from "../testUtils/quickHelpers";
-import { booleanVariations } from "../testUtils/testHelpers";
 import { TabInfo } from "./tabInfo";
 
 const COOKIE_STORE_ID = "mock";
@@ -159,7 +158,7 @@ describe("TabWatcher", () => {
         });
     });
     describe("cookieStoreContainsDomain", () => {
-        describe.each(booleanVariations(1))("with checkNext=%j", (checkNext) => {
+        describe.each.boolean("with %s", (checkNext) => {
             it("should return false for non-existing cookie stores", () => {
                 prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 expect(tabWatcher.cookieStoreContainsDomain("non-existing", "www.google.com", checkNext)).toBe(false);
@@ -239,7 +238,7 @@ describe("TabWatcher", () => {
         });
     });
     describe("cookieStoreContainsDomainFP", () => {
-        describe.each(booleanVariations(1))("with deep=%j", (deep) => {
+        describe.each.boolean("with %s", (deep) => {
             it("should return false for non-existing cookie stores", () => {
                 prepareTab("http://www.google.com", COOKIE_STORE_ID);
                 expect(tabWatcher.cookieStoreContainsDomainFP("non-existing", "google.com", deep)).toBe(false);

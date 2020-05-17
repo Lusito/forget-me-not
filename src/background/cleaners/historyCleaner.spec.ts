@@ -4,7 +4,6 @@ import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
 
 import { HistoryCleaner } from "./historyCleaner";
 import { mocks } from "../../testUtils/mocks";
-import { booleanVariations } from "../../testUtils/testHelpers";
 
 describe("HistoryCleaner", () => {
     let historyCleaner: HistoryCleaner;
@@ -88,12 +87,12 @@ describe("HistoryCleaner", () => {
             beforeEach(() => {
                 typeSet.history = true;
             });
-            it.each(booleanVariations(1))("does nothing if typeset.history=false with startup=%j", async (startup) => {
+            it.each.boolean("does nothing if typeset.history=false with %s", async (startup) => {
                 typeSet.history = false;
                 await historyCleaner.clean(typeSet, startup);
                 expect(typeSet.history).toBe(false);
             });
-            describe.each(booleanVariations(1))("with startup=%j", (startup) => {
+            describe.each.boolean("with %s", (startup) => {
                 it("does nothing if the respective applyRules setting is false", async () => {
                     mocks.settings.get
                         .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
@@ -101,7 +100,7 @@ describe("HistoryCleaner", () => {
                     await historyCleaner.clean(typeSet, startup);
                     expect(typeSet.history).toBe(true);
                 });
-                describe.each(booleanVariations(1))("with protectOpenDomains=%j", (protectOpenDomains) => {
+                describe.each.boolean("with %s", (protectOpenDomains) => {
                     it("should clean up nothing if there are no history items", async () => {
                         mocks.settings.get
                             .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")

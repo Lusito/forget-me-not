@@ -4,4 +4,7 @@ declare namespace jest {
         toHaveSameMembers: (expectedArray: any[]) => void;
         toHaveSameOrderedMembers: (expectedArray: any[]) => void;
     }
+    interface Each {
+        boolean: (text: string, callback: (...value: boolean[]) => any) => void;
+    }
 }

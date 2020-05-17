@@ -6,6 +6,7 @@ import { container } from "tsyringe";
 import { mockTime } from "mockzilla";
 
 import "mockzilla-webextension";
+import { setupJestEachBoolean } from "./testHelpers";
 
 mockTime();
 
@@ -69,3 +70,5 @@ expect.extend({
 beforeEach(() => {
     container.reset();
 });
+
+setupJestEachBoolean();

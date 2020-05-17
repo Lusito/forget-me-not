@@ -8,6 +8,7 @@ import { TabWatcher } from "../tabWatcher";
 import { IncognitoWatcher } from "../incognitoWatcher";
 import { getValidHostname } from "../../shared/domainUtils";
 import { RuleManager } from "../../shared/ruleManager";
+import { BooleanMap } from "../../shared/defaultSettings";
 
 interface AbstractStorageCleanupKeys {
     dataType: "localStorage" | "indexedDB" | "serviceWorkers";
@@ -53,27 +54,33 @@ export abstract class AbstractStorageCleaner extends Cleaner {
         if (!this.incognitoWatcher.hasCookieStore(cookieStoreId)) {
             const domainsToClean = { ...this.settings.get(this.keys.domainsToClean) };
             domainsToClean[hostname] = true;
-            this.settings.set(this.keys.domainsToClean, domainsToClean);
-            this.settings.save();
+            this.updateDomainsToClean(domainsToClean);
         }
     };
 
     public async clean(typeSet: BrowsingData.DataTypeSet, startup: boolean) {
         if (typeSet[this.keys.dataType] && this.supportsCleanupByHostname) {
-            const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
             if (this.settings.get(startup ? this.keys.startupApplyRules : this.keys.cleanAllApplyRules)) {
                 typeSet[this.keys.dataType] = false;
-                const ids = await this.storeUtils.getAllCookieStoreIds();
-                const hostnames = this.getDomainsToClean(startup, protectOpenDomains);
-                if (hostnames.length) {
-                    await this.removeFromDomainsToClean(hostnames);
-                    await Promise.all(ids.map((id) => this.cleanDomains(id, hostnames)));
-                }
+                await this.cleanWithRules(startup);
             } else {
-                this.settings.set(this.keys.domainsToClean, {});
-                await this.settings.save();
+                await this.updateDomainsToClean({});
             }
         }
+    }
+
+    private async cleanWithRules(startup: boolean) {
+        const hostnames = this.getDomainsToClean(startup);
+        if (hostnames.length) {
+            const ids = await this.storeUtils.getAllCookieStoreIds();
+            await this.removeFromDomainsToClean(hostnames);
+            await Promise.all(ids.map((id) => this.cleanDomains(id, hostnames)));
+        }
+    }
+
+    private async updateDomainsToClean(domains: BooleanMap) {
+        this.settings.set(this.keys.domainsToClean, domains);
+        await this.settings.save();
     }
 
     public async cleanDomainOnLeave(storeId: string, domain: string) {
@@ -97,8 +104,7 @@ export abstract class AbstractStorageCleaner extends Cleaner {
         for (const hostname of hostnames) {
             if (!this.tabWatcher.containsDomain(hostname)) delete domainsToClean[hostname];
         }
-        this.settings.set(this.keys.domainsToClean, domainsToClean);
-        await this.settings.save();
+        await this.updateDomainsToClean(domainsToClean);
     }
 
     private async cleanDomains(storeId: string, hostnames: string[]) {
@@ -119,14 +125,11 @@ export abstract class AbstractStorageCleaner extends Cleaner {
         return this.ruleManager.isDomainProtected(domain, false, ignoreStartupType);
     }
 
-    private getDomainsToClean(ignoreStartupType: boolean, protectOpenDomains: boolean) {
-        const domainsToClean = this.settings.get(this.keys.domainsToClean);
-        const result = [];
-        for (const domain in domainsToClean) {
-            if (domain in domainsToClean && !this.isDomainProtected(domain, ignoreStartupType, protectOpenDomains))
-                result.push(domain);
-        }
-        return result;
+    private getDomainsToClean(startup: boolean) {
+        const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
+        return Object.keys(this.settings.get(this.keys.domainsToClean)).filter(
+            (domain) => !this.isDomainProtected(domain, startup, protectOpenDomains)
+        );
     }
 
     private isStorageProtected(domain: string) {

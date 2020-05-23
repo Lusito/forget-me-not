@@ -34,7 +34,7 @@ describe("MessageUtil", () => {
                     action: event1,
                     params: data1,
                 })
-                .andResolve({});
+                .andResolve({} as any); // fixme: mockzilla bug
             await messageUtil.send(event1, data1);
         });
         it("should swallow exceptions", async () => {

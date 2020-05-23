@@ -1,10 +1,10 @@
 import { BrowsingData, History } from "webextension-polyfill-ts";
 import { container } from "tsyringe";
 import { mockEvent, MockzillaEventOf } from "mockzilla-webextension";
+import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
 
 import { HistoryCleaner } from "./historyCleaner";
 import { mocks } from "../../testUtils/mocks";
-import { whitelistPropertyAccess, mockAssimilate } from "mockzilla";
 
 describe("HistoryCleaner", () => {
     let historyCleaner: HistoryCleaner;

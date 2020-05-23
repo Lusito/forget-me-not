@@ -59,7 +59,7 @@
     "typeface-open-sans": "0.0.75",
     "typescript": "^3.9.2",
     "web-ext": "^4.2.0",
-    "webextension-polyfill-ts": "^0.15.0",
+    "webextension-polyfill-ts": "^0.16.0",
     "wet-layer": "^1.0.4"
   }
 }

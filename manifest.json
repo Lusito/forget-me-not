@@ -5,7 +5,7 @@
   "author": "Santo Pfingsten",
   "default_locale": "en",
   "version": "3.0.0",
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "forget-me-not@lusito.info",
       "strict_min_version": "57.0"

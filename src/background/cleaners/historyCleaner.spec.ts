@@ -92,28 +92,23 @@ describe("HistoryCleaner", () => {
                 expect(typeSet.history).toBe(false);
             });
             describe.each.boolean("with %s", (startup) => {
+                const applyRulesKey = startup ? "startup.history.applyRules" : "cleanAll.history.applyRules";
+
                 it("does nothing if the respective applyRules setting is false", async () => {
-                    mocks.settings.get
-                        .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
-                        .andReturn(false);
+                    mocks.settings.get.expect(applyRulesKey).andReturn(false);
                     await historyCleaner.clean(typeSet, startup);
                     expect(typeSet.history).toBe(true);
                 });
                 describe.each.boolean("with %s", (protectOpenDomains) => {
                     it("should clean up nothing if there are no history items", async () => {
-                        mocks.settings.get
-                            .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
-                            .andReturn(true);
+                        mocks.settings.get.expect(applyRulesKey).andReturn(true);
                         const historyItems: History.HistoryItem[] = [];
                         mockBrowser.history.search.expect({ text: "" }).andResolve(historyItems);
                         await historyCleaner.clean(typeSet, startup);
                         expect(typeSet.history).toBe(false);
                     });
-                    // fixme: this is an unreadable mess.. split into multiple its?
                     it("should clean up if the respective applyRules setting is true", async () => {
-                        mocks.settings.get
-                            .expect(startup ? "startup.history.applyRules" : "cleanAll.history.applyRules")
-                            .andReturn(true);
+                        mocks.settings.get.expect(applyRulesKey).andReturn(true);
                         const data = [
                             {
                                 url: "http://www.google.com/path1.html",

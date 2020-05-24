@@ -57,7 +57,7 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
 export function CleanDialog({ button }: CleanDialogProps) {
     function onOK() {
         hideDialog(dialog);
-        container.resolve(MessageUtil).send("cleanAllNow");
+        container.resolve(MessageUtil).cleanAllNow.send();
     }
     function onCancel() {
         hideDialog(dialog);

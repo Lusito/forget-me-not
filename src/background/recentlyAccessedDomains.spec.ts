@@ -25,8 +25,8 @@ describe("RecentlyAccessedDomains", () => {
     function createRAD(enabled: boolean, limit = 5) {
         prepareApplySettings(enabled, limit);
 
-        mocks.messageUtil.receive.expect("getRecentlyAccessedDomains", expect.anything());
-        mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
+        mocks.messageUtil.getRecentlyAccessedDomains.receive.expect(expect.anything());
+        mocks.messageUtil.settingsChanged.receive.expect(expect.anything());
         mocks.messageUtil.mockAllow();
         mocks.incognitoWatcher.mockAllow();
         mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);

@@ -33,7 +33,7 @@ describe("CookieUtils", () => {
             });
 
             it("should emit cookieRemoved event", async () => {
-                mocks.messageUtil.sendSelf.expect("cookieRemoved", domainNoLeadingDot);
+                mocks.messageUtil.cookieRemoved.sendSelf.expect(domainNoLeadingDot);
                 const result = "result";
                 mockBrowser.cookies.remove
                     .expect({
@@ -49,7 +49,7 @@ describe("CookieUtils", () => {
             });
 
             it("should build correct https url", async () => {
-                mocks.messageUtil.sendSelf.expect("cookieRemoved", domainNoLeadingDot);
+                mocks.messageUtil.cookieRemoved.sendSelf.expect(domainNoLeadingDot);
                 const result = "result";
                 mockBrowser.cookies.remove
                     .expect({
@@ -65,7 +65,7 @@ describe("CookieUtils", () => {
             });
 
             it("should build correct file url", async () => {
-                mocks.messageUtil.sendSelf.expect("cookieRemoved", "/C:/path/to/somewhere/");
+                mocks.messageUtil.cookieRemoved.sendSelf.expect("/C:/path/to/somewhere/");
                 const result = "result";
                 mockBrowser.cookies.remove
                     .expect({
@@ -88,7 +88,7 @@ describe("CookieUtils", () => {
             });
 
             it("should not add firstPartyDomain", async () => {
-                mocks.messageUtil.sendSelf.expect("cookieRemoved", domainNoLeadingDot);
+                mocks.messageUtil.cookieRemoved.sendSelf.expect(domainNoLeadingDot);
                 const result = "result";
                 mockBrowser.cookies.remove
                     .expect({

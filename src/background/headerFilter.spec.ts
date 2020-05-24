@@ -35,7 +35,7 @@ describe("HeaderFilter", () => {
 
                 mock.updateSettings.expect();
                 mocks.supports.requestFilterIncognito.mock(true);
-                mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
+                mocks.messageUtil.settingsChanged.receive.expect(expect.anything());
                 mocks.snoozeManager.listeners.add.expect(expect.anything());
                 headerFilter["init"]();
             });
@@ -48,7 +48,7 @@ describe("HeaderFilter", () => {
                 });
                 mock.updateSettings.expect();
                 mocks.supports.requestFilterIncognito.mock(false);
-                mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
+                mocks.messageUtil.settingsChanged.receive.expect(expect.anything());
                 mocks.snoozeManager.listeners.add.expect(expect.anything());
                 headerFilter["init"]();
             });
@@ -326,7 +326,7 @@ describe("HeaderFilter", () => {
                 },
             ];
 
-            mocks.messageUtil.sendSelf.expect("cookieRemoved", "c.com").times(3);
+            mocks.messageUtil.cookieRemoved.sendSelf.expect("c.com").times(3);
 
             const mock = mockAssimilate(headerFilter, "headerFilter", {
                 mock: ["shouldCookieBeBlocked"],

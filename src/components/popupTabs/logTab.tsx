@@ -39,14 +39,14 @@ export function LogTab() {
     }
 
     const messageUtil = container.resolve(MessageUtil);
-    messageUtil.receive("onRecentlyAccessedDomains", (domains: CookieDomainInfo[]) => {
+    messageUtil.onRecentlyAccessedDomains.receive((domains: CookieDomainInfo[]) => {
         removeAllChildren(list);
         for (const info of domains) list.appendChild(createListItem(info));
     });
 
-    messageUtil.send("getRecentlyAccessedDomains");
+    messageUtil.getRecentlyAccessedDomains.send();
     wetLayer.addListener(() => {
-        messageUtil.send("getRecentlyAccessedDomains");
+        messageUtil.getRecentlyAccessedDomains.send();
     });
 
     return (

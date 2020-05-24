@@ -47,7 +47,7 @@ export class CookieUtils {
         if (this.supportsFirstPartyIsolation) details.firstPartyDomain = cookie.firstPartyDomain;
 
         const result = await browser.cookies.remove(details);
-        this.messageUtil.sendSelf("cookieRemoved", removalInfo.removedFrom);
+        this.messageUtil.cookieRemoved.sendSelf(removalInfo.removedFrom);
         return result;
     }
 

@@ -88,7 +88,7 @@ export function RuleTable({ headerI18n, ruleFilter, filterInput }: RuleTableProp
     const tbody = <tbody aria-live="polite" />;
 
     const messageUtil = container.resolve(MessageUtil);
-    messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+    messageUtil.settingsChanged.receive((changedKeys: string[]) => {
         if (changedKeys.includes("rules")) rebuildRows(tbody, ruleFilter, filterInput);
     });
     wetLayer.addListener(() => rebuildRows(tbody, ruleFilter, filterInput));

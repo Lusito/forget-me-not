@@ -20,7 +20,7 @@ describe("CleanupScheduler", () => {
         mocks.snoozeManager.isSnoozing.expect().andReturn(snoozing);
         cleanupScheduler = container.resolve(CleanupScheduler);
 
-        mocks.messageUtil.receive.expect("settingsChanged", expect.anything());
+        mocks.messageUtil.settingsChanged.receive.expect(expect.anything());
         cleanupScheduler.init(handler);
     }
     afterEach(() => {
@@ -44,19 +44,19 @@ describe("CleanupScheduler", () => {
             mock: ["updateSettings"],
             whitelist: [],
         });
-        const sender = {} as any;
-        const callback = mocks.messageUtil.receive.getMockCalls()[0][1];
+
+        const callback = mocks.messageUtil.settingsChanged.receive.getMockCalls()[0][0];
 
         // Do nothing if unknown property
-        callback(["instantly.enabled"], sender);
-        callback([], sender);
+        callback(["instantly.enabled"]);
+        callback([]);
 
         // Call updateSettings if a matching settings updated
         mock.updateSettings.expect().times(4);
-        callback(["domainLeave.enabled", "domainLeave.delay"], sender);
-        callback(["domainLeave.delay"], sender);
-        callback(["domainLeave.enabled"], sender);
-        callback(["instantly.enabled", "domainLeave.enabled"], sender);
+        callback(["domainLeave.enabled", "domainLeave.delay"]);
+        callback(["domainLeave.delay"]);
+        callback(["domainLeave.enabled"]);
+        callback(["instantly.enabled", "domainLeave.enabled"]);
     });
 
     describe("schedule", () => {

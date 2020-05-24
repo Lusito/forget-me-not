@@ -60,8 +60,8 @@ bootstrap().then(() => {
 
     connectSettings(popup);
 
-    messageUtil.receive("settingsChanged", (changedKeys: SettingsKey[]) => {
-        if (changedKeys.some((key) => !EXPORT_IGNORE_KEYS.includes(key))) updateFromSettings();
+    messageUtil.settingsChanged.receive((changedKeys: string[]) => {
+        if (changedKeys.some((key) => !EXPORT_IGNORE_KEYS.includes(key as SettingsKey))) updateFromSettings();
     });
 
     document.body.appendChild(popup);

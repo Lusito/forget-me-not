@@ -62,15 +62,16 @@ class StartTabManager {
             if (!hostname) {
                 this.setInvalidTab();
             } else {
+                const cookieStoreId = tab.cookieStoreId || this.defaultCookieStoreId;
                 const ruleFilter = {
                     domain: hostname,
-                    storeId: tab.cookieStoreId || this.defaultCookieStoreId,
+                    storeId: cookieStoreId,
                 };
                 this.hostname = hostname;
                 this.setCurrentTabLabel(hostname);
                 const messageUtil = container.resolve(MessageUtil);
                 on(this.cleanButton, "click", () => {
-                    messageUtil.send("cleanUrlNow", { hostname: this.hostname, cookieStoreId: tab.cookieStoreId });
+                    messageUtil.cleanUrlNow.send({ hostname: this.hostname, cookieStoreId });
                 });
                 this.ruleTableContainer.appendChild(
                     <RuleTable ruleFilter={ruleFilter} headerI18n="rules_column_matching_expression" />

@@ -37,7 +37,7 @@ export class CleanupScheduler {
         this.handler = handler;
 
         this.updateSettings();
-        this.messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        this.messageUtil.settingsChanged.receive((changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, DOMAIN_LEAVE_SETTINGS_KEYS)) this.updateSettings();
         });
     }

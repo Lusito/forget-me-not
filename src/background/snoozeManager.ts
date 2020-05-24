@@ -11,10 +11,10 @@ export class SnoozeManager {
     public readonly listeners = new Set<(snoozing: boolean) => void>();
 
     public constructor(private readonly messageUtil: MessageUtil) {
-        messageUtil.receive("toggleSnoozingState", () => {
+        messageUtil.toggleSnoozingState.receive(() => {
             this.toggleSnoozingState();
         });
-        messageUtil.receive("getSnoozingState", () => {
+        messageUtil.getSnoozingState.receive(() => {
             this.sendSnoozingState();
         });
     }
@@ -30,6 +30,6 @@ export class SnoozeManager {
     }
 
     private async sendSnoozingState() {
-        await this.messageUtil.send("onSnoozingState", this.snoozing);
+        await this.messageUtil.onSnoozingState.send(this.snoozing);
     }
 }

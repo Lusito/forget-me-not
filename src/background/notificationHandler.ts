@@ -33,10 +33,10 @@ export class NotificationHandler {
         browser.notifications.onClosed.addListener(this.onNotificationClosed);
 
         this.enabled = settings.get("showCookieRemovalNotification");
-        messageUtil.receive("settingsChanged", () => {
+        messageUtil.settingsChanged.receive(() => {
             this.enabled = settings.get("showCookieRemovalNotification");
         });
-        messageUtil.receive("cookieRemoved", this.onCookieRemoved);
+        messageUtil.cookieRemoved.receive(this.onCookieRemoved);
 
         wetLayer.addListener(() => {
             this.showUpdateNotification();

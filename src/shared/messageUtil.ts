@@ -1,11 +1,9 @@
-import { browser, Runtime } from "webextension-polyfill-ts";
+import { browser } from "webextension-polyfill-ts";
 import { singleton } from "tsyringe";
 
-// This file contains communication helpers
+import { CookieDomainInfo } from "./types";
 
-// fixme: types
-export type Callback = (params: any, sender: Runtime.MessageSender) => any;
-// export type Callback = (params: any, sender?: browser.runtime.MessageSender) => any;
+type Callback = (...args: any[]) => any;
 
 type CallbacksMap = { [s: string]: Callback[] };
 
@@ -13,15 +11,54 @@ export interface ReceiverHandle {
     destroy(): void;
 }
 
-// fixme: rather implement specific methods in order to have type safety?
+export interface CleanUrlNowConfig {
+    hostname: string;
+    cookieStoreId: string;
+}
+
+interface EventMessage {
+    action: string;
+    params: any;
+}
+
 @singleton()
 export class MessageUtil {
     private callbacksMap: CallbacksMap = {};
 
+    public readonly settingsChanged = this.register<(changedKeys: string[]) => void>("settingsChanged");
+
+    public readonly cleanAllNow = this.register<() => void>("cleanAllNow");
+
+    public readonly cleanUrlNow = this.register<(config: CleanUrlNowConfig) => void>("cleanUrlNow");
+
+    public readonly cookieRemoved = this.register<(domain: string) => void>("cookieRemoved");
+
+    public readonly getRecentlyAccessedDomains = this.register<() => void>("getRecentlyAccessedDomains");
+
+    public readonly toggleSnoozingState = this.register<() => void>("toggleSnoozingState");
+
+    public readonly getSnoozingState = this.register<() => void>("getSnoozingState");
+
+    public readonly onSnoozingState = this.register<(snoozing: boolean) => void>("onSnoozingState");
+
+    public readonly importSettings = this.register<(json: any) => void>("importSettings");
+
+    public readonly onRecentlyAccessedDomains = this.register<(domains: CookieDomainInfo[]) => void>(
+        "onRecentlyAccessedDomains"
+    );
+
     public constructor() {
-        browser.runtime.onMessage.addListener((request, sender) => {
-            this.emitCallbacks(request.action, request.params, sender);
+        browser.runtime.onMessage.addListener((request: undefined | EventMessage) => {
+            if (request) this.emitCallbacks(request.action, request.params);
         });
+    }
+
+    private register<T extends (...args: any[]) => void>(name: string) {
+        return {
+            receive: (callback: (...params: Parameters<T>) => any) => this.receive(name, callback),
+            send: (...params: Parameters<T>) => this.send(name, params),
+            sendSelf: (...params: Parameters<T>) => this.emitCallbacks(name, params),
+        };
     }
 
     private getCallbacksList(name: string) {
@@ -33,28 +70,24 @@ export class MessageUtil {
         return callbacks;
     }
 
-    public async send(name: string, params?: any) {
-        const data = {
-            action: name,
-            params,
-        };
+    private async send(action: string, ...params: any[]) {
         try {
-            await browser.runtime.sendMessage(data);
+            const message: EventMessage = {
+                action,
+                params,
+            };
+            await browser.runtime.sendMessage(message);
         } catch (e) {
             // ignore
         }
     }
 
-    private emitCallbacks(name: string, params: any, sender: any) {
+    private emitCallbacks(name: string, params: any[]) {
         const callbacks = this.callbacksMap[name];
-        callbacks?.forEach((cb) => cb(params, sender));
+        callbacks?.forEach((cb) => cb(...params));
     }
 
-    public sendSelf(name: string, params?: any) {
-        this.emitCallbacks(name, params, {});
-    }
-
-    public receive(name: string, callback: Callback): ReceiverHandle {
+    private receive(name: string, callback: Callback): ReceiverHandle {
         const callbacks = this.getCallbacksList(name);
         callbacks.push(callback);
         return {

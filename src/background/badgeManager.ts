@@ -46,7 +46,7 @@ export class BadgeManager {
         };
         browser.tabs.onActivated.addListener((info) => updateByTabId(info.tabId));
         browser.tabs.onUpdated.addListener(updateByTabId);
-        this.messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        this.messageUtil.settingsChanged.receive((changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, BADGE_SETTINGS_KEYS)) this.updateAllBadges();
         });
     }

@@ -34,7 +34,7 @@ export class Settings {
         browser.storage.onChanged.addListener((changes) => {
             this.reload(changes);
         });
-        messageUtil.receive("importSettings", (params) => {
+        messageUtil.importSettings.receive((params) => {
             this.setAll(params);
         });
     }
@@ -48,8 +48,8 @@ export class Settings {
 
     private reload = async (changes: { [key: string]: Storage.StorageChange }) => {
         const changedKeys = await this.load(changes);
-        this.messageUtil.send("settingsChanged", changedKeys); // to other background scripts
-        this.messageUtil.sendSelf("settingsChanged", changedKeys); // since the above does not fire on the same process
+        this.messageUtil.settingsChanged.send(changedKeys); // to other background scripts
+        this.messageUtil.settingsChanged.sendSelf(changedKeys); // since the above does not fire on the same process
     };
 
     public updateRules() {

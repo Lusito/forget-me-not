@@ -14,17 +14,12 @@ import { Settings } from "../shared/settings";
 import { StoreUtils } from "../shared/storeUtils";
 import { CleanupSchedulerFactory } from "./cleanupSchedulerFactory";
 import { TabWatcher } from "./tabWatcher";
-import { MessageUtil } from "../shared/messageUtil";
+import { MessageUtil, CleanUrlNowConfig } from "../shared/messageUtil";
 import { CacheCleaner } from "./cleaners/cacheCleaner";
 import { PluginDataCleaner } from "./cleaners/pluginDataCleaner";
 import { AbstractStorageCleaner } from "./cleaners/abstractStorageCleaner";
 
 // fixme: make this file unit-testable and add tests
-
-export interface CleanUrlNowConfig {
-    hostname: string;
-    cookieStoreId: string;
-}
 
 @singleton()
 export class CleanupManager {
@@ -66,8 +61,8 @@ export class CleanupManager {
         tabWatcher.domainLeaveListeners.add((cookieStoreId, hostname) => {
             this.getCleanupScheduler(cookieStoreId).schedule(hostname);
         });
-        messageUtil.receive("cleanAllNow", () => this.cleanAllNow());
-        messageUtil.receive("cleanUrlNow", (config: CleanUrlNowConfig) => this.cleanUrlNow(config));
+        messageUtil.cleanAllNow.receive(() => this.cleanAllNow());
+        messageUtil.cleanUrlNow.receive((config) => this.cleanUrlNow(config));
     }
 
     public async init(tabs: Tabs.Tab[]) {

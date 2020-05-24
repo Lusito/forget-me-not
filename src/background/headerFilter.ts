@@ -48,7 +48,7 @@ export class HeaderFilter {
     public init() {
         if (this.supports.requestFilterIncognito) this.filter.incognito = false;
         this.updateSettings();
-        this.messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        this.messageUtil.settingsChanged.receive((changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, HEADER_FILTER_SETTINGS_KEYS)) this.updateSettings();
         });
         this.snoozeManager.listeners.add(() => this.updateSettings());
@@ -90,7 +90,7 @@ export class HeaderFilter {
                     if (cookieInfo) {
                         const domain = removeLeadingDot(cookieInfo.domain);
                         if (this.shouldCookieBeBlocked(tabId, domain, storeId, cookieInfo.name)) {
-                            this.messageUtil.sendSelf("cookieRemoved", domain);
+                            this.messageUtil.cookieRemoved.sendSelf(domain);
                             return false;
                         }
                     }

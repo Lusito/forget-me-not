@@ -33,15 +33,15 @@ export class RecentlyAccessedDomains {
         messageUtil: MessageUtil
     ) {
         this.defaultCookieStoreId = storeUtils.defaultCookieStoreId;
-        messageUtil.receive("getRecentlyAccessedDomains", () => {
-            messageUtil.send("onRecentlyAccessedDomains", this.get());
+        messageUtil.getRecentlyAccessedDomains.receive(() => {
+            messageUtil.onRecentlyAccessedDomains.send(this.get());
         });
-        messageUtil.receive("settingsChanged", (changedKeys: string[]) => {
+        messageUtil.settingsChanged.receive((changedKeys: string[]) => {
             if (someItemsMatch(changedKeys, APPLY_SETTINGS_KEYS)) {
                 this.applySettings();
-                messageUtil.send("onRecentlyAccessedDomains", this.get());
+                messageUtil.onRecentlyAccessedDomains.send(this.get());
             } else if (someItemsMatch(changedKeys, UPDATE_SETTINGS_KEYS)) {
-                messageUtil.send("onRecentlyAccessedDomains", this.get());
+                messageUtil.onRecentlyAccessedDomains.send(this.get());
             }
         });
         this.applySettings();

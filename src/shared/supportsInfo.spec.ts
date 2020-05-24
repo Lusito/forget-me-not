@@ -19,10 +19,7 @@ describe("getSupports", () => {
     ])("with browser=%s", (_, type) => {
         const isFirefox = type === BrowserType.FIREFOX;
         describe.each([
-            [
-                57,
-                supportsNone,
-            ],
+            [57, supportsNone],
             [
                 58,
                 {

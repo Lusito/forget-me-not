@@ -388,8 +388,8 @@ describe("CookieCleaner", () => {
             it("does nothing", async () => {
                 changeInfo.removed = removed;
                 if (!removed) mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(incognito);
+                whitelistPropertyAccess(cookieCleaner, "onCookieChanged", "incognitoWatcher");
                 await cookieCleaner["onCookieChanged"](changeInfo);
-                // fixme: helper to disallow certain functions on an object
             });
         });
         describe("with incognito=false and removed=false", () => {

@@ -15,7 +15,6 @@ import { RuleManager } from "./ruleManager";
 type SettingsValue = string | boolean | number | RuleDefinition[] | { [s: string]: boolean };
 export type SettingsMap = { [s: string]: SettingsValue };
 
-// fixme: extract rule code into separate utility, so that this file only is concerned with loading and storing settings
 @singleton()
 export class Settings {
     private readonly storage: Storage.StorageArea;

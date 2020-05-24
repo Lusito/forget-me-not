@@ -53,15 +53,22 @@ export abstract class AbstractStorageCleaner extends Cleaner {
 
     public init(tabs: Tabs.Tab[]) {
         if (this.supportsCleanupByHostname) {
-            const { defaultCookieStoreId } = this.storeUtils;
+            const domainsToClean = { ...this.settings.get(this.keys.domainsToClean) };
             for (const tab of tabs) {
-                if (tab.url && tab.id && !tab.incognito) {
-                    const hostname = getValidHostname(tab.url);
-                    this.onDomainEnter(tab.cookieStoreId || defaultCookieStoreId, hostname);
-                }
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                if (this.shouldRememberTabForCleanup(tab)) domainsToClean[getValidHostname(tab.url!)] = true;
             }
+            this.updateDomainsToClean(domainsToClean);
             this.tabWatcher.domainEnterListeners.add(this.onDomainEnter);
         }
+    }
+
+    private shouldRememberTabForCleanup(tab: Tabs.Tab) {
+        if (!tab.url || !tab.id || tab.incognito === true) return false;
+        return (
+            tab.incognito === false ||
+            !this.incognitoWatcher.hasCookieStore(tab.cookieStoreId || this.storeUtils.defaultCookieStoreId)
+        );
     }
 
     private onDomainEnter = (cookieStoreId: string, hostname: string) => {

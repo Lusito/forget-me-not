@@ -33,6 +33,21 @@ class StorageCleanerImpl extends AbstractStorageCleaner {
     }
 }
 
+const validTabs = [quickTab("http://domain1.com", COOKIE_STORE_ID, false), quickTab("http://domain2.com", "", false)];
+
+const invalidTabs = [
+    // id 0
+    { ...quickTab("", COOKIE_STORE_ID, true), id: 0 },
+    { ...quickTab("", COOKIE_STORE_ID, false), id: 0 },
+    { ...quickTab("http://domain.com", COOKIE_STORE_ID, true), id: 0 },
+    { ...quickTab("http://domain.com", COOKIE_STORE_ID, false), id: 0 },
+    // url empty
+    quickTab("", COOKIE_STORE_ID, true),
+    quickTab("", COOKIE_STORE_ID, false),
+    // incognito
+    quickTab("http://domain.com", COOKIE_STORE_ID, true),
+];
+
 describe("AbstractStorageCleaner", () => {
     let abstractStorageCleaner: StorageCleanerImpl;
 
@@ -55,35 +70,55 @@ describe("AbstractStorageCleaner", () => {
             beforeEach(() => {
                 (abstractStorageCleaner as any).supportsCleanupByHostname = true;
                 mocks.storeUtils.defaultCookieStoreId.mock("default-mock");
+                mocks.settings.get.expect("domainsToClean.mockStorage" as any).andReturn({ a: true, b: true });
             });
             it("should call onDomainEnter for all tabs that have a url, an id and are not incognito", () => {
-                const tabs = [
-                    quickTab("http://domain1.com", COOKIE_STORE_ID, false),
-                    quickTab("http://domain2.com", "", false),
-                    // id 0
-                    { ...quickTab("", COOKIE_STORE_ID, true), id: 0 },
-                    { ...quickTab("", COOKIE_STORE_ID, false), id: 0 },
-                    { ...quickTab("http://domain.com", COOKIE_STORE_ID, true), id: 0 },
-                    { ...quickTab("http://domain.com", COOKIE_STORE_ID, false), id: 0 },
-                    // url empty
-                    quickTab("", COOKIE_STORE_ID, true),
-                    quickTab("", COOKIE_STORE_ID, false),
-                    // incognito
-                    quickTab("http://domain.com", COOKIE_STORE_ID, true),
-                ];
+                const tabs = [...validTabs, ...invalidTabs];
                 const mock = mockAssimilate(abstractStorageCleaner, "abstractStorageCleaner", {
-                    mock: ["onDomainEnter"],
+                    mock: ["updateDomainsToClean", "onDomainEnter", "shouldRememberTabForCleanup"],
+                    whitelist: ["settings", "init", "tabWatcher", "supportsCleanupByHostname", "keys"],
                 });
-                mock.onDomainEnter.expect(COOKIE_STORE_ID, "domain1.com");
-                mock.onDomainEnter.expect("default-mock", "domain2.com");
+                mock.updateDomainsToClean.expect({ "a": true, "b": true, "domain2.com": true });
+                mock.shouldRememberTabForCleanup.expect(validTabs[0]).andReturn(false);
+                mock.shouldRememberTabForCleanup.expect(validTabs[1]).andReturn(true);
+                mock.shouldRememberTabForCleanup.expect(expect.anything()).andReturn(false).times(invalidTabs.length);
                 mocks.tabWatcher.domainEnterListeners.add.expect(expect.anything());
 
                 abstractStorageCleaner.init(tabs);
             });
             it("should register domainEnterListener correctly", () => {
+                const mock = mockAssimilate(abstractStorageCleaner, "abstractStorageCleaner", {
+                    mock: ["updateDomainsToClean", "onDomainEnter"],
+                    whitelist: ["settings", "init", "tabWatcher", "supportsCleanupByHostname", "keys"],
+                });
+                mock.updateDomainsToClean.expect({ a: true, b: true });
                 mocks.tabWatcher.domainEnterListeners.add.expect(abstractStorageCleaner["onDomainEnter"]);
 
                 abstractStorageCleaner.init([]);
+            });
+        });
+    });
+
+    describe("shouldRememberTabForCleanup", () => {
+        it("should return true if a valid tab and not incognito", () => {
+            validTabs.forEach((tab) => {
+                expect(abstractStorageCleaner["shouldRememberTabForCleanup"](tab)).toBe(true);
+            });
+        });
+        it("should return false if not a valid tab or incognito", () => {
+            invalidTabs.forEach((tab) => {
+                expect(abstractStorageCleaner["shouldRememberTabForCleanup"](tab)).toBe(false);
+            });
+        });
+        describe.each([[""], [COOKIE_STORE_ID]])("with cookieStore=%s", (cookieStore) => {
+            it.each.boolean("should consult incognitoWatcher if incognito is undefined with %s", (hasCookieStore) => {
+                const tab = {
+                    ...quickTab("http://domain1.com", cookieStore, false),
+                    incognito: (undefined as any) as boolean,
+                };
+                if (!cookieStore) mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
+                mocks.incognitoWatcher.hasCookieStore.expect(COOKIE_STORE_ID).andReturn(hasCookieStore);
+                expect(abstractStorageCleaner["shouldRememberTabForCleanup"](tab)).toBe(!hasCookieStore);
             });
         });
     });

@@ -21,7 +21,7 @@ describe("SnoozeManager", () => {
         it("registers the toggleSnoozingState listener correctly", () => {
             const mock = mockAssimilate(snoozeManager, "snoozeManager", {
                 mock: ["toggleSnoozingState"],
-                whitelist: []
+                whitelist: [],
             });
             mock.toggleSnoozingState.expect().andResolve();
             mocks.messageUtil.toggleSnoozingState.receive.getMockCalls()[0][0]();
@@ -29,14 +29,14 @@ describe("SnoozeManager", () => {
         it("registers the getSnoozingState listener correctly", () => {
             const mock = mockAssimilate(snoozeManager, "snoozeManager", {
                 mock: ["sendSnoozingState"],
-                whitelist: []
+                whitelist: [],
             });
             mock.sendSnoozingState.expect().andResolve();
             mocks.messageUtil.getSnoozingState.receive.getMockCalls()[0][0]();
         });
     });
     describe("toggleSnoozingState", () => {
-        it("toggles the state and sends a message",  async () => {
+        it("toggles the state and sends a message", async () => {
             mocks.messageUtil.onSnoozingState.send.expect(true);
             await snoozeManager["toggleSnoozingState"]();
             expect(snoozeManager.isSnoozing()).toBe(true);

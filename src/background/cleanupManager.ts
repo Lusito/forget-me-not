@@ -15,6 +15,9 @@ import { StoreUtils } from "../shared/storeUtils";
 import { CleanupSchedulerFactory } from "./cleanupSchedulerFactory";
 import { TabWatcher } from "./tabWatcher";
 import { MessageUtil } from "../shared/messageUtil";
+import { CacheCleaner } from "./cleaners/cacheCleaner";
+import { PluginDataCleaner } from "./cleaners/pluginDataCleaner";
+import { AbstractStorageCleaner } from "./cleaners/abstractStorageCleaner";
 
 // fixme: make this file unit-testable and add tests
 
@@ -34,9 +37,11 @@ export class CleanupManager {
     public constructor(
         private readonly settings: Settings,
         private readonly cleanupSchedulerFactory: CleanupSchedulerFactory,
-        private readonly localStorageCleaner: LocalStorageCleaner,
-        private readonly indexedDbCleaner: IndexedDbCleaner,
-        private readonly serviceWorkerCleaner: ServiceWorkerCleaner,
+        localStorageCleaner: LocalStorageCleaner,
+        indexedDbCleaner: IndexedDbCleaner,
+        serviceWorkerCleaner: ServiceWorkerCleaner,
+        cacheCleaner: CacheCleaner,
+        pluginDataCleaner: PluginDataCleaner,
         storeUtils: StoreUtils,
         temporaryRuleCleaner: TemporaryRuleCleaner,
         downloadCleaner: DownloadCleaner,
@@ -46,13 +51,17 @@ export class CleanupManager {
         messageUtil: MessageUtil
     ) {
         this.defaultCookieStoreId = storeUtils.defaultCookieStoreId;
-        this.cleaners.push(temporaryRuleCleaner);
+        // Order is important for some of these:
+        this.cleaners.push(temporaryRuleCleaner, downloadCleaner);
         browser.history && this.cleaners.push(historyCleaner);
-        this.cleaners.push(downloadCleaner);
-        this.cleaners.push(cookieCleaner);
-        this.cleaners.push(localStorageCleaner);
-        this.cleaners.push(indexedDbCleaner);
-        this.cleaners.push(serviceWorkerCleaner);
+        this.cleaners.push(
+            cookieCleaner,
+            localStorageCleaner,
+            indexedDbCleaner,
+            serviceWorkerCleaner,
+            cacheCleaner,
+            pluginDataCleaner
+        );
 
         tabWatcher.domainLeaveListeners.add((cookieStoreId, hostname) => {
             this.getCleanupScheduler(cookieStoreId).schedule(hostname);
@@ -63,9 +72,9 @@ export class CleanupManager {
 
     public async init(tabs: Tabs.Tab[]) {
         await this.settings.removeTemporaryRules();
-        this.localStorageCleaner.init(tabs);
-        this.indexedDbCleaner.init(tabs);
-        this.serviceWorkerCleaner.init(tabs);
+        this.cleaners.forEach((cleaner) => {
+            if (cleaner instanceof AbstractStorageCleaner) cleaner.init(tabs);
+        });
 
         if (this.settings.get("startup.enabled")) {
             setTimeout(() => {
@@ -86,7 +95,7 @@ export class CleanupManager {
         const typeSet: BrowsingData.DataTypeSet = {
             localStorage: this.settings.get(startup ? "startup.localStorage" : "cleanAll.localStorage"),
             cookies: this.settings.get(startup ? "startup.cookies" : "cleanAll.cookies"),
-            history: this.settings.get(startup ? "startup.history" : "cleanAll.history"),
+            history: browser.history ? this.settings.get(startup ? "startup.history" : "cleanAll.history") : false,
             downloads: this.settings.get(startup ? "startup.downloads" : "cleanAll.downloads"),
             formData: this.settings.get(startup ? "startup.formData" : "cleanAll.formData"),
             passwords: this.settings.get(startup ? "startup.passwords" : "cleanAll.passwords"),

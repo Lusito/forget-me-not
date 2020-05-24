@@ -55,6 +55,16 @@ export class UnsupportedSettings {
             this.unsupported.push("domainLeave.serviceWorkers");
             this.unsupported.push("startup.serviceWorkers.applyRules");
         }
+        if (!supports.removeCacheByHostname) {
+            this.unsupported.push("cleanAll.cache.applyRules");
+            this.unsupported.push("domainLeave.cache");
+            this.unsupported.push("startup.cache.applyRules");
+        }
+        if (!supports.removePluginDataByHostname) {
+            this.unsupported.push("cleanAll.pluginData.applyRules");
+            this.unsupported.push("domainLeave.pluginData");
+            this.unsupported.push("startup.pluginData.applyRules");
+        }
     }
 
     public get() {

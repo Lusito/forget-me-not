@@ -56,14 +56,24 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
         startupRules: "startup.indexedDB.applyRules",
         domainLeave: "domainLeave.indexedDB",
     },
-    { i18n: "setting_plugin_data", startup: "startup.pluginData" },
+    {
+        i18n: "setting_plugin_data",
+        startup: "startup.pluginData",
+        startupRules: "startup.pluginData.applyRules",
+        domainLeave: "domainLeave.pluginData",
+    },
     {
         i18n: "setting_service_workers",
         startup: "startup.serviceWorkers",
         startupRules: "startup.serviceWorkers.applyRules",
         domainLeave: "domainLeave.serviceWorkers",
     },
-    { i18n: "setting_cache", startup: "startup.cache" },
+    {
+        i18n: "setting_cache",
+        startup: "startup.cache",
+        startupRules: "startup.cache.applyRules",
+        domainLeave: "domainLeave.cache",
+    },
 ];
 
 export function CleanupTab() {

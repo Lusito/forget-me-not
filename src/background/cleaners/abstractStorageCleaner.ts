@@ -11,17 +11,31 @@ import { RuleManager } from "../../shared/ruleManager";
 import { BooleanMap } from "../../shared/defaultSettings";
 
 interface AbstractStorageCleanupKeys {
-    dataType: "localStorage" | "indexedDB" | "serviceWorkers";
-    domainsToClean: "domainsToClean" | "domainsToClean.indexedDB" | "domainsToClean.serviceWorkers";
+    dataType: "localStorage" | "indexedDB" | "serviceWorkers" | "cache" | "pluginData";
+    domainsToClean:
+        | "domainsToClean"
+        | "domainsToClean.indexedDB"
+        | "domainsToClean.serviceWorkers"
+        | "domainsToClean.cache"
+        | "domainsToClean.pluginData";
     startupApplyRules:
         | "startup.localStorage.applyRules"
         | "startup.indexedDB.applyRules"
-        | "startup.serviceWorkers.applyRules";
+        | "startup.serviceWorkers.applyRules"
+        | "startup.cache.applyRules"
+        | "startup.pluginData.applyRules";
     cleanAllApplyRules:
         | "cleanAll.localStorage.applyRules"
         | "cleanAll.indexedDB.applyRules"
-        | "cleanAll.serviceWorkers.applyRules";
-    domainLeave: "domainLeave.localStorage" | "domainLeave.indexedDB" | "domainLeave.serviceWorkers";
+        | "cleanAll.serviceWorkers.applyRules"
+        | "cleanAll.cache.applyRules"
+        | "cleanAll.pluginData.applyRules";
+    domainLeave:
+        | "domainLeave.localStorage"
+        | "domainLeave.indexedDB"
+        | "domainLeave.serviceWorkers"
+        | "domainLeave.cache"
+        | "domainLeave.pluginData";
 }
 
 export abstract class AbstractStorageCleaner extends Cleaner {

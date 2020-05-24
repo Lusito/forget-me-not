@@ -41,13 +41,17 @@ const CLEANUP_SETTINGS: CleanupRow[] = [
         manualCleanup: "cleanAll.indexedDB",
         manualCleanupRules: "cleanAll.indexedDB.applyRules",
     },
-    { i18n: "setting_plugin_data", manualCleanup: "cleanAll.pluginData" },
+    {
+        i18n: "setting_plugin_data",
+        manualCleanup: "cleanAll.pluginData",
+        manualCleanupRules: "cleanAll.pluginData.applyRules",
+    },
     {
         i18n: "setting_service_workers",
         manualCleanup: "cleanAll.serviceWorkers",
         manualCleanupRules: "cleanAll.serviceWorkers.applyRules",
     },
-    { i18n: "setting_cache", manualCleanup: "cleanAll.cache" },
+    { i18n: "setting_cache", manualCleanup: "cleanAll.cache", manualCleanupRules: "cleanAll.cache.applyRules" },
 ];
 
 export function CleanDialog({ button }: CleanDialogProps) {

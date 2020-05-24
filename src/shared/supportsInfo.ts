@@ -6,6 +6,8 @@ export interface SupportsInfoProps {
     requestFilterIncognito: boolean;
     removeIndexedDbByHostname: boolean;
     removeServiceWorkersByHostname: boolean;
+    removeCacheByHostname: boolean;
+    removePluginDataByHostname: boolean;
 }
 
 export class SupportsInfo {
@@ -19,12 +21,18 @@ export class SupportsInfo {
 
     public readonly removeServiceWorkersByHostname: boolean;
 
+    public readonly removeCacheByHostname: boolean;
+
+    public readonly removePluginDataByHostname: boolean;
+
     public constructor(props: Partial<SupportsInfoProps>) {
         this.removeLocalStorageByHostname = props.removeLocalStorageByHostname || false;
         this.firstPartyIsolation = props.firstPartyIsolation || false;
         this.requestFilterIncognito = props.requestFilterIncognito || false;
         this.removeIndexedDbByHostname = props.removeIndexedDbByHostname || false;
         this.removeServiceWorkersByHostname = props.removeServiceWorkersByHostname || false;
+        this.removeCacheByHostname = props.removeCacheByHostname || false;
+        this.removePluginDataByHostname = props.removePluginDataByHostname || false;
     }
 }
 
@@ -37,6 +45,8 @@ export function getSupports(browserInfo: BrowserInfo) {
                 requestFilterIncognito: browserInfo.versionAsNumber >= 68,
                 removeIndexedDbByHostname: browserInfo.versionAsNumber >= 77,
                 removeServiceWorkersByHostname: browserInfo.versionAsNumber >= 77,
+                removeCacheByHostname: browserInfo.versionAsNumber >= 78,
+                removePluginDataByHostname: browserInfo.versionAsNumber >= 78,
             });
         case BrowserType.FENNEC:
             return new SupportsInfo({

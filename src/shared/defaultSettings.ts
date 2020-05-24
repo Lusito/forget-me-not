@@ -14,6 +14,8 @@ export const EXPORT_IGNORE_KEYS: SettingsKey[] = [
     "domainsToClean",
     "domainsToClean.indexedDB",
     "domainsToClean.serviceWorkers",
+    "domainsToClean.cache",
+    "domainsToClean.pluginData",
     "downloadsToClean",
 ];
 
@@ -38,6 +40,8 @@ export class DefaultSettingsProvider {
             "domainsToClean": {} as BooleanMap,
             "domainsToClean.indexedDB": {} as BooleanMap,
             "domainsToClean.serviceWorkers": {} as BooleanMap,
+            "domainsToClean.cache": {} as BooleanMap,
+            "domainsToClean.pluginData": {} as BooleanMap,
             "downloadsToClean": {} as BooleanMap,
             "showBadge": true,
             "initialTab": "this_tab",
@@ -56,10 +60,12 @@ export class DefaultSettingsProvider {
             "cleanAll.indexedDB": true,
             "cleanAll.indexedDB.applyRules": true,
             "cleanAll.pluginData": true,
+            "cleanAll.pluginData.applyRules": true,
             "cleanAll.serviceWorkers": true,
             "cleanAll.serviceWorkers.applyRules": true,
             "cleanAll.serverBoundCertificates": false,
             "cleanAll.cache": false,
+            "cleanAll.cache.applyRules": true,
 
             "cleanThirdPartyCookies.enabled": false,
             "cleanThirdPartyCookies.delay": 60,
@@ -71,6 +77,8 @@ export class DefaultSettingsProvider {
             "domainLeave.localStorage": true,
             "domainLeave.indexedDB": true,
             "domainLeave.serviceWorkers": true,
+            "domainLeave.cache": true,
+            "domainLeave.pluginData": true,
             "domainLeave.history": false,
             "domainLeave.downloads": false,
 
@@ -95,10 +103,12 @@ export class DefaultSettingsProvider {
             "startup.indexedDB": true,
             "startup.indexedDB.applyRules": true,
             "startup.pluginData": true,
+            "startup.pluginData.applyRules": true,
             "startup.serviceWorkers": true,
             "startup.serviceWorkers.applyRules": true,
             "startup.serverBoundCertificates": false,
             "startup.cache": false,
+            "startup.cache.applyRules": true,
 
             "purgeExpiredCookies": false,
 

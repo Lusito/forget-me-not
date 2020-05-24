@@ -1,7 +1,16 @@
 import { BrowserType, BrowserInfo } from "./browserInfo";
-import { getSupports } from "./supportsInfo";
+import { getSupports, SupportsInfoProps } from "./supportsInfo";
 
 const HIGHEST_VERSION = 999999;
+const supportsNone: SupportsInfoProps = {
+    removeLocalStorageByHostname: false,
+    firstPartyIsolation: false,
+    requestFilterIncognito: false,
+    removeIndexedDbByHostname: false,
+    removeServiceWorkersByHostname: false,
+    removeCacheByHostname: false,
+    removePluginDataByHostname: false,
+};
 
 describe("getSupports", () => {
     describe.each([
@@ -12,72 +21,70 @@ describe("getSupports", () => {
         describe.each([
             [
                 57,
-                {
-                    removeLocalStorageByHostname: false,
-                    firstPartyIsolation: false,
-                    requestFilterIncognito: false,
-                    removeIndexedDbByHostname: false,
-                    removeServiceWorkersByHostname: false,
-                },
+                supportsNone,
             ],
             [
                 58,
                 {
+                    ...supportsNone,
                     removeLocalStorageByHostname: isFirefox,
-                    firstPartyIsolation: false,
-                    requestFilterIncognito: false,
-                    removeIndexedDbByHostname: false,
-                    removeServiceWorkersByHostname: false,
                 },
             ],
             [
                 59,
                 {
+                    ...supportsNone,
                     removeLocalStorageByHostname: isFirefox,
                     firstPartyIsolation: true,
-                    requestFilterIncognito: false,
-                    removeIndexedDbByHostname: false,
-                    removeServiceWorkersByHostname: false,
                 },
             ],
             [
                 67,
                 {
+                    ...supportsNone,
                     removeLocalStorageByHostname: isFirefox,
                     firstPartyIsolation: true,
-                    requestFilterIncognito: false,
-                    removeIndexedDbByHostname: false,
-                    removeServiceWorkersByHostname: false,
                 },
             ],
             [
                 68,
                 {
+                    ...supportsNone,
                     removeLocalStorageByHostname: isFirefox,
                     firstPartyIsolation: true,
                     requestFilterIncognito: isFirefox,
-                    removeIndexedDbByHostname: false,
-                    removeServiceWorkersByHostname: false,
                 },
             ],
             [
                 76,
                 {
+                    ...supportsNone,
                     removeLocalStorageByHostname: isFirefox,
                     firstPartyIsolation: true,
                     requestFilterIncognito: isFirefox,
-                    removeIndexedDbByHostname: false,
-                    removeServiceWorkersByHostname: false,
                 },
             ],
             [
                 77,
+                {
+                    ...supportsNone,
+                    removeLocalStorageByHostname: isFirefox,
+                    firstPartyIsolation: true,
+                    requestFilterIncognito: isFirefox,
+                    removeIndexedDbByHostname: isFirefox,
+                    removeServiceWorkersByHostname: isFirefox,
+                },
+            ],
+            [
+                78,
                 {
                     removeLocalStorageByHostname: isFirefox,
                     firstPartyIsolation: true,
                     requestFilterIncognito: isFirefox,
                     removeIndexedDbByHostname: isFirefox,
                     removeServiceWorkersByHostname: isFirefox,
+                    removeCacheByHostname: isFirefox,
+                    removePluginDataByHostname: isFirefox,
                 },
             ],
             [
@@ -88,6 +95,8 @@ describe("getSupports", () => {
                     requestFilterIncognito: isFirefox,
                     removeIndexedDbByHostname: isFirefox,
                     removeServiceWorkersByHostname: isFirefox,
+                    removeCacheByHostname: isFirefox,
+                    removePluginDataByHostname: isFirefox,
                 },
             ],
         ])("with browserVersion=%i", (versionAsNumber, supportsInfo) => {
@@ -114,13 +123,7 @@ describe("getSupports", () => {
                     type,
                     versionAsNumber: HIGHEST_VERSION,
                 } as Partial<BrowserInfo>) as any)
-            ).toEqual({
-                removeLocalStorageByHostname: false,
-                firstPartyIsolation: false,
-                requestFilterIncognito: false,
-                removeIndexedDbByHostname: false,
-                removeServiceWorkersByHostname: false,
-            });
+            ).toEqual(supportsNone);
         });
     });
 });

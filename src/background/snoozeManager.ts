@@ -2,8 +2,6 @@ import { singleton } from "tsyringe";
 
 import { MessageUtil } from "../shared/messageUtil";
 
-// fixme: make this file unit-testable and add tests
-
 @singleton()
 export class SnoozeManager {
     private snoozing = false;

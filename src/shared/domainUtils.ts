@@ -1,4 +1,4 @@
-import { getDomain } from "tldjs"; // fixme: export via utils?
+import { getDomain } from "tldjs";
 
 const allowedProtocols = /^https?:$/;
 

@@ -19,8 +19,6 @@ import { CacheCleaner } from "./cleaners/cacheCleaner";
 import { PluginDataCleaner } from "./cleaners/pluginDataCleaner";
 import { AbstractStorageCleaner } from "./cleaners/abstractStorageCleaner";
 
-// fixme: make this file unit-testable and add tests
-
 @singleton()
 export class CleanupManager {
     private readonly cleanupScheduler: { [s: string]: CleanupScheduler } = {};

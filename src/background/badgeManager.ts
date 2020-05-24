@@ -11,8 +11,6 @@ import { someItemsMatch } from "./backgroundShared";
 import { StoreUtils } from "../shared/storeUtils";
 import { RuleManager } from "../shared/ruleManager";
 
-// fixme: make this file unit-testable and add tests
-
 const BADGE_SETTINGS_KEYS = ["rules", "fallbackRule", "whitelistNoTLD", "whitelistFileSystem", "showBadge"];
 
 @singleton()

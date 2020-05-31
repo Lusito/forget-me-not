@@ -36,7 +36,7 @@ function rebuildRows(tbody: HTMLElement, ruleFilter?: DomainAndStore, filterInpu
         chosenRulesForDomain = ruleManager.getChosenRulesForDomain(domain, storeId);
         const domainFP = getFirstPartyDomain(domain);
         const expressions = [`*.${domainFP}`];
-        if (domainFP !== domain) expressions.push(`*.${ruleFilter}`);
+        if (domainFP !== domain) expressions.push(`*.${ruleFilter.domain}`);
         expressions.forEach((expression) => {
             const chosenRule = chosenRulesForDomain.find((r) => r.rule === expression);
             const temporary = chosenRule?.temporary || false;

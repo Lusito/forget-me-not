@@ -48,6 +48,9 @@
 
     .apply_rules_checkbox {
         input[type="checkbox"] {
+            + span {
+                transition: opacity 0.2s, filter 0.2s;
+            }
             + span:before {
                 content: "";
                 background: url("../../../icons/shield_white.svg");
@@ -58,13 +61,14 @@
         }
         input[type="checkbox"]:disabled {
             + span {
-                display: none;
+                opacity: 0.3;
+                filter: grayscale(1);
             }
         }
+        input[type="checkbox"]:not(:checked) + span:before {
+            background: url("../../../icons/no_shield_white.svg");
+        }
         input[type="checkbox"]:not(:disabled) {
-            &:not(:checked) + span:before {
-                background: url("../../../icons/no_shield_white.svg");
-            }
             &:focus,
             &:hover {
                 + span {

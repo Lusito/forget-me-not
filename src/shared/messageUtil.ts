@@ -70,7 +70,7 @@ export class MessageUtil {
         return callbacks;
     }
 
-    private async send(action: string, ...params: any[]) {
+    private async send(action: string, params: any[]) {
         try {
             const message: EventMessage = {
                 action,

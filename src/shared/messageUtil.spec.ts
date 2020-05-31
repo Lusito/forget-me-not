@@ -74,19 +74,19 @@ describe("MessageUtil", () => {
             mockBrowser.runtime.sendMessage
                 .expect({
                     action: event1,
-                    params: data1,
+                    params: [data1],
                 })
                 .andResolve({} as any); // fixme: mockzilla bug
-            await messageUtil["send"](event1, data1);
+            await messageUtil["send"](event1, [data1]);
         });
         it("should swallow exceptions", async () => {
             mockBrowser.runtime.sendMessage
                 .expect({
                     action: event1,
-                    params: data1,
+                    params: [data1],
                 })
                 .andReject(new Error("Nothing to see here"));
-            await messageUtil["send"](event1, data1);
+            await messageUtil["send"](event1, [data1]);
         });
     });
 

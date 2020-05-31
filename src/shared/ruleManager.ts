@@ -27,7 +27,7 @@ interface RuleManagerConfig {
     protectOpenDomains: {
         startup: boolean;
         manual: boolean;
-    }
+    };
 }
 
 @singleton()
@@ -40,22 +40,24 @@ export class RuleManager {
         protectOpenDomains: {
             startup: true,
             manual: true,
-        }
+        },
     };
 
     private identities: ContextualIdentities.ContextualIdentity[] = [];
 
+    // All cookie rules except those with errors
     private nonCookieRules: CompiledRuleDefinition[] = [];
 
+    // All temporary rules except those with errors
     private temporaryRules: CompiledRuleDefinition[] = [];
 
-    private goodRules: CompiledRuleDefinition[] = [];
+    // All rules except those with errors
+    private rules: CompiledRuleDefinition[] = [];
 
+    // Contains even rules with errors
     private allRules: CompiledRuleDefinition[] = [];
 
-    public constructor(private readonly storeUtils: StoreUtils) {
-
-    }
+    public constructor(private readonly storeUtils: StoreUtils) {}
 
     public async init() {
         this.identities = await browser.contextualIdentities.query({});
@@ -80,7 +82,7 @@ export class RuleManager {
     private performUpdate() {
         this.nonCookieRules = [];
         this.temporaryRules = [];
-        this.goodRules = [];
+        this.rules = [];
         this.allRules = [];
 
         for (const rule of this.config.rules) {
@@ -96,20 +98,23 @@ export class RuleManager {
                     const containerName = split.container.toLowerCase();
                     const identity = this.identities.find((id) => id.name.toLowerCase() === containerName);
                     if (identity) compiledRule.storeId = identity.cookieStoreId;
-                    else compiledRule.error = `Could not find container with name ${split.container}`;
+                    else {
+                        console.error(`Could not find container with name ${split.container}`);
+                        compiledRule.error = true;
+                    }
                 }
             }
 
             if (typeof split.cookie === "string") compiledRule.cookieName = split.cookie.toLowerCase();
-            else this.nonCookieRules.push(compiledRule);
-
-            this.allRules.push(compiledRule);
+            else if (!compiledRule.error) this.nonCookieRules.push(compiledRule);
 
             if (!compiledRule.error) {
-                this.goodRules.push(compiledRule);
+                this.rules.push(compiledRule);
 
                 if (compiledRule.definition.temporary) this.temporaryRules.push(compiledRule);
             }
+
+            this.allRules.push(compiledRule);
         }
     }
 
@@ -150,11 +155,21 @@ export class RuleManager {
         return rules.filter(fallbackFilter);
     }
 
+    public getCleanupTypesFor(domain: string) {
+        if (this.config.whitelistFileSystem && domain.length === 0) return [CleanupType.NEVER];
+        if (this.config.whitelistNoTLD && domain.length > 0 && !domain.includes(".")) return [CleanupType.NEVER];
+
+        const set = new Set<CleanupType>();
+        this.allRules.filter(matchDomain(domain)).forEach((rule) => set.add(rule.definition.type));
+
+        return Array.from(set);
+    }
+
     public getCleanupTypeFor(domain: string, storeId: string | false, cookieName: string | false) {
         if (this.config.whitelistFileSystem && domain.length === 0) return CleanupType.NEVER;
         if (this.config.whitelistNoTLD && domain.length > 0 && !domain.includes(".")) return CleanupType.NEVER;
 
-        let rules = cookieName === false ? this.nonCookieRules : this.goodRules;
+        let rules = cookieName === false ? this.nonCookieRules : this.rules;
         rules = rules.filter(matchDomain(domain));
 
         // container rules are more important than cookie rules

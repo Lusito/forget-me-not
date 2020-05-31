@@ -19,7 +19,7 @@ interface CookieListCookie {
 }
 
 interface CookieListForDomain {
-    badge: BadgeInfo;
+    badges: BadgeInfo[];
     domain: string;
     firstPartyDomain: string;
     cookies: CookieListCookie[];
@@ -72,8 +72,7 @@ async function getCookieList() {
             byDomain.cookies.push(mapped);
         } else {
             cookiesByDomain[cookie.domain] = {
-                // fixme: might be multiple stores
-                badge: getBadgeForCleanupType(ruleManager.getCleanupTypeFor(rawDomain, cookie.storeId, false)),
+                badges: ruleManager.getCleanupTypesFor(rawDomain).map(getBadgeForCleanupType),
                 domain: cookie.domain,
                 firstPartyDomain,
                 cookies: [mapped],
@@ -188,14 +187,15 @@ function mapToDomainItem(entry: CookieListForDomain, updateList: () => void) {
         showAddRuleDialog(getSuggestedRuleExpression(entry.domain), updateList);
     }
     const punified = appendPunycode(entry.domain);
-    const title = wetLayer.getMessage(`${entry.badge.i18nButton}@title`);
     return (
         <li>
             <div class="cookie_list_split">
                 {toggler}
-                <span class={entry.badge.className} title={title}>
-                    {wetLayer.getMessage(entry.badge.i18nBadge)}
-                </span>
+                {entry.badges.map((badge) => (
+                    <span class={badge.className} title={wetLayer.getMessage(`${badge.i18nButton}@title`)}>
+                        {wetLayer.getMessage(badge.i18nBadge)}
+                    </span>
+                ))}
                 <b title={punified} data-searchable>
                     {punified}
                 </b>

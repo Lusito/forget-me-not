@@ -7,7 +7,7 @@ export interface CompiledRuleDefinition {
     regex: RegExp;
     cookieName?: string;
     storeId?: string;
-    error?: string;
+    error?: boolean;
 }
 
 export function cleanupTypeForElement(element: HTMLElement) {

@@ -15,6 +15,7 @@ import {
     matchStoreOrNoStore,
     matchNoCookie,
 } from "./ruleUtils";
+import { StoreUtils } from "./storeUtils";
 
 const CHOSEN_RULES_ORDER = [CleanupType.INSTANTLY, CleanupType.LEAVE, CleanupType.NEVER, CleanupType.STARTUP];
 
@@ -52,6 +53,10 @@ export class RuleManager {
 
     private allRules: CompiledRuleDefinition[] = [];
 
+    public constructor(private readonly storeUtils: StoreUtils) {
+
+    }
+
     public async init() {
         this.identities = await browser.contextualIdentities.query({});
         const updateIdentities = () => {
@@ -85,11 +90,14 @@ export class RuleManager {
                 regex: getRegExForRule(split.domain),
             };
             if (typeof split.container === "string") {
-                const containerName = split.container.toLowerCase();
-                const identity = this.identities.find((id) => id.name.toLowerCase() === containerName);
-                // fixme: show a warning to user in the rule list
-                if (identity) compiledRule.storeId = identity.cookieStoreId;
-                else compiledRule.error = `Could not find container with name ${split.container}`;
+                if (split.container.length === 0) {
+                    compiledRule.storeId = this.storeUtils.defaultCookieStoreId;
+                } else {
+                    const containerName = split.container.toLowerCase();
+                    const identity = this.identities.find((id) => id.name.toLowerCase() === containerName);
+                    if (identity) compiledRule.storeId = identity.cookieStoreId;
+                    else compiledRule.error = `Could not find container with name ${split.container}`;
+                }
             }
 
             if (typeof split.cookie === "string") compiledRule.cookieName = split.cookie.toLowerCase();

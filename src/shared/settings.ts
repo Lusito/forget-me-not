@@ -7,7 +7,6 @@ import { isNodeTest } from "./browserInfo";
 import { RuleDefinition, SettingsSignature, SettingsKey, DefaultSettingsProvider } from "./defaultSettings";
 import { CleanupType } from "./types";
 import migrateSettings from "./settingsMigrations";
-import { isValidExpression } from "./expressionUtils";
 import { MessageUtil } from "./messageUtil";
 import { sanitizeRules } from "./ruleUtils";
 import { RuleManager } from "./ruleManager";
@@ -94,7 +93,7 @@ export class Settings {
         if (!json || typeof json !== "object") throw new Error("Expected settings json to be an object");
         if (json.rules) {
             if (!Array.isArray(json.rules)) delete json.rules;
-            else (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[], isValidExpression);
+            else (json as any).rules = sanitizeRules((json as any).rules as RuleDefinition[]);
         }
         for (const key of Object.keys(json)) {
             if (!(key in this.defaults)) {

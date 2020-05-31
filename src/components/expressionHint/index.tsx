@@ -1,8 +1,9 @@
 import { h } from "tsx-dom";
 import { wetLayer } from "wet-layer";
 import { container } from "tsyringe";
+import { browser } from "webextension-polyfill-ts";
 
-import { isValidExpression } from "../../shared/expressionUtils";
+import { isValidExpression, splitExpression } from "../../shared/expressionUtils";
 import { on } from "../../frontend/htmlUtils";
 import { RuleManager } from "../../shared/ruleManager";
 import "./style.scss";
@@ -24,16 +25,28 @@ export function ExpressionHint({ input }: ExpressionHintProps) {
         else hint.removeAttribute("role");
     }
 
-    const ruleManager = container.resolve(RuleManager);
-    function validate() {
-        const expression = input.value.trim().toLowerCase();
-        const validExpression = !expression || isValidExpression(expression);
-        if (!validExpression) updateError(wetLayer.getMessage("expression_hint_invalid"));
-        else if (ruleManager.getExactRuleDefinition(expression) !== null)
-            updateError(wetLayer.getMessage("expression_hint_exists"));
-        else updateError("");
+    async function init() {
+        const contextualIdentities = (await browser.contextualIdentities.query({})).map((ci) => ci.name.toLowerCase());
+        const ruleManager = container.resolve(RuleManager);
+        function validate() {
+            const expression = input.value.trim().toLowerCase();
+            if (!expression) updateError("");
+            else {
+                const validExpression = isValidExpression(expression);
+                if (!validExpression) updateError(wetLayer.getMessage("expression_hint_invalid"));
+                else {
+                    const split = splitExpression(expression);
+                    if (split.container && !contextualIdentities.includes(split.container))
+                        updateError(wetLayer.getMessage("expression_hint_invalid_container"));
+                    else if (ruleManager.getExactRuleDefinition(expression) !== null)
+                        updateError(wetLayer.getMessage("expression_hint_exists"));
+                    else updateError("");
+                }
+            }
+        }
+        on(input, "input", validate);
+        validate();
     }
-    on(input, "input", validate);
-    validate();
+    init();
     return hint;
 }

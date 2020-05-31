@@ -1,5 +1,6 @@
 import { RuleDefinition } from "./defaultSettings";
 import { CleanupType } from "./types";
+import { isValidExpression } from "./expressionUtils";
 
 export interface CompiledRuleDefinition {
     definition: RuleDefinition;
@@ -26,10 +27,10 @@ function isValidCleanupType(type: CleanupType) {
     );
 }
 
-export function sanitizeRules(rules: RuleDefinition[], expressionValidator: (value: string) => boolean) {
+export function sanitizeRules(rules: RuleDefinition[]) {
     const validRules: RuleDefinition[] = [];
     for (const ruleDef of rules) {
-        if (typeof ruleDef.rule === "string" && expressionValidator(ruleDef.rule) && isValidCleanupType(ruleDef.type)) {
+        if (typeof ruleDef.rule === "string" && isValidExpression(ruleDef.rule) && isValidCleanupType(ruleDef.type)) {
             validRules.push({
                 rule: ruleDef.rule,
                 type: ruleDef.type,

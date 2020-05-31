@@ -4,6 +4,7 @@ import { mockAssimilate } from "mockzilla";
 import { RuleDefinition } from "./defaultSettings";
 import { CleanupType } from "./types";
 import { RuleManager } from "./ruleManager";
+import { mocks } from "../testUtils/mocks";
 
 const domains = {
     unknown_com: "unknown.com",
@@ -64,6 +65,7 @@ describe("RuleManager", () => {
     let ruleManager: RuleManager;
 
     beforeEach(() => {
+        mocks.storeUtils.mockAllow();
         ruleManager = container.resolve(RuleManager);
     });
 
@@ -144,10 +146,10 @@ describe("RuleManager", () => {
                 whitelistNoTLD: false,
                 rules: [
                     ...basicRules,
-                    { rule: `container#*.${domains.never_com}`, type: CleanupType.INSTANTLY },
-                    { rule: `container#*.${domains.leave_com}`, type: CleanupType.STARTUP },
-                    { rule: `container#*.${domains.startup_com}`, type: CleanupType.LEAVE },
-                    { rule: `container#*.${domains.instantly_com}`, type: CleanupType.NEVER },
+                    { rule: `container?*.${domains.never_com}`, type: CleanupType.INSTANTLY },
+                    { rule: `container?*.${domains.leave_com}`, type: CleanupType.STARTUP },
+                    { rule: `container?*.${domains.startup_com}`, type: CleanupType.LEAVE },
+                    { rule: `container?*.${domains.instantly_com}`, type: CleanupType.NEVER },
                 ],
                 protectOpenDomains: {
                     startup: true,
@@ -205,7 +207,7 @@ describe("RuleManager", () => {
                 fallbackRule: CleanupType.LEAVE,
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
-                rules: [...cookieRules, { rule: "container#*.cookie.com", type: CleanupType.INSTANTLY }],
+                rules: [...cookieRules, { rule: "container?*.cookie.com", type: CleanupType.INSTANTLY }],
                 protectOpenDomains: {
                     startup: true,
                     manual: true,
@@ -228,9 +230,9 @@ describe("RuleManager", () => {
                 rules: [
                     ...cookieRules.map((rule) => ({
                         ...rule,
-                        rule: `container#${rule.rule}`,
+                        rule: `container?${rule.rule}`,
                     })),
-                    { rule: "container#*.cookie.com", type: CleanupType.INSTANTLY },
+                    { rule: "container?*.cookie.com", type: CleanupType.INSTANTLY },
                 ],
                 protectOpenDomains: {
                     startup: true,

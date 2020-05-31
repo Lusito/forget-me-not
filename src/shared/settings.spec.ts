@@ -39,6 +39,7 @@ describe("Settings", () => {
     beforeEach(() => {
         mockEvent(mockBrowser.storage.onChanged);
         mockBrowser.storage.local.mockAllow();
+        mocks.ruleManager.mockAllow();
         mocks.defaultSettings.get.expect().andReturn(defaultSettings);
         mocks.messageUtil.importSettings.receive.expect(expect.anything());
         settings = container.resolve(Settings);

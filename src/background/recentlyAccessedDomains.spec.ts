@@ -30,6 +30,7 @@ describe("RecentlyAccessedDomains", () => {
         mocks.messageUtil.mockAllow();
         mocks.incognitoWatcher.mockAllow();
         mocks.storeUtils.defaultCookieStoreId.mock(COOKIE_STORE_ID);
+        mocks.ruleManager.mockAllow();
         recentlyAccessedDomains = container.resolve(RecentlyAccessedDomains);
     }
 

@@ -21,7 +21,7 @@ export interface SplitExpression {
 
 export function splitExpression(exp: string) {
     const result: SplitExpression = { domain: exp };
-    const containerSplitIndex = result.domain.indexOf("#");
+    const containerSplitIndex = result.domain.indexOf("?");
     if (containerSplitIndex >= 0) {
         result.container = result.domain.substr(0, containerSplitIndex);
         result.domain = result.domain.substr(containerSplitIndex + 1);

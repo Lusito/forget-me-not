@@ -54,7 +54,7 @@ export class DefaultSettingsProvider {
             "cleanAll.history": false,
             "cleanAll.history.applyRules": true,
             "cleanAll.downloads": true,
-            "cleanAll.downloads.applyRules": true,
+            "cleanAll.downloads.applyRules": false,
             "cleanAll.formData": false,
             "cleanAll.passwords": false,
             "cleanAll.indexedDB": true,

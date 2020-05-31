@@ -196,7 +196,9 @@ export function CleanupTab() {
                 </thead>
                 <tbody>{rows}</tbody>
             </table>
-
+            <div>
+                <SettingsCheckbox key="startup.protectOpenDomains" i18n="setting_protect_open_domains_on_startup" />
+            </div>
             <div class="split_equal">
                 <div />
                 <SettingsNumber

@@ -11,9 +11,19 @@ import { isValidExpression } from "./expressionUtils";
 import { MessageUtil } from "./messageUtil";
 import { sanitizeRules } from "./ruleUtils";
 import { RuleManager } from "./ruleManager";
+import { someItemsMatch } from "../background/backgroundShared";
 
 type SettingsValue = string | boolean | number | RuleDefinition[] | { [s: string]: boolean };
 export type SettingsMap = { [s: string]: SettingsValue };
+
+const RULE_MANAGER_SETTINGS = [
+    "whitelistFileSystem",
+    "whitelistNoTLD",
+    "fallbackRule",
+    "rules",
+    "startup.protectOpenDomains",
+    "cleanAll.protectOpenDomains",
+];
 
 @singleton()
 export class Settings {
@@ -42,7 +52,7 @@ export class Settings {
     public async load(changes?: { [key: string]: Storage.StorageChange }) {
         this.map = await this.storage.get(null);
         const changedKeys = Object.keys(changes || this.map);
-        if (changedKeys.includes("rules")) this.updateRules();
+        if (someItemsMatch(changedKeys, RULE_MANAGER_SETTINGS)) this.updateRules();
         return changedKeys;
     }
 
@@ -58,6 +68,10 @@ export class Settings {
             whitelistNoTLD: this.get("whitelistNoTLD"),
             fallbackRule: this.get("fallbackRule"),
             rules: this.get("rules"),
+            protectOpenDomains: {
+                startup: this.get("startup.protectOpenDomains"),
+                manual: this.get("cleanAll.protectOpenDomains"),
+            },
         });
     }
 

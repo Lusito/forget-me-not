@@ -73,6 +73,10 @@ describe("RuleManager", () => {
             whitelistFileSystem: false,
             whitelistNoTLD: false,
             rules: basicRules,
+            protectOpenDomains: {
+                startup: true,
+                manual: true,
+            },
         });
     }
 
@@ -87,6 +91,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: true,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleInstantly],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor("hello", false, false)).toBe(CleanupType.INSTANTLY);
             expect(ruleManager.getCleanupTypeFor("google.com", false, false)).toBe(CleanupType.INSTANTLY);
@@ -98,6 +106,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: true,
                 rules: [catchAllRuleInstantly],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor("hello", false, false)).toBe(CleanupType.NEVER);
             expect(ruleManager.getCleanupTypeFor("google.com", false, false)).toBe(CleanupType.INSTANTLY);
@@ -109,6 +121,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [...basicRules, ...cookieRules],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor(subdomains.unknown_com, false, false)).toBe(fallbackRule);
             expect(ruleManager.getCleanupTypeFor("sub.cookie.com", "", "unknown")).toBe(fallbackRule);
@@ -133,6 +149,10 @@ describe("RuleManager", () => {
                     { rule: `container#*.${domains.startup_com}`, type: CleanupType.LEAVE },
                     { rule: `container#*.${domains.instantly_com}`, type: CleanupType.NEVER },
                 ],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor(subdomains.never_com, "mock-container", false)).toBe(
                 CleanupType.INSTANTLY
@@ -153,6 +173,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [...cookieRules, { rule: "*.cookie.com", type: CleanupType.INSTANTLY }],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "unknown")).toBe(
                 CleanupType.INSTANTLY
@@ -164,6 +188,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [...cookieRules, { rule: "*.cookie.com", type: CleanupType.INSTANTLY }],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "never")).toBe(CleanupType.NEVER);
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "startup")).toBe(CleanupType.STARTUP);
@@ -178,6 +206,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [...cookieRules, { rule: "container#*.cookie.com", type: CleanupType.INSTANTLY }],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "never")).toBe(CleanupType.INSTANTLY);
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "startup")).toBe(
@@ -200,6 +232,10 @@ describe("RuleManager", () => {
                     })),
                     { rule: "container#*.cookie.com", type: CleanupType.INSTANTLY },
                 ],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "never")).toBe(CleanupType.NEVER);
             expect(ruleManager.getCleanupTypeFor("cookie.com", "mock-container", "startup")).toBe(CleanupType.STARTUP);
@@ -274,6 +310,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: true,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleNever],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("", "")).toHaveLength(0);
         });
@@ -283,6 +323,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: true,
                 rules: [catchAllRuleNever],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("hello", "")).toHaveLength(0);
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([catchAllRuleNever]);
@@ -294,6 +338,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveLength(0);
             ruleManager.update({
@@ -301,6 +349,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleStartup],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([catchAllRuleStartup]);
             ruleManager.update({
@@ -308,6 +360,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleStartup, catchAllRuleNever],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([catchAllRuleNever]);
             ruleManager.update({
@@ -315,6 +371,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleStartup, catchAllRuleNever, catchAllRuleLeave],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([catchAllRuleLeave]);
             ruleManager.update({
@@ -322,6 +382,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleStartup, catchAllRuleNever, catchAllRuleLeave, catchAllRuleInstantly],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([catchAllRuleInstantly]);
             ruleManager.update({
@@ -329,6 +393,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleInstantly, catchAllRuleLeave, catchAllRuleNever, catchAllRuleStartup],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([catchAllRuleInstantly]);
         });
@@ -338,6 +406,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: [catchAllRuleStartup, catchComRuleStartup],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getChosenRulesForDomain("google.com", "")).toHaveSameMembers([
                 catchAllRuleStartup,
@@ -360,6 +432,10 @@ describe("RuleManager", () => {
                     { rule: "mail.google.com", type: CleanupType.LEAVE },
                     { rule: "*.google.com", type: CleanupType.INSTANTLY },
                 ],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getExactCleanupType("google.com")).toBe(CleanupType.NEVER);
             expect(ruleManager.getExactCleanupType("www.google.com")).toBe(CleanupType.STARTUP);
@@ -384,6 +460,10 @@ describe("RuleManager", () => {
                 whitelistFileSystem: false,
                 whitelistNoTLD: false,
                 rules: basicRules.filter((rule) => rule.type !== CleanupType.INSTANTLY),
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.hasBlockingRule()).toBe(false);
         });
@@ -403,6 +483,10 @@ describe("RuleManager", () => {
                     { rule: "*.com", type: CleanupType.INSTANTLY, temporary: true },
                     { rule: "*.de", type: CleanupType.INSTANTLY },
                 ],
+                protectOpenDomains: {
+                    startup: true,
+                    manual: true,
+                },
             });
             expect(ruleManager.getTemporaryRules().map((r) => r.definition)).toEqual([
                 { rule: "*.net", type: CleanupType.NEVER, temporary: true },

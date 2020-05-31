@@ -147,7 +147,7 @@ export abstract class AbstractStorageCleaner extends Cleaner {
     }
 
     private getDomainsToClean(startup: boolean) {
-        const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
+        const protectOpenDomains = this.ruleManager.protectOpenDomains(startup);
         return Object.keys(this.settings.get(this.keys.domainsToClean)).filter(
             (domain) => !this.isDomainProtected(domain, startup, protectOpenDomains)
         );

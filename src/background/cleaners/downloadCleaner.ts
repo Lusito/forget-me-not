@@ -88,7 +88,7 @@ export class DownloadCleaner extends Cleaner {
         // Need to manually clear downloads from history before cleaning downloads, as otherwise the history entries will remain on firefox.
         // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1380445
         const downloads = await browser.downloads.search({});
-        const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
+        const protectOpenDomains = this.ruleManager.protectOpenDomains(startup);
         await this.addDownloadsToClean(downloads.map((download) => download.url));
         const urlsToClean = await this.getUrlsToClean(startup, protectOpenDomains, applyRules);
         await Promise.all(urlsToClean.map((url) => this.cleanupUrl(url)));

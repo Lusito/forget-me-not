@@ -160,7 +160,7 @@
   "__WET_GROUP__3": { "message": "Settings" },
   "settings_unsupported_checkbox@title": {
     "message": "Dieser Browser unterstützt diese Option (noch) nicht",
-    "hash": "99286998bff7ecef26245d3858e4fe0f"
+    "hash": "5b73d0b54fd603f39df515b0860391ef"
   },
   "perform_manual_cleanup": {
     "message": "Manuelle Säuberung durchführen",
@@ -337,6 +337,10 @@
   "setting_protect_open_domains": {
     "message": "Offene Domänen schützen, falls \"Regeln anwenden\" gewählt ist",
     "hash": "c3d70903d8398a33b99e1711f546ca19"
+  },
+  "setting_protect_open_domains_on_startup": {
+    "message": "Beim Start: Offene Domänen schützen, falls \"Regeln anwenden\" gewählt ist",
+    "hash": "35ca51dd4551cbaf33fd41dd568b9f7a"
   },
   "setting_history": {
     "message": "Chronik",

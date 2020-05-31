@@ -264,12 +264,12 @@ describe("DownloadCleaner", () => {
             it("should perform cleanup correctly", async () => {
                 const mock = mockAssimilate(downloadCleaner, "downloadCleaner", {
                     mock: ["getUrlsToClean", "cleanupUrl", "addDownloadsToClean"],
-                    whitelist: ["settings", "performCleanup"],
+                    whitelist: ["ruleManager", "performCleanup"],
                 });
                 mockBrowser.downloads.search.expect({}).andResolve(downloads);
-                if (!startup) mocks.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
+                mocks.ruleManager.protectOpenDomains.expect(startup).andReturn(protectOpenDomains);
                 mock.addDownloadsToClean.expect(["url-a", "url-b", "url-c"]).andResolve();
-                mock.getUrlsToClean.expect(startup, startup || protectOpenDomains, applyRules).andResolve(urlsToClean);
+                mock.getUrlsToClean.expect(startup, protectOpenDomains, applyRules).andResolve(urlsToClean);
                 mock.cleanupUrl.expect("url-a").andResolve();
                 mock.cleanupUrl.expect("url-c").andResolve();
                 mock.cleanupUrl.expect("url-d").andResolve();

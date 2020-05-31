@@ -258,18 +258,17 @@ describe("AbstractStorageCleaner", () => {
     describe("getDomainsToClean", () => {
         describe.each.boolean("with %s", (startup, protectOpenDomains) => {
             it("should return domains from domainsToClean, which return false for isDomainProtected", () => {
-                if (!startup) mocks.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
+                mocks.ruleManager.protectOpenDomains.expect(startup).andReturn(protectOpenDomains);
                 mocks.settings.get
                     .expect("domainsToClean.mockStorage" as SettingsKey)
                     .andReturn({ a: true, b: true, c: true, d: true });
                 const mock = mockAssimilate(abstractStorageCleaner, "abstractStorageCleaner", {
                     mock: ["isDomainProtected"],
                 });
-                const adjustedProtectOpenDomains = startup || protectOpenDomains;
-                mock.isDomainProtected.expect("a", startup, adjustedProtectOpenDomains).andReturn(true);
-                mock.isDomainProtected.expect("b", startup, adjustedProtectOpenDomains).andReturn(false);
-                mock.isDomainProtected.expect("c", startup, adjustedProtectOpenDomains).andReturn(true);
-                mock.isDomainProtected.expect("d", startup, adjustedProtectOpenDomains).andReturn(false);
+                mock.isDomainProtected.expect("a", startup, protectOpenDomains).andReturn(true);
+                mock.isDomainProtected.expect("b", startup, protectOpenDomains).andReturn(false);
+                mock.isDomainProtected.expect("c", startup, protectOpenDomains).andReturn(true);
+                mock.isDomainProtected.expect("d", startup, protectOpenDomains).andReturn(false);
 
                 const result = abstractStorageCleaner["getDomainsToClean"](startup);
                 expect(result).toHaveSameMembers(["b", "d"]);

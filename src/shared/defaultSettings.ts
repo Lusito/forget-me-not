@@ -94,6 +94,7 @@ export class DefaultSettingsProvider {
             "startup.cookies.applyRules": true,
             "startup.localStorage": true,
             "startup.localStorage.applyRules": true,
+            "startup.protectOpenDomains": true,
             "startup.history": false,
             "startup.history.applyRules": true,
             "startup.downloads": true,

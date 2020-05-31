@@ -87,13 +87,13 @@ describe("CookieCleaner", () => {
             async (startup, protectOpenDomains) => {
                 const mock = mockAssimilate(cookieCleaner, "cookieCleaner", {
                     mock: ["cleanCookiesWithRulesNow"],
-                    whitelist: ["cleanCookiesWithRulesNow", "clean", "settings"],
+                    whitelist: ["cleanCookiesWithRulesNow", "clean", "settings", "ruleManager"],
                 });
                 mocks.settings.get
                     .expect(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
                     .andReturn(true);
-                if (!startup) mocks.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
-                mock.cleanCookiesWithRulesNow.expect(startup, startup || protectOpenDomains);
+                mocks.ruleManager.protectOpenDomains.expect(startup).andReturn(protectOpenDomains);
+                mock.cleanCookiesWithRulesNow.expect(startup, protectOpenDomains);
                 await cookieCleaner.clean(typeSet, startup);
                 expect(typeSet.cookies).toBe(false);
             }

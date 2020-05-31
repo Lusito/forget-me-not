@@ -23,6 +23,10 @@ interface RuleManagerConfig {
     whitelistNoTLD: boolean;
     fallbackRule: CleanupType;
     rules: RuleDefinition[];
+    protectOpenDomains: {
+        startup: boolean;
+        manual: boolean;
+    }
 }
 
 @singleton()
@@ -32,6 +36,10 @@ export class RuleManager {
         whitelistNoTLD: false,
         fallbackRule: CleanupType.LEAVE,
         rules: [],
+        protectOpenDomains: {
+            startup: true,
+            manual: true,
+        }
     };
 
     private identities: ContextualIdentities.ContextualIdentity[] = [];
@@ -181,5 +189,9 @@ export class RuleManager {
 
     public getTemporaryRules() {
         return this.temporaryRules;
+    }
+
+    public protectOpenDomains(startup: boolean) {
+        return startup ? this.config.protectOpenDomains.startup : this.config.protectOpenDomains.manual;
     }
 }

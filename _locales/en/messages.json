@@ -256,6 +256,9 @@
   "setting_protect_open_domains": {
     "message": "Protect currently open domains if \"Apply Rules\" is checked"
   },
+  "setting_protect_open_domains_on_startup": {
+    "message": "On Startup: Protect currently open domains if \"Apply Rules\" is checked"
+  },
   "setting_history": {
     "message": "History"
   },

@@ -38,7 +38,7 @@ export class HistoryCleaner extends Cleaner {
                 const items = await browser.history.search({ text: "" });
                 if (!items.length) return;
 
-                const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
+                const protectOpenDomains = this.ruleManager.protectOpenDomains(startup);
                 const urlsToClean = this.getUrlsToClean(items, startup, protectOpenDomains);
                 await Promise.all(urlsToClean.map((url) => browser.history.deleteUrl({ url })));
             }

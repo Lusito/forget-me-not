@@ -136,20 +136,19 @@ describe("HistoryCleaner", () => {
                                 hostname: "www.amazon.com",
                                 tabExists: true,
                                 protected: false,
-                                deleted: !(startup || protectOpenDomains),
+                                deleted: !protectOpenDomains,
                             },
                         ];
                         const historyItems: History.HistoryItem[] = data.map((entry) => ({ url: entry.url } as any));
                         mockBrowser.history.search.expect({ text: "" }).andResolve(historyItems);
-                        if (!startup)
-                            mocks.settings.get.expect("cleanAll.protectOpenDomains").andReturn(protectOpenDomains);
+                        mocks.ruleManager.protectOpenDomains.expect(startup).andReturn(protectOpenDomains);
                         data.forEach((entry) => {
-                            if (!(startup || protectOpenDomains) || entry.tabExists)
+                            if (!protectOpenDomains || entry.tabExists)
                                 mocks.ruleManager.isDomainProtected
                                     .expect(entry.hostname, false, startup)
                                     .andReturn(entry.protected);
                             if (entry.deleted) mockBrowser.history.deleteUrl.expect({ url: entry.url }).andResolve();
-                            if (startup || protectOpenDomains)
+                            if (protectOpenDomains)
                                 mocks.tabWatcher.containsDomain.expect(entry.hostname).andReturn(entry.tabExists);
                         });
                         await historyCleaner.clean(typeSet, startup);

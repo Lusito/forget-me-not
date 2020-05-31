@@ -49,7 +49,7 @@ export class CookieCleaner extends Cleaner {
             this.settings.get(startup ? "startup.cookies.applyRules" : "cleanAll.cookies.applyRules")
         ) {
             typeSet.cookies = false;
-            const protectOpenDomains = startup || this.settings.get("cleanAll.protectOpenDomains");
+            const protectOpenDomains = this.ruleManager.protectOpenDomains(startup);
             await this.cleanCookiesWithRulesNow(startup, protectOpenDomains);
         }
     }

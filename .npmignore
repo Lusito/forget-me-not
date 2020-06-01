@@ -3,3 +3,5 @@
 build
 web-ext-artifacts
 *.tgz
+.vscode
+coverage

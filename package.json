@@ -8,8 +8,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && parcel build src/*.{html,ts} -d build/data --public-url . --no-source-maps --no-content-hash",
-    "build:dev": "npm run build -- --no-minify",
-    "build:watch": "parcel watch src/*.{html,ts} -d build/data --public-url . --no-source-maps",
+    "build:dev": "parcel build src/*.{html,ts} -d build/data --public-url . --no-minify --no-content-hash",
+    "build:watch": "parcel watch src/*.{html,ts} -d build/data --public-url .",
     "build:zip": "web-ext build -s build",
     "clean": "rimraf build",
     "copy": "cpx {_locales,icons}/**/* build && cpx manifest.json build && cpx {LICENSE,README.md} build",

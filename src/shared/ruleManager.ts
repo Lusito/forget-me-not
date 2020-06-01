@@ -162,6 +162,7 @@ export class RuleManager {
         const set = new Set<CleanupType>();
         this.allRules.filter(matchDomain(domain)).forEach((rule) => set.add(rule.definition.type));
 
+        if (set.size === 0) return [this.config.fallbackRule];
         return Array.from(set);
     }
 

@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "{abcd1234-1abc-1234-12ab-abcdef123456}": {
+      "updates": [
+        {
+          "version": "3.0.0-beta.1",
+          "update_link": "https://lusito.github.io/forget-me-not/forget-me-not-beta.xpi"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,379 @@
+{
+    "__WET_GROUP__0": { "message": "Branding" },
+    "extensionName": {
+        "message": "Forget Me Not - pozabite piškotke in druge podatke",
+        "description": "Name of the extension.",
+    },
+    "extensionDescription": {
+        "message": "Prisilite brskalnik, da pozabi podatke podatke spletnih strani razen podatkov, ki jih želite obdržati.",
+        "description": "Description of the extension.",
+    },
+    "actionTitle": {
+        "message": "Forget Me Not",
+        "description": "Action button title",
+    },
+    "actionTitleSnooze": {
+        "message": "Forget Me Not (začasno onemogočeno)",
+        "description": "Action button title during snooze",
+    },
+    "logo@title": {
+        "message": "Forget Me Not",
+    },
+
+    "__WET_GROUP__1": { "message": "Dialogs" },
+    "alert_ok": {
+        "message": "V redu",
+    },
+    "prompt_ok": {
+        "message": "V redu",
+    },
+    "prompt_cancel": {
+        "message": "Prekliči",
+    },
+    "reset_dialog_title": {
+        "message": "Ponastavi nastavitve",
+    },
+    "reset_dialog_content": {
+        "message": "Tega ni mogoče razveljaviti.",
+    },
+    "rule_dialog_title": {
+        "message": "Izberite pravilo čiščenja",
+    },
+    "rule_dialog_content": {
+        "message": "- **N**ikoli: brez čiščenja.\n- Ob **z**agonu: počisti ob zagonu brskalnika.\n- Ko za**p**ustim: počisti, ko zapustim domeno in ob zagonu brskalnika.\n- **T**akoj: po možnosti prepreči shranjevaje podatkov.  V nasprotnem primeru se vedi kot 'Ko zapustim'.\n\n**\\*** Da bi 'Ko zapustim' in 'On zagonu' delovala, morate omogočiti ustrezne možnosti čiščenja.  Zaradi omejitev programskega vmesnika Web-Extension lahko pride do omejitev delovanja.  [Več o tem](readme.html#tutorial)",
+    },
+    "rule_dialog_expression": {
+        "message": "Izraz:",
+    },
+    "rule_dialog_temporary": {
+        "message": "Začasno pravilo: odstrani to pravilo, ko zapustim domeno ali ponovno zaženem brskalnik",
+    },
+    "confirm_settings_and_rules": {
+        "message": "Nastavitve in pravila",
+    },
+    "confirm_settings_only": {
+        "message": "Samo nastavitve",
+    },
+    "confirm_ok": {
+        "message": "V redu",
+    },
+    "confirm_cancel": {
+        "message": "Prekliči",
+    },
+    "confirm_rule_replace_dialog_title": {
+        "message": "Izraz pravila že obstaja.",
+    },
+    "confirm_rule_replace_dialog_content": {
+        "message": "Navedeni izraz pravila že obstaja.  Ali ga želite zamenjati?",
+    },
+    "cookie_browser_title": {
+        "message": "Brskalnik piškotkov",
+    },
+    "cookie_browser_description": {
+        "message": "S tem orodjem lahko pregledujete piškotke in enostavno dodajate pravila za posamezne piškotke.",
+    },
+    "dialog_back": {
+        "message": "Nazaj",
+    },
+
+    "__WET_GROUP__2": { "message": "Cleanup Types" },
+    "cleanup_type_never_badge": {
+        "message": "N",
+    },
+    "cleanup_type_never_button": {
+        "message": "*N*ikoli",
+    },
+    "cleanup_type_never_button@title": {
+        "message": "Brez čiščenja",
+    },
+    "cleanup_type_startup_badge": {
+        "message": "Z",
+    },
+    "cleanup_type_startup_button": {
+        "message": "On *z*agonu",
+    },
+    "cleanup_type_startup_button@title": {
+        "message": "Počisti ob zagonu brskalnika",
+    },
+    "cleanup_type_leave_badge": {
+        "message": "P",
+    },
+    "cleanup_type_leave_button": {
+        "message": "Ko za*p*ustim",
+    },
+    "cleanup_type_leave_button@title": {
+        "message": "Počisti, ko zapustim domeno",
+    },
+    "cleanup_type_instantly_badge": {
+        "message": "T",
+    },
+    "cleanup_type_instantly_button": {
+        "message": "*T*akoj",
+    },
+    "cleanup_type_instantly_button@title": {
+        "message": "Blokiraj/Odstrani takoj, ko se podatki ustvarijo",
+    },
+    "cleanup_type_create_button": {
+        "message": "Ustvari pravilo",
+    },
+    "cleanup_type_create_button@title": {
+        "message": "Izberite vrsto čiščenja.",
+    },
+
+    "__WET_GROUP__3": { "message": "Settings" },
+    "settings_unsupported_checkbox@title": {
+        "message": "Ni podprto v tem okolju.",
+    },
+    "perform_manual_cleanup": {
+        "message": "Opravi začetno čiščenje",
+    },
+    "manual_cleanup_description": {
+        "message": "S tem lahko zaženete ročno čiščenje.  Lahko boste izbrali, kaj počistiti.",
+    },
+    "define_rules": {
+        "message": "Določi pravila:",
+    },
+    "recently_accessed_domains": {
+        "message": "Nedavno obiskane domene:",
+    },
+    "tabs_settings_general": {
+        "message": "Splošno",
+    },
+    "tabs_settings_cleanup": {
+        "message": "Čiščenje",
+    },
+    "tabs_settings_experimental": {
+        "message": "Preizkusno",
+    },
+    "tabs_this_tab@title": {
+        "message": "Trenutni zavihek",
+    },
+    "tabs_rules@title": {
+        "message": "Določi pravila",
+    },
+    "tabs_settings@title": {
+        "message": "Nastavitve",
+    },
+    "tabs_log@title": {
+        "message": "Dnevnik domen",
+    },
+    "tabs_about@title": {
+        "message": "O razširitvi Forget Me Not",
+    },
+    "tabs_tutorial@title": {
+        "message": "Uvodni vodnik",
+    },
+    "tabs_experimental@title": {
+        "message": "Preizkusne značilnosti",
+    },
+    "tabs_changelog@title": {
+        "message": "Dnevnik sprememb",
+    },
+    "button_clean_now": {
+        "message": "Počisti zdaj!",
+    },
+    "button_clean_domain": {
+        "message": "Počisti to domeno!",
+    },
+    "button_import": {
+        "message": "Uvozi …",
+    },
+    "button_export": {
+        "message": "Izvozi …",
+    },
+    "button_reset": {
+        "message": "Ponastavi na privzete",
+    },
+    "button_log_add_rule": {
+        "message": "+ Dodaj pravilo",
+    },
+    "button_toggle_snooze_true": {
+        "message": "Ustavi dremež",
+    },
+    "button_toggle_snooze_false": {
+        "message": "Zaženi dremež",
+    },
+    "toggle_snooze_description": {
+        "message": "V načinu dremeža se ta čiščenja ne bodo izvedla:\n- Čiščenje, ko zapustim domeno\n- Čiščenje piškotkov tretjih oseb\n- Blokiranje piškotkov\n\nVsa neizvedena čiščenja se bodo ponovno uvrstila na urnik, ko ustavite način dremeža.",
+    },
+    "invalid_tab": {
+        "message": "Neveljaven zavihek",
+    },
+    "rules_column_expression": {
+        "message": "Izraz",
+    },
+    "rules_column_matching_expression": {
+        "message": "Ujemajoči se izraz",
+    },
+    "rules_column_type": {
+        "message": "Počisti",
+    },
+    "rules_input@placeholder": {
+        "message": "Išči ali dodaj …",
+    },
+    "expression_hint_invalid": {
+        "message": "Neveljaven  izraz!",
+    },
+    "expression_hint_exists": {
+        "message": "Izraz že obstaja!",
+    },
+    "rules_add": {
+        "message": "Dodaj",
+    },
+    "rules_no_entries": {
+        "message": "Ni vnosov.",
+    },
+    "help_button@title": {
+        "message": "Preberite si o delovanju pravil, katere izraze lahko uporabite, o preizkusnih značilnostih in o nedavnih spremembah v tej razširitvi.",
+    },
+    "types_of_cleanup@title": {
+        "message": "Preberite več o tem, kaj natančno ta označna polja počistijo.",
+    },
+    "setting_purge_expired_cookies": {
+        "message": "Počisti pretečene piškotke ob vsakem čiščenju",
+    },
+    "setting_show_update_notification": {
+        "message": "Prikaži obvestilo ob posodobitvi razširitve",
+    },
+    "setting_show_cookie_removal_notification": {
+        "message": "Prikaži  obvestilo, ko je bil odstranjen piškotek",
+    },
+    "setting_show_badge": {
+        "message": "Prikaži ujemajoče se pravilo kot značko na gumbu orodne vrstice",
+    },
+    "setting_apply_rules@title": {
+        "message": "Uporabi pravila",
+    },
+    "setting_ignore_rules@title": {
+        "message": "Prezri pravila",
+    },
+    "setting_cookies": {
+        "message": "Piškotki",
+    },
+    "setting_local_storage": {
+        "message": "Krajevna shramba",
+    },
+    "setting_protect_open_domains": {
+        "message": "Zaščiti trenutno odprte domene, če je označeno \"Uporabi pravila\"",
+    },
+    "setting_history": {
+        "message": "Zgodovina",
+    },
+    "setting_downloads": {
+        "message": "Zgodovina prenosov",
+    },
+    "setting_form_data": {
+        "message": "Podatki obrazcev",
+    },
+    "setting_passwords": {
+        "message": "Gesla",
+    },
+    "setting_indexed_db": {
+        "message": "Podatkovne zbirke iz kazala",
+    },
+    "setting_plugin_data": {
+        "message": "Podatki vtičnikov",
+    },
+    "setting_service_workers": {
+        "message": "Delavci storitev",
+    },
+    "setting_cache": {
+        "message": "Predpomnilnik",
+    },
+    "setting_server_bound_certificates": {
+        "message": "Strežniška potrdila",
+    },
+    "setting_delay_domain_leave_cleanup_in_seconds": {
+        "message": "Zakasnitev čiščenja ob zapustitvi domene (s):",
+    },
+    "setting_delay_in_seconds": {
+        "message": "Zakasnitev (s):",
+    },
+    "setting_remove_thirdparty": {
+        "message": "Odstrani piškotke tretjih oseb takoj, ko se ustvarijo:",
+    },
+    "setting_thirdparty_before_creation": {
+        "message": "Zavrni piškotke tretjih oseb",
+    },
+    "setting_whitelist_no_tld": {
+        "message": "Nikoli na počisti domen brez vrhnje domene",
+    },
+    "setting_whitelist_no_tld@title": {
+        "message": "Domene, kot so localhost, intranet itd. (brez .com, .net itd.)",
+    },
+    "setting_whitelist_file_system": {
+        "message": "Nikoli ne zaženi čiščenja na datotekah iz mojega računalnika",
+    },
+    "settings_fallback_rule": {
+        "message": "Počisti, če se ne ujema noben izraz (privzeto: Ko zapustim)",
+    },
+    "setting_log_rad_enabled": {
+        "message": "Beleži nedavno obiskane domene",
+    },
+    "setting_log_rad_limit": {
+        "message": "Omeji na:",
+    },
+    "setting_experimental_info": {
+        "message": "To so preizkusne značilnosti.  Več o njih si lahko preberete [tukaj](readme.html#experimental).",
+    },
+    "setting_initialTab": {
+        "message": "Začetno izbran zavihek v tem pojavnem oknu:",
+    },
+    "initial_tab_last_active": {
+        "message": "<Zapomni si>",
+    },
+    "initial_tab_this_tab": {
+        "message": "Trenutni zavihek",
+    },
+    "initial_tab_rules": {
+        "message": "Pravila",
+    },
+    "initial_tab_settings": {
+        "message": "Nastavitve",
+    },
+    "initial_tab_log": {
+        "message": "Dnevnik domen",
+    },
+    "settings_cleanable_data": {
+        "message": "Podatki, ki jih je mogoče počistiti",
+    },
+    "settings_enable": {
+        "message": "Omogoči",
+    },
+
+    "__WET_GROUP__4": { "message": "Notifications" },
+    "update_notification_title": {
+        "message": "Forget Me Not je bil posodobljen!",
+    },
+    "update_notification_message": {
+        "message": "Kliknite tukaj za ogled novosti.",
+    },
+    "cookie_cleanup_notification_title": {
+        "message": "Odstranjenih je bilo $COUNT$ piškotkov.",
+        "placeholders": {
+            "count": { "content": "$1", "example": "4" }
+        },
+    },
+    "cookie_cleanup_notification_line": {
+        "message": "$DOMAIN$: $COUNT$ piškotkov",
+        "placeholders": {
+            "domain": { "content": "$1", "example": "www.google.com" },
+            "count": { "content": "$2", "example": "4" }
+        },
+    },
+
+    "__WET_GROUP__5": { "message": "Import Dialog" },
+    "import_by_drop_or_click": {
+        "message": "Uvozite nastavitve tako, da v to območje spustite prej izvoženo datoteko ali da kliknete kjerkoli, da izberete tako datoteko.",
+    },
+    "import_success_close_now": {
+        "message": "Nastavitve so bile uspešno uvožene.  To okno lahko sedaj zaprete.",
+    },
+    "import_failure": {
+        "message": "Datoteke ni bilo mogoče uvoziti.  Preverite, ali je datoteka veljavna datoteka z nastavitvami.",
+    },
+
+    "__WET_GROUP__6": { "message": "Info Pages" },
+
+    "__WET_LOCALE__": { "message": "sl" }
+}

@@ -1,336 +1,350 @@
 {
-    "__WET_GROUP__0": { "message": "Branding" },
-    "extensionName": {
-        "message": "Glöm Mig Inte - Glöm kakor & annan data",
-        "description": "Name of the extension.",
-        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+    "__WET_GROUP__0": {
+        "message": "Branding"
     },
-    "extensionDescription": {
-        "message": "Gör så att din webläsare glömmer web data, förutom den data du vill behålla.",
-        "description": "Description of the extension.",
-        "hash": "8138b17e7f1daceffca0d19015bb86e7"
+    "__WET_GROUP__1": {
+        "message": "Dialogs"
+    },
+    "__WET_GROUP__2": {
+        "message": "Cleanup Types"
+    },
+    "__WET_GROUP__3": {
+        "message": "Settings"
+    },
+    "__WET_GROUP__4": {
+        "message": "Notifications"
+    },
+    "__WET_GROUP__5": {
+        "message": "Import Dialog"
+    },
+    "__WET_GROUP__6": {
+        "message": "Info Pages"
+    },
+    "__WET_LOCALE__": {
+        "message": "sv"
+    },
+    "about_page": {
+        "hash": "8b79e24d589555578de474316b748218",
+        "message": "## Upphovsman\nSkapad av Santo Pfingsten, © 2017-2019\n\n## Översättare Behövs\n\nOm du kan ett annat språk bra nog, så kan du hjälp atill att skapa en översättning med [den här fiffiga web-appen](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problem, frågor och annan återkoppling Vänligen rapportera problem och funktions förslag på GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Integritets Redogörele\n\nDin integritet är av yttersta vikt.\nDetta tillägg varken analyserar eller sammlar in någonting som den inte behöver för att fulfölja sin funktion. Den sänder inte någon data någonstan, inte ens anonymt. PUNKT.\n\n## Medverkande\n* Svensk Översättning Jo3yA\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")"
     },
     "actionTitle": {
-        "message": "Glöm Mig Inte",
-        "description": "Action button title",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Glöm Mig Inte"
     },
     "actionTitleSnooze": {
-        "message": "Glöm Mig Inte (temporärt avaktiverad)",
-        "description": "Action button title during snooze",
-        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+        "hash": "1083d3039c66b786ea7f4fb7d6b6c095",
+        "message": "Glöm Mig Inte (temporärt avaktiverad)"
     },
-    "logo@title": {
-        "message": "Glöm Mig Inte",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
-
-    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_cancel": {
-        "message": "Avbryt",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "reset_dialog_title": {
-        "message": "Återställ Inställningar",
-        "hash": "f5545c85577b03ed93d451abf748ce8d"
-    },
-    "reset_dialog_content": {
-        "message": "Detta kan inte ångras.",
-        "hash": "db630835e0fd63a96fcb2feed83facc3"
-    },
-    "confirm_settings_and_rules": {
-        "message": "Inställningar & Regleer",
-        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
-    },
-    "confirm_settings_only": {
-        "message": "Endast Inställningar",
-        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
-    },
-    "confirm_cancel": {
-        "message": "Avbryt",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-
-    "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_button@title": {
-        "message": "Ingen upprensning",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "cleanup_type_startup_button@title": {
-        "message": "Upprensning vid omstart av webläsaren",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "cleanup_type_leave_button@title": {
-        "message": "Upprensing vid lämnande av domän",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-
-    "__WET_GROUP__3": { "message": "Settings" },
-    "perform_manual_cleanup": {
-        "message": "Genomför manuell upprensning",
-        "hash": "1098090c30d2dc94517833dc3d259a71"
-    },
-    "define_rules": {
-        "message": "Definiera regler:",
-        "hash": "958b9c121084b503102f5f7e566a833e"
-    },
-    "recently_accessed_domains": {
-        "message": "Nyligen använda domäner:",
-        "hash": "53d2a0edc88172044b6b6db0c1996820"
-    },
-    "tabs_this_tab@title": {
-        "message": "Aktiv Flik",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_rules@title": {
-        "message": "Definiera Regler",
-        "hash": "21d4563d916a5e113022379778156fff"
-    },
-    "tabs_settings@title": {
-        "message": "Inställningar",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_log@title": {
-        "message": "Domän Log",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "tabs_about@title": {
-        "message": "Om Glöm Mig Inte",
-        "hash": "c7f0b61c0416534e0a666f03327552b3"
-    },
-    "tabs_tutorial@title": {
-        "message": "Introduktions handledning",
-        "hash": "890626624db50efe177837d959c3a8f4"
-    },
-    "tabs_experimental@title": {
-        "message": "Experimentella Funktioner",
-        "hash": "f349bbd753db24b2c15a159a227bd115"
-    },
-    "tabs_changelog@title": {
-        "message": "Ändringslog",
-        "hash": "d1f539e046abe83e76dcf2163f9a143c"
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "OK"
     },
     "button_clean_now": {
-        "message": "Rensa Nu!",
-        "hash": "9294eae08b1e3bfffede71c2be473b29"
-    },
-    "button_import": {
-        "message": "Importera..",
-        "hash": "0192d8f28f3d837e79a05711e6379e5e"
+        "hash": "9294eae08b1e3bfffede71c2be473b29",
+        "message": "Rensa Nu!"
     },
     "button_export": {
-        "message": "Exportera..",
-        "hash": "46a378d64766cc2c8491cd13b018657f"
+        "hash": "46a378d64766cc2c8491cd13b018657f",
+        "message": "Exportera.."
     },
-    "button_reset": {
-        "message": "Återställ till standard",
-        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+    "button_import": {
+        "hash": "0192d8f28f3d837e79a05711e6379e5e",
+        "message": "Importera.."
     },
     "button_log_add_rule": {
-        "message": "+ Lägg till regel",
-        "hash": "28421d68b672702c44a611f9e741e4d2"
+        "hash": "28421d68b672702c44a611f9e741e4d2",
+        "message": "+ Lägg till regel"
     },
-    "button_toggle_snooze_true": {
-        "message": "Stoppa snooze",
-        "hash": "71669281f5e594169489a032087e7b3f"
+    "button_reset": {
+        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe",
+        "message": "Återställ till standard"
     },
     "button_toggle_snooze_false": {
-        "message": "Starta snooze",
-        "hash": "7a99ea84ba7341049328d104122639a8"
+        "hash": "7a99ea84ba7341049328d104122639a8",
+        "message": "Starta snooze"
     },
-    "invalid_tab": {
-        "message": "Ogiltig flik",
-        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_input@placeholder": {
-        "message": "Sök och lägg till..",
-        "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_add": {
-        "message": "Lägg till",
-        "hash": "c30738ff9271a856100751bbca5e5794"
-    },
-    "help_button@title": {
-        "message": "Läs om hur regler fungerar, vilka uttryck du kan använda, experimentella funktioner, och nya ändringar i detta tillägg.",
-        "hash": "90c094de68babfe6bfb332fb03538a24"
-    },
-    "types_of_cleanup@title": {
-        "message": "Läs mer om exakt vad dessa val städar upp.",
-        "hash": "ba2fe14822b0ddacb1f12d26f543783d"
-    },
-    "setting_purge_expired_cookies": {
-        "message": "Rensa utgångna kakor när en upprensning genomförs.",
-        "hash": "1ff8b00b0ca44682a083d91280bcc011"
-    },
-    "setting_show_update_notification": {
-        "message": "Visa ett meddelande när detta här tillägget har blivit uppdaterat.",
-        "hash": "b09faefa5c53650a8e8d549be96e09a6"
-    },
-    "setting_show_cookie_removal_notification": {
-        "message": "Visa ett meddelande när kakor har blivit rensade.",
-        "hash": "5d31d92f2c4eb88af04bf02b9078d058"
-    },
-    "setting_show_badge": {
-        "message": "Visa matchande regel som ett emblem på verktygs knappen",
-        "hash": "fcc8735498ed21670a55314e40bd5b23"
-    },
-    "setting_apply_rules@title": {
-        "message": "Genomför Regler",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
-    "setting_cookies": {
-        "message": "Kakor",
-        "hash": "4aef64b30489430071825bcb3db557b6"
-    },
-    "setting_local_storage": {
-        "message": "Lokal lagring",
-        "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_protect_open_domains": {
-        "message": "Skydda nuvarande öppna domäner om \"Genomför Regler\" är markerad",
-        "hash": "c3d70903d8398a33b99e1711f546ca19"
-    },
-    "setting_history": {
-        "message": "Historia",
-        "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
-    },
-    "setting_downloads": {
-        "message": "Nedladdningar",
-        "hash": "12caefee10c407a13df4027c244d1118"
-    },
-    "setting_form_data": {
-        "message": "Formulär Data",
-        "hash": "b5418babb2bbffd7d4e8275b83770564"
-    },
-    "setting_passwords": {
-        "message": "Lösenord",
-        "hash": "a40f3ee19854cd8645e750f118af3dcd"
-    },
-    "setting_indexed_db": {
-        "message": "Indexerad DB",
-        "hash": "335f3924c55823b7be5b261a240883bf"
-    },
-    "setting_plugin_data": {
-        "message": "Insticks Data",
-        "hash": "436905ccbdfaaacb1aec25f512584e36"
-    },
-    "setting_service_workers": {
-        "message": "Service Arbetare",
-        "hash": "584545acfce5580c7967bc8c366df556"
-    },
-    "setting_server_bound_certificates": {
-        "message": "Serverbundna certifikat",
-        "hash": "0dfdb1326c1206379e7866da9c9bbf11"
-    },
-    "setting_delay_in_seconds": {
-        "message": "Fördröjning i sekunder:",
-        "hash": "8fa5a59e076b94c1c8fb253657713fc0"
-    },
-    "setting_remove_thirdparty": {
-        "message": "Ta bort Tredjeparts Kakor vid skapande:",
-        "hash": "2d8b645390f60f6bb1777fbf6004d109"
-    },
-    "setting_thirdparty_before_creation": {
-        "message": "Neka Tredjeparts Kakor",
-        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
-    },
-    "setting_whitelist_no_tld@title": {
-        "message": "Domäner som localhost, intranet osv. (utan .com, .net, osv.)",
-        "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "setting_log_rad_enabled": {
-        "message": "Logga nyligen använda domäner.",
-        "hash": "3b8f9710163140ee92e5924c8f7bdbca"
-    },
-    "setting_log_rad_limit": {
-        "message": "Begränsa till:",
-        "hash": "3c037e9a79f552e29a4d50714669c7e3"
-    },
-    "setting_initialTab": {
-        "message": "Ursprungligt vald flik i denna popup:",
-        "hash": "4f7c8a9bcef6c6476565d540dde62998"
-    },
-    "initial_tab_last_active": {
-        "message": "<Kom Ihåg>",
-        "hash": "aa5aecbdb436117318ba27e868fe98c8"
-    },
-    "initial_tab_this_tab": {
-        "message": "Aktiv Flik",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "initial_tab_rules": {
-        "message": "Regler",
-        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
-    },
-    "initial_tab_settings": {
-        "message": "Inställningar",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "initial_tab_log": {
-        "message": "Domän Log",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-
-    "__WET_GROUP__4": { "message": "Notifications" },
-    "update_notification_title": {
-        "message": "Glöm Mig Inte har blivit uppdaterad!",
-        "hash": "ee6d409dd42b2f42f153c1a574ca3595"
-    },
-    "update_notification_message": {
-        "message": "Klicka här för att se vad som är nytt.",
-        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
-    },
-    "cookie_cleanup_notification_title": {
-        "message": "$COUNT$ kakor har tagits bort",
-        "placeholders": {
-            "count": { "content": "$1", "example": "4" }
-        },
-        "hash": "858abd3673bf284d100dba19e3034e71"
-    },
-    "cookie_cleanup_notification_line": {
-        "message": "$DOMAIN$: $COUNT$ kakor",
-        "placeholders": {
-            "domain": { "content": "$1", "example": "www.google.com" },
-            "count": { "content": "$2", "example": "4" }
-        },
-        "hash": "194b196ae9df5827b482babe5caebd69"
-    },
-
-    "__WET_GROUP__5": { "message": "Import Dialog" },
-    "import_by_drop_or_click": {
-        "message": "Importera inställningar genom att släppa en tidigare exporterad fil i detta område eller klicka var som helst för att välja en sådan fil.",
-        "hash": "addde02e14af8336c24777c9b03dc5eb"
-    },
-    "import_success_close_now": {
-        "message": "Import av inställningar har lyckats. Du kan nu stänga detta fönster.",
-        "hash": "cd1b4a7131754d680d4a662e29b2516b"
-    },
-    "import_failure": {
-        "message": "Kunde inte importera filen. Kontrollera om filen är en giltig inställningsfil.",
-        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
-    },
-
-    "__WET_GROUP__6": { "message": "Info Pages" },
-    "about_page": {
-        "message": "## Upphovsman\nSkapad av Santo Pfingsten, © 2017-2019\n\n## Översättare Behövs\n\nOm du kan ett annat språk bra nog, så kan du hjälp atill att skapa en översättning med [den här fiffiga web-appen](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problem, frågor och annan återkoppling Vänligen rapportera problem och funktions förslag på GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Integritets Redogörele\n\nDin integritet är av yttersta vikt.\nDetta tillägg varken analyserar eller sammlar in någonting som den inte behöver för att fulfölja sin funktion. Den sänder inte någon data någonstan, inte ens anonymt. PUNKT.\n\n## Medverkande\n* Svensk Översättning Jo3yA\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Designed by Vexels.com\n* Icons made by [Google](https://www.flaticon.com/authors/google \"Google\")  from [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
-        "hash": "8b79e24d589555578de474316b748218"
-    },
-    "experimental_page": {
-        "message": "## Experimentella Funktioner\n\n- I framtiden kan det komma nya funktioner som är markerade som experimentella.\n- Dom kommer att vara avvaktiverade per standard, de måste aktiveras manuellt.\n- Dessa funktioner används för att utvärdera nya sätt att förbättra tillägget.\n- De kan vara instabila eller ha dålig prestanda.\n- Om du upplever problem, försök stänga av dessa funktioner.\n- Vänligen sänd återkoppling och fel-rapporter på [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Nurvarande aktiva experiment:\n- **Rensa utgångna kakor**: När helst en upprensning genomförs, så rensas kakor som har ett utgånget utgångsdatum oavsett konfigurerade regler. Normalt tar Firefox bara bort utgångna kakor när en viss gräns har nåtts. Dessa kakor sänds inte till web-sidan, men de finns fortfarande kvar. Detta val tar bort dessa spökande kakor.\n- **Neka Tredjeparts kakor**:\nOm detta aktiveras, varje web-begäran kommer att fångas upp för att ta bort domäner som inte hör till flikens URL och inte är skyddad av en regel. Detta innebär att dessa kakor kommer aldrig att placeras.\n\nVänligen sänd er återkoppling av er upplevelse med dessa experiment till mig, så jag kan besluta om de ska läggas till permanent eller inte.",
-        "hash": "bd877a339269825e5ace6407fc19cb45"
+    "button_toggle_snooze_true": {
+        "hash": "71669281f5e594169489a032087e7b3f",
+        "message": "Stoppa snooze"
     },
     "changelog_page": {
-        "message": "## Ändringslogg\n\n### Version 2.2.8 (2020/05/24)\n\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n\n### Version 2.2.7 (2020/04/11)\n\n- Updated french translations by Dorian Eydoux\n- Polish translations by Azahiar\n- Partial turkish translations by Lernatius\n- Updated german translations by doak\n\n### Version 2.2.6 (2019/12/15)\n\n- Partial finnish translations by welcroft\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n- Updated argentinian translations by artinipaiv\n- Indonesian translations by zmni\n- Updated french translations by Krakopov\n- Updates german translation by luger19\n- Some code improvements\n- Removed temporary rules from settings export\n\n### Version 2.2.5 (2019/09/01)\n\n- Visual improvements of the settings tables\n- Updated french translations\n- Russian translations by Qwest8K\n- Temporary rules\n\n### Version 2.2.4 (2019/06/30)\n\n- Instantly rules (and the deny third-party option) are now affected by snooze mode as well.\n\n### Version 2.2.3 (2019/06/24)\n\n- Updated pt-BR translations by Fábio M.\n- Using new filter on Firefox >= 68 to ignore incognito tabs when blocking cookies.\n\n### Version 2.2.2 (2019/04/14)\n\n- German Swiss translation removed, as Firefox doesn't support it.\n- A bug causing performance issues has been fixed.\n- The cookie browser now refreshes after a rule has been added.\n\n### Version 2.2.1 (2019/03/13)\n\n- Translations have been updated.\n- A bug in the cookie browser has been fixed.\n\n### Version 2.2.0 (2019/03/12)\n\n- Swiss German translations have been updated.\n- A cookie browser has been added to easily add cookie-specific rules.\n\n### Version 2.1.0 (2019/03/03)\n\n- Further improvements to the user interface.\n- Fix for downloads not being cleared correctly on startup\n- Fix for input field on rule creation.\n- Swiss German translation by BenjaminRosenzeig.\n- Updated italian translation by AlienLogic.\n- Fix for \"Instant\" rule incorrectly blocking in private tabs.\n- Added missing tooltips.\n- Cookie expressions are now shown under the \"Matching Expression\"\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Version 1.0.5 (2018/09/02)\n- Fixade ett fels som orsakade att uppdaterings notisen dök upp vid varje start.\n\n### Version 1.0.4 (2018/09/02)\n- Tillfällig lösning för Firefox fel, som gör att nedladdnings historiken rensas.\n- Tillfällig lösning för Firefox fel som hindrade container kakor från att rensas på rätt sätt\n- Lokala kakor (från web-sidor som lagras på din dator) kan nu rensas bort.\n- Italiens översättning skriven av temptemptmp.\n- Stöd för live genomför knapp för web-utöknings-översättning.\n- Bättre stöd för Firefox överflödes meny\n\n### Version 1.0.3 (2018/08/23)\n- Korrigerade ett fel i regel uttrycks tolken\n- Spans (Argentina) översättning skriven av [Fabián Pérez](https://www.github.com/thepante)\n- Svensk översättning skriven av Jo3yA\n- Portugisisk översättning skriven av SW1FT\n- Portugisiks(Brasilien) översättning skriven av Victor Bambino\n- Uppadterad övre och lägre sorbisk översättning av Michael Wol\n\n### Version 1.0.2 (2018/06/03)\n- Stöd för tangentbords navigering och skärm läsare \n\n### Version 1.0.1 (2018/05/28)\n- Korrigering för rensing av utgångna kakor\n\n### Version 1.0.0 (2018/05/27)\n- Lade till en annan ikon och tooltip i snooze läge.\n- Övre och Lägre Sorbisk översättning tack vare @milupo.\n- Användare kan nu ändra vilken regeltyp som används om ingen matchande regel finns.\n- Stöd för att skapa regler specifikt för en namngiven kaka\n- Förbättrad avkänning av tredjeparts kakor.\n- Fixade fel med borttagning av kakor från underdomäner.\n- Förbättrat stöd för Förstaparts Isolering\n- Ny experimentell funktion: Rensning av utgångna kakor när en upprensning genomförs.\n- Fixade några visuella problem.\n- Flera kodförbättringar för bättre stabilitet och prestanda!\n- Över 100 enhetstester för att trygga bra kvalitet!\n- Bättre hjälp och fler beskrivningar.\n- Lade till integritets redogörelse.\n\n### Version 0.9.1 (2018/04/06)\n- Fel som ignorerade -meddela inte om uppdateringar- inställningen\n\n### Version 0.9.0 (2018/03/24)\n- Lade till inställningar om att avaktivera eller begränsa domän loggen\n- Stöd för att visa punycode domännamn\n- Fixade att kakor inte togs bort ordentligt i vissa fall\n- Byte till ikoner istället för titlar i flikarna popupperna\n- Tillåt den manuella upprensning att ignorera \"skydda öppna domäner\" reglen.\n- Lade till snooze funktionen för att tillfälligt stoppa automatisk upprensning. Upprensningen genomförs när snooze funktionen stoppas.\n- Teknologist uppgradering\n\n### Version 0.8.8 (2018/01/24)\n- Lade till svart regeltyp för att fullständigt blockera kakor.\n- Förstaparts Isolering förhindrar inte längre tillägget från att ta bort kakor (börjar fungera från och med Firefox 59). Förbättrat stöd kommer att vara tillgängligt i en senare betaversion.\n- Felfix: Vid lämnande av en domän, återuppkoppling och lämnande igen före den ursprungliga upprensningens tidsutgång passerats gjorde att kakan togs bort för tidigt.\n- Felfix: Meddelanden byttes ut så snabbt att användaren inte kunde läsa dem.\n\n### Version 0.8.7 (2017/12/20)\n- Omarbetning på grund av att inställningsimport inte fungerade på rätt sätt i Firefox browserAction popuppen.\n- Delvis stöd för Container flikar: Kakor fungerar, lokal lagring fungerar inte (Mozilla behöver fixa något först)\n- Lade till ny regel \"Glöm\" (röd) för att möjliggöra åsidosättning andra regler  (läs handledningen för mer information).\n- Fixade ett problem med uppstarts upprensning\n- Lade till enhetstest\n- Lade till val att gömma emblem\n- Lade till val att välja den ursprungligt valda fliken\n- Lade till val att visa meddelande vid borttagning av kakor\n- Fixade ett problem med export\n\n### Version 0.8.6 (2017/12/06)\n- Översättningsändringar, använder [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Introduktion av en innuti-tilläggs readme, handledning och ändringslogg.\n  - Dessa komms åt via frågetecken knappen.\n- Visa ett meddelande när tillägget har uppdaterats (kan avvaktiveras).\n- Domäner utan en toppdomän  (t. ex. localhost, intranet, osv.) kan nu vitlistas med en markering.\n- Experimentell funktion för att blockera tredjeparts kakor\n\n### Version 0.8.5 (2017/11/25)\n- Stavfel fixat\n- Gjorde toggle regler smidigare\n- Knapp för att lägga till nya regler (förut kunde du bara lägga till en ny regel genom att trycka enter)\n- Knapp för att få information om giltiga uttryck \n\n### Version 0.8.4 (2017/11/25)\n- Bättre mobil kompatibilitet\n- Fixade att inkognito kakor blev loggade och borttagna \n\n### Version 0.8.3 (2017/11/24)\n- Inaktiverad i inkognito flikar/fönster\n- Lade till log för att se domäner med nyligt förändrade kakor\n- Lade till knappar för att snabbt fylla i filter fältet med domäner i den övre och nuvarande fliken\n\n### Version 0.8.2 (2017/11/19)\n- Några felfixar, uppstädning \n\n### Version 0.8.0 (2017/11/19)\n- Första Versionen",
-        "hash": "0dd61bf62909481c3442be3c736a5687"
+        "hash": "0dd61bf62909481c3442be3c736a5687",
+        "message": "## Ändringslogg\n\n### Version 2.2.8 (2020/05/24)\n\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n\n### Version 2.2.7 (2020/04/11)\n\n- Updated french translations by Dorian Eydoux\n- Polish translations by Azahiar\n- Partial turkish translations by Lernatius\n- Updated german translations by doak\n\n### Version 2.2.6 (2019/12/15)\n\n- Partial finnish translations by welcroft\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n- Updated argentinian translations by artinipaiv\n- Indonesian translations by zmni\n- Updated french translations by Krakopov\n- Updates german translation by luger19\n- Some code improvements\n- Removed temporary rules from settings export\n\n### Version 2.2.5 (2019/09/01)\n\n- Visual improvements of the settings tables\n- Updated french translations\n- Russian translations by Qwest8K\n- Temporary rules\n\n### Version 2.2.4 (2019/06/30)\n\n- Instantly rules (and the deny third-party option) are now affected by snooze mode as well.\n\n### Version 2.2.3 (2019/06/24)\n\n- Updated pt-BR translations by Fábio M.\n- Using new filter on Firefox >= 68 to ignore incognito tabs when blocking cookies.\n\n### Version 2.2.2 (2019/04/14)\n\n- German Swiss translation removed, as Firefox doesn't support it.\n- A bug causing performance issues has been fixed.\n- The cookie browser now refreshes after a rule has been added.\n\n### Version 2.2.1 (2019/03/13)\n\n- Translations have been updated.\n- A bug in the cookie browser has been fixed.\n\n### Version 2.2.0 (2019/03/12)\n\n- Swiss German translations have been updated.\n- A cookie browser has been added to easily add cookie-specific rules.\n\n### Version 2.1.0 (2019/03/03)\n\n- Further improvements to the user interface.\n- Fix for downloads not being cleared correctly on startup\n- Fix for input field on rule creation.\n- Swiss German translation by BenjaminRosenzeig.\n- Updated italian translation by AlienLogic.\n- Fix for \"Instant\" rule incorrectly blocking in private tabs.\n- Added missing tooltips.\n- Cookie expressions are now shown under the \"Matching Expression\"\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Version 1.0.5 (2018/09/02)\n- Fixade ett fels som orsakade att uppdaterings notisen dök upp vid varje start.\n\n### Version 1.0.4 (2018/09/02)\n- Tillfällig lösning för Firefox fel, som gör att nedladdnings historiken rensas.\n- Tillfällig lösning för Firefox fel som hindrade container kakor från att rensas på rätt sätt\n- Lokala kakor (från web-sidor som lagras på din dator) kan nu rensas bort.\n- Italiens översättning skriven av temptemptmp.\n- Stöd för live genomför knapp för web-utöknings-översättning.\n- Bättre stöd för Firefox överflödes meny\n\n### Version 1.0.3 (2018/08/23)\n- Korrigerade ett fel i regel uttrycks tolken\n- Spans (Argentina) översättning skriven av [Fabián Pérez](https://www.github.com/thepante)\n- Svensk översättning skriven av Jo3yA\n- Portugisisk översättning skriven av SW1FT\n- Portugisiks(Brasilien) översättning skriven av Victor Bambino\n- Uppadterad övre och lägre sorbisk översättning av Michael Wol\n\n### Version 1.0.2 (2018/06/03)\n- Stöd för tangentbords navigering och skärm läsare \n\n### Version 1.0.1 (2018/05/28)\n- Korrigering för rensing av utgångna kakor\n\n### Version 1.0.0 (2018/05/27)\n- Lade till en annan ikon och tooltip i snooze läge.\n- Övre och Lägre Sorbisk översättning tack vare @milupo.\n- Användare kan nu ändra vilken regeltyp som används om ingen matchande regel finns.\n- Stöd för att skapa regler specifikt för en namngiven kaka\n- Förbättrad avkänning av tredjeparts kakor.\n- Fixade fel med borttagning av kakor från underdomäner.\n- Förbättrat stöd för Förstaparts Isolering\n- Ny experimentell funktion: Rensning av utgångna kakor när en upprensning genomförs.\n- Fixade några visuella problem.\n- Flera kodförbättringar för bättre stabilitet och prestanda!\n- Över 100 enhetstester för att trygga bra kvalitet!\n- Bättre hjälp och fler beskrivningar.\n- Lade till integritets redogörelse.\n\n### Version 0.9.1 (2018/04/06)\n- Fel som ignorerade -meddela inte om uppdateringar- inställningen\n\n### Version 0.9.0 (2018/03/24)\n- Lade till inställningar om att avaktivera eller begränsa domän loggen\n- Stöd för att visa punycode domännamn\n- Fixade att kakor inte togs bort ordentligt i vissa fall\n- Byte till ikoner istället för titlar i flikarna popupperna\n- Tillåt den manuella upprensning att ignorera \"skydda öppna domäner\" reglen.\n- Lade till snooze funktionen för att tillfälligt stoppa automatisk upprensning. Upprensningen genomförs när snooze funktionen stoppas.\n- Teknologist uppgradering\n\n### Version 0.8.8 (2018/01/24)\n- Lade till svart regeltyp för att fullständigt blockera kakor.\n- Förstaparts Isolering förhindrar inte längre tillägget från att ta bort kakor (börjar fungera från och med Firefox 59). Förbättrat stöd kommer att vara tillgängligt i en senare betaversion.\n- Felfix: Vid lämnande av en domän, återuppkoppling och lämnande igen före den ursprungliga upprensningens tidsutgång passerats gjorde att kakan togs bort för tidigt.\n- Felfix: Meddelanden byttes ut så snabbt att användaren inte kunde läsa dem.\n\n### Version 0.8.7 (2017/12/20)\n- Omarbetning på grund av att inställningsimport inte fungerade på rätt sätt i Firefox browserAction popuppen.\n- Delvis stöd för Container flikar: Kakor fungerar, lokal lagring fungerar inte (Mozilla behöver fixa något först)\n- Lade till ny regel \"Glöm\" (röd) för att möjliggöra åsidosättning andra regler  (läs handledningen för mer information).\n- Fixade ett problem med uppstarts upprensning\n- Lade till enhetstest\n- Lade till val att gömma emblem\n- Lade till val att välja den ursprungligt valda fliken\n- Lade till val att visa meddelande vid borttagning av kakor\n- Fixade ett problem med export\n\n### Version 0.8.6 (2017/12/06)\n- Översättningsändringar, använder [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Introduktion av en innuti-tilläggs readme, handledning och ändringslogg.\n  - Dessa komms åt via frågetecken knappen.\n- Visa ett meddelande när tillägget har uppdaterats (kan avvaktiveras).\n- Domäner utan en toppdomän  (t. ex. localhost, intranet, osv.) kan nu vitlistas med en markering.\n- Experimentell funktion för att blockera tredjeparts kakor\n\n### Version 0.8.5 (2017/11/25)\n- Stavfel fixat\n- Gjorde toggle regler smidigare\n- Knapp för att lägga till nya regler (förut kunde du bara lägga till en ny regel genom att trycka enter)\n- Knapp för att få information om giltiga uttryck \n\n### Version 0.8.4 (2017/11/25)\n- Bättre mobil kompatibilitet\n- Fixade att inkognito kakor blev loggade och borttagna \n\n### Version 0.8.3 (2017/11/24)\n- Inaktiverad i inkognito flikar/fönster\n- Lade till log för att se domäner med nyligt förändrade kakor\n- Lade till knappar för att snabbt fylla i filter fältet med domäner i den övre och nuvarande fliken\n\n### Version 0.8.2 (2017/11/19)\n- Några felfixar, uppstädning \n\n### Version 0.8.0 (2017/11/19)\n- Första Versionen"
     },
-
-    "__WET_LOCALE__": { "message": "sv" }
+    "cleanup_type_leave_button@title": {
+        "hash": "a69a2b082be9de0589a0f807f6be2179",
+        "message": "Upprensing vid lämnande av domän"
+    },
+    "cleanup_type_never_button@title": {
+        "hash": "f0c2b4597f983ce80f148fd43e884e9b",
+        "message": "Ingen upprensning"
+    },
+    "cleanup_type_startup_button@title": {
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a",
+        "message": "Upprensning vid omstart av webläsaren"
+    },
+    "confirm_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "Avbryt"
+    },
+    "confirm_settings_and_rules": {
+        "hash": "e195409b368c4fbb6d4fa33ae6a52c20",
+        "message": "Inställningar & Regleer"
+    },
+    "confirm_settings_only": {
+        "hash": "47dbae6cf11a5b79c1abae7b56485c18",
+        "message": "Endast Inställningar"
+    },
+    "cookie_cleanup_notification_line": {
+        "hash": "194b196ae9df5827b482babe5caebd69",
+        "message": "$DOMAIN$: $COUNT$ kakor",
+        "placeholders": {
+            "count": {
+                "content": "$2",
+                "example": "4"
+            },
+            "domain": {
+                "content": "$1",
+                "example": "www.google.com"
+            }
+        }
+    },
+    "cookie_cleanup_notification_title": {
+        "hash": "858abd3673bf284d100dba19e3034e71",
+        "message": "$COUNT$ kakor har tagits bort",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "4"
+            }
+        }
+    },
+    "define_rules": {
+        "hash": "958b9c121084b503102f5f7e566a833e",
+        "message": "Definiera regler:"
+    },
+    "experimental_page": {
+        "hash": "bd877a339269825e5ace6407fc19cb45",
+        "message": "## Experimentella Funktioner\n\n- I framtiden kan det komma nya funktioner som är markerade som experimentella.\n- Dom kommer att vara avvaktiverade per standard, de måste aktiveras manuellt.\n- Dessa funktioner används för att utvärdera nya sätt att förbättra tillägget.\n- De kan vara instabila eller ha dålig prestanda.\n- Om du upplever problem, försök stänga av dessa funktioner.\n- Vänligen sänd återkoppling och fel-rapporter på [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Nurvarande aktiva experiment:\n- **Rensa utgångna kakor**: När helst en upprensning genomförs, så rensas kakor som har ett utgånget utgångsdatum oavsett konfigurerade regler. Normalt tar Firefox bara bort utgångna kakor när en viss gräns har nåtts. Dessa kakor sänds inte till web-sidan, men de finns fortfarande kvar. Detta val tar bort dessa spökande kakor.\n- **Neka Tredjeparts kakor**:\nOm detta aktiveras, varje web-begäran kommer att fångas upp för att ta bort domäner som inte hör till flikens URL och inte är skyddad av en regel. Detta innebär att dessa kakor kommer aldrig att placeras.\n\nVänligen sänd er återkoppling av er upplevelse med dessa experiment till mig, så jag kan besluta om de ska läggas till permanent eller inte."
+    },
+    "extensionDescription": {
+        "hash": "8138b17e7f1daceffca0d19015bb86e7",
+        "message": "Gör så att din webläsare glömmer web data, förutom den data du vill behålla."
+    },
+    "extensionName": {
+        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad",
+        "message": "Glöm Mig Inte - Glöm kakor & annan data"
+    },
+    "help_button@title": {
+        "hash": "90c094de68babfe6bfb332fb03538a24",
+        "message": "Läs om hur regler fungerar, vilka uttryck du kan använda, experimentella funktioner, och nya ändringar i detta tillägg."
+    },
+    "import_by_drop_or_click": {
+        "hash": "addde02e14af8336c24777c9b03dc5eb",
+        "message": "Importera inställningar genom att släppa en tidigare exporterad fil i detta område eller klicka var som helst för att välja en sådan fil."
+    },
+    "import_failure": {
+        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4",
+        "message": "Kunde inte importera filen. Kontrollera om filen är en giltig inställningsfil."
+    },
+    "import_success_close_now": {
+        "hash": "cd1b4a7131754d680d4a662e29b2516b",
+        "message": "Import av inställningar har lyckats. Du kan nu stänga detta fönster."
+    },
+    "initial_tab_last_active": {
+        "hash": "aa5aecbdb436117318ba27e868fe98c8",
+        "message": "<Kom Ihåg>"
+    },
+    "initial_tab_log": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Domän Log"
+    },
+    "initial_tab_rules": {
+        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb",
+        "message": "Regler"
+    },
+    "initial_tab_settings": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Inställningar"
+    },
+    "initial_tab_this_tab": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Aktiv Flik"
+    },
+    "invalid_tab": {
+        "hash": "d9b046898a69c55df2f0e4f03f9011d6",
+        "message": "Ogiltig flik"
+    },
+    "logo@title": {
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Glöm Mig Inte"
+    },
+    "perform_manual_cleanup": {
+        "hash": "1098090c30d2dc94517833dc3d259a71",
+        "message": "Genomför manuell upprensning"
+    },
+    "prompt_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "Avbryt"
+    },
+    "prompt_ok": {
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "OK"
+    },
+    "recently_accessed_domains": {
+        "hash": "53d2a0edc88172044b6b6db0c1996820",
+        "message": "Nyligen använda domäner:"
+    },
+    "reset_dialog_content": {
+        "hash": "db630835e0fd63a96fcb2feed83facc3",
+        "message": "Detta kan inte ångras."
+    },
+    "reset_dialog_title": {
+        "hash": "f5545c85577b03ed93d451abf748ce8d",
+        "message": "Återställ Inställningar"
+    },
+    "rules_add": {
+        "hash": "c30738ff9271a856100751bbca5e5794",
+        "message": "Lägg till"
+    },
+    "rules_input@placeholder": {
+        "hash": "a0766c32473f97b153fd63a92cadd450",
+        "message": "Sök och lägg till.."
+    },
+    "setting_apply_rules@title": {
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b",
+        "message": "Genomför Regler"
+    },
+    "setting_cookies": {
+        "hash": "4aef64b30489430071825bcb3db557b6",
+        "message": "Kakor"
+    },
+    "setting_delay_in_seconds": {
+        "hash": "8fa5a59e076b94c1c8fb253657713fc0",
+        "message": "Fördröjning i sekunder:"
+    },
+    "setting_downloads": {
+        "hash": "12caefee10c407a13df4027c244d1118",
+        "message": "Nedladdningar"
+    },
+    "setting_form_data": {
+        "hash": "b5418babb2bbffd7d4e8275b83770564",
+        "message": "Formulär Data"
+    },
+    "setting_history": {
+        "hash": "6b8f0d500af7fbca100a1be3dc0817d6",
+        "message": "Historia"
+    },
+    "setting_indexed_db": {
+        "hash": "335f3924c55823b7be5b261a240883bf",
+        "message": "Indexerad DB"
+    },
+    "setting_initialTab": {
+        "hash": "4f7c8a9bcef6c6476565d540dde62998",
+        "message": "Ursprungligt vald flik i denna popup:"
+    },
+    "setting_local_storage": {
+        "hash": "d57ee1024a950e1341482d9240d0b630",
+        "message": "Lokal lagring"
+    },
+    "setting_log_rad_enabled": {
+        "hash": "3b8f9710163140ee92e5924c8f7bdbca",
+        "message": "Logga nyligen använda domäner."
+    },
+    "setting_log_rad_limit": {
+        "hash": "3c037e9a79f552e29a4d50714669c7e3",
+        "message": "Begränsa till:"
+    },
+    "setting_passwords": {
+        "hash": "a40f3ee19854cd8645e750f118af3dcd",
+        "message": "Lösenord"
+    },
+    "setting_plugin_data": {
+        "hash": "436905ccbdfaaacb1aec25f512584e36",
+        "message": "Insticks Data"
+    },
+    "setting_protect_open_domains": {
+        "hash": "c3d70903d8398a33b99e1711f546ca19",
+        "message": "Skydda nuvarande öppna domäner om \"Genomför Regler\" är markerad"
+    },
+    "setting_purge_expired_cookies": {
+        "hash": "1ff8b00b0ca44682a083d91280bcc011",
+        "message": "Rensa utgångna kakor när en upprensning genomförs."
+    },
+    "setting_remove_thirdparty": {
+        "hash": "2d8b645390f60f6bb1777fbf6004d109",
+        "message": "Ta bort Tredjeparts Kakor vid skapande:"
+    },
+    "setting_server_bound_certificates": {
+        "hash": "0dfdb1326c1206379e7866da9c9bbf11",
+        "message": "Serverbundna certifikat"
+    },
+    "setting_service_workers": {
+        "hash": "584545acfce5580c7967bc8c366df556",
+        "message": "Service Arbetare"
+    },
+    "setting_show_badge": {
+        "hash": "fcc8735498ed21670a55314e40bd5b23",
+        "message": "Visa matchande regel som ett emblem på verktygs knappen"
+    },
+    "setting_show_cookie_removal_notification": {
+        "hash": "5d31d92f2c4eb88af04bf02b9078d058",
+        "message": "Visa ett meddelande när kakor har blivit rensade."
+    },
+    "setting_show_update_notification": {
+        "hash": "b09faefa5c53650a8e8d549be96e09a6",
+        "message": "Visa ett meddelande när detta här tillägget har blivit uppdaterat."
+    },
+    "setting_thirdparty_before_creation": {
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c",
+        "message": "Neka Tredjeparts Kakor"
+    },
+    "setting_whitelist_no_tld@title": {
+        "hash": "9e32826f6a8e674ffa05dca2c9670ddb",
+        "message": "Domäner som localhost, intranet osv. (utan .com, .net, osv.)"
+    },
+    "tabs_about@title": {
+        "hash": "c7f0b61c0416534e0a666f03327552b3",
+        "message": "Om Glöm Mig Inte"
+    },
+    "tabs_changelog@title": {
+        "hash": "d1f539e046abe83e76dcf2163f9a143c",
+        "message": "Ändringslog"
+    },
+    "tabs_experimental@title": {
+        "hash": "f349bbd753db24b2c15a159a227bd115",
+        "message": "Experimentella Funktioner"
+    },
+    "tabs_log@title": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Domän Log"
+    },
+    "tabs_rules@title": {
+        "hash": "21d4563d916a5e113022379778156fff",
+        "message": "Definiera Regler"
+    },
+    "tabs_settings@title": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Inställningar"
+    },
+    "tabs_this_tab@title": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Aktiv Flik"
+    },
+    "tabs_tutorial@title": {
+        "hash": "890626624db50efe177837d959c3a8f4",
+        "message": "Introduktions handledning"
+    },
+    "types_of_cleanup@title": {
+        "hash": "ba2fe14822b0ddacb1f12d26f543783d",
+        "message": "Läs mer om exakt vad dessa val städar upp."
+    },
+    "update_notification_message": {
+        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58",
+        "message": "Klicka här för att se vad som är nytt."
+    },
+    "update_notification_title": {
+        "hash": "ee6d409dd42b2f42f153c1a574ca3595",
+        "message": "Glöm Mig Inte har blivit uppdaterad!"
+    }
 }

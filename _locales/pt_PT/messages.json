@@ -1,512 +1,526 @@
 {
-    "__WET_GROUP__0": { "message": "Branding" },
-    "extensionName": {
-        "message": "Forget Me Not - Esquecer cookies e outros dados",
-        "description": "Name of the extension.",
-        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+    "__WET_GROUP__0": {
+        "message": "Branding"
     },
-    "extensionDescription": {
-        "message": "Faça o seu navegador esquecer dados de websites, exceto os dados que pretende manter.",
-        "description": "Description of the extension.",
-        "hash": "8138b17e7f1daceffca0d19015bb86e7"
+    "__WET_GROUP__1": {
+        "message": "Dialogs"
+    },
+    "__WET_GROUP__2": {
+        "message": "Cleanup Types"
+    },
+    "__WET_GROUP__3": {
+        "message": "Settings"
+    },
+    "__WET_GROUP__4": {
+        "message": "Notifications"
+    },
+    "__WET_GROUP__5": {
+        "message": "Import Dialog"
+    },
+    "__WET_GROUP__6": {
+        "message": "Info Pages"
+    },
+    "__WET_LOCALE__": {
+        "message": "pt-PT"
+    },
+    "about_page": {
+        "hash": "8b79e24d589555578de474316b748218",
+        "message": "## Autor\nFeito por Santo Pfingsten, © 2017-2019\n\n## Tradutores precisam-se\n\nSe conhece outro idioma suficientemente bem, pode ajudar ao criar uma tradução com [esta engenhosa aplicação web](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problemas, perguntas e outro feedback\nPor favor reporte problemas e solicitações de funcionalidades no GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Declaração de privacidade\n\nA sua privacidade é da maior importância.\nEsta extensão não analisa ou recolhe nada além do que necessita para cumprir o seu dever. Esta não envia quaisquer dados para qualquer lugar nem mesmo anonimamente. PONTO FINAL.\n\n## Créditos\n* Tradução Portuguesa escrita por SW1FT e atualizada por Cl3m3nt1n4\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Design por Vexels.com\n* Ícones feitos pela [Google](https://www.flaticon.com/authors/google \"Google\")  a partir de [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") é licenciado por [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")"
     },
     "actionTitle": {
-        "message": "Forget Me Not",
-        "description": "Action button title",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Forget Me Not"
     },
     "actionTitleSnooze": {
-        "message": "Forget Me Not (desativado temporariamente)",
-        "description": "Action button title during snooze",
-        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+        "hash": "1083d3039c66b786ea7f4fb7d6b6c095",
+        "message": "Forget Me Not (desativado temporariamente)"
     },
-    "logo@title": {
-        "message": "Forget Me Not",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
-
-    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_cancel": {
-        "message": "Cancelar",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "reset_dialog_title": {
-        "message": "Repor definições",
-        "hash": "f5545c85577b03ed93d451abf748ce8d"
-    },
-    "reset_dialog_content": {
-        "message": "Isto não pode ser desfeito.",
-        "hash": "db630835e0fd63a96fcb2feed83facc3"
-    },
-    "rule_dialog_title": {
-        "message": "Selecione uma regra de limpeza",
-        "hash": "8b92b69da821db80656274e044e68643"
-    },
-    "rule_dialog_content": {
-        "message": "- **N**unca: Sem limpeza.\n- No **A**rranque: Limpar apenas no início do navegador.\n- Na **S**aída: Limpar na saída do domínio e no início do navegador.\n- **I**nstantaneamente: Impedir dados de serem definidos, se possível. Caso contrário comportar-se como `Na saída`.\n\n**\\*** Para `No arranque` e `Na saída` funcionarem, as opções de limpeza respetivas devem estar ativadas. Algumas limitações podem ainda aplicar-se devido a resitrições na Web-Extension API. [Ler mais](readme.html#tutorial)",
-        "hash": "bb88166ccd6ce8e41eb96328204fb401"
-    },
-    "rule_dialog_expression": {
-        "message": "Expressão:",
-        "hash": "4342463f910507a3f4f1f81716912f1c"
-    },
-    "rule_dialog_temporary": {
-        "message": "Regra temporária: Remova esta regra na mudança de domínio ou no reinício do navegador.",
-        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
-    },
-    "confirm_settings_and_rules": {
-        "message": "Definições e regras",
-        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
-    },
-    "confirm_settings_only": {
-        "message": "Apenas definições",
-        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
-    },
-    "confirm_ok": {
-        "message": "OK",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "confirm_cancel": {
-        "message": "Cancelar",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "confirm_rule_replace_dialog_title": {
-        "message": "Expressão de regra já existe",
-        "hash": "c75edd105dd87f7b72216c1e32dcf101"
-    },
-    "confirm_rule_replace_dialog_content": {
-        "message": "A expressão de regra especificada já existe.. pretende substituí-la?",
-        "hash": "74219b377804324016c6fbca36518b25"
-    },
-    "cookie_browser_title": {
-        "message": "Navegador de cookies",
-        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
-    },
-    "cookie_browser_description": {
-        "message": "Com isto pode inspecionar cookies e adicionar facilmente regras específicas de cookies.",
-        "hash": "918c4ecbf778bb45871133c3fce417da"
-    },
-    "dialog_back": {
-        "message": "Retroceder",
-        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
-    },
-
-    "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "N",
-        "hash": "365345324a710f7b5f2824f1da013f2d"
-    },
-    "cleanup_type_never_button": {
-        "message": "*N*unca",
-        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
-    },
-    "cleanup_type_never_button@title": {
-        "message": "Sem limpeza",
-        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "A",
-        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
-    },
-    "cleanup_type_startup_button": {
-        "message": "No *a*rranque",
-        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
-    },
-    "cleanup_type_startup_button@title": {
-        "message": "Limpeza no reinício do navegador",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "cleanup_type_leave_badge": {
-        "message": "S",
-        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
-    },
-    "cleanup_type_leave_button": {
-        "message": "Na *s*aída",
-        "hash": "474d0269f9757e726e5d91f684c33033"
-    },
-    "cleanup_type_leave_button@title": {
-        "message": "Limpeza na saída de domínio",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "cleanup_type_instantly_badge": {
-        "message": "I",
-        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "*I*nstantaneamente",
-        "hash": "62610f955f62f7701a06a80ff04e1e1b"
-    },
-    "cleanup_type_instantly_button@title": {
-        "message": "Bloquear/remover na criação",
-        "hash": "f253ddd17544f84b52a993fe784164e6"
-    },
-    "cleanup_type_create_button": {
-        "message": "Criar regra",
-        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
-    },
-    "cleanup_type_create_button@title": {
-        "message": "Escolha o tipo de limpeza para aplicar",
-        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
-    },
-
-    "__WET_GROUP__3": { "message": "Settings" },
-    "settings_unsupported_checkbox@title": {
-        "message": "Não suportado nesta plataforma.",
-        "hash": "99286998bff7ecef26245d3858e4fe0f"
-    },
-    "perform_manual_cleanup": {
-        "message": "Realizar limpeza manual",
-        "hash": "1098090c30d2dc94517833dc3d259a71"
-    },
-    "manual_cleanup_description": {
-        "message": "Com isto pode executar uma limpeza manual. Irá poder selecionar o que limpar.",
-        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
-    },
-    "define_rules": {
-        "message": "Definir regras:",
-        "hash": "958b9c121084b503102f5f7e566a833e"
-    },
-    "recently_accessed_domains": {
-        "message": "Domínios acedidos recentemente:",
-        "hash": "53d2a0edc88172044b6b6db0c1996820"
-    },
-    "tabs_settings_general": {
-        "message": "Geral",
-        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
-    },
-    "tabs_settings_cleanup": {
-        "message": "Limpeza",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
-    "tabs_settings_experimental": {
-        "message": "Experimental",
-        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
-    },
-    "tabs_this_tab@title": {
-        "message": "Separador atual",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_rules@title": {
-        "message": "Definir regras",
-        "hash": "21d4563d916a5e113022379778156fff"
-    },
-    "tabs_settings@title": {
-        "message": "Definições",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_log@title": {
-        "message": "Registo de domínios",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "tabs_about@title": {
-        "message": "Acerca do Forget Me Not",
-        "hash": "c7f0b61c0416534e0a666f03327552b3"
-    },
-    "tabs_tutorial@title": {
-        "message": "Tutorial de introdução",
-        "hash": "890626624db50efe177837d959c3a8f4"
-    },
-    "tabs_experimental@title": {
-        "message": "Funcionalidades experimentais",
-        "hash": "f349bbd753db24b2c15a159a227bd115"
-    },
-    "tabs_changelog@title": {
-        "message": "Registo de alterações",
-        "hash": "d1f539e046abe83e76dcf2163f9a143c"
-    },
-    "button_clean_now": {
-        "message": "Limpar agora!",
-        "hash": "9294eae08b1e3bfffede71c2be473b29"
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "OK"
     },
     "button_clean_domain": {
-        "message": "Limpar este domínio!",
-        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5",
+        "message": "Limpar este domínio!"
     },
-    "button_import": {
-        "message": "Importar..",
-        "hash": "0192d8f28f3d837e79a05711e6379e5e"
+    "button_clean_now": {
+        "hash": "9294eae08b1e3bfffede71c2be473b29",
+        "message": "Limpar agora!"
     },
     "button_export": {
-        "message": "Exportar..",
-        "hash": "46a378d64766cc2c8491cd13b018657f"
+        "hash": "46a378d64766cc2c8491cd13b018657f",
+        "message": "Exportar.."
     },
-    "button_reset": {
-        "message": "Repor predefinições",
-        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+    "button_import": {
+        "hash": "0192d8f28f3d837e79a05711e6379e5e",
+        "message": "Importar.."
     },
     "button_log_add_rule": {
-        "message": "+ Adicionar regra",
-        "hash": "28421d68b672702c44a611f9e741e4d2"
+        "hash": "28421d68b672702c44a611f9e741e4d2",
+        "message": "+ Adicionar regra"
     },
-    "button_toggle_snooze_true": {
-        "message": "Parar suspensão",
-        "hash": "71669281f5e594169489a032087e7b3f"
+    "button_reset": {
+        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe",
+        "message": "Repor predefinições"
     },
     "button_toggle_snooze_false": {
-        "message": "Iniciar suspensão",
-        "hash": "7a99ea84ba7341049328d104122639a8"
+        "hash": "7a99ea84ba7341049328d104122639a8",
+        "message": "Iniciar suspensão"
     },
-    "toggle_snooze_description": {
-        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza ao sair do domínio\n- Limpeza de cookies de terceiros\n- Bloqueio de cookies\n\nTodas as limpezas serão efetuadas assim que o modo suspensão for desativo.",
-        "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
-    },
-    "invalid_tab": {
-        "message": "Separador inválido",
-        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_column_expression": {
-        "message": "Expressão",
-        "hash": "7fc913b5875670e140f328b8a03ed225"
-    },
-    "rules_column_matching_expression": {
-        "message": "Expressão correspondente",
-        "hash": "dcb63b62695c11401c78d9ea01eee3de"
-    },
-    "rules_column_type": {
-        "message": "Limpeza",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
-    "rules_input@placeholder": {
-        "message": "Pesquisar ou adicionar..",
-        "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "expression_hint_invalid": {
-        "message": "Expressão inválida!",
-        "hash": "5960bcc4b7e809e74c69cd96049e9245"
-    },
-    "expression_hint_exists": {
-        "message": "Expressão já existe!",
-        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
-    },
-    "rules_add": {
-        "message": "Adicionar",
-        "hash": "c30738ff9271a856100751bbca5e5794"
-    },
-    "rules_no_entries": {
-        "message": "Sem entradas",
-        "hash": "5ece1de076b92af71c606feadcc41439"
-    },
-    "help_button@title": {
-        "message": "Leia acerca de como as regras funcionam, que expressões pode utilizar, funcionalidades experimentais, e alterações recentes nesta extensão.",
-        "hash": "90c094de68babfe6bfb332fb03538a24"
-    },
-    "types_of_cleanup@title": {
-        "message": "Leia mais acerca do que estas caixas de verificação limpam exatamente.",
-        "hash": "ba2fe14822b0ddacb1f12d26f543783d"
-    },
-    "setting_purge_expired_cookies": {
-        "message": "Purgar cookies expirados quando uma limpeza acontece.",
-        "hash": "a0bdd30f4f73d600fbac2f60caeb8653"
-    },
-    "setting_show_update_notification": {
-        "message": "Mostrar uma notificação quando a extensão for atualizada.",
-        "hash": "b09faefa5c53650a8e8d549be96e09a6"
-    },
-    "setting_show_cookie_removal_notification": {
-        "message": "Mostrar uma notificação quando cookies forem removidos.",
-        "hash": "5d31d92f2c4eb88af04bf02b9078d058"
-    },
-    "setting_show_badge": {
-        "message": "Mostrar regra correspondente como um emblema no botão da barra de ferramentas",
-        "hash": "fcc8735498ed21670a55314e40bd5b23"
-    },
-    "setting_apply_rules@title": {
-        "message": "Aplicar regras",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
-    "setting_ignore_rules@title": {
-        "message": "Ignorar regras",
-        "hash": "ccb8dbed77ececb457ea594439d42146"
-    },
-    "setting_cookies": {
-        "message": "Cookies",
-        "hash": "4aef64b30489430071825bcb3db557b6"
-    },
-    "setting_local_storage": {
-        "message": "Armazenamento local",
-        "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_protect_open_domains": {
-        "message": "Proteger domínios abertos atualmente se \"Aplicar regras\" estiver marcado",
-        "hash": "c3d70903d8398a33b99e1711f546ca19"
-    },
-    "setting_history": {
-        "message": "Histórico",
-        "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
-    },
-    "setting_downloads": {
-        "message": "Histórico de transferências",
-        "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116"
-    },
-    "setting_form_data": {
-        "message": "Dados de formulários",
-        "hash": "b5418babb2bbffd7d4e8275b83770564"
-    },
-    "setting_passwords": {
-        "message": "Palavras-passe",
-        "hash": "a40f3ee19854cd8645e750f118af3dcd"
-    },
-    "setting_indexed_db": {
-        "message": "Indexed DB",
-        "hash": "335f3924c55823b7be5b261a240883bf"
-    },
-    "setting_plugin_data": {
-        "message": "Dados de plugins",
-        "hash": "436905ccbdfaaacb1aec25f512584e36"
-    },
-    "setting_service_workers": {
-        "message": "Service Workers",
-        "hash": "584545acfce5580c7967bc8c366df556"
-    },
-    "setting_cache": {
-        "message": "Cache",
-        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8"
-    },
-    "setting_server_bound_certificates": {
-        "message": "Certificados vinculados ao servidor",
-        "hash": "0dfdb1326c1206379e7866da9c9bbf11"
-    },
-    "setting_delay_domain_leave_cleanup_in_seconds": {
-        "message": "Atraso para a saída do domínio em segundos:",
-        "hash": "078f159c3a6f33936199104b956d77a7"
-    },
-    "setting_delay_in_seconds": {
-        "message": "Atraso em segundos:",
-        "hash": "4f52d0e15398d35039f73e8a04275ae9"
-    },
-    "setting_remove_thirdparty": {
-        "message": "Remover cookies de terceiros na criação:",
-        "hash": "2d8b645390f60f6bb1777fbf6004d109"
-    },
-    "setting_thirdparty_before_creation": {
-        "message": "Negar cookies de terceiros",
-        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
-    },
-    "setting_whitelist_no_tld": {
-        "message": "Nunca limpar domínios sem um domínio de nível superior",
-        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5"
-    },
-    "setting_whitelist_no_tld@title": {
-        "message": "Domínios como localhost, intranet, etc. (sem .com, .net, etc.)",
-        "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "setting_whitelist_file_system": {
-        "message": "Nunca executar limpezas em ficheiros do seu computador",
-        "hash": "511a3b5151d821503759721ca9d7b1c1"
-    },
-    "settings_fallback_rule": {
-        "message": "Comportamento se nenhuma regra corresponder (predefinição: na saída):",
-        "hash": "144b6e44fcfc2accebf07df655af7bea"
-    },
-    "setting_log_rad_enabled": {
-        "message": "Registar domínios acedidos recentemente:",
-        "hash": "3b8f9710163140ee92e5924c8f7bdbca"
-    },
-    "setting_log_rad_limit": {
-        "message": "Limitar para:",
-        "hash": "3c037e9a79f552e29a4d50714669c7e3"
-    },
-    "setting_experimental_info": {
-        "message": "Estas são funcionalidades experimentais. Leia mais acerca das mesmas [aqui](readme.html#experimental).",
-        "hash": "9a633b49e2375b929463c1ce49295f58"
-    },
-    "setting_initialTab": {
-        "message": "Separador selecionado inicialmente neste popup:",
-        "hash": "4f7c8a9bcef6c6476565d540dde62998"
-    },
-    "initial_tab_last_active": {
-        "message": "<Memorizar>",
-        "hash": "aa5aecbdb436117318ba27e868fe98c8"
-    },
-    "initial_tab_this_tab": {
-        "message": "Separador atual",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "initial_tab_rules": {
-        "message": "Regras",
-        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
-    },
-    "initial_tab_settings": {
-        "message": "Definições",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "initial_tab_log": {
-        "message": "Registo de domínios",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "settings_cleanable_data": {
-        "message": "Dados limpáveis",
-        "hash": "63fe0e7a1fc35e835bc8495abdfbd6fb"
-    },
-    "settings_enable": {
-        "message": "Ativar",
-        "hash": "2212934c2b3d751385bf1c26d91172f3"
-    },
-
-    "__WET_GROUP__4": { "message": "Notifications" },
-    "update_notification_title": {
-        "message": "O Forget Me Not foi atualizado!",
-        "hash": "ee6d409dd42b2f42f153c1a574ca3595"
-    },
-    "update_notification_message": {
-        "message": "Clique aqui para ver as novidades.",
-        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
-    },
-    "cookie_cleanup_notification_title": {
-        "message": "$COUNT$ cookies foram removidos",
-        "placeholders": {
-            "count": { "content": "$1", "example": "4" }
-        },
-        "hash": "858abd3673bf284d100dba19e3034e71"
-    },
-    "cookie_cleanup_notification_line": {
-        "message": "$DOMAIN$: $COUNT$ cookies",
-        "placeholders": {
-            "domain": { "content": "$1", "example": "www.google.com" },
-            "count": { "content": "$2", "example": "4" }
-        },
-        "hash": "194b196ae9df5827b482babe5caebd69"
-    },
-
-    "__WET_GROUP__5": { "message": "Import Dialog" },
-    "import_by_drop_or_click": {
-        "message": "Importe definições ao largar um ficheiro exportado anteriormente nesta área ou clicar em qualquer lugar para selecionar tal ficheiro.",
-        "hash": "addde02e14af8336c24777c9b03dc5eb"
-    },
-    "import_success_close_now": {
-        "message": "Definições importadas com sucesso. Pode fechar esta janela agora.",
-        "hash": "cd1b4a7131754d680d4a662e29b2516b"
-    },
-    "import_failure": {
-        "message": "Não foi possível importar o ficheiro. Verifique se o ficheiro é um ficheiro de definições válido.",
-        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
-    },
-
-    "__WET_GROUP__6": { "message": "Info Pages" },
-    "about_page": {
-        "message": "## Autor\nFeito por Santo Pfingsten, © 2017-2019\n\n## Tradutores precisam-se\n\nSe conhece outro idioma suficientemente bem, pode ajudar ao criar uma tradução com [esta engenhosa aplicação web](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop).\n\n## Problemas, perguntas e outro feedback\nPor favor reporte problemas e solicitações de funcionalidades no GitHub:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Declaração de privacidade\n\nA sua privacidade é da maior importância.\nEsta extensão não analisa ou recolhe nada além do que necessita para cumprir o seu dever. Esta não envia quaisquer dados para qualquer lugar nem mesmo anonimamente. PONTO FINAL.\n\n## Créditos\n* Tradução Portuguesa escrita por SW1FT e atualizada por Cl3m3nt1n4\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Design por Vexels.com\n* Ícones feitos pela [Google](https://www.flaticon.com/authors/google \"Google\")  a partir de [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\") é licenciado por [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\")",
-        "hash": "8b79e24d589555578de474316b748218"
-    },
-    "tutorial_page": {
-        "message": "# Tutorial de introdução\n\n## Definições do Firefox\nPor favor note que esta extensão não tem acesso às suas definições do Firefox, por isso quaisquer definições de cookies que fizer no próprio Firefox irão ser combinadas com esta extensão.\n\nPor isso se configurar o Firefox para negar todos os cookies, esta extensão não terá cookies para trabalhar.\n\n## Tipos de limpezas\nPode configurar as regras de limpeza que correspondem a certos nomes de domínio (nomes de anfitrião de um website, como *google.com*). Os tipos de limpeza possíveis são:\n\n- **Nunca**: Nenhuma limpeza será realizada para domínios que correspondem a esta regra.\n- **No arranque**: A limpeza irá executar no início do navegador.\n- **Na saída**: A limpeza irá executar quando sai de um domínio (ao colocar um novo na barra de url ou ao fechar o separador)\n- **Instantaneamente**: Se possível, os cookies irão ser impedidos de serem definidos. Caso contrário estes irão ser removidos quase instantaneamente.\n\nSe regras múltiplas correspondem a um domínio, a regra mais importante irá ser selecionada. Atualmente isto está definido como:\n`Instantaneamente > Na saída > Nunca > No arranque`.\n\nSe nenhuma regra corresponder a um domínio, a regra de contingência irá ser utilizada.\n\n## Expressões válidas\n- Qualquer nome de servidor (por exemplo www.google.com) é uma expressão válida.\n- Um asterisco (*) pode ser utilizado como marcador de posição para um segmento (por exemplo *.google.com ou www.\\*.com).\n\n### Expressões específicas de cookies\nPode criar regras para combinações de nome de cookie e domínio.\n- Exemplo: `nomedecookie@*.google.com`\n- `nomedecookie` pode ser qualquer nome de cookie válido.\n- As mesmas regras, como vistas acima, aplicam-se para a parte específica do domínio à direita do sinal `@`.\n- As regras específicas de cookies são sempre preferidas sobre as regras normais.\n\n## Cookies de terceiros\n- Quando um cookie é definido sem pertencer a um domínio que está aberto num separador, é considerado um cookie de terceiros.\n- Está a ser feita pesquisa para melhorar este método.\n\n## Modo suspensão\n\nNo separador de popup \"Modo suspensão\", pode desativar temporariamente a limpeza automática. Paire sob o ícone instruções (ou clique no mesmo se estiver no android).\n\n## Tipos de dados para limpar\n\nPode escolher que dados limpar:\n- **Cookies**: Cookies HTTP normais. (Cookies Flash são cobertos por \"Dados de plugins\").\n- **Armazenamento local** e **Indexed DB**: Os websites podem armazenar dados no seu navegador para permitir certas funcionalidades ou memorizar algo para a próxima visita.\nAlgumas vezes o Firefox refere-se a *Indexed DB* como \"Armazenamento\", por isso se o Firefox lhe disser que youtube.com utiliza alguns MB de armazenamento, é provavelmente *Indexed DB*.\n- **Histórico**: Isto contém todas as suas visitas a websites.\n- **Histórico de tranferências**: Isto contém o histórico das transferências.\nLimpar as transferências não remove os ficheiros no seu disco.\n- **Dados de formulários**: A certa altura deve ter introduzido informação em, por exemplo, um contacto ou formulário de cobrança.\nDependendo das suas definições, isto pode ter sido guardado, para que seja fácil para você reintroduzir estes valores.\n- **Palavras-passe**: Pode ter dito ao Firefox para memorizar certas palavras-passe. Escolha isto para removê-las novamente.\n- **Dados de plugins**: PLugins (não extras/web-extensions) como Adobe Flash ou Acrobat Reader podem armazenar dados como cookies Flash ou outra informação e definições.\n- **Service Workers**: Os Service Workers são uma maneira de permitir aos websites serem utilizados offline e também ajudam a acelerar o carregamento de aplicações web que fazem uso disto.\n- **Certificados vinculados ao servidor**: Se adicionou certificados para permitir ligações a um servidor, então esta é a opção para os limpar.",
-        "hash": "c441d8782d4b7cb8bcfd95e599caf406"
-    },
-    "experimental_page": {
-        "message": "## Funcionalidades experimentais\n\n- De tempo em tempo irão haver novas funcionalidades que serão marcadas como experimentais.\n- Estas serão desativadas por predefinição e terão de ser manualmente ativadas.\n- Estas funcionalidades são utilizadas para avaliar novas maneiras de melhorar a extensão.\n- Estas podem ser instáveis ou ter mau desempenho.\n- Se tiver problemas, tente desligar estas funcionalidades.\n- Por favor submeta feedback e relatórios de bugs no [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experiências ativas atualmente:\n- **Purgar cookies expirados**:\nQuando uma limpeza acontece, os cookies que têm uma data de expiração definida no passado irão ser removidos independentemente das regras configuradas. Normalmente o Firefox apenas apaga os cookies expirados quando um certo limite é atingido.\nEsses cookies não iriam ser enviados para o website, mas ainda lá estariam. Esta opção irá ajudar a remover estes cookies fantasma. \n- **Negar cookies de terceiros**:\nSe ativado, todos os pedidos web serão intercetados para remover cookies de domínios que não pertencem aos URLs de separadores e não são protegidos por uma regra. Por isso estes cookies nunca serão definidos.\n\nPor favor dê-me feedback na sua experiência com estas experiências, para que eu possa decidir adicioná-las ou não permanentemente.",
-        "hash": "bd877a339269825e5ace6407fc19cb45"
+    "button_toggle_snooze_true": {
+        "hash": "71669281f5e594169489a032087e7b3f",
+        "message": "Parar suspensão"
     },
     "changelog_page": {
-        "message": "## Changelog\n\n### Versão 2.2.8 (2020/05/24)\n\n- Atualização da tradução russa por Qwest8k\n- Atualização da tradução portuguesa por Cl3m3nt1n4\n\n### Versão 2.2.7 (2020/04/11)\n\n- Atualização da tradução francesa por Dorian Eydoux\n- Adicionada tradução polaca por Azahiar\n- Adicionada tradução parcial turca por Lernatius\n- Atualização da tradução alemã por doak\n\n### Versão 2.2.6 (2019/12/15)\n\n- Adicionada tradução parcial de filandesa por welcroft\n- Atualização da tradução russa por Qwest8k\n- Atualização da tradução portuguesa por Cl3m3nt1n4\n- Atualização da tradução argentina por artinipaiv\n- Adicionada tradução Indonésia por zmni\n- Atualização da tradução francesa por Krakopov\n- Atualização da tradução alemã por luger19\n- Algumas melhorias a nível de código \n- Removida da exportação de definições regras temporárias\n\n### Versão 2.2.5 (2019/09/01)\n\n- Melhoria visual na tabela de definições \n- Atualização da tradução francesa \n- Adicionada tradução russa por Qwest8K\n- Adicionadas regras temporárias \n\n### Versão 2.2.4 (2019/06/30)\n\n- Regras Instantâneas (e opção de rejeitar terceiros) são agora afetados pelo modo de suspensão também.\n\n### Versão 2.2.3 (2019/06/24)\n\n- Atualização da tradução do português do brasil por Fábio M. \n- Adicionada utilização do novo filtro no Firefox >= 68 para ignorar separadores anónimos quando a bloquear cookies\n\n### Versão 2.2.2 (2019/04/14)\n\n- Removida tradução de alemão suíço dado que o Firefox já não oferece suporte.\n- Correção de um erro que causava problemas de performance. \n- Uma atualização é feita no navegador de cookies sempre após a adicionam de uma nova regra. \n\n### Versão 2.2.1 (2019/03/13)\n\n- Atualização das traduções.  \n- Um erro com o navegador de cookies foi corrigido. \n\n### Versão 2.2.0 (2019/03/12)\n\n- Atualização da tradução de alemão suíço. \n- Adicionado um navegador de cookies para facilitar a adição de regeras especificas a um cookie. \n\n### Versão 2.1.0 (2019/03/03)\n\n- Efetuados mais melhoramentos na interface de utilizador\n- Correção das transferências não estarem a serem apagadas corretamente ao iniciar \n- Correção do campo de introdução para a criação de regras\n- Adicionada tradução alemão suíço por BenjaminRosenzeig. \n- Atualizada tradução italiana por AlienLogic. \n- Correção para a tipologia “Instantaneamente” de regra estar a incorretamente bloquear nos separadores anónimos. \n- Adicionados tooltips em falta \n- Expressões de cookies aparecem agora debaixo de “Expressão correspondente”\n\n### Versão 2.0.0 (2019/02/17)\n\n- Melhorias e simplificação da interface do utilizador.\n- Nomes das regras foram atualizados para melhor refletirem os efeitos das regras.\n- Tutoriais, descrições etc. foram atualizados para serem mais claros\n-O Android não oferece suporte para todos os tipos de limpeza. A nova interface mostra quais as funções em falta.\n- Novas traduções foram adicionadas: françês (Benny Hill, djizuss) e catalão (Lakatoi).\n- Valores de atraso podem agora serem introduzidos em segundos em vez de minutos\n- Frames são agora tidos em conta para melhoramento da limpeza. \n- Correção de erro raro com a lógica de bloqueio de cookies\n- Cookies bloqueados vão agora também gerar notificações de “removido”. \n- Agora é possível limpar o cache. \n- Transferências e histórico podem agora ter regras aplicadas e por isso algo também podem correr ao sair do domínio. \n- Código foi reescrito para melhoria na estabilidade. \n- Uma data de unidades de teste foram adicionadas para garantir que a lógica funciona impecavelmente: Agora a contar com 335 testes!\n\n### Versão 1.0.5 (2018/09/02)\n- Correção de um bug que fazia a notificação de atualização aparecer em todas as inicializações.\n\n### Versão 1.0.4 (2018/09/02)\n- Correção temporária para o Firefox, que não apagava o histórico de transferências\n- Correção temporária para o Firefox, que prevenia que os cookies de containers não fossem apagados corretamente\n- Cookies locais (de sites guardados no computador) podem agora ser também limpos. \n- Adicionada trdaução de italiano por temptemptmp. \n- Adicionado suporte para a função de aplicar em tempo real do web-extension-translator\n- Melhorias no suporte para o Firefox no separador de overflow\n\n### Versão 1.0.3 (2018/08/23)\n- Correção de um erro com a análise de expressões de regras\n- Adicionada a tradução do espanhol (Argentina) por [Fabián Pérez](https://www.github.com/thepante) \n- Adicionada a tradução do sueco por Jo3yA \n- Adicionada a tradução do português por by SW1FT\n- Adicionada a tradução do português do brasil por Victor Bambino\n- Atualizada a tradução do sorábio superior e inferior por Michael Wolf\n\n### Versão 1.0.2 (2018/06/03)\n- Adicionado suporte para navegação com teclado e leitores de ecrã.\n\n### Versão 1.0.1 (2018/05/28)\n- Correção de limpeza de cookies expirados\n\n### Versão 1.0.0 (2018/05/27)\n- Adicionado um ícone e um tooltip diferentes ao modo suspensão \n- Adicionado os tipos de locais(locale) sorábio superior e inferior. Obrigado para @milupo. \n- Os utilizadores podem agora modificar qual o tipo de regra é aplicado se não for encontrada nenhuma regra correspondente. \n- Adicionado suporte para criação de regras especificas para um nomeado cookie\n- Melhorias na deteção para cookies de terceiros.\n- Correção de erros com a remoção de cookies subdomínios.  \n- Melhorias no suporte ao da isolação de cookies provenientes do site (não de terceiros)\n- Nova função experimental: Apagar cookies expirados quando efetuada uma limpeza.\n- Correção de alguns erros visuais\n- Vários melhoramentos do código para melhor estabilidade e performance!\n- Mais de 100 unidades de teste para garantir a boa qualidade!\n- Melhoramentos na Ajuda e mais descrições. \n- Adicionada política de privacidade\n\n### Versão 0.9.1 (2018/04/06)\n- Correção de erro que ignorava a definição de “Mostrar uma notificação quando a extensão for atualizada.”\n\n### Versão 0.9.0 (2018/03/24)\n- Adicionadas definições para desativar ou limitar o registo do domínio \n- Adicionado suporte para visualização de domínios com caracteres de punycode\n- Correção de cookies não estarem a serem removidos corretamente em alguns cenários\n-Utilização de ícones em vez dos títulos nos separados de pop-ups \n- Permissão de ser efetuada limpeza manual para ignorar a regra “Proteger domínios abertos atualmente”\n- Adicionado um modo de suspensão para temporariamente desativar a limpeza automática. Esta limpeza será efetuada assim que o modo suspensão for desativo.\n- Upgrade de tecnologia \n\n### Versão 0.8.8 (2018/01/24)\n- Adicionado um novo tipo de regra (preto) para bloquear cookies na sua totalidade. \n- Isolação de cookies provenientes do site (não de terceiros) já não inibe a extensão de remover cookies (aplicável desde do Firefox 59). Suporte adicional será disponibilizado posteriormente numa versão beta em breve. \n- Correção de erro: Quando deixado um domínio e entrando posteriormente antes do tempo de limpeza original ter sido ultrapassado os cookies eram apagados demasiado cedo. \n- Correção de erro: Notificações podiam ser sobrepostas por novas demasiado rápido para serem vistas.\n\n### Versão 0.8.7 (2017/12/20)\n- Correção temporária para importação de definições não estar a funcionar corretamente no Firefox\n- Adicionado suporte parcial para separadores com containers. Cookies funciona, local storage não funciona (Mozilla precisa de corrigir algo primeiro)\n- Adicionada nova regra “Esquecer” (vermelho) para permitir a sobreposição a outras regras (leia o tutorial para mais detalhes)\n- Correção de um erro com a limpeza ao iniciar \n- Adicionadas unidades de teste \n- Adicionada opção para esconder os emblemas \n- Adicionada opção para selecionar o separador inicial ao aceder à extensão\n- Adicionada opção para mostrar notificação de remoção de cookies\n- Correção de um erro na exportação \n\n### Versão 0.8.6 (2017/12/06)\n- Introdução de alterações nas traduções usando [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Adicionado um leia-me embutido na extensão, tutorial e registo de alterações (changelog)\n- Isto pode ser acedido através do botão do ponto de interrogação. \n- Adicionada uma notificação para quando a extensão é atualizada (pode ser desativada)\n- Domínios sem uma hierarquia superior (como localhost, intranet, etc.) podem agora ser adicionados como exceções através de uma caixa de seleção.\n- Adicionada funcionalidade experimental de bloquear cookies de terceiros \n\n### Versão 0.8.5 (2017/11/25)\n- Correção de erro de digitação\n- Interruptor de ativar/desativar regras mais suave \n- Adicionado botão para a adição de novas regras (anteriormente apenas podia ser adicionado pressionando Enter)\n- Adicionado botão para obter informação em expressões validas \n\n### Versão 0.8.4 (2017/11/25)\n- Melhor compatibilidade com utilização em dispositivos móveis\n- Correção de cookies em modo anónimo estarem a ser registados e eliminados indevidamente. \n\n### Versão 0.8.3 (2017/11/24)\n- Desativado em separadores/janelas privadas.\n- Adicionado registo para verificar alterações recentes nos cookies e respetivos domínios \n- Adicionados botões para preencher com os domínios acima e do separador atual \n\n### Versão 0.8.2 (2017/11/19)\n- Correção de bugs e otimizações\n\n### Versão 0.8.0 (2017/11/19)\n- Versão Inicial\n",
-        "hash": "9f3f17e8890f5d1d7915689ce799b899"
+        "hash": "9f3f17e8890f5d1d7915689ce799b899",
+        "message": "## Changelog\n\n### Versão 2.2.8 (2020/05/24)\n\n- Atualização da tradução russa por Qwest8k\n- Atualização da tradução portuguesa por Cl3m3nt1n4\n\n### Versão 2.2.7 (2020/04/11)\n\n- Atualização da tradução francesa por Dorian Eydoux\n- Adicionada tradução polaca por Azahiar\n- Adicionada tradução parcial turca por Lernatius\n- Atualização da tradução alemã por doak\n\n### Versão 2.2.6 (2019/12/15)\n\n- Adicionada tradução parcial de filandesa por welcroft\n- Atualização da tradução russa por Qwest8k\n- Atualização da tradução portuguesa por Cl3m3nt1n4\n- Atualização da tradução argentina por artinipaiv\n- Adicionada tradução Indonésia por zmni\n- Atualização da tradução francesa por Krakopov\n- Atualização da tradução alemã por luger19\n- Algumas melhorias a nível de código \n- Removida da exportação de definições regras temporárias\n\n### Versão 2.2.5 (2019/09/01)\n\n- Melhoria visual na tabela de definições \n- Atualização da tradução francesa \n- Adicionada tradução russa por Qwest8K\n- Adicionadas regras temporárias \n\n### Versão 2.2.4 (2019/06/30)\n\n- Regras Instantâneas (e opção de rejeitar terceiros) são agora afetados pelo modo de suspensão também.\n\n### Versão 2.2.3 (2019/06/24)\n\n- Atualização da tradução do português do brasil por Fábio M. \n- Adicionada utilização do novo filtro no Firefox >= 68 para ignorar separadores anónimos quando a bloquear cookies\n\n### Versão 2.2.2 (2019/04/14)\n\n- Removida tradução de alemão suíço dado que o Firefox já não oferece suporte.\n- Correção de um erro que causava problemas de performance. \n- Uma atualização é feita no navegador de cookies sempre após a adicionam de uma nova regra. \n\n### Versão 2.2.1 (2019/03/13)\n\n- Atualização das traduções.  \n- Um erro com o navegador de cookies foi corrigido. \n\n### Versão 2.2.0 (2019/03/12)\n\n- Atualização da tradução de alemão suíço. \n- Adicionado um navegador de cookies para facilitar a adição de regeras especificas a um cookie. \n\n### Versão 2.1.0 (2019/03/03)\n\n- Efetuados mais melhoramentos na interface de utilizador\n- Correção das transferências não estarem a serem apagadas corretamente ao iniciar \n- Correção do campo de introdução para a criação de regras\n- Adicionada tradução alemão suíço por BenjaminRosenzeig. \n- Atualizada tradução italiana por AlienLogic. \n- Correção para a tipologia “Instantaneamente” de regra estar a incorretamente bloquear nos separadores anónimos. \n- Adicionados tooltips em falta \n- Expressões de cookies aparecem agora debaixo de “Expressão correspondente”\n\n### Versão 2.0.0 (2019/02/17)\n\n- Melhorias e simplificação da interface do utilizador.\n- Nomes das regras foram atualizados para melhor refletirem os efeitos das regras.\n- Tutoriais, descrições etc. foram atualizados para serem mais claros\n-O Android não oferece suporte para todos os tipos de limpeza. A nova interface mostra quais as funções em falta.\n- Novas traduções foram adicionadas: françês (Benny Hill, djizuss) e catalão (Lakatoi).\n- Valores de atraso podem agora serem introduzidos em segundos em vez de minutos\n- Frames são agora tidos em conta para melhoramento da limpeza. \n- Correção de erro raro com a lógica de bloqueio de cookies\n- Cookies bloqueados vão agora também gerar notificações de “removido”. \n- Agora é possível limpar o cache. \n- Transferências e histórico podem agora ter regras aplicadas e por isso algo também podem correr ao sair do domínio. \n- Código foi reescrito para melhoria na estabilidade. \n- Uma data de unidades de teste foram adicionadas para garantir que a lógica funciona impecavelmente: Agora a contar com 335 testes!\n\n### Versão 1.0.5 (2018/09/02)\n- Correção de um bug que fazia a notificação de atualização aparecer em todas as inicializações.\n\n### Versão 1.0.4 (2018/09/02)\n- Correção temporária para o Firefox, que não apagava o histórico de transferências\n- Correção temporária para o Firefox, que prevenia que os cookies de containers não fossem apagados corretamente\n- Cookies locais (de sites guardados no computador) podem agora ser também limpos. \n- Adicionada trdaução de italiano por temptemptmp. \n- Adicionado suporte para a função de aplicar em tempo real do web-extension-translator\n- Melhorias no suporte para o Firefox no separador de overflow\n\n### Versão 1.0.3 (2018/08/23)\n- Correção de um erro com a análise de expressões de regras\n- Adicionada a tradução do espanhol (Argentina) por [Fabián Pérez](https://www.github.com/thepante) \n- Adicionada a tradução do sueco por Jo3yA \n- Adicionada a tradução do português por by SW1FT\n- Adicionada a tradução do português do brasil por Victor Bambino\n- Atualizada a tradução do sorábio superior e inferior por Michael Wolf\n\n### Versão 1.0.2 (2018/06/03)\n- Adicionado suporte para navegação com teclado e leitores de ecrã.\n\n### Versão 1.0.1 (2018/05/28)\n- Correção de limpeza de cookies expirados\n\n### Versão 1.0.0 (2018/05/27)\n- Adicionado um ícone e um tooltip diferentes ao modo suspensão \n- Adicionado os tipos de locais(locale) sorábio superior e inferior. Obrigado para @milupo. \n- Os utilizadores podem agora modificar qual o tipo de regra é aplicado se não for encontrada nenhuma regra correspondente. \n- Adicionado suporte para criação de regras especificas para um nomeado cookie\n- Melhorias na deteção para cookies de terceiros.\n- Correção de erros com a remoção de cookies subdomínios.  \n- Melhorias no suporte ao da isolação de cookies provenientes do site (não de terceiros)\n- Nova função experimental: Apagar cookies expirados quando efetuada uma limpeza.\n- Correção de alguns erros visuais\n- Vários melhoramentos do código para melhor estabilidade e performance!\n- Mais de 100 unidades de teste para garantir a boa qualidade!\n- Melhoramentos na Ajuda e mais descrições. \n- Adicionada política de privacidade\n\n### Versão 0.9.1 (2018/04/06)\n- Correção de erro que ignorava a definição de “Mostrar uma notificação quando a extensão for atualizada.”\n\n### Versão 0.9.0 (2018/03/24)\n- Adicionadas definições para desativar ou limitar o registo do domínio \n- Adicionado suporte para visualização de domínios com caracteres de punycode\n- Correção de cookies não estarem a serem removidos corretamente em alguns cenários\n-Utilização de ícones em vez dos títulos nos separados de pop-ups \n- Permissão de ser efetuada limpeza manual para ignorar a regra “Proteger domínios abertos atualmente”\n- Adicionado um modo de suspensão para temporariamente desativar a limpeza automática. Esta limpeza será efetuada assim que o modo suspensão for desativo.\n- Upgrade de tecnologia \n\n### Versão 0.8.8 (2018/01/24)\n- Adicionado um novo tipo de regra (preto) para bloquear cookies na sua totalidade. \n- Isolação de cookies provenientes do site (não de terceiros) já não inibe a extensão de remover cookies (aplicável desde do Firefox 59). Suporte adicional será disponibilizado posteriormente numa versão beta em breve. \n- Correção de erro: Quando deixado um domínio e entrando posteriormente antes do tempo de limpeza original ter sido ultrapassado os cookies eram apagados demasiado cedo. \n- Correção de erro: Notificações podiam ser sobrepostas por novas demasiado rápido para serem vistas.\n\n### Versão 0.8.7 (2017/12/20)\n- Correção temporária para importação de definições não estar a funcionar corretamente no Firefox\n- Adicionado suporte parcial para separadores com containers. Cookies funciona, local storage não funciona (Mozilla precisa de corrigir algo primeiro)\n- Adicionada nova regra “Esquecer” (vermelho) para permitir a sobreposição a outras regras (leia o tutorial para mais detalhes)\n- Correção de um erro com a limpeza ao iniciar \n- Adicionadas unidades de teste \n- Adicionada opção para esconder os emblemas \n- Adicionada opção para selecionar o separador inicial ao aceder à extensão\n- Adicionada opção para mostrar notificação de remoção de cookies\n- Correção de um erro na exportação \n\n### Versão 0.8.6 (2017/12/06)\n- Introdução de alterações nas traduções usando [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Adicionado um leia-me embutido na extensão, tutorial e registo de alterações (changelog)\n- Isto pode ser acedido através do botão do ponto de interrogação. \n- Adicionada uma notificação para quando a extensão é atualizada (pode ser desativada)\n- Domínios sem uma hierarquia superior (como localhost, intranet, etc.) podem agora ser adicionados como exceções através de uma caixa de seleção.\n- Adicionada funcionalidade experimental de bloquear cookies de terceiros \n\n### Versão 0.8.5 (2017/11/25)\n- Correção de erro de digitação\n- Interruptor de ativar/desativar regras mais suave \n- Adicionado botão para a adição de novas regras (anteriormente apenas podia ser adicionado pressionando Enter)\n- Adicionado botão para obter informação em expressões validas \n\n### Versão 0.8.4 (2017/11/25)\n- Melhor compatibilidade com utilização em dispositivos móveis\n- Correção de cookies em modo anónimo estarem a ser registados e eliminados indevidamente. \n\n### Versão 0.8.3 (2017/11/24)\n- Desativado em separadores/janelas privadas.\n- Adicionado registo para verificar alterações recentes nos cookies e respetivos domínios \n- Adicionados botões para preencher com os domínios acima e do separador atual \n\n### Versão 0.8.2 (2017/11/19)\n- Correção de bugs e otimizações\n\n### Versão 0.8.0 (2017/11/19)\n- Versão Inicial\n"
     },
-
-    "__WET_LOCALE__": { "message": "pt-PT" }
+    "cleanup_type_create_button": {
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857",
+        "message": "Criar regra"
+    },
+    "cleanup_type_create_button@title": {
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d",
+        "message": "Escolha o tipo de limpeza para aplicar"
+    },
+    "cleanup_type_instantly_badge": {
+        "hash": "43165bb2fb785fea90fb86352ea3ea8c",
+        "message": "I"
+    },
+    "cleanup_type_instantly_button": {
+        "hash": "62610f955f62f7701a06a80ff04e1e1b",
+        "message": "*I*nstantaneamente"
+    },
+    "cleanup_type_instantly_button@title": {
+        "hash": "f253ddd17544f84b52a993fe784164e6",
+        "message": "Bloquear/remover na criação"
+    },
+    "cleanup_type_leave_badge": {
+        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d",
+        "message": "S"
+    },
+    "cleanup_type_leave_button": {
+        "hash": "474d0269f9757e726e5d91f684c33033",
+        "message": "Na *s*aída"
+    },
+    "cleanup_type_leave_button@title": {
+        "hash": "a69a2b082be9de0589a0f807f6be2179",
+        "message": "Limpeza na saída de domínio"
+    },
+    "cleanup_type_never_badge": {
+        "hash": "365345324a710f7b5f2824f1da013f2d",
+        "message": "N"
+    },
+    "cleanup_type_never_button": {
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d",
+        "message": "*N*unca"
+    },
+    "cleanup_type_never_button@title": {
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562",
+        "message": "Sem limpeza"
+    },
+    "cleanup_type_startup_badge": {
+        "hash": "449c22c9ba9d8f9189fe6d0c3d640464",
+        "message": "A"
+    },
+    "cleanup_type_startup_button": {
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a",
+        "message": "No *a*rranque"
+    },
+    "cleanup_type_startup_button@title": {
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a",
+        "message": "Limpeza no reinício do navegador"
+    },
+    "confirm_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "Cancelar"
+    },
+    "confirm_ok": {
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "OK"
+    },
+    "confirm_rule_replace_dialog_content": {
+        "hash": "74219b377804324016c6fbca36518b25",
+        "message": "A expressão de regra especificada já existe.. pretende substituí-la?"
+    },
+    "confirm_rule_replace_dialog_title": {
+        "hash": "c75edd105dd87f7b72216c1e32dcf101",
+        "message": "Expressão de regra já existe"
+    },
+    "confirm_settings_and_rules": {
+        "hash": "e195409b368c4fbb6d4fa33ae6a52c20",
+        "message": "Definições e regras"
+    },
+    "confirm_settings_only": {
+        "hash": "47dbae6cf11a5b79c1abae7b56485c18",
+        "message": "Apenas definições"
+    },
+    "cookie_browser_description": {
+        "hash": "918c4ecbf778bb45871133c3fce417da",
+        "message": "Com isto pode inspecionar cookies e adicionar facilmente regras específicas de cookies."
+    },
+    "cookie_browser_title": {
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5",
+        "message": "Navegador de cookies"
+    },
+    "cookie_cleanup_notification_line": {
+        "hash": "194b196ae9df5827b482babe5caebd69",
+        "message": "$DOMAIN$: $COUNT$ cookies",
+        "placeholders": {
+            "count": {
+                "content": "$2",
+                "example": "4"
+            },
+            "domain": {
+                "content": "$1",
+                "example": "www.google.com"
+            }
+        }
+    },
+    "cookie_cleanup_notification_title": {
+        "hash": "858abd3673bf284d100dba19e3034e71",
+        "message": "$COUNT$ cookies foram removidos",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "4"
+            }
+        }
+    },
+    "define_rules": {
+        "hash": "958b9c121084b503102f5f7e566a833e",
+        "message": "Definir regras:"
+    },
+    "dialog_back": {
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8",
+        "message": "Retroceder"
+    },
+    "experimental_page": {
+        "hash": "bd877a339269825e5ace6407fc19cb45",
+        "message": "## Funcionalidades experimentais\n\n- De tempo em tempo irão haver novas funcionalidades que serão marcadas como experimentais.\n- Estas serão desativadas por predefinição e terão de ser manualmente ativadas.\n- Estas funcionalidades são utilizadas para avaliar novas maneiras de melhorar a extensão.\n- Estas podem ser instáveis ou ter mau desempenho.\n- Se tiver problemas, tente desligar estas funcionalidades.\n- Por favor submeta feedback e relatórios de bugs no [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Experiências ativas atualmente:\n- **Purgar cookies expirados**:\nQuando uma limpeza acontece, os cookies que têm uma data de expiração definida no passado irão ser removidos independentemente das regras configuradas. Normalmente o Firefox apenas apaga os cookies expirados quando um certo limite é atingido.\nEsses cookies não iriam ser enviados para o website, mas ainda lá estariam. Esta opção irá ajudar a remover estes cookies fantasma. \n- **Negar cookies de terceiros**:\nSe ativado, todos os pedidos web serão intercetados para remover cookies de domínios que não pertencem aos URLs de separadores e não são protegidos por uma regra. Por isso estes cookies nunca serão definidos.\n\nPor favor dê-me feedback na sua experiência com estas experiências, para que eu possa decidir adicioná-las ou não permanentemente."
+    },
+    "expression_hint_exists": {
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100",
+        "message": "Expressão já existe!"
+    },
+    "expression_hint_invalid": {
+        "hash": "5960bcc4b7e809e74c69cd96049e9245",
+        "message": "Expressão inválida!"
+    },
+    "extensionDescription": {
+        "hash": "8138b17e7f1daceffca0d19015bb86e7",
+        "message": "Faça o seu navegador esquecer dados de websites, exceto os dados que pretende manter."
+    },
+    "extensionName": {
+        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad",
+        "message": "Forget Me Not - Esquecer cookies e outros dados"
+    },
+    "help_button@title": {
+        "hash": "90c094de68babfe6bfb332fb03538a24",
+        "message": "Leia acerca de como as regras funcionam, que expressões pode utilizar, funcionalidades experimentais, e alterações recentes nesta extensão."
+    },
+    "import_by_drop_or_click": {
+        "hash": "addde02e14af8336c24777c9b03dc5eb",
+        "message": "Importe definições ao largar um ficheiro exportado anteriormente nesta área ou clicar em qualquer lugar para selecionar tal ficheiro."
+    },
+    "import_failure": {
+        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4",
+        "message": "Não foi possível importar o ficheiro. Verifique se o ficheiro é um ficheiro de definições válido."
+    },
+    "import_success_close_now": {
+        "hash": "cd1b4a7131754d680d4a662e29b2516b",
+        "message": "Definições importadas com sucesso. Pode fechar esta janela agora."
+    },
+    "initial_tab_last_active": {
+        "hash": "aa5aecbdb436117318ba27e868fe98c8",
+        "message": "<Memorizar>"
+    },
+    "initial_tab_log": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Registo de domínios"
+    },
+    "initial_tab_rules": {
+        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb",
+        "message": "Regras"
+    },
+    "initial_tab_settings": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Definições"
+    },
+    "initial_tab_this_tab": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Separador atual"
+    },
+    "invalid_tab": {
+        "hash": "d9b046898a69c55df2f0e4f03f9011d6",
+        "message": "Separador inválido"
+    },
+    "logo@title": {
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Forget Me Not"
+    },
+    "manual_cleanup_description": {
+        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770",
+        "message": "Com isto pode executar uma limpeza manual. Irá poder selecionar o que limpar."
+    },
+    "perform_manual_cleanup": {
+        "hash": "1098090c30d2dc94517833dc3d259a71",
+        "message": "Realizar limpeza manual"
+    },
+    "prompt_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "Cancelar"
+    },
+    "prompt_ok": {
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "OK"
+    },
+    "recently_accessed_domains": {
+        "hash": "53d2a0edc88172044b6b6db0c1996820",
+        "message": "Domínios acedidos recentemente:"
+    },
+    "reset_dialog_content": {
+        "hash": "db630835e0fd63a96fcb2feed83facc3",
+        "message": "Isto não pode ser desfeito."
+    },
+    "reset_dialog_title": {
+        "hash": "f5545c85577b03ed93d451abf748ce8d",
+        "message": "Repor definições"
+    },
+    "rule_dialog_content": {
+        "hash": "bb88166ccd6ce8e41eb96328204fb401",
+        "message": "- **N**unca: Sem limpeza.\n- No **A**rranque: Limpar apenas no início do navegador.\n- Na **S**aída: Limpar na saída do domínio e no início do navegador.\n- **I**nstantaneamente: Impedir dados de serem definidos, se possível. Caso contrário comportar-se como `Na saída`.\n\n**\\*** Para `No arranque` e `Na saída` funcionarem, as opções de limpeza respetivas devem estar ativadas. Algumas limitações podem ainda aplicar-se devido a resitrições na Web-Extension API. [Ler mais](readme.html#tutorial)"
+    },
+    "rule_dialog_expression": {
+        "hash": "4342463f910507a3f4f1f81716912f1c",
+        "message": "Expressão:"
+    },
+    "rule_dialog_temporary": {
+        "hash": "00d6f1e3f3b10031b36d0658810e84d6",
+        "message": "Regra temporária: Remova esta regra na mudança de domínio ou no reinício do navegador."
+    },
+    "rule_dialog_title": {
+        "hash": "8b92b69da821db80656274e044e68643",
+        "message": "Selecione uma regra de limpeza"
+    },
+    "rules_add": {
+        "hash": "c30738ff9271a856100751bbca5e5794",
+        "message": "Adicionar"
+    },
+    "rules_column_expression": {
+        "hash": "7fc913b5875670e140f328b8a03ed225",
+        "message": "Expressão"
+    },
+    "rules_column_matching_expression": {
+        "hash": "dcb63b62695c11401c78d9ea01eee3de",
+        "message": "Expressão correspondente"
+    },
+    "rules_column_type": {
+        "hash": "338c238d02c3001ea6d21739b8678ec5",
+        "message": "Limpeza"
+    },
+    "rules_input@placeholder": {
+        "hash": "a0766c32473f97b153fd63a92cadd450",
+        "message": "Pesquisar ou adicionar.."
+    },
+    "rules_no_entries": {
+        "hash": "5ece1de076b92af71c606feadcc41439",
+        "message": "Sem entradas"
+    },
+    "setting_apply_rules@title": {
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b",
+        "message": "Aplicar regras"
+    },
+    "setting_cache": {
+        "hash": "c93aa6136bef8b9b3cf1ac5f037836f8",
+        "message": "Cache"
+    },
+    "setting_cookies": {
+        "hash": "4aef64b30489430071825bcb3db557b6",
+        "message": "Cookies"
+    },
+    "setting_delay_domain_leave_cleanup_in_seconds": {
+        "hash": "078f159c3a6f33936199104b956d77a7",
+        "message": "Atraso para a saída do domínio em segundos:"
+    },
+    "setting_delay_in_seconds": {
+        "hash": "4f52d0e15398d35039f73e8a04275ae9",
+        "message": "Atraso em segundos:"
+    },
+    "setting_downloads": {
+        "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116",
+        "message": "Histórico de transferências"
+    },
+    "setting_experimental_info": {
+        "hash": "9a633b49e2375b929463c1ce49295f58",
+        "message": "Estas são funcionalidades experimentais. Leia mais acerca das mesmas [aqui](readme.html#experimental)."
+    },
+    "setting_form_data": {
+        "hash": "b5418babb2bbffd7d4e8275b83770564",
+        "message": "Dados de formulários"
+    },
+    "setting_history": {
+        "hash": "6b8f0d500af7fbca100a1be3dc0817d6",
+        "message": "Histórico"
+    },
+    "setting_ignore_rules@title": {
+        "hash": "ccb8dbed77ececb457ea594439d42146",
+        "message": "Ignorar regras"
+    },
+    "setting_indexed_db": {
+        "hash": "335f3924c55823b7be5b261a240883bf",
+        "message": "Indexed DB"
+    },
+    "setting_initialTab": {
+        "hash": "4f7c8a9bcef6c6476565d540dde62998",
+        "message": "Separador selecionado inicialmente neste popup:"
+    },
+    "setting_local_storage": {
+        "hash": "d57ee1024a950e1341482d9240d0b630",
+        "message": "Armazenamento local"
+    },
+    "setting_log_rad_enabled": {
+        "hash": "3b8f9710163140ee92e5924c8f7bdbca",
+        "message": "Registar domínios acedidos recentemente:"
+    },
+    "setting_log_rad_limit": {
+        "hash": "3c037e9a79f552e29a4d50714669c7e3",
+        "message": "Limitar para:"
+    },
+    "setting_passwords": {
+        "hash": "a40f3ee19854cd8645e750f118af3dcd",
+        "message": "Palavras-passe"
+    },
+    "setting_plugin_data": {
+        "hash": "436905ccbdfaaacb1aec25f512584e36",
+        "message": "Dados de plugins"
+    },
+    "setting_protect_open_domains": {
+        "hash": "c3d70903d8398a33b99e1711f546ca19",
+        "message": "Proteger domínios abertos atualmente se \"Aplicar regras\" estiver marcado"
+    },
+    "setting_purge_expired_cookies": {
+        "hash": "a0bdd30f4f73d600fbac2f60caeb8653",
+        "message": "Purgar cookies expirados quando uma limpeza acontece."
+    },
+    "setting_remove_thirdparty": {
+        "hash": "2d8b645390f60f6bb1777fbf6004d109",
+        "message": "Remover cookies de terceiros na criação:"
+    },
+    "setting_server_bound_certificates": {
+        "hash": "0dfdb1326c1206379e7866da9c9bbf11",
+        "message": "Certificados vinculados ao servidor"
+    },
+    "setting_service_workers": {
+        "hash": "584545acfce5580c7967bc8c366df556",
+        "message": "Service Workers"
+    },
+    "setting_show_badge": {
+        "hash": "fcc8735498ed21670a55314e40bd5b23",
+        "message": "Mostrar regra correspondente como um emblema no botão da barra de ferramentas"
+    },
+    "setting_show_cookie_removal_notification": {
+        "hash": "5d31d92f2c4eb88af04bf02b9078d058",
+        "message": "Mostrar uma notificação quando cookies forem removidos."
+    },
+    "setting_show_update_notification": {
+        "hash": "b09faefa5c53650a8e8d549be96e09a6",
+        "message": "Mostrar uma notificação quando a extensão for atualizada."
+    },
+    "setting_thirdparty_before_creation": {
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c",
+        "message": "Negar cookies de terceiros"
+    },
+    "setting_whitelist_file_system": {
+        "hash": "511a3b5151d821503759721ca9d7b1c1",
+        "message": "Nunca executar limpezas em ficheiros do seu computador"
+    },
+    "setting_whitelist_no_tld": {
+        "hash": "3c19d0b9122a6eab6a95816b6b9c97e5",
+        "message": "Nunca limpar domínios sem um domínio de nível superior"
+    },
+    "setting_whitelist_no_tld@title": {
+        "hash": "9e32826f6a8e674ffa05dca2c9670ddb",
+        "message": "Domínios como localhost, intranet, etc. (sem .com, .net, etc.)"
+    },
+    "settings_cleanable_data": {
+        "hash": "63fe0e7a1fc35e835bc8495abdfbd6fb",
+        "message": "Dados limpáveis"
+    },
+    "settings_enable": {
+        "hash": "2212934c2b3d751385bf1c26d91172f3",
+        "message": "Ativar"
+    },
+    "settings_fallback_rule": {
+        "hash": "144b6e44fcfc2accebf07df655af7bea",
+        "message": "Comportamento se nenhuma regra corresponder (predefinição: na saída):"
+    },
+    "settings_unsupported_checkbox@title": {
+        "hash": "99286998bff7ecef26245d3858e4fe0f",
+        "message": "Não suportado nesta plataforma."
+    },
+    "tabs_about@title": {
+        "hash": "c7f0b61c0416534e0a666f03327552b3",
+        "message": "Acerca do Forget Me Not"
+    },
+    "tabs_changelog@title": {
+        "hash": "d1f539e046abe83e76dcf2163f9a143c",
+        "message": "Registo de alterações"
+    },
+    "tabs_experimental@title": {
+        "hash": "f349bbd753db24b2c15a159a227bd115",
+        "message": "Funcionalidades experimentais"
+    },
+    "tabs_log@title": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Registo de domínios"
+    },
+    "tabs_rules@title": {
+        "hash": "21d4563d916a5e113022379778156fff",
+        "message": "Definir regras"
+    },
+    "tabs_settings@title": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Definições"
+    },
+    "tabs_settings_cleanup": {
+        "hash": "338c238d02c3001ea6d21739b8678ec5",
+        "message": "Limpeza"
+    },
+    "tabs_settings_experimental": {
+        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a",
+        "message": "Experimental"
+    },
+    "tabs_settings_general": {
+        "hash": "e90d858c95232c95e34b4bb2f25b69e4",
+        "message": "Geral"
+    },
+    "tabs_this_tab@title": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Separador atual"
+    },
+    "tabs_tutorial@title": {
+        "hash": "890626624db50efe177837d959c3a8f4",
+        "message": "Tutorial de introdução"
+    },
+    "toggle_snooze_description": {
+        "hash": "f4aef37e9e5a3d31685076022d0e6ae8",
+        "message": "No modo suspensão, estas limpezas serão impedidas:\n- Limpeza ao sair do domínio\n- Limpeza de cookies de terceiros\n- Bloqueio de cookies\n\nTodas as limpezas serão efetuadas assim que o modo suspensão for desativo."
+    },
+    "tutorial_page": {
+        "hash": "c441d8782d4b7cb8bcfd95e599caf406",
+        "message": "# Tutorial de introdução\n\n## Definições do Firefox\nPor favor note que esta extensão não tem acesso às suas definições do Firefox, por isso quaisquer definições de cookies que fizer no próprio Firefox irão ser combinadas com esta extensão.\n\nPor isso se configurar o Firefox para negar todos os cookies, esta extensão não terá cookies para trabalhar.\n\n## Tipos de limpezas\nPode configurar as regras de limpeza que correspondem a certos nomes de domínio (nomes de anfitrião de um website, como *google.com*). Os tipos de limpeza possíveis são:\n\n- **Nunca**: Nenhuma limpeza será realizada para domínios que correspondem a esta regra.\n- **No arranque**: A limpeza irá executar no início do navegador.\n- **Na saída**: A limpeza irá executar quando sai de um domínio (ao colocar um novo na barra de url ou ao fechar o separador)\n- **Instantaneamente**: Se possível, os cookies irão ser impedidos de serem definidos. Caso contrário estes irão ser removidos quase instantaneamente.\n\nSe regras múltiplas correspondem a um domínio, a regra mais importante irá ser selecionada. Atualmente isto está definido como:\n`Instantaneamente > Na saída > Nunca > No arranque`.\n\nSe nenhuma regra corresponder a um domínio, a regra de contingência irá ser utilizada.\n\n## Expressões válidas\n- Qualquer nome de servidor (por exemplo www.google.com) é uma expressão válida.\n- Um asterisco (*) pode ser utilizado como marcador de posição para um segmento (por exemplo *.google.com ou www.\\*.com).\n\n### Expressões específicas de cookies\nPode criar regras para combinações de nome de cookie e domínio.\n- Exemplo: `nomedecookie@*.google.com`\n- `nomedecookie` pode ser qualquer nome de cookie válido.\n- As mesmas regras, como vistas acima, aplicam-se para a parte específica do domínio à direita do sinal `@`.\n- As regras específicas de cookies são sempre preferidas sobre as regras normais.\n\n## Cookies de terceiros\n- Quando um cookie é definido sem pertencer a um domínio que está aberto num separador, é considerado um cookie de terceiros.\n- Está a ser feita pesquisa para melhorar este método.\n\n## Modo suspensão\n\nNo separador de popup \"Modo suspensão\", pode desativar temporariamente a limpeza automática. Paire sob o ícone instruções (ou clique no mesmo se estiver no android).\n\n## Tipos de dados para limpar\n\nPode escolher que dados limpar:\n- **Cookies**: Cookies HTTP normais. (Cookies Flash são cobertos por \"Dados de plugins\").\n- **Armazenamento local** e **Indexed DB**: Os websites podem armazenar dados no seu navegador para permitir certas funcionalidades ou memorizar algo para a próxima visita.\nAlgumas vezes o Firefox refere-se a *Indexed DB* como \"Armazenamento\", por isso se o Firefox lhe disser que youtube.com utiliza alguns MB de armazenamento, é provavelmente *Indexed DB*.\n- **Histórico**: Isto contém todas as suas visitas a websites.\n- **Histórico de tranferências**: Isto contém o histórico das transferências.\nLimpar as transferências não remove os ficheiros no seu disco.\n- **Dados de formulários**: A certa altura deve ter introduzido informação em, por exemplo, um contacto ou formulário de cobrança.\nDependendo das suas definições, isto pode ter sido guardado, para que seja fácil para você reintroduzir estes valores.\n- **Palavras-passe**: Pode ter dito ao Firefox para memorizar certas palavras-passe. Escolha isto para removê-las novamente.\n- **Dados de plugins**: PLugins (não extras/web-extensions) como Adobe Flash ou Acrobat Reader podem armazenar dados como cookies Flash ou outra informação e definições.\n- **Service Workers**: Os Service Workers são uma maneira de permitir aos websites serem utilizados offline e também ajudam a acelerar o carregamento de aplicações web que fazem uso disto.\n- **Certificados vinculados ao servidor**: Se adicionou certificados para permitir ligações a um servidor, então esta é a opção para os limpar."
+    },
+    "types_of_cleanup@title": {
+        "hash": "ba2fe14822b0ddacb1f12d26f543783d",
+        "message": "Leia mais acerca do que estas caixas de verificação limpam exatamente."
+    },
+    "update_notification_message": {
+        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58",
+        "message": "Clique aqui para ver as novidades."
+    },
+    "update_notification_title": {
+        "hash": "ee6d409dd42b2f42f153c1a574ca3595",
+        "message": "O Forget Me Not foi atualizado!"
+    }
 }

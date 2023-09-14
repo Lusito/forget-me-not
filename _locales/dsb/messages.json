@@ -1,332 +1,346 @@
 {
-    "__WET_GROUP__0": { "message": "Branding" },
-    "extensionName": {
-        "message": "Njezabywaj mě - cookieje a druge daty zabyś",
-        "description": "Name of the extension.",
-        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+    "__WET_GROUP__0": {
+        "message": "Branding"
     },
-    "extensionDescription": {
-        "message": "Dajśo wobglědowakoju daty websedłow zabyś, mimo datow, kótarež cośo wobchowaś.",
-        "description": "Description of the extension.",
-        "hash": "8138b17e7f1daceffca0d19015bb86e7"
+    "__WET_GROUP__1": {
+        "message": "Dialogs"
+    },
+    "__WET_GROUP__2": {
+        "message": "Cleanup Types"
+    },
+    "__WET_GROUP__3": {
+        "message": "Settings"
+    },
+    "__WET_GROUP__4": {
+        "message": "Notifications"
+    },
+    "__WET_GROUP__5": {
+        "message": "Import Dialog"
+    },
+    "__WET_GROUP__6": {
+        "message": "Info Pages"
+    },
+    "__WET_LOCALE__": {
+        "message": "dsb"
+    },
+    "about_page": {
+        "hash": "8b79e24d589555578de474316b748218",
+        "message": "## Awtor\nNapórany wót Santo Pfingsten, © 2017-2019\n\n## Pśełožowarje trěbne\n\nJolic dalšne rěcy derje dosć wumějośo, móžośo pomagaś, gaž z [toś tym pěknym webnałoženim](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) pśełožk napórajośo.\n\n## Problemy, pšašanja, komentary  a měnjenja\nPšosym dajśo problemy a pšosby wó nowe funkcije na GitHub k wěsći:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Deklaracija priwatnosći\n\nWaša priwatnopsć jo pśewšo wažna. Toś to rozšyrjenje nic njeanalyzěrujo abo njezběra, mimo, což se trjeba, aby mógło swój nadawk docyniś. Njesćelo žedne daty niźi, teke nic anonymnje. KÓŃC.\n\n## Źěkowanje\n* Dolnoserbski pśełožk wót Michaela Wolfa\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Wót Vexels.com nacerjony\n* Symbole napórane wót [Google](https://www.flaticon.com/authors/google \"Google\"), wót [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\"), su pód [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\") licencěrowane"
     },
     "actionTitle": {
-        "message": "Njezabywaj mě",
-        "description": "Action button title",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Njezabywaj mě"
     },
     "actionTitleSnooze": {
-        "message": "Njezabywaj mě (nachylu znjemóžnjeny)",
-        "description": "Action button title during snooze",
-        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+        "hash": "1083d3039c66b786ea7f4fb7d6b6c095",
+        "message": "Njezabywaj mě (nachylu znjemóžnjeny)"
     },
-    "logo@title": {
-        "message": "Njezabywaj mě",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
-
-    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
-        "message": "W pórěźe",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_ok": {
-        "message": "W pórěźe",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_cancel": {
-        "message": "Pśetergnuś",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "reset_dialog_title": {
-        "message": "Nastajenja slědk stajiś",
-        "hash": "f5545c85577b03ed93d451abf748ce8d"
-    },
-    "reset_dialog_content": {
-        "message": "To njedajo se anulěrowaś.",
-        "hash": "db630835e0fd63a96fcb2feed83facc3"
-    },
-    "confirm_settings_and_rules": {
-        "message": "Nastajenja a pšawidła",
-        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
-    },
-    "confirm_settings_only": {
-        "message": "Jano nastajenja",
-        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
-    },
-    "confirm_cancel": {
-        "message": "Pśetergnuś",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-
-    "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_button@title": {
-        "message": "Žedno wucysćenje",
-        "hash": "f0c2b4597f983ce80f148fd43e884e9b"
-    },
-    "cleanup_type_startup_button@title": {
-        "message": "Cysćenje pśi startowanju wobglědowaka",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "cleanup_type_leave_button@title": {
-        "message": "Cysćenje pśi spušćanju domeny",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-
-    "__WET_GROUP__3": { "message": "Settings" },
-    "perform_manual_cleanup": {
-        "message": "Manuelne wucysćenje pśewjasć",
-        "hash": "1098090c30d2dc94517833dc3d259a71"
-    },
-    "define_rules": {
-        "message": "Pšawidła definěrowaś:",
-        "hash": "958b9c121084b503102f5f7e566a833e"
-    },
-    "recently_accessed_domains": {
-        "message": "Njedawno woglědane cookiejowe domeny:",
-        "hash": "53d2a0edc88172044b6b6db0c1996820"
-    },
-    "tabs_this_tab@title": {
-        "message": "Aktualny rejtark",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_rules@title": {
-        "message": "Pšawidła definěrowaś",
-        "hash": "21d4563d916a5e113022379778156fff"
-    },
-    "tabs_settings@title": {
-        "message": "Nastajenja",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_log@title": {
-        "message": "Domenowy protokol",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "tabs_about@title": {
-        "message": "Wó Njezabywaj mě",
-        "hash": "c7f0b61c0416534e0a666f03327552b3"
-    },
-    "tabs_tutorial@title": {
-        "message": "Zapokazanje\nRozpokazanje",
-        "hash": "890626624db50efe177837d959c3a8f4"
-    },
-    "tabs_experimental@title": {
-        "message": "Eksperimentelne funkcije",
-        "hash": "f349bbd753db24b2c15a159a227bd115"
-    },
-    "tabs_changelog@title": {
-        "message": "Protokol změnow",
-        "hash": "d1f539e046abe83e76dcf2163f9a143c"
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "W pórěźe"
     },
     "button_clean_now": {
-        "message": "Něnto wulašowaś!",
-        "hash": "9294eae08b1e3bfffede71c2be473b29"
-    },
-    "button_import": {
-        "message": "Importěrowaś..",
-        "hash": "0192d8f28f3d837e79a05711e6379e5e"
+        "hash": "9294eae08b1e3bfffede71c2be473b29",
+        "message": "Něnto wulašowaś!"
     },
     "button_export": {
-        "message": "Eksportěrowaś..",
-        "hash": "46a378d64766cc2c8491cd13b018657f"
+        "hash": "46a378d64766cc2c8491cd13b018657f",
+        "message": "Eksportěrowaś.."
     },
-    "button_reset": {
-        "message": "Standard wótnowiś",
-        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+    "button_import": {
+        "hash": "0192d8f28f3d837e79a05711e6379e5e",
+        "message": "Importěrowaś.."
     },
     "button_log_add_rule": {
-        "message": "+ Pšawidło pśidaś",
-        "hash": "28421d68b672702c44a611f9e741e4d2"
+        "hash": "28421d68b672702c44a611f9e741e4d2",
+        "message": "+ Pšawidło pśidaś"
     },
-    "button_toggle_snooze_true": {
-        "message": "Drěmanje zastajiś",
-        "hash": "71669281f5e594169489a032087e7b3f"
+    "button_reset": {
+        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe",
+        "message": "Standard wótnowiś"
     },
     "button_toggle_snooze_false": {
-        "message": "Drěmanje zachopiś",
-        "hash": "7a99ea84ba7341049328d104122639a8"
+        "hash": "7a99ea84ba7341049328d104122639a8",
+        "message": "Drěmanje zachopiś"
     },
-    "invalid_tab": {
-        "message": "Njepłaśiwy rejtark",
-        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
-    },
-    "rules_input@placeholder": {
-        "message": "Pytaś abo pśidaś..",
-        "hash": "a0766c32473f97b153fd63a92cadd450"
-    },
-    "rules_add": {
-        "message": "Pśidaś",
-        "hash": "c30738ff9271a856100751bbca5e5794"
-    },
-    "help_button@title": {
-        "message": "Cytajśo, kak pšawidła funkcioněruju, kótare wuraze móžośo wužywaś, kótare eksperimentelne funkcije a nejnowše změny su w toś tom rozšyrjenju.",
-        "hash": "90c094de68babfe6bfb332fb03538a24"
-    },
-    "types_of_cleanup@title": {
-        "message": "Cytajśo wěcej wó tom, což toś te kontrolne kašćiki cysće.",
-        "hash": "ba2fe14822b0ddacb1f12d26f543783d"
-    },
-    "setting_purge_expired_cookies": {
-        "message": "Pśepadnjone cookieje wulašowaś, gažkuli se wucysćenje wótměwa.",
-        "hash": "1ff8b00b0ca44682a083d91280bcc011"
-    },
-    "setting_show_update_notification": {
-        "message": "Powěźeńku pokazaś, gaž jo se rozšyrjenje zaktualizěrowało.",
-        "hash": "b09faefa5c53650a8e8d549be96e09a6"
-    },
-    "setting_show_cookie_removal_notification": {
-        "message": "Powěźeńku pokazaś, gaž su se cookieje wótwónoźeli.",
-        "hash": "5d31d92f2c4eb88af04bf02b9078d058"
-    },
-    "setting_show_badge": {
-        "message": "Góźece pšawidło ako marku na tłocašku w symbolowej rědce pokazaś",
-        "hash": "fcc8735498ed21670a55314e40bd5b23"
-    },
-    "setting_apply_rules@title": {
-        "message": "Pšawidła nałožyś",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
-    },
-    "setting_cookies": {
-        "message": "Cookieje",
-        "hash": "4aef64b30489430071825bcb3db557b6"
-    },
-    "setting_local_storage": {
-        "message": "Lokalny składowak",
-        "hash": "d57ee1024a950e1341482d9240d0b630"
-    },
-    "setting_protect_open_domains": {
-        "message": "Tuchylu wócynjone domeny šćitaś, jolic \"Pšawidła nałožyś\" jo zmóžnjony",
-        "hash": "c3d70903d8398a33b99e1711f546ca19"
-    },
-    "setting_history": {
-        "message": "Historija",
-        "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
-    },
-    "setting_downloads": {
-        "message": "Ześěgnjenja",
-        "hash": "12caefee10c407a13df4027c244d1118"
-    },
-    "setting_form_data": {
-        "message": "Formularne daty",
-        "hash": "b5418babb2bbffd7d4e8275b83770564"
-    },
-    "setting_passwords": {
-        "message": "Gronidła",
-        "hash": "a40f3ee19854cd8645e750f118af3dcd"
-    },
-    "setting_indexed_db": {
-        "message": "Indexed DB",
-        "hash": "335f3924c55823b7be5b261a240883bf"
-    },
-    "setting_plugin_data": {
-        "message": "Tykackowe daty",
-        "hash": "436905ccbdfaaacb1aec25f512584e36"
-    },
-    "setting_service_workers": {
-        "message": "Service Workers",
-        "hash": "584545acfce5580c7967bc8c366df556"
-    },
-    "setting_server_bound_certificates": {
-        "message": "Certifikaty zwězane ze serwerom",
-        "hash": "0dfdb1326c1206379e7866da9c9bbf11"
-    },
-    "setting_remove_thirdparty": {
-        "message": "Cookieje tśeśich póbitoworjow pśi napóranju wótwónoźeś:",
-        "hash": "2d8b645390f60f6bb1777fbf6004d109"
-    },
-    "setting_thirdparty_before_creation": {
-        "message": "Cookieje tśeśich póbitowarjow wótpokazaś",
-        "hash": "29d565d6a25a71892d493a5d6be5fa2c"
-    },
-    "setting_whitelist_no_tld@title": {
-        "message": "Domeny ako localhost, intranet atd. (bźez .com, .net atd.)",
-        "hash": "9e32826f6a8e674ffa05dca2c9670ddb"
-    },
-    "setting_log_rad_enabled": {
-        "message": "Njedawno woglědane domeny protokolěrowaś.",
-        "hash": "3b8f9710163140ee92e5924c8f7bdbca"
-    },
-    "setting_log_rad_limit": {
-        "message": "Wobgranicowaś na:",
-        "hash": "3c037e9a79f552e29a4d50714669c7e3"
-    },
-    "setting_initialTab": {
-        "message": "Njepjerwjej wubrany rejtark we wócynjonem woknje:",
-        "hash": "4f7c8a9bcef6c6476565d540dde62998"
-    },
-    "initial_tab_last_active": {
-        "message": "<Spomnjeś se>",
-        "hash": "aa5aecbdb436117318ba27e868fe98c8"
-    },
-    "initial_tab_this_tab": {
-        "message": "Aktualny rejtark",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "initial_tab_rules": {
-        "message": "Pšawidła",
-        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb"
-    },
-    "initial_tab_settings": {
-        "message": "Nastajenja",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "initial_tab_log": {
-        "message": "Domenowy protokol",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-
-    "__WET_GROUP__4": { "message": "Notifications" },
-    "update_notification_title": {
-        "message": "Njezabywaj mě jo se aktualizěrował!",
-        "hash": "ee6d409dd42b2f42f153c1a574ca3595"
-    },
-    "update_notification_message": {
-        "message": "Klikniśo how, aby wiźeł, což jo nowe.",
-        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
-    },
-    "cookie_cleanup_notification_title": {
-        "message": "$COUNT$ cookiejow jo se wótwónoźeło",
-        "placeholders": {
-            "count": { "content": "$1", "example": "4" }
-        },
-        "hash": "858abd3673bf284d100dba19e3034e71"
-    },
-    "cookie_cleanup_notification_line": {
-        "message": "$DOMAIN$: $COUNT$ cookiejow",
-        "placeholders": {
-            "domain": { "content": "$1", "example": "www.google.com" },
-            "count": { "content": "$2", "example": "4" }
-        },
-        "hash": "194b196ae9df5827b482babe5caebd69"
-    },
-
-    "__WET_GROUP__5": { "message": "Import Dialog" },
-    "import_by_drop_or_click": {
-        "message": "Ześěgniśo do togo eksportěrowanu dataju do toś toho wobcerka, aby nastajenja importěrował, abo klikniśo něźi, aby taku dataju wubrał.",
-        "hash": "addde02e14af8336c24777c9b03dc5eb"
-    },
-    "import_success_close_now": {
-        "message": "Nastajenja su se wuspěšnje importěrowali. Móžośo něnto toś to wokno zacyniś.",
-        "hash": "cd1b4a7131754d680d4a662e29b2516b"
-    },
-    "import_failure": {
-        "message": "Dataja njedajo se importěrowaś. Pśespytajśo, lěc dataja jo płaśiwa dataja nastajenjow.",
-        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4"
-    },
-
-    "__WET_GROUP__6": { "message": "Info Pages" },
-    "about_page": {
-        "message": "## Awtor\nNapórany wót Santo Pfingsten, © 2017-2019\n\n## Pśełožowarje trěbne\n\nJolic dalšne rěcy derje dosć wumějośo, móžośo pomagaś, gaž z [toś tym pěknym webnałoženim](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) pśełožk napórajośo.\n\n## Problemy, pšašanja, komentary  a měnjenja\nPšosym dajśo problemy a pšosby wó nowe funkcije na GitHub k wěsći:  \n[https://github.com/Lusito/forget-me-not/issues](https://github.com/Lusito/forget-me-not/issues)\n\n## Deklaracija priwatnosći\n\nWaša priwatnopsć jo pśewšo wažna. Toś to rozšyrjenje nic njeanalyzěrujo abo njezběra, mimo, což se trjeba, aby mógło swój nadawk docyniś. Njesćelo žedne daty niźi, teke nic anonymnje. KÓŃC.\n\n## Źěkowanje\n* Dolnoserbski pśełožk wót Michaela Wolfa\n* [Myosotis flower cartoon 1](https://www.vexels.com/vectors/preview/136467/myosotis-flower-cartoon-1) |   Wót Vexels.com nacerjony\n* Symbole napórane wót [Google](https://www.flaticon.com/authors/google \"Google\"), wót [www.flaticon.com](https://www.flaticon.com/ \"Flaticon\"), su pód [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ \"Creative Commons BY 3.0\") licencěrowane",
-        "hash": "8b79e24d589555578de474316b748218"
-    },
-    "experimental_page": {
-        "message": "## Eksperimentelne funkcije\n\n- Casy dajo nowe funkcije, kótarež se ako eksperimentelne markěruju.\n- Su pó standarźe znjemóžnjone a muse se manuelnje zmóžniś.\n- Toś te funkcije se wužywaju, aby nowe móžnosći namakali, rozšyrjenje pólěpšowaś.\n- Mógu njestabilne byś abo špatne wugbaśe měś.\n- Jolic na problemy starcyjośo, wopytajśo toś te funkcije znjemóžniś.\n- Pšosym sćelśo nam komentary abo měnjenja a pišćo zmólkowe rozpšawy na [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Tuchylu aktiwne eksperimenty:\n- **Pśepadnjone cookieje wulašowaś**:\nGažkuli se wucysćenje wótměwa, se cookieje, kótarež maju datum spadnjenja nastajony w zajźonosći, njeźiwajucy na konfiguraciske pšawidła, wulašuju. Normalnje Firefox jano pśpadnjone cookije lašujo, gaž limit jo nastajony. Toś te cookieje njeby se słali na websedło, ale by wóne hyšći tam. Toś to nastajenje buźo pomagaś, toś te šarjece so cookieje wótwónoźeś.\n- **Cookieje tśeśich wótpokazaś**:  \nJolic zmóžnjone, se kužde webnapšašowanje wótpopadnjo, aby se cookieje z domenow wótwónoźeli, kótarež k URL rejtarkow njesłušaju a se pśez pšawidło šćitaju. Toś te cookieje se pótakem njestajaju.\n\nSćelśo mě swóje komentary wó nazgónjenjach, kótarež sćo z toś tymi eksperimentami cynił, aby ja mógał rozsuźiś, lěc maju se na pśecej pśidaś abo nic.",
-        "hash": "b2158f0e30401d015933ecc25c8c6fb6"
+    "button_toggle_snooze_true": {
+        "hash": "71669281f5e594169489a032087e7b3f",
+        "message": "Drěmanje zastajiś"
     },
     "changelog_page": {
-        "message": "## Protokol změnow\n\n### Version 2.2.8 (2020/05/24)\n\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n\n### Version 2.2.7 (2020/04/11)\n\n- Updated french translations by Dorian Eydoux\n- Polish translations by Azahiar\n- Partial turkish translations by Lernatius\n- Updated german translations by doak\n\n### Version 2.2.6 (2019/12/15)\n\n- Partial finnish translations by welcroft\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n- Updated argentinian translations by artinipaiv\n- Indonesian translations by zmni\n- Updated french translations by Krakopov\n- Updates german translation by luger19\n- Some code improvements\n- Removed temporary rules from settings export\n\n### Version 2.2.5 (2019/09/01)\n\n- Visual improvements of the settings tables\n- Updated french translations\n- Russian translations by Qwest8K\n- Temporary rules\n\n### Version 2.2.4 (2019/06/30)\n\n- Instantly rules (and the deny third-party option) are now affected by snooze mode as well.\n\n### Version 2.2.3 (2019/06/24)\n\n- Updated pt-BR translations by Fábio M.\n- Using new filter on Firefox >= 68 to ignore incognito tabs when blocking cookies.\n\n### Version 2.2.2 (2019/04/14)\n\n- German Swiss translation removed, as Firefox doesn't support it.\n- A bug causing performance issues has been fixed.\n- The cookie browser now refreshes after a rule has been added.\n\n### Version 2.2.1 (2019/03/13)\n\n- Translations have been updated.\n- A bug in the cookie browser has been fixed.\n\n### Version 2.2.0 (2019/03/12)\n\n- Swiss German translations have been updated.\n- A cookie browser has been added to easily add cookie-specific rules.\n\n### Version 2.1.0 (2019/03/03)\n\n- Further improvements to the user interface.\n- Fix for downloads not being cleared correctly on startup\n- Fix for input field on rule creation.\n- Swiss German translation by BenjaminRosenzeig.\n- Updated italian translation by AlienLogic.\n- Fix for \"Instant\" rule incorrectly blocking in private tabs.\n- Added missing tooltips.\n- Cookie expressions are now shown under the \"Matching Expression\"\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Wersija 1.0.5 (2018/09/02)\n- Zmólka pórěźona, kótaraž zawinujo, až se aktualizaciska powěźeńka pśi kuždem starśe pokazujo.\n\n### Wersija 1.0.4 (2018/09/02)\n- Nuzowe rozwězanje za zmólku Firefox, kótaraž historiju ześěgnjenjow njelašujo.\n- Nuzowe rozwězanje za zmólku Firefox, kótaraž korektnemu rumowanjeju kontejnerowych cookiejow zajźujo\n- Lokalne cookieje (skłaźone pśez websedła na wašom licadle) daju se něnto teke wulašowaś\n- Italski pśełožk wót temptemptmp.\n- Pódpěra za tłocašk direktnego nałožowanja programa web-extension-translator.\n- Lěpša pódpěra za woběžkowy meni Firefox\n\n### Version 1.0.3 (2018/08/23)\n- Zmólka w parserje pšawidłowych wurazow pórěźona\n- Špański (Argentinska) pśełožk wót [Fabián Pérez](https://www.github.com/thepante)\n- Šwedski pśełožk wót Jo3yA\n- Portugiski pśełožk wót SW1FT\n- Portugiski (Brazilska) pśełožk wót Victor Bambino\n- Zaktualizěrowanej górnoserbski a dolnoserbski pśełožka wót Michaela Wolfa\n\n### Wersija 1.0.2 (2018/06/03)\n- Pódpora za nawigaciju z tastaturu a cytakami wobrazowki\n\n### Wersija 1.0.1 (2018/05/28)\n- Pórěźenje za wotwónoźowanje pśepadnjonych cookiejow\n\n### Wersija 1.0.0 (2018/05/27)\n- Drugi symbol a pomocny tekst za drěmański modus.\n- Górnoserbski a dolnoserbski pśełožk wót @milupo.\n- Wužywarje mógu něnto změniś, kótary pšawidłowy typ ma se nałožyś, gaž se góźeće se pšawidło njenamakajo.\n- Pódpěra za napóranje pšawidłow, kótarež su speicifske za pomjenjony cookie\n- Pólěpšone póznawanje cookiejow tśeśich póbitowarjow.\n- Pórěźone zmólki pśi wótnóźowanju cookiejow póddomenow. \n- Pólěpšona pódpěra za izolaciju prědnego póbitowwrja\n- Nowa eksperimentelna funkcija: Lašowanje pśepadnjonych cookiejow, gažkuli se wucysćenje wótměwa.\n- Někotare vizuelne problemy su pórěźone.\n- Wjele pólěpšenjow koda za lěpšu stabilitu a pólěpšone wugbaśe!\n- Wěcej ako 100 testowych jadnotkow, aby se dobra kwalita zawěsćiła!\n- Lěpša pomoc a wěcej wopisanjow.\n- Powěźeńka priwatnosći jo se pśidała.\n\n### Wersija 0.9.1 (2018/04/06)\n- Zmólka, kótaraž jo ignorěrowała nastajenje  \"Wó aktualizacijach njeinforměrowaś\"\n\n### Wersija 0.9.0 (2018/03/24)\n- Nastajenja pśidane, kótarež protokolěrowanje domenow znjemóžnjaju abo wobgranicuju\n- Pódpěra za zwobraznjowanje domenowych mjenjow z punycode\n- Problem z cookiejami rozwězał, kótarež njejsu se we wěstych padach pórědnje wótwónoźili\n- Wužywanje symbolow město titelow w rejtarkach wuskokujucego wokna\n- Manuelnemu wucysćenjeju se něnto dowólujo, pšawidło \"wócynjone domeny šćitaś\" ignorěrowaś.\n- Drěmańska funkcija jo se pśidała, aby se awtomatiske wucysćenje nachylu znjemóžniło. Wucysćenja budu se znowego planowaś, gaž se drěmanje zastajijo.\n- Techniska aktualizacija\n\n### Wersija 0.8.8 (2018/01/24)\n- Nowy typ carnego pšawidła pśidane, aby se cookieje dopołnje blokěruju.\n- Izolacija prědnego póbitowarja wěcej njezajźujo wótwónoźowanjeju cookiejow pśez rozšyrjenje (funkcioněrujo wót Firefox 59). Pólěpšona pódpěra buźo skóro k dispoziciji w betawersiji - Pórěźenje zmólki: Gaž  domenu spušćaśo, k njej znowego woglědujośo a ju zasej spušćaśo, nježli až jo originalne casowe pśekšocenje pśegnane, cookieje by se pśejěsno lašowali.\n- Pórěźenje: Powěźeńki by mógli se pśemalsnje wuměniś, až by wužywaŕ je wiźeł.\n\n### Version 0.8.7 (2017/12/20)\n- Nuzowe rozwězanje za importěrowanje nastajenjow, kótarež we wuskokujucem woknje browserAction Firefox bźez zmólki njefunkcioněrujo.\n- Źělna pódpěra za kontejnerowe rejtarki: Cookieje funkcioněruju, lokalny składowak nic (Mozilla musy nejpjerwjej něco pórěźiś)\n- Nowe pšawidło \"Zabyś\" (cerwjene) jo se pśidało, aby se pśepisowanje drugich pšawidłow zmóžniło (cytajśo rozpokazanje za drobnostki).\n- Problem z cysćenim  pśi startowanju jo se rozwězał\n- Modulowe testy su se pśidali\n- Nastajenje za chowanje markow jo se pśidało\n- Nastajenje za wuběranje zaprědka wubranego rejtarka jo se pśidało\n- Nastajenje za pokazowanje powěźeńkow za wótwónoźowanje cookiejow jo se pśidało\n- Eksportowy problem jo se rozwězał\n\n### Wersija 0.8.6 (2017/12/06)\n- Změny pśełožka z pomocu [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Zawjeźenje dataje readme w rozšyrjenju, rozpokazanja a protokola změnow.\n  - Pśistup na to z pomocu pšašakowego tłocaška.\n- Powěźeńka se pokazujo, gaž se rozšyrjenje aktualizěrujo (dajo se znjemóžniś).\n- Domeny bźez Top Level Domain (ako localhost, intranet atd.) daju se něnto z kontrolnym kašćikom do běłeje lisćiny pśewześ.\n- Eksperimentelna funkcija za blokěrowanje cookieje tśeśich póbitowarjow\n\n### Wersija 0.8.5 (2017/11/25)\n- Pisańska zmólka jo se pórěźiła\n- Pśešaltowanje pšawidłowego typa jo se wugłaźiło\n- Tłocašk za pśidawanje nowych pšawidłow (do togo sćo mógał jano nowe pšawidło pśidaś, gaž sćo enter tłocył)\n- Tłocašk za dostawanje informacijow wó płaśiwych wurazach \n\n### Wersija 0.8.4 (2017/11/25)\n- Lěpša mobilna kompatibilita\n- Priwatne cookieje se južo njeprotokolěruju a njewótwónoźuju\n\n### Wersija 0.8.3 (2017/11/24)\n- Na priwatnych rejtarkach/woknach znjemóžnjone\n- Protokol jo se pśidał, aby domeny nejnowšych cookiejowych změnow pokazał\n- Tłocaški su se pśidałi,  aby se zapódawańske pólo za filtry wupołniło z domenami górjejce naspomnjeteje lisćiny a aktualnego rejtarka\n\n### Wersija 0.8.2 (2017/11/19)\n- Někotare korektury zmólkow, cysćenja\n\n### Wersija 0.8.0 (2017/11/19)\n- Prědna wersija",
-        "hash": "fbfcce4e3d9913d6f0ae33a36476a555"
+        "hash": "fbfcce4e3d9913d6f0ae33a36476a555",
+        "message": "## Protokol změnow\n\n### Version 2.2.8 (2020/05/24)\n\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n\n### Version 2.2.7 (2020/04/11)\n\n- Updated french translations by Dorian Eydoux\n- Polish translations by Azahiar\n- Partial turkish translations by Lernatius\n- Updated german translations by doak\n\n### Version 2.2.6 (2019/12/15)\n\n- Partial finnish translations by welcroft\n- Updated russian translations by Qwest8k\n- Updated portuguese translations by Cl3m3nt1n4\n- Updated argentinian translations by artinipaiv\n- Indonesian translations by zmni\n- Updated french translations by Krakopov\n- Updates german translation by luger19\n- Some code improvements\n- Removed temporary rules from settings export\n\n### Version 2.2.5 (2019/09/01)\n\n- Visual improvements of the settings tables\n- Updated french translations\n- Russian translations by Qwest8K\n- Temporary rules\n\n### Version 2.2.4 (2019/06/30)\n\n- Instantly rules (and the deny third-party option) are now affected by snooze mode as well.\n\n### Version 2.2.3 (2019/06/24)\n\n- Updated pt-BR translations by Fábio M.\n- Using new filter on Firefox >= 68 to ignore incognito tabs when blocking cookies.\n\n### Version 2.2.2 (2019/04/14)\n\n- German Swiss translation removed, as Firefox doesn't support it.\n- A bug causing performance issues has been fixed.\n- The cookie browser now refreshes after a rule has been added.\n\n### Version 2.2.1 (2019/03/13)\n\n- Translations have been updated.\n- A bug in the cookie browser has been fixed.\n\n### Version 2.2.0 (2019/03/12)\n\n- Swiss German translations have been updated.\n- A cookie browser has been added to easily add cookie-specific rules.\n\n### Version 2.1.0 (2019/03/03)\n\n- Further improvements to the user interface.\n- Fix for downloads not being cleared correctly on startup\n- Fix for input field on rule creation.\n- Swiss German translation by BenjaminRosenzeig.\n- Updated italian translation by AlienLogic.\n- Fix for \"Instant\" rule incorrectly blocking in private tabs.\n- Added missing tooltips.\n- Cookie expressions are now shown under the \"Matching Expression\"\n\n### Version 2.0.0 (2019/02/17)\n\n- Improved and simplified the user interface.\n- Rule names have changed to better reflect what they stand for.\n- Tutorials, descriptions, etc. have been adapted to be more clear.\n- Android does not support all cleanup types.. the new UI now shows what features are missing.\n- New translation have been added: French (Benny Hill, djizuss) and Catalan (Lakatoi).\n- Delay values can now be entered in seconds instead of minutes.\n- Frames are now taken into account to improve cleanups.\n- Fixed a rare issue with with the cookie blocking logic.\n- Blocked cookies will now produce \"removed\" notifications as well.\n- It's now possible to clean cache.\n- Downloads and history can now apply rules and thus also run on domain leave.\n- Code has been heavily rewritten for improved stability.\n- A ton of unit tests have been added to ensure the logic works flawlessly: Now counting 335 tests!\n\n### Wersija 1.0.5 (2018/09/02)\n- Zmólka pórěźona, kótaraž zawinujo, až se aktualizaciska powěźeńka pśi kuždem starśe pokazujo.\n\n### Wersija 1.0.4 (2018/09/02)\n- Nuzowe rozwězanje za zmólku Firefox, kótaraž historiju ześěgnjenjow njelašujo.\n- Nuzowe rozwězanje za zmólku Firefox, kótaraž korektnemu rumowanjeju kontejnerowych cookiejow zajźujo\n- Lokalne cookieje (skłaźone pśez websedła na wašom licadle) daju se něnto teke wulašowaś\n- Italski pśełožk wót temptemptmp.\n- Pódpěra za tłocašk direktnego nałožowanja programa web-extension-translator.\n- Lěpša pódpěra za woběžkowy meni Firefox\n\n### Version 1.0.3 (2018/08/23)\n- Zmólka w parserje pšawidłowych wurazow pórěźona\n- Špański (Argentinska) pśełožk wót [Fabián Pérez](https://www.github.com/thepante)\n- Šwedski pśełožk wót Jo3yA\n- Portugiski pśełožk wót SW1FT\n- Portugiski (Brazilska) pśełožk wót Victor Bambino\n- Zaktualizěrowanej górnoserbski a dolnoserbski pśełožka wót Michaela Wolfa\n\n### Wersija 1.0.2 (2018/06/03)\n- Pódpora za nawigaciju z tastaturu a cytakami wobrazowki\n\n### Wersija 1.0.1 (2018/05/28)\n- Pórěźenje za wotwónoźowanje pśepadnjonych cookiejow\n\n### Wersija 1.0.0 (2018/05/27)\n- Drugi symbol a pomocny tekst za drěmański modus.\n- Górnoserbski a dolnoserbski pśełožk wót @milupo.\n- Wužywarje mógu něnto změniś, kótary pšawidłowy typ ma se nałožyś, gaž se góźeće se pšawidło njenamakajo.\n- Pódpěra za napóranje pšawidłow, kótarež su speicifske za pomjenjony cookie\n- Pólěpšone póznawanje cookiejow tśeśich póbitowarjow.\n- Pórěźone zmólki pśi wótnóźowanju cookiejow póddomenow. \n- Pólěpšona pódpěra za izolaciju prědnego póbitowwrja\n- Nowa eksperimentelna funkcija: Lašowanje pśepadnjonych cookiejow, gažkuli se wucysćenje wótměwa.\n- Někotare vizuelne problemy su pórěźone.\n- Wjele pólěpšenjow koda za lěpšu stabilitu a pólěpšone wugbaśe!\n- Wěcej ako 100 testowych jadnotkow, aby se dobra kwalita zawěsćiła!\n- Lěpša pomoc a wěcej wopisanjow.\n- Powěźeńka priwatnosći jo se pśidała.\n\n### Wersija 0.9.1 (2018/04/06)\n- Zmólka, kótaraž jo ignorěrowała nastajenje  \"Wó aktualizacijach njeinforměrowaś\"\n\n### Wersija 0.9.0 (2018/03/24)\n- Nastajenja pśidane, kótarež protokolěrowanje domenow znjemóžnjaju abo wobgranicuju\n- Pódpěra za zwobraznjowanje domenowych mjenjow z punycode\n- Problem z cookiejami rozwězał, kótarež njejsu se we wěstych padach pórědnje wótwónoźili\n- Wužywanje symbolow město titelow w rejtarkach wuskokujucego wokna\n- Manuelnemu wucysćenjeju se něnto dowólujo, pšawidło \"wócynjone domeny šćitaś\" ignorěrowaś.\n- Drěmańska funkcija jo se pśidała, aby se awtomatiske wucysćenje nachylu znjemóžniło. Wucysćenja budu se znowego planowaś, gaž se drěmanje zastajijo.\n- Techniska aktualizacija\n\n### Wersija 0.8.8 (2018/01/24)\n- Nowy typ carnego pšawidła pśidane, aby se cookieje dopołnje blokěruju.\n- Izolacija prědnego póbitowarja wěcej njezajźujo wótwónoźowanjeju cookiejow pśez rozšyrjenje (funkcioněrujo wót Firefox 59). Pólěpšona pódpěra buźo skóro k dispoziciji w betawersiji - Pórěźenje zmólki: Gaž  domenu spušćaśo, k njej znowego woglědujośo a ju zasej spušćaśo, nježli až jo originalne casowe pśekšocenje pśegnane, cookieje by se pśejěsno lašowali.\n- Pórěźenje: Powěźeńki by mógli se pśemalsnje wuměniś, až by wužywaŕ je wiźeł.\n\n### Version 0.8.7 (2017/12/20)\n- Nuzowe rozwězanje za importěrowanje nastajenjow, kótarež we wuskokujucem woknje browserAction Firefox bźez zmólki njefunkcioněrujo.\n- Źělna pódpěra za kontejnerowe rejtarki: Cookieje funkcioněruju, lokalny składowak nic (Mozilla musy nejpjerwjej něco pórěźiś)\n- Nowe pšawidło \"Zabyś\" (cerwjene) jo se pśidało, aby se pśepisowanje drugich pšawidłow zmóžniło (cytajśo rozpokazanje za drobnostki).\n- Problem z cysćenim  pśi startowanju jo se rozwězał\n- Modulowe testy su se pśidali\n- Nastajenje za chowanje markow jo se pśidało\n- Nastajenje za wuběranje zaprědka wubranego rejtarka jo se pśidało\n- Nastajenje za pokazowanje powěźeńkow za wótwónoźowanje cookiejow jo se pśidało\n- Eksportowy problem jo se rozwězał\n\n### Wersija 0.8.6 (2017/12/06)\n- Změny pśełožka z pomocu [web-ext-translator](https://www.npmjs.com/package/web-ext-translator)\n- Zawjeźenje dataje readme w rozšyrjenju, rozpokazanja a protokola změnow.\n  - Pśistup na to z pomocu pšašakowego tłocaška.\n- Powěźeńka se pokazujo, gaž se rozšyrjenje aktualizěrujo (dajo se znjemóžniś).\n- Domeny bźez Top Level Domain (ako localhost, intranet atd.) daju se něnto z kontrolnym kašćikom do běłeje lisćiny pśewześ.\n- Eksperimentelna funkcija za blokěrowanje cookieje tśeśich póbitowarjow\n\n### Wersija 0.8.5 (2017/11/25)\n- Pisańska zmólka jo se pórěźiła\n- Pśešaltowanje pšawidłowego typa jo se wugłaźiło\n- Tłocašk za pśidawanje nowych pšawidłow (do togo sćo mógał jano nowe pšawidło pśidaś, gaž sćo enter tłocył)\n- Tłocašk za dostawanje informacijow wó płaśiwych wurazach \n\n### Wersija 0.8.4 (2017/11/25)\n- Lěpša mobilna kompatibilita\n- Priwatne cookieje se južo njeprotokolěruju a njewótwónoźuju\n\n### Wersija 0.8.3 (2017/11/24)\n- Na priwatnych rejtarkach/woknach znjemóžnjone\n- Protokol jo se pśidał, aby domeny nejnowšych cookiejowych změnow pokazał\n- Tłocaški su se pśidałi,  aby se zapódawańske pólo za filtry wupołniło z domenami górjejce naspomnjeteje lisćiny a aktualnego rejtarka\n\n### Wersija 0.8.2 (2017/11/19)\n- Někotare korektury zmólkow, cysćenja\n\n### Wersija 0.8.0 (2017/11/19)\n- Prědna wersija"
     },
-
-    "__WET_LOCALE__": { "message": "dsb" }
+    "cleanup_type_leave_button@title": {
+        "hash": "a69a2b082be9de0589a0f807f6be2179",
+        "message": "Cysćenje pśi spušćanju domeny"
+    },
+    "cleanup_type_never_button@title": {
+        "hash": "f0c2b4597f983ce80f148fd43e884e9b",
+        "message": "Žedno wucysćenje"
+    },
+    "cleanup_type_startup_button@title": {
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a",
+        "message": "Cysćenje pśi startowanju wobglědowaka"
+    },
+    "confirm_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "Pśetergnuś"
+    },
+    "confirm_settings_and_rules": {
+        "hash": "e195409b368c4fbb6d4fa33ae6a52c20",
+        "message": "Nastajenja a pšawidła"
+    },
+    "confirm_settings_only": {
+        "hash": "47dbae6cf11a5b79c1abae7b56485c18",
+        "message": "Jano nastajenja"
+    },
+    "cookie_cleanup_notification_line": {
+        "hash": "194b196ae9df5827b482babe5caebd69",
+        "message": "$DOMAIN$: $COUNT$ cookiejow",
+        "placeholders": {
+            "count": {
+                "content": "$2",
+                "example": "4"
+            },
+            "domain": {
+                "content": "$1",
+                "example": "www.google.com"
+            }
+        }
+    },
+    "cookie_cleanup_notification_title": {
+        "hash": "858abd3673bf284d100dba19e3034e71",
+        "message": "$COUNT$ cookiejow jo se wótwónoźeło",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "4"
+            }
+        }
+    },
+    "define_rules": {
+        "hash": "958b9c121084b503102f5f7e566a833e",
+        "message": "Pšawidła definěrowaś:"
+    },
+    "experimental_page": {
+        "hash": "b2158f0e30401d015933ecc25c8c6fb6",
+        "message": "## Eksperimentelne funkcije\n\n- Casy dajo nowe funkcije, kótarež se ako eksperimentelne markěruju.\n- Su pó standarźe znjemóžnjone a muse se manuelnje zmóžniś.\n- Toś te funkcije se wužywaju, aby nowe móžnosći namakali, rozšyrjenje pólěpšowaś.\n- Mógu njestabilne byś abo špatne wugbaśe měś.\n- Jolic na problemy starcyjośo, wopytajśo toś te funkcije znjemóžniś.\n- Pšosym sćelśo nam komentary abo měnjenja a pišćo zmólkowe rozpšawy na [GitHub](https://github.com/Lusito/forget-me-not/issues)\n\n## Tuchylu aktiwne eksperimenty:\n- **Pśepadnjone cookieje wulašowaś**:\nGažkuli se wucysćenje wótměwa, se cookieje, kótarež maju datum spadnjenja nastajony w zajźonosći, njeźiwajucy na konfiguraciske pšawidła, wulašuju. Normalnje Firefox jano pśpadnjone cookije lašujo, gaž limit jo nastajony. Toś te cookieje njeby se słali na websedło, ale by wóne hyšći tam. Toś to nastajenje buźo pomagaś, toś te šarjece so cookieje wótwónoźeś.\n- **Cookieje tśeśich wótpokazaś**:  \nJolic zmóžnjone, se kužde webnapšašowanje wótpopadnjo, aby se cookieje z domenow wótwónoźeli, kótarež k URL rejtarkow njesłušaju a se pśez pšawidło šćitaju. Toś te cookieje se pótakem njestajaju.\n\nSćelśo mě swóje komentary wó nazgónjenjach, kótarež sćo z toś tymi eksperimentami cynił, aby ja mógał rozsuźiś, lěc maju se na pśecej pśidaś abo nic."
+    },
+    "extensionDescription": {
+        "hash": "8138b17e7f1daceffca0d19015bb86e7",
+        "message": "Dajśo wobglědowakoju daty websedłow zabyś, mimo datow, kótarež cośo wobchowaś."
+    },
+    "extensionName": {
+        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad",
+        "message": "Njezabywaj mě - cookieje a druge daty zabyś"
+    },
+    "help_button@title": {
+        "hash": "90c094de68babfe6bfb332fb03538a24",
+        "message": "Cytajśo, kak pšawidła funkcioněruju, kótare wuraze móžośo wužywaś, kótare eksperimentelne funkcije a nejnowše změny su w toś tom rozšyrjenju."
+    },
+    "import_by_drop_or_click": {
+        "hash": "addde02e14af8336c24777c9b03dc5eb",
+        "message": "Ześěgniśo do togo eksportěrowanu dataju do toś toho wobcerka, aby nastajenja importěrował, abo klikniśo něźi, aby taku dataju wubrał."
+    },
+    "import_failure": {
+        "hash": "19912d075bc8dfb9b1dae244e6d3e0d4",
+        "message": "Dataja njedajo se importěrowaś. Pśespytajśo, lěc dataja jo płaśiwa dataja nastajenjow."
+    },
+    "import_success_close_now": {
+        "hash": "cd1b4a7131754d680d4a662e29b2516b",
+        "message": "Nastajenja su se wuspěšnje importěrowali. Móžośo něnto toś to wokno zacyniś."
+    },
+    "initial_tab_last_active": {
+        "hash": "aa5aecbdb436117318ba27e868fe98c8",
+        "message": "<Spomnjeś se>"
+    },
+    "initial_tab_log": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Domenowy protokol"
+    },
+    "initial_tab_rules": {
+        "hash": "8508c7bcea2082f08abcfea3d4cc0ffb",
+        "message": "Pšawidła"
+    },
+    "initial_tab_settings": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Nastajenja"
+    },
+    "initial_tab_this_tab": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Aktualny rejtark"
+    },
+    "invalid_tab": {
+        "hash": "d9b046898a69c55df2f0e4f03f9011d6",
+        "message": "Njepłaśiwy rejtark"
+    },
+    "logo@title": {
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Njezabywaj mě"
+    },
+    "perform_manual_cleanup": {
+        "hash": "1098090c30d2dc94517833dc3d259a71",
+        "message": "Manuelne wucysćenje pśewjasć"
+    },
+    "prompt_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "Pśetergnuś"
+    },
+    "prompt_ok": {
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "W pórěźe"
+    },
+    "recently_accessed_domains": {
+        "hash": "53d2a0edc88172044b6b6db0c1996820",
+        "message": "Njedawno woglědane cookiejowe domeny:"
+    },
+    "reset_dialog_content": {
+        "hash": "db630835e0fd63a96fcb2feed83facc3",
+        "message": "To njedajo se anulěrowaś."
+    },
+    "reset_dialog_title": {
+        "hash": "f5545c85577b03ed93d451abf748ce8d",
+        "message": "Nastajenja slědk stajiś"
+    },
+    "rules_add": {
+        "hash": "c30738ff9271a856100751bbca5e5794",
+        "message": "Pśidaś"
+    },
+    "rules_input@placeholder": {
+        "hash": "a0766c32473f97b153fd63a92cadd450",
+        "message": "Pytaś abo pśidaś.."
+    },
+    "setting_apply_rules@title": {
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b",
+        "message": "Pšawidła nałožyś"
+    },
+    "setting_cookies": {
+        "hash": "4aef64b30489430071825bcb3db557b6",
+        "message": "Cookieje"
+    },
+    "setting_downloads": {
+        "hash": "12caefee10c407a13df4027c244d1118",
+        "message": "Ześěgnjenja"
+    },
+    "setting_form_data": {
+        "hash": "b5418babb2bbffd7d4e8275b83770564",
+        "message": "Formularne daty"
+    },
+    "setting_history": {
+        "hash": "6b8f0d500af7fbca100a1be3dc0817d6",
+        "message": "Historija"
+    },
+    "setting_indexed_db": {
+        "hash": "335f3924c55823b7be5b261a240883bf",
+        "message": "Indexed DB"
+    },
+    "setting_initialTab": {
+        "hash": "4f7c8a9bcef6c6476565d540dde62998",
+        "message": "Njepjerwjej wubrany rejtark we wócynjonem woknje:"
+    },
+    "setting_local_storage": {
+        "hash": "d57ee1024a950e1341482d9240d0b630",
+        "message": "Lokalny składowak"
+    },
+    "setting_log_rad_enabled": {
+        "hash": "3b8f9710163140ee92e5924c8f7bdbca",
+        "message": "Njedawno woglědane domeny protokolěrowaś."
+    },
+    "setting_log_rad_limit": {
+        "hash": "3c037e9a79f552e29a4d50714669c7e3",
+        "message": "Wobgranicowaś na:"
+    },
+    "setting_passwords": {
+        "hash": "a40f3ee19854cd8645e750f118af3dcd",
+        "message": "Gronidła"
+    },
+    "setting_plugin_data": {
+        "hash": "436905ccbdfaaacb1aec25f512584e36",
+        "message": "Tykackowe daty"
+    },
+    "setting_protect_open_domains": {
+        "hash": "c3d70903d8398a33b99e1711f546ca19",
+        "message": "Tuchylu wócynjone domeny šćitaś, jolic \"Pšawidła nałožyś\" jo zmóžnjony"
+    },
+    "setting_purge_expired_cookies": {
+        "hash": "1ff8b00b0ca44682a083d91280bcc011",
+        "message": "Pśepadnjone cookieje wulašowaś, gažkuli se wucysćenje wótměwa."
+    },
+    "setting_remove_thirdparty": {
+        "hash": "2d8b645390f60f6bb1777fbf6004d109",
+        "message": "Cookieje tśeśich póbitoworjow pśi napóranju wótwónoźeś:"
+    },
+    "setting_server_bound_certificates": {
+        "hash": "0dfdb1326c1206379e7866da9c9bbf11",
+        "message": "Certifikaty zwězane ze serwerom"
+    },
+    "setting_service_workers": {
+        "hash": "584545acfce5580c7967bc8c366df556",
+        "message": "Service Workers"
+    },
+    "setting_show_badge": {
+        "hash": "fcc8735498ed21670a55314e40bd5b23",
+        "message": "Góźece pšawidło ako marku na tłocašku w symbolowej rědce pokazaś"
+    },
+    "setting_show_cookie_removal_notification": {
+        "hash": "5d31d92f2c4eb88af04bf02b9078d058",
+        "message": "Powěźeńku pokazaś, gaž su se cookieje wótwónoźeli."
+    },
+    "setting_show_update_notification": {
+        "hash": "b09faefa5c53650a8e8d549be96e09a6",
+        "message": "Powěźeńku pokazaś, gaž jo se rozšyrjenje zaktualizěrowało."
+    },
+    "setting_thirdparty_before_creation": {
+        "hash": "29d565d6a25a71892d493a5d6be5fa2c",
+        "message": "Cookieje tśeśich póbitowarjow wótpokazaś"
+    },
+    "setting_whitelist_no_tld@title": {
+        "hash": "9e32826f6a8e674ffa05dca2c9670ddb",
+        "message": "Domeny ako localhost, intranet atd. (bźez .com, .net atd.)"
+    },
+    "tabs_about@title": {
+        "hash": "c7f0b61c0416534e0a666f03327552b3",
+        "message": "Wó Njezabywaj mě"
+    },
+    "tabs_changelog@title": {
+        "hash": "d1f539e046abe83e76dcf2163f9a143c",
+        "message": "Protokol změnow"
+    },
+    "tabs_experimental@title": {
+        "hash": "f349bbd753db24b2c15a159a227bd115",
+        "message": "Eksperimentelne funkcije"
+    },
+    "tabs_log@title": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Domenowy protokol"
+    },
+    "tabs_rules@title": {
+        "hash": "21d4563d916a5e113022379778156fff",
+        "message": "Pšawidła definěrowaś"
+    },
+    "tabs_settings@title": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Nastajenja"
+    },
+    "tabs_this_tab@title": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Aktualny rejtark"
+    },
+    "tabs_tutorial@title": {
+        "hash": "890626624db50efe177837d959c3a8f4",
+        "message": "Zapokazanje\nRozpokazanje"
+    },
+    "types_of_cleanup@title": {
+        "hash": "ba2fe14822b0ddacb1f12d26f543783d",
+        "message": "Cytajśo wěcej wó tom, což toś te kontrolne kašćiki cysće."
+    },
+    "update_notification_message": {
+        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58",
+        "message": "Klikniśo how, aby wiźeł, což jo nowe."
+    },
+    "update_notification_title": {
+        "hash": "ee6d409dd42b2f42f153c1a574ca3595",
+        "message": "Njezabywaj mě jo se aktualizěrował!"
+    }
 }

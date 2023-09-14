@@ -2,22 +2,18 @@
     "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
         "message": "Njezabywaj mě - cookieje a druge daty zabyś",
-        "description": "Name of the extension.",
         "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
     },
     "extensionDescription": {
         "message": "Dajśo wobglědowakoju daty websedłow zabyś, mimo datow, kótarež cośo wobchowaś.",
-        "description": "Description of the extension.",
         "hash": "8138b17e7f1daceffca0d19015bb86e7"
     },
     "actionTitle": {
         "message": "Njezabywaj mě",
-        "description": "Action button title",
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
     "actionTitleSnooze": {
         "message": "Njezabywaj mě (nachylu znjemóžnjeny)",
-        "description": "Action button title during snooze",
         "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
     },
     "logo@title": {

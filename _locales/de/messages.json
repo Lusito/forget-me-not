@@ -2,22 +2,18 @@
     "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
         "message": "Vergiss Mein Nicht - Vergiss Cookies und andere Daten",
-        "description": "Name of the extension.",
         "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
     },
     "extensionDescription": {
         "message": "Lass den Browser Website-Daten vergessen, abgesehen derer, die du behalten möchtest.",
-        "description": "Description of the extension.",
         "hash": "8138b17e7f1daceffca0d19015bb86e7"
     },
     "actionTitle": {
         "message": "Vergiss Mein Nicht",
-        "description": "Action button title",
         "hash": "283721a4ca7095dd59b153aa55ae6f69"
     },
     "actionTitleSnooze": {
         "message": "Vergiss Mein Nicht (temporär abgeschaltet)",
-        "description": "Action button title during snooze",
         "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
     },
     "logo@title": {

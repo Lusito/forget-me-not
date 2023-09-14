@@ -1,20 +1,16 @@
 {
     "__WET_GROUP__0": { "message": "Branding" },
     "extensionName": {
-        "message": "Forget Me Not - Forget cookies & other data",
-        "description": "Name of the extension."
+        "message": "Forget Me Not - Forget cookies & other data"
     },
     "extensionDescription": {
-        "message": "Make the browser forget website data, except for the data you want to keep.",
-        "description": "Description of the extension."
+        "message": "Make the browser forget website data, except for the data you want to keep."
     },
     "actionTitle": {
-        "message": "Forget Me Not",
-        "description": "Action button title"
+        "message": "Forget Me Not"
     },
     "actionTitleSnooze": {
-        "message": "Forget Me Not (temporarily disabled)",
-        "description": "Action button title during snooze"
+        "message": "Forget Me Not (temporarily disabled)"
     },
     "logo@title": {
         "message": "Forget Me Not"

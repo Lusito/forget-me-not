@@ -1,368 +1,386 @@
 {
-    "__WET_GROUP__0": { "message": "Branding" },
-    "extensionName": {
-        "message": "Forget Me Not - Cookileri ve diğer verileri unut",
-        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad"
+    "__WET_GROUP__0": {
+        "message": "Branding"
     },
-    "extensionDescription": {
-        "message": "Web tarayıcınızı website verilerini unutmasını sağlar, tutmak istedikleriniz hariç. ",
-        "hash": "8138b17e7f1daceffca0d19015bb86e7"
+    "__WET_GROUP__1": {
+        "message": "Dialogs"
+    },
+    "__WET_GROUP__2": {
+        "message": "Cleanup Types"
+    },
+    "__WET_GROUP__3": {
+        "message": "Settings"
+    },
+    "__WET_GROUP__4": {
+        "message": "Notifications"
+    },
+    "__WET_GROUP__5": {
+        "message": "Import Dialog"
+    },
+    "__WET_GROUP__6": {
+        "message": "Info Pages"
+    },
+    "__WET_LOCALE__": {
+        "message": "tr"
     },
     "actionTitle": {
-        "message": "forget Me Not",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "forget Me Not"
     },
     "actionTitleSnooze": {
-        "message": "Forget Me Not ( Geçici olarak durduruldu)",
-        "hash": "1083d3039c66b786ea7f4fb7d6b6c095"
+        "hash": "1083d3039c66b786ea7f4fb7d6b6c095",
+        "message": "Forget Me Not ( Geçici olarak durduruldu)"
     },
-    "logo@title": {
-        "message": "Forget Me Not",
-        "hash": "283721a4ca7095dd59b153aa55ae6f69"
-    },
-
-    "__WET_GROUP__1": { "message": "Dialogs" },
     "alert_ok": {
-        "message": "Tamam",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_ok": {
-        "message": "Tamam",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "prompt_cancel": {
-        "message": "İptal",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "reset_dialog_title": {
-        "message": "Ayarları sıfırla",
-        "hash": "f5545c85577b03ed93d451abf748ce8d"
-    },
-    "reset_dialog_content": {
-        "message": "Bu hareket geri alınamaz.",
-        "hash": "db630835e0fd63a96fcb2feed83facc3"
-    },
-    "rule_dialog_title": {
-        "message": "Bir temizlik kuralı seçin.",
-        "hash": "8b92b69da821db80656274e044e68643"
-    },
-    "rule_dialog_content": {
-        "message": " - **N**ever: Temizlik yapılmaz.\n- On **S**tartup: Sadece web tarayıcı başlatıldığında temizlik yapar.\n- On **L**eave: Bir adresten ayrıldıktan sonra ve web tarayıcı başlatıldığında temizler.\n- **I**nstantly: Eğer mümkünse verinin yerleştirilmesini engeller. Aksi takdirde 'On Leave' gibi çalışır.\n",
-        "hash": "bb88166ccd6ce8e41eb96328204fb401"
-    },
-    "rule_dialog_expression": {
-        "message": "İfade:",
-        "hash": "4342463f910507a3f4f1f81716912f1c"
-    },
-    "rule_dialog_temporary": {
-        "message": "Geçici kural: Bu kuralı, adresten ayrılınca ya da web tarayıcı yeniden başlatılınca sil.",
-        "hash": "00d6f1e3f3b10031b36d0658810e84d6"
-    },
-    "confirm_settings_and_rules": {
-        "message": "Ayarlar & Kurallar",
-        "hash": "e195409b368c4fbb6d4fa33ae6a52c20"
-    },
-    "confirm_settings_only": {
-        "message": "Sadece Ayarlar",
-        "hash": "47dbae6cf11a5b79c1abae7b56485c18"
-    },
-    "confirm_ok": {
-        "message": "Tamam",
-        "hash": "d2702da8185dd5d533913d767bddc05d"
-    },
-    "confirm_cancel": {
-        "message": "İptal",
-        "hash": "17aa19f18a894459ab6ff21156e8a341"
-    },
-    "confirm_rule_replace_dialog_title": {
-        "message": "Bu kural zaten mevcut.",
-        "hash": "c75edd105dd87f7b72216c1e32dcf101"
-    },
-    "confirm_rule_replace_dialog_content": {
-        "message": "Bu özellikte bir kural zaten mevcut. Mevcut kural ile değiştirmek istiyor musunuz?",
-        "hash": "74219b377804324016c6fbca36518b25"
-    },
-    "cookie_browser_title": {
-        "message": "Cookie Tarayıcı",
-        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5"
-    },
-    "cookie_browser_description": {
-        "message": "Burada cookileri inceleyebilir ve kolaylıkla cookiye özel kural koyabilirsiniz",
-        "hash": "918c4ecbf778bb45871133c3fce417da"
-    },
-    "dialog_back": {
-        "message": "Geri",
-        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8"
-    },
-
-    "__WET_GROUP__2": { "message": "Cleanup Types" },
-    "cleanup_type_never_badge": {
-        "message": "N",
-        "hash": "365345324a710f7b5f2824f1da013f2d"
-    },
-    "cleanup_type_never_button": {
-        "message": "Asla",
-        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d"
-    },
-    "cleanup_type_never_button@title": {
-        "message": "Temizlik yapılmaz.",
-        "hash": "afc3c0c6f3ae62b193abe67827fe8562"
-    },
-    "cleanup_type_startup_badge": {
-        "message": "S",
-        "hash": "449c22c9ba9d8f9189fe6d0c3d640464"
-    },
-    "cleanup_type_startup_button": {
-        "message": "Başlangıçta",
-        "hash": "a828be5a7de52d416d9ace00bc40fd3a"
-    },
-    "cleanup_type_startup_button@title": {
-        "message": "Tarayıcı başlatıldığında temizlik",
-        "hash": "36b13ce8c9bc05281eb243c1633a4c7a"
-    },
-    "cleanup_type_leave_badge": {
-        "message": "L",
-        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d"
-    },
-    "cleanup_type_leave_button": {
-        "message": "Ayrılırken",
-        "hash": "474d0269f9757e726e5d91f684c33033"
-    },
-    "cleanup_type_leave_button@title": {
-        "message": "Adresten ayrılırken temizlik",
-        "hash": "a69a2b082be9de0589a0f807f6be2179"
-    },
-    "cleanup_type_instantly_badge": {
-        "message": "I",
-        "hash": "43165bb2fb785fea90fb86352ea3ea8c"
-    },
-    "cleanup_type_instantly_button": {
-        "message": "Anlık temizlik",
-        "hash": "62610f955f62f7701a06a80ff04e1e1b"
-    },
-    "cleanup_type_instantly_button@title": {
-        "message": "Oluşturulurken Engelle/kaldır ",
-        "hash": "f253ddd17544f84b52a993fe784164e6"
-    },
-    "cleanup_type_create_button": {
-        "message": "Kural oluştur",
-        "hash": "913e8b0d4ccb47df0b1a1780c709f857"
-    },
-    "cleanup_type_create_button@title": {
-        "message": "Uygulanacak temizlik tipini seçiniz",
-        "hash": "8f2e26691bb8f0096850c14fa831ca5d"
-    },
-
-    "__WET_GROUP__3": { "message": "Settings" },
-    "settings_unsupported_checkbox@title": {
-        "message": "Bu platformda desteklenmiyor.",
-        "hash": "99286998bff7ecef26245d3858e4fe0f"
-    },
-    "perform_manual_cleanup": {
-        "message": "Elle temizlik yap",
-        "hash": "1098090c30d2dc94517833dc3d259a71"
-    },
-    "manual_cleanup_description": {
-        "message": "Burada elle temizlik yapabilirsiniz. Neyi temizleyeceğiniz seçebilirsiniz.",
-        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770"
-    },
-    "define_rules": {
-        "message": "Kuralları belirle",
-        "hash": "958b9c121084b503102f5f7e566a833e"
-    },
-    "recently_accessed_domains": {
-        "message": "Yakında eriştiğiniz adresler:",
-        "hash": "53d2a0edc88172044b6b6db0c1996820"
-    },
-    "tabs_settings_general": {
-        "message": "Genel",
-        "hash": "e90d858c95232c95e34b4bb2f25b69e4"
-    },
-    "tabs_settings_cleanup": {
-        "message": "Temizlik",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
-    },
-    "tabs_settings_experimental": {
-        "message": "Deneysel",
-        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a"
-    },
-    "tabs_this_tab@title": {
-        "message": "Şuanki sekme",
-        "hash": "9e1baccf4de27f703edde7de60b38ee1"
-    },
-    "tabs_rules@title": {
-        "message": "Kuralları belirle",
-        "hash": "21d4563d916a5e113022379778156fff"
-    },
-    "tabs_settings@title": {
-        "message": "Ayarlar",
-        "hash": "9c49db0871c842c3afc2c09b8a957eba"
-    },
-    "tabs_log@title": {
-        "message": "Adres raporu",
-        "hash": "4e6a1346f00de8119677a55341959bf0"
-    },
-    "tabs_about@title": {
-        "message": "Forget Me Not Hakkında",
-        "hash": "c7f0b61c0416534e0a666f03327552b3"
-    },
-    "tabs_tutorial@title": {
-        "message": "Başlangıç Eğitimi",
-        "hash": "890626624db50efe177837d959c3a8f4"
-    },
-    "tabs_experimental@title": {
-        "message": "Deneysel Özellikler",
-        "hash": "f349bbd753db24b2c15a159a227bd115"
-    },
-    "tabs_changelog@title": {
-        "message": "Değişiklik Raporu",
-        "hash": "d1f539e046abe83e76dcf2163f9a143c"
-    },
-    "button_clean_now": {
-        "message": "Şimdi Temşzle!",
-        "hash": "9294eae08b1e3bfffede71c2be473b29"
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "Tamam"
     },
     "button_clean_domain": {
-        "message": "Bu adresi temizle!",
-        "hash": "2e3cc752e235b2a95737ad9113e45bf5"
+        "hash": "2e3cc752e235b2a95737ad9113e45bf5",
+        "message": "Bu adresi temizle!"
     },
-    "button_import": {
-        "message": "İçe aktar..",
-        "hash": "0192d8f28f3d837e79a05711e6379e5e"
+    "button_clean_now": {
+        "hash": "9294eae08b1e3bfffede71c2be473b29",
+        "message": "Şimdi Temşzle!"
     },
     "button_export": {
-        "message": "Dışa aktar..",
-        "hash": "46a378d64766cc2c8491cd13b018657f"
+        "hash": "46a378d64766cc2c8491cd13b018657f",
+        "message": "Dışa aktar.."
     },
-    "button_reset": {
-        "message": "Varsayılana sıfırla",
-        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe"
+    "button_import": {
+        "hash": "0192d8f28f3d837e79a05711e6379e5e",
+        "message": "İçe aktar.."
     },
     "button_log_add_rule": {
-        "message": "+ Kural ekle",
-        "hash": "28421d68b672702c44a611f9e741e4d2"
+        "hash": "28421d68b672702c44a611f9e741e4d2",
+        "message": "+ Kural ekle"
     },
-    "button_toggle_snooze_true": {
-        "message": "Uyan",
-        "hash": "71669281f5e594169489a032087e7b3f"
+    "button_reset": {
+        "hash": "6a2c34cf60be5dcc1e006d82fff8c3fe",
+        "message": "Varsayılana sıfırla"
     },
     "button_toggle_snooze_false": {
-        "message": "Uykuya geç",
-        "hash": "7a99ea84ba7341049328d104122639a8"
+        "hash": "7a99ea84ba7341049328d104122639a8",
+        "message": "Uykuya geç"
     },
-    "toggle_snooze_description": {
-        "message": "Uyku modunda, şu temizlikler yapılmayacak:\n- Adresten ayrılma temizliği\n- 3. sahış cookilerin temizliği\n- Tüm cookilerin engellenmesi\n\nYapılmayan tüm temizlik uyku modu sona erdiğinde yapılacaktır.",
-        "hash": "f4aef37e9e5a3d31685076022d0e6ae8"
+    "button_toggle_snooze_true": {
+        "hash": "71669281f5e594169489a032087e7b3f",
+        "message": "Uyan"
     },
-    "invalid_tab": {
-        "message": "Geçersiz sekme",
-        "hash": "d9b046898a69c55df2f0e4f03f9011d6"
+    "cleanup_type_create_button": {
+        "hash": "913e8b0d4ccb47df0b1a1780c709f857",
+        "message": "Kural oluştur"
     },
-    "rules_column_expression": {
-        "message": "İfade",
-        "hash": "7fc913b5875670e140f328b8a03ed225"
+    "cleanup_type_create_button@title": {
+        "hash": "8f2e26691bb8f0096850c14fa831ca5d",
+        "message": "Uygulanacak temizlik tipini seçiniz"
     },
-    "rules_column_matching_expression": {
-        "message": "Eşleşen İfade",
-        "hash": "dcb63b62695c11401c78d9ea01eee3de"
+    "cleanup_type_instantly_badge": {
+        "hash": "43165bb2fb785fea90fb86352ea3ea8c",
+        "message": "I"
     },
-    "rules_column_type": {
-        "message": "Temizlik",
-        "hash": "338c238d02c3001ea6d21739b8678ec5"
+    "cleanup_type_instantly_button": {
+        "hash": "62610f955f62f7701a06a80ff04e1e1b",
+        "message": "Anlık temizlik"
     },
-    "rules_input@placeholder": {
-        "message": "Ara ya da ekle..",
-        "hash": "a0766c32473f97b153fd63a92cadd450"
+    "cleanup_type_instantly_button@title": {
+        "hash": "f253ddd17544f84b52a993fe784164e6",
+        "message": "Oluşturulurken Engelle/kaldır "
     },
-    "expression_hint_invalid": {
-        "message": "Geçersiz ifade!",
-        "hash": "5960bcc4b7e809e74c69cd96049e9245"
+    "cleanup_type_leave_badge": {
+        "hash": "fbd5b37ca4019b5d4bbdd5309a9cda0d",
+        "message": "L"
     },
-    "expression_hint_exists": {
-        "message": "Böyle bir ifade zaten var!",
-        "hash": "8171dd015c1bd031c6c7af75d5fa7100"
+    "cleanup_type_leave_button": {
+        "hash": "474d0269f9757e726e5d91f684c33033",
+        "message": "Ayrılırken"
     },
-    "rules_add": {
-        "message": "Ekle",
-        "hash": "c30738ff9271a856100751bbca5e5794"
+    "cleanup_type_leave_button@title": {
+        "hash": "a69a2b082be9de0589a0f807f6be2179",
+        "message": "Adresten ayrılırken temizlik"
     },
-    "rules_no_entries": {
-        "message": "Hiç giriş yapılmamış",
-        "hash": "5ece1de076b92af71c606feadcc41439"
+    "cleanup_type_never_badge": {
+        "hash": "365345324a710f7b5f2824f1da013f2d",
+        "message": "N"
     },
-    "help_button@title": {
-        "message": "Kuralların nasıl çalıştığı, hangi ifadeleri kullanabileceğiniz, deneysel özellikler ve son yenilikler hakkında bilgi sahibi olun.",
-        "hash": "90c094de68babfe6bfb332fb03538a24"
+    "cleanup_type_never_button": {
+        "hash": "4a5ce3a386f30ed9c9bdb8d9744fae6d",
+        "message": "Asla"
     },
-    "setting_show_update_notification": {
-        "message": "Eklenti güncellendiğinde bildirim göster.",
-        "hash": "b09faefa5c53650a8e8d549be96e09a6"
+    "cleanup_type_never_button@title": {
+        "hash": "afc3c0c6f3ae62b193abe67827fe8562",
+        "message": "Temizlik yapılmaz."
     },
-    "setting_show_cookie_removal_notification": {
-        "message": "Cookiler silindiğinde bildirim göster.",
-        "hash": "5d31d92f2c4eb88af04bf02b9078d058"
+    "cleanup_type_startup_badge": {
+        "hash": "449c22c9ba9d8f9189fe6d0c3d640464",
+        "message": "S"
     },
-    "setting_apply_rules@title": {
-        "message": "Kuralları uygula",
-        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b"
+    "cleanup_type_startup_button": {
+        "hash": "a828be5a7de52d416d9ace00bc40fd3a",
+        "message": "Başlangıçta"
     },
-    "setting_ignore_rules@title": {
-        "message": "Kuralları görmezden gel",
-        "hash": "ccb8dbed77ececb457ea594439d42146"
+    "cleanup_type_startup_button@title": {
+        "hash": "36b13ce8c9bc05281eb243c1633a4c7a",
+        "message": "Tarayıcı başlatıldığında temizlik"
     },
-    "setting_cookies": {
-        "message": "Cookieler",
-        "hash": "4aef64b30489430071825bcb3db557b6"
+    "confirm_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "İptal"
     },
-    "setting_local_storage": {
-        "message": "Yerel saklama alanı",
-        "hash": "d57ee1024a950e1341482d9240d0b630"
+    "confirm_ok": {
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "Tamam"
     },
-    "setting_history": {
-        "message": "Geçmiş",
-        "hash": "6b8f0d500af7fbca100a1be3dc0817d6"
+    "confirm_rule_replace_dialog_content": {
+        "hash": "74219b377804324016c6fbca36518b25",
+        "message": "Bu özellikte bir kural zaten mevcut. Mevcut kural ile değiştirmek istiyor musunuz?"
     },
-    "setting_downloads": {
-        "message": "İndirme geçmişi",
-        "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116"
+    "confirm_rule_replace_dialog_title": {
+        "hash": "c75edd105dd87f7b72216c1e32dcf101",
+        "message": "Bu kural zaten mevcut."
     },
-    "setting_passwords": {
-        "message": "Şifreler",
-        "hash": "a40f3ee19854cd8645e750f118af3dcd"
+    "confirm_settings_and_rules": {
+        "hash": "e195409b368c4fbb6d4fa33ae6a52c20",
+        "message": "Ayarlar & Kurallar"
     },
-    "setting_delay_in_seconds": {
-        "message": "Saniye biriminden gecikme:",
-        "hash": "4f52d0e15398d35039f73e8a04275ae9"
+    "confirm_settings_only": {
+        "hash": "47dbae6cf11a5b79c1abae7b56485c18",
+        "message": "Sadece Ayarlar"
     },
-
-    "__WET_GROUP__4": { "message": "Notifications" },
-    "update_notification_title": {
-        "message": "Forget Me Not güncellendi!",
-        "hash": "ee6d409dd42b2f42f153c1a574ca3595"
+    "cookie_browser_description": {
+        "hash": "918c4ecbf778bb45871133c3fce417da",
+        "message": "Burada cookileri inceleyebilir ve kolaylıkla cookiye özel kural koyabilirsiniz"
     },
-    "update_notification_message": {
-        "message": "Yenilikleri görmek için tıkla.",
-        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58"
-    },
-    "cookie_cleanup_notification_title": {
-        "message": "$COUNT$ adet cookie temizlendi.",
-        "placeholders": {
-            "count": { "content": "$1", "example": "4" }
-        },
-        "hash": "858abd3673bf284d100dba19e3034e71"
+    "cookie_browser_title": {
+        "hash": "2e6df4b35336dfdfd9f6f9638ea00ad5",
+        "message": "Cookie Tarayıcı"
     },
     "cookie_cleanup_notification_line": {
+        "hash": "194b196ae9df5827b482babe5caebd69",
         "message": "$DOMAIN$: $COUNT$ cookie",
         "placeholders": {
-            "domain": { "content": "$1", "example": "www.google.com" },
-            "count": { "content": "$2", "example": "4" }
-        },
-        "hash": "194b196ae9df5827b482babe5caebd69"
+            "count": {
+                "content": "$2",
+                "example": "4"
+            },
+            "domain": {
+                "content": "$1",
+                "example": "www.google.com"
+            }
+        }
     },
-
-    "__WET_GROUP__5": { "message": "Import Dialog" },
-
-    "__WET_GROUP__6": { "message": "Info Pages" },
-
-    "__WET_LOCALE__": { "message": "tr" }
+    "cookie_cleanup_notification_title": {
+        "hash": "858abd3673bf284d100dba19e3034e71",
+        "message": "$COUNT$ adet cookie temizlendi.",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "4"
+            }
+        }
+    },
+    "define_rules": {
+        "hash": "958b9c121084b503102f5f7e566a833e",
+        "message": "Kuralları belirle"
+    },
+    "dialog_back": {
+        "hash": "16a5bc1e5d6a2e5bbb1b35ca483971e8",
+        "message": "Geri"
+    },
+    "expression_hint_exists": {
+        "hash": "8171dd015c1bd031c6c7af75d5fa7100",
+        "message": "Böyle bir ifade zaten var!"
+    },
+    "expression_hint_invalid": {
+        "hash": "5960bcc4b7e809e74c69cd96049e9245",
+        "message": "Geçersiz ifade!"
+    },
+    "extensionDescription": {
+        "hash": "8138b17e7f1daceffca0d19015bb86e7",
+        "message": "Web tarayıcınızı website verilerini unutmasını sağlar, tutmak istedikleriniz hariç. "
+    },
+    "extensionName": {
+        "hash": "fda1d8fe3045df9c26b504ae4e45b1ad",
+        "message": "Forget Me Not - Cookileri ve diğer verileri unut"
+    },
+    "help_button@title": {
+        "hash": "90c094de68babfe6bfb332fb03538a24",
+        "message": "Kuralların nasıl çalıştığı, hangi ifadeleri kullanabileceğiniz, deneysel özellikler ve son yenilikler hakkında bilgi sahibi olun."
+    },
+    "invalid_tab": {
+        "hash": "d9b046898a69c55df2f0e4f03f9011d6",
+        "message": "Geçersiz sekme"
+    },
+    "logo@title": {
+        "hash": "283721a4ca7095dd59b153aa55ae6f69",
+        "message": "Forget Me Not"
+    },
+    "manual_cleanup_description": {
+        "hash": "8cadfdbd6dc8a5c1f3f4250ac9a02770",
+        "message": "Burada elle temizlik yapabilirsiniz. Neyi temizleyeceğiniz seçebilirsiniz."
+    },
+    "perform_manual_cleanup": {
+        "hash": "1098090c30d2dc94517833dc3d259a71",
+        "message": "Elle temizlik yap"
+    },
+    "prompt_cancel": {
+        "hash": "17aa19f18a894459ab6ff21156e8a341",
+        "message": "İptal"
+    },
+    "prompt_ok": {
+        "hash": "d2702da8185dd5d533913d767bddc05d",
+        "message": "Tamam"
+    },
+    "recently_accessed_domains": {
+        "hash": "53d2a0edc88172044b6b6db0c1996820",
+        "message": "Yakında eriştiğiniz adresler:"
+    },
+    "reset_dialog_content": {
+        "hash": "db630835e0fd63a96fcb2feed83facc3",
+        "message": "Bu hareket geri alınamaz."
+    },
+    "reset_dialog_title": {
+        "hash": "f5545c85577b03ed93d451abf748ce8d",
+        "message": "Ayarları sıfırla"
+    },
+    "rule_dialog_content": {
+        "hash": "bb88166ccd6ce8e41eb96328204fb401",
+        "message": " - **N**ever: Temizlik yapılmaz.\n- On **S**tartup: Sadece web tarayıcı başlatıldığında temizlik yapar.\n- On **L**eave: Bir adresten ayrıldıktan sonra ve web tarayıcı başlatıldığında temizler.\n- **I**nstantly: Eğer mümkünse verinin yerleştirilmesini engeller. Aksi takdirde 'On Leave' gibi çalışır.\n"
+    },
+    "rule_dialog_expression": {
+        "hash": "4342463f910507a3f4f1f81716912f1c",
+        "message": "İfade:"
+    },
+    "rule_dialog_temporary": {
+        "hash": "00d6f1e3f3b10031b36d0658810e84d6",
+        "message": "Geçici kural: Bu kuralı, adresten ayrılınca ya da web tarayıcı yeniden başlatılınca sil."
+    },
+    "rule_dialog_title": {
+        "hash": "8b92b69da821db80656274e044e68643",
+        "message": "Bir temizlik kuralı seçin."
+    },
+    "rules_add": {
+        "hash": "c30738ff9271a856100751bbca5e5794",
+        "message": "Ekle"
+    },
+    "rules_column_expression": {
+        "hash": "7fc913b5875670e140f328b8a03ed225",
+        "message": "İfade"
+    },
+    "rules_column_matching_expression": {
+        "hash": "dcb63b62695c11401c78d9ea01eee3de",
+        "message": "Eşleşen İfade"
+    },
+    "rules_column_type": {
+        "hash": "338c238d02c3001ea6d21739b8678ec5",
+        "message": "Temizlik"
+    },
+    "rules_input@placeholder": {
+        "hash": "a0766c32473f97b153fd63a92cadd450",
+        "message": "Ara ya da ekle.."
+    },
+    "rules_no_entries": {
+        "hash": "5ece1de076b92af71c606feadcc41439",
+        "message": "Hiç giriş yapılmamış"
+    },
+    "setting_apply_rules@title": {
+        "hash": "5204e3f307e63b841ee3c6f2cb8f3c0b",
+        "message": "Kuralları uygula"
+    },
+    "setting_cookies": {
+        "hash": "4aef64b30489430071825bcb3db557b6",
+        "message": "Cookieler"
+    },
+    "setting_delay_in_seconds": {
+        "hash": "4f52d0e15398d35039f73e8a04275ae9",
+        "message": "Saniye biriminden gecikme:"
+    },
+    "setting_downloads": {
+        "hash": "ee4dd1afdaecd937cd9ff9d1c3b17116",
+        "message": "İndirme geçmişi"
+    },
+    "setting_history": {
+        "hash": "6b8f0d500af7fbca100a1be3dc0817d6",
+        "message": "Geçmiş"
+    },
+    "setting_ignore_rules@title": {
+        "hash": "ccb8dbed77ececb457ea594439d42146",
+        "message": "Kuralları görmezden gel"
+    },
+    "setting_local_storage": {
+        "hash": "d57ee1024a950e1341482d9240d0b630",
+        "message": "Yerel saklama alanı"
+    },
+    "setting_passwords": {
+        "hash": "a40f3ee19854cd8645e750f118af3dcd",
+        "message": "Şifreler"
+    },
+    "setting_show_cookie_removal_notification": {
+        "hash": "5d31d92f2c4eb88af04bf02b9078d058",
+        "message": "Cookiler silindiğinde bildirim göster."
+    },
+    "setting_show_update_notification": {
+        "hash": "b09faefa5c53650a8e8d549be96e09a6",
+        "message": "Eklenti güncellendiğinde bildirim göster."
+    },
+    "settings_unsupported_checkbox@title": {
+        "hash": "99286998bff7ecef26245d3858e4fe0f",
+        "message": "Bu platformda desteklenmiyor."
+    },
+    "tabs_about@title": {
+        "hash": "c7f0b61c0416534e0a666f03327552b3",
+        "message": "Forget Me Not Hakkında"
+    },
+    "tabs_changelog@title": {
+        "hash": "d1f539e046abe83e76dcf2163f9a143c",
+        "message": "Değişiklik Raporu"
+    },
+    "tabs_experimental@title": {
+        "hash": "f349bbd753db24b2c15a159a227bd115",
+        "message": "Deneysel Özellikler"
+    },
+    "tabs_log@title": {
+        "hash": "4e6a1346f00de8119677a55341959bf0",
+        "message": "Adres raporu"
+    },
+    "tabs_rules@title": {
+        "hash": "21d4563d916a5e113022379778156fff",
+        "message": "Kuralları belirle"
+    },
+    "tabs_settings@title": {
+        "hash": "9c49db0871c842c3afc2c09b8a957eba",
+        "message": "Ayarlar"
+    },
+    "tabs_settings_cleanup": {
+        "hash": "338c238d02c3001ea6d21739b8678ec5",
+        "message": "Temizlik"
+    },
+    "tabs_settings_experimental": {
+        "hash": "8c4bf4c8a976e8e38fcb8edd8f05602a",
+        "message": "Deneysel"
+    },
+    "tabs_settings_general": {
+        "hash": "e90d858c95232c95e34b4bb2f25b69e4",
+        "message": "Genel"
+    },
+    "tabs_this_tab@title": {
+        "hash": "9e1baccf4de27f703edde7de60b38ee1",
+        "message": "Şuanki sekme"
+    },
+    "tabs_tutorial@title": {
+        "hash": "890626624db50efe177837d959c3a8f4",
+        "message": "Başlangıç Eğitimi"
+    },
+    "toggle_snooze_description": {
+        "hash": "f4aef37e9e5a3d31685076022d0e6ae8",
+        "message": "Uyku modunda, şu temizlikler yapılmayacak:\n- Adresten ayrılma temizliği\n- 3. sahış cookilerin temizliği\n- Tüm cookilerin engellenmesi\n\nYapılmayan tüm temizlik uyku modu sona erdiğinde yapılacaktır."
+    },
+    "update_notification_message": {
+        "hash": "ce7532dba2f7ab26ada7763f3fb4ff58",
+        "message": "Yenilikleri görmek için tıkla."
+    },
+    "update_notification_title": {
+        "hash": "ee6d409dd42b2f42f153c1a574ca3595",
+        "message": "Forget Me Not güncellendi!"
+    }
 }
